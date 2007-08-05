@@ -18,15 +18,39 @@ if (!defined('IN_PHPBB'))
  *
  * Sends a PM or Email to each user in the subscription list, depending on what they want
  *
- * @param mixed $blog_id The blog_id of the new blog (if there is one)
- * @param mixed $reply_id The reply_id of the new reply (if there is one)
+ * @param int|bool $blog_id The blog_id of the new blog (if there is one)
+ * @param int|bool $reply_id The reply_id of the new reply (if there is one)
  *
  * @todo Build the entire function. :P
  */
-function blog_subscription($blog_id, $reply_id = false)
+function handle_subscription($blog_id, $reply_id = false)
 {
 	global $db, $blog_data;
 
+	// make sure to check to see if they are authorized to recieve the notice
+}
+
+/**
+ * Adds a subscription to a blog or user
+ *
+ * @param int $subscribe_user_id The user_id of the user who we want to add the subscription for
+ * @param int $mode The type of subscription (0 is Private Message, 1 is Email)
+ * @param int|bool $blog_id The user_id of the user we want to subscribe to (if we want to subscribe to a user_id)
+ * @param int|bool $reply_id The blog_id of the user we want to subscribe to (if we want to subscribe to a blog_id)
+ */
+function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
+{
+	global $db;
+
+	$sql_data = array(
+		'sub_user_id'	=> $subscribe_user_id,
+		'sub_type'		=> $mode,
+		'blog_id'		=> $blog_id,
+		'user_id'		=> $user_id,
+	);
+
+	$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
+	$db->sql_query($sql);
 }
 
 /**
@@ -121,8 +145,9 @@ function handle_captcha($mode)
  * @param string $block The name of the custom profile block we insert it into
  * @param mixed $user_data Extra data on the user.  If blog_count is supplied in $user_data we can skip 1 sql query (if $grab_from_db is true)
  * @param bool $grab_from_db If it is true we will run the query to find out how many blogs the user has if the data isn't supplied in $user_data, otherwise we won't and just display the link alone.
+ * @param bool $force_output is if you would like to force the output of the links for the single requested section
  */
-function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false)
+function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false)
 {
 	global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
 
@@ -139,15 +164,19 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		$result = $db->sql_query($sql);
 		$user_data = $db->sql_fetchrow($result);
 	}
+	else if (!isset($user_data['blog_count']))
+	{
+		$user_data['blog_count'] = -1;
+	}
 	
-	if ($user_data['blog_count'] != 0 || $config['user_blog_always_show_blog_url'])
+	if ($user_data['blog_count'] > 0 || (($config['user_blog_always_show_blog_url'] || $force_output) && $user_data['blog_count'] >= 0))
 	{
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 			'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "u=$user_id") . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 		));
 	}
-	else if (!$grab_from_db)
+	else if (!$grab_from_db && $user_data['blog_count'] == -1)
 	{
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],

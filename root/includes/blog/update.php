@@ -32,9 +32,18 @@ if ($user_blog_version == $config['user_blog_version'])
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
 }
 
+if (strpos($user_blog_version, 'dev'))
+{
+	trigger_error('Automatic Updating is disabled for Dev versions.');
+}
+
 if (confirm_box(true))
 {
 	$sql_array = array();
+
+	//Setup $auth_admin class so we can add permission options
+	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+	$auth_admin = new auth_admin();
 
 	switch ($config['user_blog_version'])
 	{
@@ -59,10 +68,6 @@ if (confirm_box(true))
 				ADD blog_rating MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\',
 				ADD blog_num_ratings MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\'';
 			*/
-
-			//Setup $auth_admin class so we can add permission options
-			include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
-			$auth_admin = new auth_admin();
 
 			$blog_permissions = array(
 				'local'      => array(),
@@ -93,6 +98,8 @@ if (confirm_box(true))
 			$auth_admin->acl_add_option($blog_permissions);
 
 			set_config('user_blog_founder_all_perm', 1, 0);
+		case 'A11' :
+			set_config('user_blog_force_prosilver', 0, 0);
 	}
 
 	if (count($sql_array))
@@ -104,7 +111,10 @@ if (confirm_box(true))
 	}
 
 	// update the version
-	set_config('user_blog_version', $user_blog_version);
+	if (!strpos($user_blog_version, 'dev'))
+	{
+		set_config('user_blog_version', $user_blog_version);
+	}
 
 	// clear the cache
 	$cache->purge();

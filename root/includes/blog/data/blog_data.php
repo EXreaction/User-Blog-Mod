@@ -752,17 +752,20 @@ class blog_data
 
 			return ($output_data);
 		}
-		else if ($config['user_blog_custom_profile_enable'])
-		{	
-			// output the custom profile fields
-			if (isset($this->user[$user_id]['cp_row']['blockrow']))
-			{
-				foreach ($this->user[$user_id]['cp_row']['blockrow'] as $row)
+		else 
+		{
+			if ($config['user_blog_custom_profile_enable'])
+			{	
+				// output the custom profile fields
+				if (isset($this->user[$user_id]['cp_row']['blockrow']))
 				{
-					$template->assign_block_vars($output_custom, array(
-						'PROFILE_FIELD_NAME'	=> $row['PROFILE_FIELD_NAME'],
-						'PROFILE_FIELD_VALUE'	=> $row['PROFILE_FIELD_VALUE'],
-					));
+					foreach ($this->user[$user_id]['cp_row']['blockrow'] as $row)
+					{
+						$template->assign_block_vars($output_custom, array(
+							'PROFILE_FIELD_NAME'	=> $row['PROFILE_FIELD_NAME'],
+							'PROFILE_FIELD_VALUE'	=> $row['PROFILE_FIELD_VALUE'],
+						));
+					}
 				}
 			}
 

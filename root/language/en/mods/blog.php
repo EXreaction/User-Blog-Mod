@@ -15,6 +15,15 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'BLOG_FORCE_PROSILVER' => 'Force the use of the prosilver style for blogs',
+'BLOG_FORCE_PROSILVER_EXPLAIN' => 'If set to yes this will force the use of prosilver for the User Blog Mod.<br/>This will only work if you have prosilver installed as style_id 1, otherwise you will have a template error.',
+'BLOG_USER_NOT_PROVIDED' => 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
+'SUBSCRIBE_BLOG' => 'Blog subscription',
+'SUBSCRIBE_BLOG_CONFIRM' => 'How would you like to recieve notices when a new reply is added to this blog?',
+'SUBSCRIBE_USER' => 'User Blog subscription',
+'SUBSCRIBE_USER_CONFIRM' => 'How would you like to recieve notices when a new blog is added by this user?',
+'SUBSCRIBE_RECIEVE' => 'I would like to recieve updates via',
+'SUBSCRIBE'	=> 'Subscribe',
 	'ACP_BLOGS'							=> 'User Blog Mod',
 	'ADD_BLOG'							=> 'Add a new blog',
 	'ALREADY_INSTALLED'					=> 'You have already installed the user blog mod.<br/><br/>Click %shere%s to return to the main blog page.',
@@ -88,11 +97,11 @@ $lang = array_merge($lang, array(
 	'EDIT_BLOG'							=> 'Edit Blog',
 	'EDIT_REPLY'						=> 'Edit Reply',
 	'ENABLE_BLOG_CUSTOM_PROFILES'		=> 'Display custom profile fields in the User Blog pages',
-	'ENABLE_USER_BLOG'					=> 'Enable or Disable the entire User Blog Mod.',
+	'ENABLE_USER_BLOG'					=> 'Enable or Disable the entire User Blog Mod',
 	'ENABLE_USER_BLOG_EXPLAIN'			=> 'Note that the ACP sections of the User Blog Mod will always stay enabled as long as it is installed.',
 
 	'FEED'								=> 'Blog Feed',
-	'FOUNDER_ALL_PERMISSION'			=> 'Give Board Founders all permissions for the User Blog Mod.',
+	'FOUNDER_ALL_PERMISSION'			=> 'Give Board Founders all permissions for this mod',
 
 	'INSTALL_BLOG_DB'					=> 'Install User Blog Mod',
 	'INSTALL_BLOG_DB_CONFIRM'			=> 'Are you ready to install the database section of this mod?',

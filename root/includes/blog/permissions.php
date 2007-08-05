@@ -28,10 +28,10 @@ if (!defined('IN_PHPBB'))
  */
 function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $reply_id = 0)
 {
-	global $user, $auth, $blog_data;
+	global $user, $config, $auth, $blog_data;
 
-	// lets automatically give founders ALL permissions
-	if ($user->data['user_type'] == USER_FOUNDER)
+	// lets automatically give founders ALL permissions if the config settings are set that way
+	if ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm'])
 	{
 		return true;
 	}

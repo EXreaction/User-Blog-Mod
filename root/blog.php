@@ -11,7 +11,8 @@
 * TODO List
 *
 * PRIORITY -------------------------------
-* option to force prosilver by default
+* add section so it is possible to remove subscriptions in subscribe.php
+* option to enable/disable feeds
 * Resetup the MCP page to have URLS/etc like the Main page
 *
 * Finish RSS/ATOM/Javascript Output Feed & icons
@@ -52,7 +53,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A11';
+$user_blog_version = 'A12_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -63,10 +64,17 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-$user->setup('mods/blog');
+if ($config['user_blog_force_prosilver'])
+{
+	$user->setup('mods/blog', 1);
+}
+else
+{
+	$user->setup('mods/blog');
+}
 
 // check if the User Blog Mod is enabled
-if (isset($config['user_blog_enable']) && !$config['user_blog_enable'])
+if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
@@ -126,6 +134,7 @@ switch ($page)
 	case 'mcp' : // moderator control panel
 		include($phpbb_root_path . 'includes/blog/view/mcp.' . $phpEx);
 		break;
+	case 'subscribe' : // subscribe to users/blogs
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications

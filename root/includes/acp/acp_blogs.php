@@ -35,6 +35,7 @@ class acp_blogs
 			'user_blog_text_limit'				=> array('lang' => 'DEFAULT_TEXT_LIMIT', 			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_user_text_limit'			=> array('lang' => 'USER_TEXT_LIMIT', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_founder_all_perm'		=> array('lang'	=> 'FOUNDER_ALL_PERMISSION',		'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
+			'user_blog_force_prosilver'			=> array('lang' => 'BLOG_FORCE_PROSILVER',			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 		);
 
 		$this->new_config = $config;

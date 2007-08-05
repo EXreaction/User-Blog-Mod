@@ -212,6 +212,7 @@ if (confirm_box(true))
 	set_config('user_blog_inform', '2', 0);
 	set_config('user_blog_always_show_blog_url', 0, 0);
 	set_config('user_blog_founder_all_perm', 1, 0);
+	set_config('user_blog_force_prosilver', 0, 0);
 
 	set_config('user_blog_version', $user_blog_version, 0);
 
