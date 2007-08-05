@@ -1,0 +1,212 @@
+##############################################################
+## MOD Title: User Blog Mod
+## MOD Author: EXreaction < exreaction@lithiumstudios.org > (Nathan Guse) http://www.lithiumstudios.org
+##
+## MOD Description: Adds user blogs to a phpBB3 board.
+##
+## MOD Version: 0.3.10
+##
+## Installation Level:	Easy
+## Installation Time:	~5 Minutes
+##
+## Files To Edit:	adm/index.php
+##					includes/constants.php
+##					includes/functions.php
+##					styles/prosilver/templates/overall_header.html
+##					viewtopic.php
+##
+## Included Files:	(many)
+##
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## Author Notes:
+##	This is Alpha quality software.  Do not install unless you are willing to lose any
+##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
+##		I will take no resposibility for the use of this mod in a live environment.
+##
+##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
+##
+##	Only MySQL is supported at this time.  If you have a different DB please wait for a future release.
+##
+##	An upgrade script to upgrade from the blog mod 0.2.4b has been included.  However it is for testing purposes ONLY.
+##		To access it you need to go to blog.php?page=upgrade
+##		If you can not figure out how to use it yourself do NOT ask for help.  It is ONLY for testing.
+##
+##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
+##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
+##############################################################
+## MOD History:
+##(yyyy-mm-dd)
+## 2007-05-07 Alpha 1 Released
+## 2007-05-12 Alpha 2 Released
+## 2007-05-21 Alpha 3 Released
+## 2007-06-02 Alpha 4 Released
+## 2007-06-07 Alpha 5 Released
+## 2007-06-30 Alpha 6 Released
+## 2007-07-08
+##		Alpha 7 Released
+##			+ To upgrade from Alpha 6 upload all the new files.  Then use the upgrade file as was done last time.
+## 2007-07-12
+##		Alpha 8 Released
+##			+ To upgrade from Alpha 7 upload all the new files.  Then use the upgrade file as was done last time.
+## 2007-07-28
+##		Alpha 9 Released
+##			+ Structure and code overhaul.  Cleaned up a lot of the code.  This release may be a bit buggy. :P
+##			+ To upgrade from Alpha 8 upload all the new files.  Then update the constants.php file and add the new defined variables.
+##				- Then use the upgrade file as was done last time
+## 2007-07-29
+##		Alpha 9.a Released
+##			+ Fixing some problems with the update script.
+## 2007-07-30
+##		Alpha 10 Released
+##			+ Fixing many bugs that were introduced with the code overhaul in Alpha 9.
+##			+ To upgrade, first apply the code changes to adm/index.php, then make sure the code is updated for includes/constants.php and viewtopic.php
+##				- Then upload the new files and go to blog.php?page=update in your web browser
+## 2007-07-31
+##		Alpha 10.a Released
+##			+ Had an oops in blog.php. :P
+##			+ To upgrade just upload the new blog.php file
+## 2007-08-04
+##		Alpha 11 Released
+##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+#
+#-----[ COPY ]---------------------------------------------
+# Copy everything from the root/ folder to your phpBB3 forums' root
+
+root/* to /
+
+#
+#-----[ OPEN ]----------------------
+#
+
+adm/index.php
+
+#
+#-----[ FIND ]----------------------
+#
+
+$user->setup('acp/common');
+// End session management
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+// Start Add User Blog Mod ------------------
+$user->add_lang('mods/blog');
+// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+includes/constants.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+// Additional tables
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+// Start Add User Blog Mod ------------------
+define('BLOGS_TABLE',				$table_prefix . 'blogs');
+define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
+define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
+// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+includes/functions.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+	// application/xhtml+xml not used because of IE
+	header('Content-type: text/html; charset=UTF-8');
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+	// Start Add User Blog Mod ------------------
+	include($phpbb_root_path . 'includes/blog/header.' . $phpEx);
+	// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+# do this for all styles
+
+styles/prosilver/templates/overall_header.html
+
+#
+#-----[ FIND ]---------------------------------------------
+# Note: This is not the whole line
+
+{U_FAQ}
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+					<!-- BEGIN blog_links -->
+						<a href="{blog_links.URL}" class="{blog_links.CLASS}">{blog_links.TEXT}</a>
+					<!-- END blog_links -->
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+viewtopic.php
+
+#
+#-----[ FIND ]---------------------------------------------
+# Note: This is not the whole line.
+
+'search'		=> ($auth->acl_get('u_search'))
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+# Note: Add this line AFTER the above find's entire line (do not add it in the line, but on a new line below).
+
+				'blog_count'	=> $row['blog_count'],
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+	// Dump vars into template
+	$template->assign_block_vars('postrow', $postrow);
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+	// Start Add User Blog Mod ------------------
+	include_once($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
+	$user->add_lang('mods/blog');
+	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
+	// End Add User Blog Mod --------------------
+
+#
+#-----[ DIY ]---------------------------------------------
+#
+
+Go to blog.php?page=install in your web browser to install the database.
+
+Set the user/group permissions.
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]-----------------------------
+#
+# EoM

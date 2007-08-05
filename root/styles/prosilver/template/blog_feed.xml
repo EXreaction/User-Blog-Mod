@@ -1,0 +1,84 @@
+<!-- IF FEED == 'RSS_0.91' -->
+	<?xml version="1.0"?>
+	<rss version="0.91">
+		<channel>
+			<title><![CDATA[{TITLE}]]></title>
+			<link>{SITE_URL}</link>
+			<description><![CDATA[{SITE_DESC}]]></description>
+			<language>{SITE_LANG}</language>
+			<!-- BEGIN item -->
+				<item>
+					<title><![CDATA[{item.TITLE}]]></title>
+					<link>{item.URL}</link>
+					<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
+				</item>
+			<!-- END item -->
+		</channel>
+	</rss>
+<!-- ELSEIF FEED == 'RSS_1.0' -->
+	<?xml version="1.0"?>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel rdf:about="{SELF_URL}">
+		<title><![CDATA[{TITLE}]]></title>
+		<link>{SITE_URL}</link>
+		<description><![CDATA[{SITE_DESC}]]></description>
+		<language>{SITE_LANG}</language>
+		<items>
+			<rdf:Seq>
+				<!-- BEGIN items -->
+					<rdf:li rdf:resource="{items.URL}"/>
+				<!-- END items -->
+			</rdf:Seq>
+		</items>
+	</channel>
+	<!-- BEGIN item -->
+		<item rdf:about="{item.URL}">
+			<title><![CDATA[{item.TITLE}]]></title>
+			<link>{item.URL}</link>
+			<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
+			<author><![CDATA[{item.USERNAME}]]></author>
+			<pubDate>{item.PUB_DATE}</pubDate>
+		</item>
+	<!-- END item -->
+</rdf:RDF>
+<!-- ELSEIF FEED == 'RSS_2.0' -->
+	<?xml version="1.0"?>
+	<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+		<channel>
+			<title><![CDATA[{TITLE}]]></title>
+			<link>{SITE_URL}</link>
+			<description><![CDATA[{SITE_DESC}]]></description>
+			<language>{SITE_LANG}</language>
+			<lastBuildDate>{CURRENT_TIME}</lastBuildDate>
+			<!-- BEGIN item -->
+				<item>
+					<id>{item.BLOG_ID}</id>
+					<title><![CDATA[{item.TITLE}]]></title>
+					<link>{item.URL}</link>
+					<guid>{item.URL}</guid>
+					<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
+					<author><![CDATA[{item.USERNAME}]]></author>
+					<pubDate>{item.PUB_DATE}</pubDate>
+				</item>
+			<!-- END item -->
+		</channel>
+	</rss>
+<!-- ELSEIF FEED == 'ATOM' -->
+	<?xml version="1.0" encoding="utf-8"?>
+	<feed xmlns="http://www.w3.org/2005/Atom">
+		<title><![CDATA[{TITLE}]]></title>
+		<link>{SITE_URL}</link>
+		<updated>{CURRENT_TIME}</updated>
+		<!-- BEGIN item -->
+			<entry>
+				<title><![CDATA[{item.TITLE}]]></title>
+				<link>{item.URL}</link>
+				<id>{item.BLOG_ID}</id>
+				<updated>{item.PUB_DATE}</updated>
+				<summary><![CDATA[{item.BLOG_MESSAGE}]]></summary>
+			</entry>
+		<!-- END item -->
+	</feed>
+<!-- ELSEIF FEED == 'JAVASCRIPT' -->
+
+<!-- ENDIF -->

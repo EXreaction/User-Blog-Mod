@@ -1,0 +1,77 @@
+<!-- INCLUDE overall_header.html -->
+
+<style type="text/css">
+<!--
+	.deleted {
+		background-color: #33FF00;
+	}
+-->
+</style>
+	
+<!-- IF U_BLOG_MCP -->
+	<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
+<!-- ELSE -->
+<br />
+<!-- ENDIF -->
+
+<table style="width: 100%">
+	<tr>
+		<!-- BEGIN column -->
+			<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
+				<div class="post bg3" style="text-align: center;">
+					<span class="corners-top"><span></span></span>
+						<strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+				<!-- IF S_SORT -->
+					<form id="viewdownloads" method="post" action="{S_POST_ACTION}">
+					<fieldset class="display-options" style="margin-top: 0; ">
+						<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
+						<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
+						<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
+						<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label> <label>{S_SELECT_SORT_DIR} <input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
+					</fieldset>
+					</form>
+				<!-- ENDIF -->
+				<!-- BEGIN row -->
+					<div class="post bg1<!-- IF row.S_REPORTED or row.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF row.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF row.POST_COLOR and not row.S_REPORTED and not row.S_UNAPPROVED and not row.S_DELETED -->style="background-color: {row.POST_COLOR}"<!-- ENDIF -->>
+						<div class="inner"><span class="corners-top"><span></span></span>
+
+						<div class="postbody" style="width: 100%;">
+							<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
+								<p class="rules">
+									<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
+									<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_REPORTED_SHORT}</strong></a><!-- ENDIF -->
+								</p>
+							<!-- ENDIF -->
+
+							<dl>
+								<dt>
+									<strong><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
+									<div class="content" style="width: 95%; padding: 4px;">
+										{row.BLOG_MESSAGE}
+									</div>
+								</dt>
+							</dl>
+						</div>
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+				<!-- BEGINELSE -->
+					<div class="post bg1" style="text-align: center; margin: 5px;">
+						<span class="corners-top"><span></span></span>
+							<strong>{L_NO_BLOGS}</strong>
+						<span class="corners-bottom"><span></span></span>
+					</div>	
+				<!-- END row -->
+			</td>
+		<!-- END column -->
+	</tr>
+</table>
+
+<!-- IF S_DISPLAY_ONLINE_LIST -->
+	<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
+	<p>{LOGGED_IN_USER_LIST}</p>
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->

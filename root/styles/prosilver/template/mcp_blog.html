@@ -1,0 +1,147 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- IF U_BLOG_MCP -->
+	<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
+	<br/>
+<!-- ELSE -->
+<br /><br />
+<!-- ENDIF -->
+
+<table style="width: 100%">
+	<tr>
+		<td style="width: 50%; vertical-align: top;">
+			<div class="post bg3" style="text-align: center;">
+				<span class="corners-top"><span></span></span>
+					<strong>{L_REPORTED_BLOGS}</strong>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+			<!-- BEGIN blog_reportedrow -->
+			<div class="post bg1" style="margin: 5px;">
+				<div class="inner">
+					<span class="corners-top"><span></span></span>
+					<div class="postbody" style="width: 100%;">
+						<dl>
+							<dt>
+								<strong><a href="{blog_reportedrow.U_VIEW}">{blog_reportedrow.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{blog_reportedrow.USER_FULL}</strong><br/>
+								<div class="content" style="width: 95%; padding: 4px;">
+									{blog_reportedrow.BLOG_MESSAGE}
+								</div>
+							</dt>
+						</dl>
+					</div>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+			</div>
+			<!-- BEGINELSE -->
+				<div class="post bg1" style="text-align: center; margin: 5px;">
+					<span class="corners-top"><span></span></span>
+						<strong>{L_NO_BLOGS}</strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>	
+			<!-- END blog_reportedrow -->
+		</td>
+		<td style="width: 50%; vertical-align: top;">
+			<div class="post bg3" style="text-align: center;">
+				<span class="corners-top"><span></span></span>
+					<strong>{L_DISAPPROVED_BLOGS}</strong>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+			<!-- BEGIN blog_disapprovedrow -->
+			<div class="post bg1" style="margin: 5px;">
+				<div class="inner">
+					<span class="corners-top"><span></span></span>
+					<div class="postbody" style="width: 100%;">
+						<dl>
+							<dt>
+								<strong><a href="{blog_disapprovedrow.U_VIEW}">{blog_disapprovedrow.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{blog_disapprovedrow.USER_FULL}</strong><br/>
+								<div class="content" style="width: 95%; padding: 4px;">
+									{blog_disapprovedrow.BLOG_MESSAGE}
+								</div>
+							</dt>
+						</dl>
+					</div>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+			</div>
+			<!-- BEGINELSE -->
+				<div class="post bg1" style="text-align: center; margin: 5px;">
+					<span class="corners-top"><span></span></span>
+						<strong>{L_NO_BLOGS}</strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>	
+			<!-- END blog_disapprovedrow -->
+			<br/>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 50%; vertical-align: top;">
+			<div class="post bg3" style="text-align: center;">
+				<span class="corners-top"><span></span></span>
+					<strong>{L_REPORTED_REPLIES}</strong>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+			<!-- BEGIN reply_reportedrow -->
+			<div class="post bg1" style="margin: 5px;">
+				<div class="inner">
+					<span class="corners-top"><span></span></span>
+					<div class="postbody" style="width: 100%;">
+						<dl>
+							<dt>
+								<strong><a href="{reply_reportedrow.U_VIEW}">{reply_reportedrow.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{reply_reportedrow.USER_FULL}</strong><br/>
+								<div class="content" style="width: 95%; padding: 4px;">
+									{reply_reportedrow.REPLY_MESSAGE}
+								</div>
+							</dt>
+						</dl>
+					</div>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+			</div>
+			<!-- BEGINELSE -->
+				<div class="post bg1" style="text-align: center; margin: 5px;">
+					<span class="corners-top"><span></span></span>
+						<strong>{L_NO_REPLIES}</strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>	
+			<!-- END reply_reportedrow -->
+		</td>
+		<td style="width: 50%; vertical-align: top;">
+			<div class="post bg3" style="text-align: center;">
+				<span class="corners-top"><span></span></span>
+					<strong>{L_DISAPPROVED_REPLIES}</strong>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+			<!-- BEGIN reply_disapprovedrow -->
+			<div class="post bg1" style="margin: 5px;">
+				<div class="inner">
+					<span class="corners-top"><span></span></span>
+					<div class="postbody" style="width: 100%;">
+						<dl>
+							<dt>
+								<strong><a href="{reply_disapprovedrow.U_VIEW}">{reply_disapprovedrow.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{reply_disapprovedrow.USER_FULL}</strong><br/>
+								<div class="content" style="width: 95%; padding: 4px;">
+									{reply_disapprovedrow.REPLY_MESSAGE}
+								</div>
+							</dt>
+						</dl>
+					</div>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+			</div>
+			<!-- BEGINELSE -->
+				<div class="post bg1" style="text-align: center; margin: 5px;">
+					<span class="corners-top"><span></span></span>
+						<strong>{L_NO_REPLIES}</strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>	
+			<!-- END reply_disapprovedrow -->
+		</td>
+	</tr>
+</table>		
+
+<!-- IF S_DISPLAY_ONLINE_LIST -->
+	<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
+	<p>{LOGGED_IN_USER_LIST}</p>
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->
