@@ -36,7 +36,6 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		return true;
 	}
 
-	$is_auth = false;
 	$founder = false;
 
 	switch ($page)
@@ -65,8 +64,6 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 				case 'approve' :
 					$is_auth = ($auth->acl_get('m_blogapprove')) ? true : false;
 					break;
-				case 'no_approve' :
-					$is_auth = ($auth->acl_get('u_blognoapprove')) ? true : false;
 			}
 			break;
 		case 'reply' :
@@ -94,8 +91,6 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 				case 'approve' :
 					$is_auth = ($auth->acl_get('m_blogreplyapprove')) ? true : false;
 					break;
-				case 'no_approve' :
-					$is_auth = ($auth->acl_get('u_blogreplynoapprove')) ? true : false;
 			}
 			break;
 		case 'mcp' :
@@ -111,8 +106,15 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 			break;
 	}
 
-	// if they do not have viewing permissions they should not be able to do anything.
-	$is_auth = (!$auth->acl_get('u_blogview')) ? false : $is_auth;
+	// if $is_auth hasn't been set yet they are just viewing a blog/user/etc, if it has been set also check to make sure they can view blogs
+	if (!isset($is_auth))
+	{
+		$is_auth = ($auth->acl_get('u_blogview')) ? true : false;
+	}
+	else
+	{
+		$is_auth = (!$auth->acl_get('u_blogview')) ? false : $is_auth;
+	}
 
 	if (!$return)
 	{

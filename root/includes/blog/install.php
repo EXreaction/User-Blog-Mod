@@ -18,7 +18,7 @@ if (isset($config['user_blog_version']))
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
 }
 
-if (!defined('BLOGS_TABLE'))
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE'))
 {
 	trigger_error('INSTALL_IN_FILES_FIRST');
 }
@@ -47,7 +47,7 @@ if (confirm_box(true))
 				bbcode_bitfield varbinary(255) DEFAULT '' NOT NULL,
 				bbcode_uid varbinary(5) DEFAULT '' NOT NULL,
 				blog_edit_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				blog_edit_reason text NOT NULL,
+				blog_edit_reason blob NOT NULL,
 				blog_edit_user mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 				blog_edit_count smallint(4) UNSIGNED DEFAULT '0' NOT NULL,
 				blog_edit_locked tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
@@ -80,7 +80,7 @@ if (confirm_box(true))
 				bbcode_bitfield varbinary(255) DEFAULT '' NOT NULL,
 				bbcode_uid varbinary(5) DEFAULT '' NOT NULL,
 				reply_edit_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				reply_edit_reason text NOT NULL,
+				reply_edit_reason blob NOT NULL,
 				reply_edit_user mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 				reply_edit_count smallint(4) UNSIGNED DEFAULT '0' NOT NULL,
 				reply_edit_locked tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
@@ -99,8 +99,7 @@ if (confirm_box(true))
 				sub_type tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 				user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				PRIMARY KEY (sub_user_id),
-				KEY sub_type (sub_type)
+				PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id),
 			);";
 
 			$sql_array[] = 'ALTER TABLE ' . USERS_TABLE . " ADD blog_count MEDIUMINT(8) NOT NULL DEFAULT '0'";
@@ -213,6 +212,7 @@ if (confirm_box(true))
 	set_config('user_blog_always_show_blog_url', 0, 0);
 	set_config('user_blog_founder_all_perm', 1, 0);
 	set_config('user_blog_force_prosilver', 0, 0);
+	set_config('user_blog_subscription_enabled', 1, 0);
 
 	set_config('user_blog_version', $user_blog_version, 0);
 

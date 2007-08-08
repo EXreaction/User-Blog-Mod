@@ -157,6 +157,7 @@ else // user submitted and there are no errors
 		'enable_magic_url'		=> $post_options->enable_magic_url,
 		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
+		'reply_edit_reason'		=> '',
 	);
 
 	$sql = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
@@ -171,10 +172,12 @@ else // user submitted and there are no errors
 	generate_blog_urls();
 
 	// update the reply count for the blog
-	if (check_blog_permissions('reply', 'no_approve', true))
+	if ($auth->acl_get('u_blogreplynoapprove') || $user_founder)
 	{
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
+
+		handle_subscription(censor_text($reply_subject), $user_id, $blog_id, $reply_id);
 	}
 	else
 	{

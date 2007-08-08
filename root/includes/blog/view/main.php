@@ -32,7 +32,8 @@ $random_blog_ids = ($random || $all) ? $blog_data->get_blog_data('random', 0, ar
 $recent_blog_ids = ($recent || $all) ? $blog_data->get_blog_data('recent', 0, array('limit' => $limit)) : false;
 
 // Popular blogs
-$popular_blog_ids = ($popular || $all) ? $blog_data->get_blog_data('popular', 0, array('limit' => $limit)) : false;
+$popular_blog_ids =($popular || $all) ? $blog_data->get_blog_data('popular', 0, array('limit' => $limit)) : false;
+
 
 $blog_data->get_user_data(false, true);
 $blog_data->update_edit_delete('blog');

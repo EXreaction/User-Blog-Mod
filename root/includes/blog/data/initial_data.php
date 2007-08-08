@@ -18,7 +18,8 @@ $error = $blog_urls = array();
 $blog_data = new blog_data();
 $bbcode = new bbcode();
 $cp = new custom_profile();
-$s_hidden_fields = '';
+$s_hidden_fields = $subscribed_title = '';
+$subscribed = false;
 
 // get some initial data
 $submit = (isset($_POST['post'])) ? true : false;
@@ -30,7 +31,7 @@ $cancel = (isset($_POST['cancel'])) ? true : false;
 // get some more initial data
 $page = request_var('page', '');
 $mode = request_var('mode', '');
-$user_id = intval(request_var('u', 0));
+$user_id = ($page == 'blog') ? $user->data['user_id'] : intval(request_var('u', 0));
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
 $feed = request_var('feed', '');
@@ -86,12 +87,41 @@ if ($blog_id != 0)
 	}
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];
+
+	if ($config['user_blog_subscription_enabled'])
+	{
+		// find out if they are subscribed to this blog's replies
+		$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
+				AND blog_id = \'' . $blog_id . '\'';
+		$result = $db->sql_query($sql);
+		$sub_total = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+		$subscribed = ($sub_total['total'] != 0) ? true : false;
+		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
+	}
 }
 
 // add the user_id to the queue
 if ($user_id != 0)
 {
 	array_push($blog_data->user_queue, $user_id);
+
+	// find out if they are subscribed to this user's blogs
+	if ($blog_id == 0 && $config['user_blog_subscription_enabled'])
+	{
+		// find out if they are subscribed to this blog's replies
+		$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
+				AND user_id = \'' . $user_id . '\'';
+		$result = $db->sql_query($sql);
+		$sub_total = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+		$subscribed = ($sub_total['total'] != 0) ? true : false;
+		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
+		$db->sql_freeresult($result);
+		unset($rowset);
+	}
 }
 
 // get the user data for what we have and update the edit and delete info
@@ -99,7 +129,7 @@ $blog_data->get_user_data(false, true);
 $blog_data->update_edit_delete();
 
 // now that we got the user data, let us set another variable to shorten things up later
-$username = ($user_id) ? $blog_data->user[$user_id]['username'] : ($page == 'blog') ? $user->data['username'] : '';
+$username = ($user_id != 0) ? $blog_data->user[$user_id]['username'] : '';
 
 // generate the blog urls
 generate_blog_urls();
@@ -122,6 +152,9 @@ $template->assign_vars(array(
 
 	'S_POST_ACTION'			=> $blog_urls['self'],
 	'S_PRINT_MODE'			=> $print,
+	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
+	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : $blog_urls['subscribe'],
+	'S_WATCHING_FORUM'		=> $subscribed,
 
 	'ADD_BLOG_IMG'			=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/' . $user->data['user_lang'] . '/button_blog_new.gif',
 	'AIM_IMG'				=> $user->img('icon_contact_aim', 'AIM'),

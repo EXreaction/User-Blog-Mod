@@ -18,39 +18,139 @@ if (!defined('IN_PHPBB'))
  *
  * Sends a PM or Email to each user in the subscription list, depending on what they want
  *
- * @param int|bool $blog_id The blog_id of the new blog (if there is one)
+ * @param string $post_subject The subject of the post made
+ * @param int|bool $blog_id The user_id of the user who made the new blog (if there is one)
+ * @param int|bool $blog_id The blog_id of the blog
  * @param int|bool $reply_id The reply_id of the new reply (if there is one)
- *
- * @todo Build the entire function. :P
  */
-function handle_subscription($blog_id, $reply_id = false)
+function handle_subscription($post_subject, $user_id, $blog_id, $reply_id = false)
 {
-	global $db, $blog_data;
+	global $db, $user, $phpbb_root_path, $phpEx, $blog_data, $config;
 
-	// make sure to check to see if they are authorized to recieve the notice
-}
+	if (!$config['user_blog_subscription_enabled'])
+	{
+		return;
+	}
 
-/**
- * Adds a subscription to a blog or user
- *
- * @param int $subscribe_user_id The user_id of the user who we want to add the subscription for
- * @param int $mode The type of subscription (0 is Private Message, 1 is Email)
- * @param int|bool $blog_id The user_id of the user we want to subscribe to (if we want to subscribe to a user_id)
- * @param int|bool $reply_id The blog_id of the user we want to subscribe to (if we want to subscribe to a blog_id)
- */
-function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
-{
-	global $db;
+	$send_via_pm = array();
+	$send_via_email = array();
 
-	$sql_data = array(
-		'sub_user_id'	=> $subscribe_user_id,
-		'sub_type'		=> $mode,
-		'blog_id'		=> $blog_id,
-		'user_id'		=> $user_id,
-	);
+	if ($reply_id !== false)
+	{
+		$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+			WHERE blog_id = \'' . $blog_id . '\'';
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			switch ($row['sub_type'])
+			{
+				case 0 :
+					$send_via_pm[] = $row['sub_user_id'];
+					break;
+				case 1 :
+					$send_via_email[] = $row['sub_user_id'];
+					break;
+				case 2 :
+					$send_via_pm[] = $row['sub_user_id'];
+					$send_via_email[] = $row['sub_user_id'];
+			}
+		}
 
-	$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
-	$db->sql_query($sql);
+		$message = sprintf($user->lang['BLOG_SUBSCRIPTION_NOTICE'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "b=$blog_id"), true), $user->data['username'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "page=unsubscribe&amp;b=$blog_id"), true));
+	}
+	else if ($user_id !== false)
+	{
+		$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+			WHERE user_id = \'' . $user_id . '\'';
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			switch ($row['sub_type'])
+			{
+				case 0 :
+					$send_via_pm[] = $row['sub_user_id'];
+					break;
+				case 1 :
+					$send_via_email[] = $row['sub_user_id'];
+					break;
+				case 2 :
+					$send_via_pm[] = $row['sub_user_id'];
+					$send_via_email[] = $row['sub_user_id'];
+			}
+		}
+
+		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "b=$blog_id"), true), redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "page=unsubscribe&amp;u=$user_id"), true));
+	}
+
+	$blog_data->get_user_data('2');
+
+	if (count($send_via_pm) > 0)
+	{
+		// include the private messages functions page
+		include_once("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
+
+		$message_parser = new parse_message();
+		$message_parser->message = $message;
+		$message_parser->parse(true, true, true, true, true, true, true);
+
+		// setup out to address list
+		foreach ($send_via_pm as $id)
+		{
+			$address_list[$id] = 'to';
+		}
+
+		$pm_data = array(
+			'from_user_id'		=> 2,
+			'from_username'		=> $blog_data->user[2]['username'],
+			'address_list'		=> array('u' => $address_list),
+			'icon_id'			=> 10,
+			'from_user_ip'		=> '0.0.0.0',
+			'enable_bbcode'		=> true,
+			'enable_smilies'	=> true,
+			'enable_urls'		=> true,
+			'enable_sig'		=> false,
+			'message'			=> $message_parser->message,
+			'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
+			'bbcode_uid'		=> $message_parser->bbcode_uid,
+		);
+
+		submit_pm('post', $user->lang['SUBSCRIPTION_NOTICE'], $pm_data, false);
+	}
+
+	if (count($send_via_email) > 0 && $config['email_enable'])
+	{
+		// include the messenger functions file
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		$messenger = new messenger(false);
+
+		$blog_data->get_user_data($send_via_email);
+		$reply_url_var = ($reply_id !== false) ? "r={$reply_id}#r{$reply_id}" : '';
+
+		foreach ($send_via_email as $uid)
+		{
+			$messenger->template('blog_notify', $config['default_lang']);
+			$messenger->replyto($config['board_contact']);
+			$messenger->to($blog_data->user[$uid]['user_email'], $blog_data->user[$uid]['username']);
+
+			$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
+			$messenger->headers('X-AntiAbuse: User_id - ' . $blog_data->user[2]['user_id']);
+			$messenger->headers('X-AntiAbuse: Username - ' . $blog_data->user[2]['username']);
+			$messenger->headers('X-AntiAbuse: User IP - ' . $blog_data->user[2]['user_ip']);
+
+			$messenger->assign_vars(array(
+				'BOARD_CONTACT'	=> $config['board_contact'],
+				'SUBJECT'		=> $user->lang['SUBSCRIPTION_NOTICE'],
+				'TO_USERNAME'	=> $blog_data->user[$uid]['username'],
+				'TYPE'			=> ($reply_id !== false) ? $user->lang['REPLY'] : $user->lang['BLOG'],
+				'NAME'			=> $post_subject,
+				'BY_USERNAME'	=> $user->data['username'],
+				'U_VIEW'		=> redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$user_id}&amp;b={$blog_id}" . $reply_url_var), true),
+				'U_UNSUBSCRIBE'	=> ($reply_id !== false) ? redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$user_id}&amp;b={$blog_id}"), true) : redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$user_id}")),
+			));
+
+			$messenger->send(NOTIFY_EMAIL);
+		}
+	}
 }
 
 /**
@@ -64,7 +164,7 @@ function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
  */
 function handle_captcha($mode)
 {
-	global $auth, $db, $template, $phpbb_root_path, $phpEx, $user, $s_hidden_fields, $user_founder;
+	global $auth, $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields, $user_founder;
 
 	// check if they need to have the captcha displayed at all.  If they don't just return.
 	if ($auth->acl_get('u_blognocaptcha') || $user_founder)
@@ -253,19 +353,10 @@ function feed_output($blog_ids, $feed_type)
 function inform_approve_report($mode, $id)
 {
 	global $phpbb_root_path, $phpEx, $config, $user;
-
-	// include the private messages functions page
-	include_once("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
-
-	// this will hold the address list
-	$address_list = array();
-
-	$blog_inform = explode(",", $config['user_blog_inform']);
-
-	// setup out to address list
-	foreach ($blog_inform as $id)
+	
+	if ($config['user_blog_inform'] == '')
 	{
-		$address_list[$id] = 'to';
+		return;
 	}
 
 	switch ($mode)
@@ -287,16 +378,27 @@ function inform_approve_report($mode, $id)
 			$subject = $user->lang['REPLY_APPROVE_PM_SUBJECT'];
 	}
 
+	$to = explode(",", $config['user_blog_inform']);
+
+	// include the private messages functions page
+	include_once("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
+
 	$message_parser = new parse_message();
 	$message_parser->message = $message;
 	$message_parser->parse(true, true, true, true, true, true, true);
 
+	// setup out to address list
+	foreach ($to as $id)
+	{
+		$address_list[$id] = 'to';
+	}
+
 	$pm_data = array(
-		'from_user_id'		=> $user->data['user_id'],
-		'from_username'		=> $user->data['username'],
+		'from_user_id'		=> 2,
+		'from_username'		=> $blog_data->user[2]['username'],
 		'address_list'		=> array('u' => $address_list),
 		'icon_id'			=> 10,
-		'from_user_ip'		=> $user->data['user_ip'],
+		'from_user_ip'		=> '0.0.0.0',
 		'enable_bbcode'		=> true,
 		'enable_smilies'	=> true,
 		'enable_urls'		=> true,
@@ -434,7 +536,7 @@ function generate_menu($user_id)
 function generate_blog_urls()
 {
 	global $blog_urls, $blog_id, $reply_id, $user_id, $user;
-	global $phpbb_root_path, $phpEx;
+	global $phpbb_root_path, $phpEx, $config;
 
 	$self = $_SERVER['REQUEST_URI'];
 
@@ -443,6 +545,8 @@ function generate_blog_urls()
 		'self'				=> reapply_sid($self),
 		'self_print'		=> reapply_sid($self . '&amp;view=print'),
 		'self_minus_start'	=> (strpos($self, 'start=')) ? reapply_sid(substr($self, 0, (strpos($self, 'start=')) - 1) . substr($self, (strpos($self, 'start=')) + 8)) : reapply_sid($self),
+		'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=subscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
+		'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=unsubscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
 
 		'add_blog'			=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=blog&amp;mode=add'),
 		'add_reply'			=> ($blog_id) ? append_sid("{$phpbb_root_path}blog.$phpEx", 'page=reply&amp;mode=add&amp;b=' . $blog_id) : '',

@@ -10,7 +10,10 @@
 	<fieldset class="submit-buttons">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="post" value="{L_PRIVATE_MESSAGE}" class="button2" />&nbsp; &nbsp; 
-		<input type="submit" name="post" value="{L_EMAIL}" class="button2" />&nbsp; &nbsp; 
+		<!-- IF S_EMAIL_ENABLED -->
+			<input type="submit" name="post" value="{L_EMAIL}" class="button2" />&nbsp; &nbsp; 
+			<input type="submit" name="post" value="{L_PM_AND_EMAIL}" class="button2" />&nbsp; &nbsp; 
+		<!-- ENDIF -->
 		<input type="submit" name="post" value="{L_CANCEL}" class="button2" />
 	</fieldset>
 

@@ -52,7 +52,7 @@ class blog_data
 
 		// Setup some variables...
 		$blog_ids = array(); // this is what get's returned
-		$view_unapproved_sql = (check_blog_permissions('blog', 'approve', true)) ? '' : ' AND blog_approved = \'1\'';
+		$view_unapproved_sql = (check_blog_permissions('blog', 'approve', true)) ? '' : ' AND ( blog_approved = \'1\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		$sort_days_sql = ($sort_days != 0) ? ' AND blog_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
 		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
 		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
@@ -67,7 +67,7 @@ class blog_data
 		}
 		else
 		{
-			$view_deleted_sql = ' AND blog_deleted = \'0\'';
+			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		}
 
 		// make sure $id is an array for consistency
@@ -139,10 +139,10 @@ class blog_data
 
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
 						WHERE ' . $db->sql_in_set('blog_id', $blogs_to_query) .
-							$view_unapproved_sql .
-								$sort_days_sql .
-									$order_by_sql .
-										$limit_sql;
+							$view_deleted_sql .
+								$view_unapproved_sql .
+									$sort_days_sql .
+										$order_by_sql;
 				break;
 			case 'recent' : // select recent blogs
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE .
@@ -353,7 +353,7 @@ class blog_data
 			'S_DELETED'			=> ($blog['blog_deleted'] != 0) ? true : false,
 			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport') || $user_founder)) ? true : false,
 			'S_SHORTENED'		=> $shortened,
-			'S_UNAPPROVED'		=> ($blog['blog_approved'] == 0 && ($auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
+			'S_UNAPPROVED'		=> ($blog['blog_approved'] == 0 && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
 		);
 
 		return $blog_row;
@@ -568,7 +568,7 @@ class blog_data
 			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
 			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=approve&amp;r=$id") : '',
 
-			'S_DELETED'			=> ($blog['reply_deleted'] != 0) ? true : false,
+			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
 			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,
 			'S_REPORTED'		=> ($reply['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder)) ? true : false,
 
@@ -812,9 +812,9 @@ class blog_data
 		if (utf8_strlen($text) > $str_limit)
 		{
 			// make sure we don't cut off any words, etc
-			while ( (substr($text, $str_limit, 1) != ' ') && (substr($text, $str_limit, 1) != "\n") )
+			while (substr($text, $str_limit, 1) != ' ' && substr($text, $str_limit, 1) != "\n" && $str_limit < strlen($text))
 			{
-				$str_limit+=1;
+				$str_limit+=2;
 			}
 
 			// now trim the text

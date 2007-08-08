@@ -27,6 +27,11 @@ if (!isset($config['user_blog_version']))
 	trigger_error('Either you do not have the User Blog Mod installed in your database, or you are running a very old version.<br/>If you have the mod installed already please delete the tables and information which was inserted by the version you used and reinstall the mod.');
 }
 
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE'))
+{
+	trigger_error('UPDATE_IN_FILES_FIRST');
+}
+
 if ($user_blog_version == $config['user_blog_version'])
 {
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
@@ -34,7 +39,7 @@ if ($user_blog_version == $config['user_blog_version'])
 
 if (strpos($user_blog_version, 'dev'))
 {
-	trigger_error('Automatic Updating is disabled for Dev versions.');
+	//trigger_error('Automatic Updating is disabled for Dev versions.');
 }
 
 if (confirm_box(true))
@@ -100,6 +105,11 @@ if (confirm_box(true))
 			set_config('user_blog_founder_all_perm', 1, 0);
 		case 'A11' :
 			set_config('user_blog_force_prosilver', 0, 0);
+			set_config('user_blog_subscription_enabled', 1, 0);
+
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_SUBSCRIPTION_TABLE . ' DROP PRIMARY KEY ,
+				ADD PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)';
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_SUBSCRIPTION_TABLE . ' DROP INDEX sub_type';
 	}
 
 	if (count($sql_array))

@@ -171,6 +171,7 @@ else // user submitted and there are no errors
 		'enable_magic_url'			=> $post_options->enable_magic_url,
 		'bbcode_bitfield'			=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'				=> $message_parser->bbcode_uid,
+		'blog_edit_reason'			=> '',
 	);
 
 	// insert query
@@ -187,16 +188,17 @@ else // user submitted and there are no errors
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();
 
-	if (!check_blog_permissions('blog', 'no_approve', true))
-	{
-		// inform those wanted that the blog needs approval
-		inform_approve_report('blog_approve', $blog_id);
-	}
-	else
+	if ($auth->acl_get('u_blognoapprove') || $user_founder)
 	{
 		// Update the blog_count for the user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user->data['user_id'] . '\'';
 		$db->sql_query($sql);
+
+		handle_subscription(censor_text($blog_subject), $user_id, $blog_id);
+	}
+	else
+	{
+		inform_approve_report('blog_approve', $blog_id);
 	}
 
 	$message = (!check_blog_permissions('blog', 'no_approve', true)) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
@@ -204,7 +206,6 @@ else // user submitted and there are no errors
 
 	$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 
-	// redirect
 	meta_refresh(3, $blog_urls['view_blog']);
 
 	trigger_error($message);

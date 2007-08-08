@@ -11,13 +11,11 @@
 * TODO List
 *
 * PRIORITY -------------------------------
-* add section so it is possible to remove subscriptions in subscribe.php
 * option to enable/disable feeds
 * Resetup the MCP page to have URLS/etc like the Main page
 *
 * Finish RSS/ATOM/Javascript Output Feed & icons
 *
-* Add option to subscribe to blogs/users
 * follow friend/foe rules to automatically hide or show the replies with the javascript open/close button used for deleted replies
 * give option to control users who reply to blogs - all - friends - none
 * Attachments
@@ -28,6 +26,9 @@
 * add in a section for gallery display - make gallery.php hold the main code for it so it can be replaced with the core code later by the user (by just uploading 1 file to install the add on).  All the other code needs to be in place and call the gallery.php file to check.
 * Integrate with search - make as an add-on - to enable have one of the instructions for the add-on to be editing a config file in the includes/blog directory
 * SEO Url's make as an add-on
+*
+* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
+* Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
 * OTHER ---------------------------------
 * Comments - update function and class comments to the better style, like used in functions.php
@@ -53,7 +54,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A12_dev';
+$user_blog_version = 'A12';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -135,6 +136,7 @@ switch ($page)
 		include($phpbb_root_path . 'includes/blog/view/mcp.' . $phpEx);
 		break;
 	case 'subscribe' : // subscribe to users/blogs
+	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
