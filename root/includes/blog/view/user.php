@@ -33,8 +33,8 @@ else
 	$blog_ids = $blog_data->get_blog_data('user', $user_id, array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 }
 
-$blog_data->get_user_data(false, true);
-$blog_data->update_edit_delete('blog');
+$user_data->get_user_data(false, true);
+update_edit_delete('blog');
 
 if (!$feed)
 {
@@ -45,12 +45,12 @@ if (!$feed)
 	if ($mode == 'deleted')
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], $blog_data->user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], $user_data->user[$user_id]['username']));
 	}
 	else
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_BLOGS'], $blog_data->user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_BLOGS'], $user_data->user[$user_id]['username']));
 	}
 
 	// Output some data

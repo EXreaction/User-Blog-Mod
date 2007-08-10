@@ -188,20 +188,22 @@ else // user submitted and there are no errors
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();
 
+	handle_blog_cache('new_blog', $user->data['user_id']);
+
 	if ($auth->acl_get('u_blognoapprove') || $user_founder)
 	{
+		handle_subscription('new_blog', censor_text($blog_subject));
+
 		// Update the blog_count for the user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user->data['user_id'] . '\'';
 		$db->sql_query($sql);
-
-		handle_subscription(censor_text($blog_subject), $user_id, $blog_id);
 	}
 	else
 	{
 		inform_approve_report('blog_approve', $blog_id);
 	}
 
-	$message = (!check_blog_permissions('blog', 'no_approve', true)) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = (!$auth->acl_get('u_blognoapprove') && !$user_founder) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
 
 	$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');

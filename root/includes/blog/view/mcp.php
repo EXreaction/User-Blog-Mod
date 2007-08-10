@@ -26,13 +26,13 @@ $reported_blog_ids = $blog_data->get_blog_data('reported');
 $disapproved_blog_ids = $blog_data->get_blog_data('disapproved');
 
 // Reported Replies
-$reported_reply_ids = $blog_data->get_reply_data('reported');
+$reported_reply_ids = $reply_data->get_reply_data('reported');
 
 // Non-Approved Replies
-$disapproved_reply_ids = $blog_data->get_reply_data('disapproved');
+$disapproved_reply_ids = $reply_data->get_reply_data('disapproved');
 
-$blog_data->get_user_data(false, true);
-$blog_data->update_edit_delete();
+$user_data->get_user_data(false, true);
+update_edit_delete();
 
 // Output the reported blogs
 if ($reported_blog_ids !== false)
@@ -51,7 +51,7 @@ if ($disapproved_blog_ids !== false)
 {
 	foreach ($disapproved_blog_ids as $id)
 	{
-		$user_row = $blog_data->handle_user_data($blog_data->blog[$id]['user_id']);
+		$user_row = $user_data->handle_user_data($blog_data->blog[$id]['user_id']);
 		$blog_row = $blog_data->handle_blog_data($id, 50, 'disapproved_blogs');
 
 		$template->assign_block_vars('blog_disapprovedrow', $user_row + $blog_row);
@@ -63,7 +63,7 @@ if ($reported_reply_ids !== false)
 {
 	foreach ($reported_reply_ids as $id)
 	{
-		$user_row = $blog_data->handle_user_data($blog_data->reply[$id]['user_id']);
+		$user_row = $user_data->handle_user_data($reply_data->reply[$id]['user_id']);
 		$reply_row = $blog_data->handle_reply_data($id, 50, 'reported_replies');
 
 		$template->assign_block_vars('reply_reportedrow', $user_row + $reply_row);
@@ -75,7 +75,7 @@ if ($disapproved_reply_ids !== false)
 {
 	foreach ($disapproved_reply_ids as $id)
 	{
-		$user_row = $blog_data->handle_user_data($blog_data->reply[$id]['user_id']);
+		$user_row = $user_data->handle_user_data($reply_data->reply[$id]['user_id']);
 		$reply_row = $blog_data->handle_reply_data($id, 50, 'disapproved_replies');
 
 		$template->assign_block_vars('reply_disapprovedrow', $user_row + $reply_row);

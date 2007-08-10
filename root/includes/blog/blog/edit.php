@@ -173,40 +173,37 @@ else // user submitted and there are no errors
 	// we no longer need the message parser
 	unset($message_parser);
 
-	// the confirm message & redirect
 	if ( (isset($_POST['delete'])) && $can_delete )
 	{
-		$message = $user->lang['BLOG_DELETED'] . '<br/><br/>';
+		handle_blog_cache('delete_blog', $user_id);
 
-		// if the user editing is not the user that wrote it in the first place, show them a return blog main link with the owner's name in it
+		$message = $user->lang['BLOG_DELETED'] . '<br/><br/>';
 		if ($user->data['user_id'] == $user_id)
 		{
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>');
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>');
 		}
 
-		// redirect
 		meta_refresh(3, $blog_urls['view_user']);
 	}
 	else
 	{
+		handle_blog_cache('approve_blog', $user_id);
+
 		$message = (!$auth->acl_get('u_blognoapprove') && !$user_founder) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
-
-		// if the user editing is not the user that wrote it in the first place, show them a return blog main link with the owner's name in it
 		if ($user->data['user_id'] == $user_id)
 		{
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>');
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>');
 		}
 
-		// redirect
 		meta_refresh(3, $blog_urls['view_blog']);
 	}
 

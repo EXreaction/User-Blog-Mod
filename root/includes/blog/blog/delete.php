@@ -66,6 +66,8 @@ if (confirm_box(true))
 		$db->sql_query($sql);
 	}
 
+	handle_blog_cache('delete_blog', $user_id);
+
 	meta_refresh(3, $blog_urls['view_user']);
 
 	$message = $user->lang['BLOG_DELETED'];

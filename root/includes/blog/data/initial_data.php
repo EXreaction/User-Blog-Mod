@@ -16,6 +16,8 @@ if (!defined('IN_PHPBB'))
 // set some initial variables that we will use
 $error = $blog_urls = array();
 $blog_data = new blog_data();
+$reply_data = new reply_data();
+$user_data = new user_data();
 $bbcode = new bbcode();
 $cp = new custom_profile();
 $s_hidden_fields = $subscribed_title = '';
@@ -31,7 +33,7 @@ $cancel = (isset($_POST['cancel'])) ? true : false;
 // get some more initial data
 $page = request_var('page', '');
 $mode = request_var('mode', '');
-$user_id = ($page == 'blog') ? $user->data['user_id'] : intval(request_var('u', 0));
+$user_id = ($page == 'blog' && $mode == 'add') ? $user->data['user_id'] : intval(request_var('u', 0));
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
 $feed = request_var('feed', '');
@@ -69,13 +71,13 @@ else
 // get the replies data if it was requested
 if ($reply_id != 0)
 {
-	if ($blog_data->get_reply_data('reply', $reply_id) === false)
+	if ($reply_data->get_reply_data('reply', $reply_id) === false)
 	{
 		trigger_error('NO_REPLY');
 	}
 
-	$reply_user_id = $blog_data->reply[$reply_id]['user_id'];
-	$blog_id = $blog_data->reply[$reply_id]['blog_id'];
+	$reply_user_id = $reply_data->reply[$reply_id]['user_id'];
+	$blog_id = $reply_data->reply[$reply_id]['blog_id'];
 }
 
 // get the blog's data if it was requested
@@ -88,48 +90,35 @@ if ($blog_id != 0)
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];
 
-	if ($config['user_blog_subscription_enabled'])
-	{
-		// find out if they are subscribed to this blog's replies
-		$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-				AND blog_id = \'' . $blog_id . '\'';
-		$result = $db->sql_query($sql);
-		$sub_total = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$subscribed = ($sub_total['total'] != 0) ? true : false;
-		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
-	}
+	$subscribed = get_subscription_info($blog_id);
+	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
 }
 
 // add the user_id to the queue
 if ($user_id != 0)
 {
-	array_push($blog_data->user_queue, $user_id);
+	array_push($user_data->user_queue, $user_id);
 
 	// find out if they are subscribed to this user's blogs
-	if ($blog_id == 0 && $config['user_blog_subscription_enabled'])
+	if ($blog_id == 0)
 	{
-		// find out if they are subscribed to this blog's replies
-		$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-				AND user_id = \'' . $user_id . '\'';
-		$result = $db->sql_query($sql);
-		$sub_total = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$subscribed = ($sub_total['total'] != 0) ? true : false;
+		$subscribed = get_subscription_info(false, $user_id);
 		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
-		$db->sql_freeresult($result);
-		unset($rowset);
 	}
 }
 
 // get the user data for what we have and update the edit and delete info
-$blog_data->get_user_data(false, true);
-$blog_data->update_edit_delete();
+$user_data->get_user_data(false, true);
+update_edit_delete();
+
+// make sure they user they requested exists
+if ($user_id != 0 && !array_key_exists($user_id, $user_data->user))
+{
+	trigger_error('NO_USER');
+}
 
 // now that we got the user data, let us set another variable to shorten things up later
-$username = ($user_id != 0) ? $blog_data->user[$user_id]['username'] : '';
+$username = ($user_id != 0) ? $user_data->user[$user_id]['username'] : '';
 
 // generate the blog urls
 generate_blog_urls();

@@ -50,6 +50,14 @@ if ($blog_id != 0)
 				redirect($blog_urls['view_blog']);
 		}
 
+		handle_blog_cache('subscription', $user->data['user_id']);
+
+		$template->assign_vars(array(
+			'S_WATCH_FORUM_TITLE'	=> $user->lang['UNSUBSCRIBE_BLOG'],
+			'S_WATCH_FORUM_LINK'	=> $blog_urls['unsubscribe'],
+			'S_WATCHING_FORUM'		=> true,
+		));
+
 		$message = $user->lang['SUBSCRIPTION_ADDED'] . '<br /><br />'; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 		if ($user_id == $user->data['user_id'])
@@ -58,7 +66,7 @@ if ($blog_id != 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -96,6 +104,14 @@ else if ($user_id != 0)
 				redirect($blog_urls['view_user']);
 		}
 
+		handle_blog_cache('subscription', $user->data['user_id']);
+
+		$template->assign_vars(array(
+			'S_WATCH_FORUM_TITLE'	=> $user->lang['UNSUBSCRIBE_USER'],
+			'S_WATCH_FORUM_LINK'	=> $blog_urls['unsubscribe'],
+			'S_WATCHING_FORUM'		=> true,
+		));
+
 		$message = $user->lang['SUBSCRIPTION_ADDED'] . '<br /><br />'; 
 		if ($user_id == $user->data['user_id'])
 		{
@@ -103,7 +119,7 @@ else if ($user_id != 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 

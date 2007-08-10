@@ -26,7 +26,7 @@ $user->add_lang('viewtopic');
 generate_menu($user_id);
 
 // Generate the breadcrumbs, setup the page header, and setup some variables we will use...
-$breadcrumbs[sprintf($user->lang['USERNAMES_BLOGS'], $blog_data->user[$user_id]['username'])] = $blog_urls['view_user'];
+$breadcrumbs[sprintf($user->lang['USERNAMES_BLOGS'], $user_data->user[$user_id]['username'])] = $blog_urls['view_user'];
 
 generate_blog_breadcrumbs();
 page_header($user->lang['VIEW_BLOG'] .' - ' . $blog_data->blog[$blog_id]['blog_subject']);
@@ -43,7 +43,7 @@ $template->assign_vars(array(
 ));
 
 // Parse the blog data and output it to the template
-$template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $blog_data->handle_user_data($user_id));
+$template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $user_data->handle_user_data($user_id));
 
 // to update the read count, we are only doing this if the user is not the owner, and the user doesn't view the shortened version, and we are not viewing the deleted blogs page
 if ($user->data['user_id'] != $user_id)
@@ -52,7 +52,7 @@ if ($user->data['user_id'] != $user_id)
 	$db->sql_query($sql);
 }
 
-$total_replies = $blog_data->get_reply_data('reply_count', $blog_id);
+$total_replies = $reply_data->get_reply_data('reply_count', $blog_id);
 
 // Get the reply data if we need to
 if ($total_replies > 0)
@@ -64,9 +64,9 @@ if ($total_replies > 0)
 	$pagination = generate_pagination($blog_urls['self_minus_start'], $total_replies, $limit, $start, false);
 
 	// Get the data on all of the replies
-	$reply_ids = $blog_data->get_reply_data('blog', $blog_id, array('start' => $start, 'limit' => $limit, 'order_dir' => $order_dir, 'sort_days' => $sort_days));
-	$blog_data->get_user_data(false, true);
-	$blog_data->update_edit_delete('reply');
+	$reply_ids = $reply_data->get_reply_data('blog', $blog_id, array('start' => $start, 'limit' => $limit, 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+	$user_data->get_user_data(false, true);
+	update_edit_delete('reply');
 
 	$template->assign_vars(array(
 		'PAGINATION'			=> $pagination,
@@ -87,14 +87,14 @@ if ($total_replies > 0)
 		foreach($reply_ids as $id)
 		{
 			// handle the user and reply data
-			$user_replyrow = $blog_data->handle_user_data($blog_data->reply[$id]['user_id']);
-			$replyrow = $blog_data->handle_reply_data($id);
+			$user_replyrow = $user_data->handle_user_data($reply_data->reply[$id]['user_id']);
+			$replyrow = $reply_data->handle_reply_data($id);
 
 			// send the data to the template
 			$template->assign_block_vars('replyrow', $user_replyrow + $replyrow);
 
 			// output the custom fields
-			$blog_data->handle_user_data($blog_data->reply[$id]['user_id'], 'replyrow.custom_fields');
+			$user_data->handle_user_data($reply_data->reply[$id]['user_id'], 'replyrow.custom_fields');
 		}
 	}
 }

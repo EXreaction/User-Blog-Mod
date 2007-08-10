@@ -11,6 +11,7 @@
 * TODO List
 *
 * PRIORITY -------------------------------
+* new blogs/replies needing approval notice by Blog MCP link
 * option to enable/disable feeds
 * Resetup the MCP page to have URLS/etc like the Main page
 *
@@ -90,9 +91,12 @@ include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
 
-// Set all of the initial data
-require($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
+// We will set all of the initial data by including this file
+include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
 
 // check the permissions and see if the user can access this page
 check_blog_permissions($page, $mode, false, $blog_id, $reply_id);

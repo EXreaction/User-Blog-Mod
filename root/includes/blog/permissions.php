@@ -28,7 +28,8 @@ if (!defined('IN_PHPBB'))
  */
 function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $reply_id = 0)
 {
-	global $user, $config, $auth, $blog_data;
+	global $user, $config, $auth;
+	global $blog_data, $reply_data, $user_data;
 
 	// lets automatically give founders ALL permissions if the config settings are set that way
 	if ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm'])
@@ -74,12 +75,12 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 						$is_auth = ($auth->acl_get('u_blogreply')) ? true : false;
 					break;
 				case 'edit' :
-					$is_auth = ($user->data['user_id'] != ANONYMOUS && ( (($auth->acl_get('u_blogreplyedit')) && ($user->data['user_id'] == $blog_data->reply[$reply_id]['user_id'])) || $auth->acl_get('m_blogreplyedit'))) ? true : false;
+					$is_auth = ($user->data['user_id'] != ANONYMOUS && ( (($auth->acl_get('u_blogreplyedit')) && ($user->data['user_id'] == $reply_data->reply[$reply_id]['user_id'])) || $auth->acl_get('m_blogreplyedit'))) ? true : false;
 					break;
 				case 'delete' :
-					if ($blog_data->reply[$reply_id]['reply_deleted'] == 0 || $auth->acl_get('a_blogreplydelete'))
+					if ($reply_data->reply[$reply_id]['reply_deleted'] == 0 || $auth->acl_get('a_blogreplydelete'))
 					{
-						$is_auth = ($user->data['user_id'] != ANONYMOUS && ($auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete') || ($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == $blog_data->reply[$reply_id]['user_id']) ) ) ? true : false;
+						$is_auth = ($user->data['user_id'] != ANONYMOUS && ($auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete') || ($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) ) ) ? true : false;
 					}
 					break;
 				case 'undelete' :

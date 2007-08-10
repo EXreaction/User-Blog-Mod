@@ -28,14 +28,7 @@ generate_blog_breadcrumbs($user->lang['UNSUBSCRIBE']);
 
 if ($blog_id != 0)
 {
-	$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-		WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-			AND blog_id = \'' . $blog_id . '\'';
-	$result = $db->sql_query($sql);
-	$total = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-
-	if ($total['total'] == 0)
+	if (!$subscribed)
 	{
 		trigger_error('NOT_SUBSCRIBED_BLOG');
 	}
@@ -47,6 +40,14 @@ if ($blog_id != 0)
 				AND blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
 
+		handle_blog_cache('subscription', $user->data['user_id']);
+
+		$template->assign_vars(array(
+			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_BLOG'],
+			'S_WATCH_FORUM_LINK'	=> $blog_urls['subscribe'],
+			'S_WATCHING_FORUM'		=> false,
+		));
+
 		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />'; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 		if ($user_id == $user->data['user_id'])
@@ -55,7 +56,7 @@ if ($blog_id != 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -70,14 +71,7 @@ if ($blog_id != 0)
 }
 else if ($user_id != 0)
 {
-	$sql = 'SELECT count(sub_type) AS total FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-		WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-			AND user_id = \'' . $user_id . '\'';
-	$result = $db->sql_query($sql);
-	$total = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-
-	if ($total['total'] == 0)
+	if (!$subscribed)
 	{
 		trigger_error('NOT_SUBSCRIBED_USER');
 	}
@@ -89,6 +83,14 @@ else if ($user_id != 0)
 				AND user_id = \'' . $user_id . '\'';
 		$db->sql_query($sql);
 
+		handle_blog_cache('subscription', $user->data['user_id']);
+
+		$template->assign_vars(array(
+			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_USER'],
+			'S_WATCH_FORUM_LINK'	=> $blog_urls['subscribe'],
+			'S_WATCHING_FORUM'		=> false,
+		));
+
 		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />'; 
 		if ($user_id == $user->data['user_id'])
 		{
@@ -96,7 +98,7 @@ else if ($user_id != 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 

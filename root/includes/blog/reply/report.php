@@ -35,7 +35,7 @@ page_header($user->lang['REPORT_REPLY']);
 generate_blog_breadcrumbs($user->lang['REPORT_REPLY']);
 
 // To close the reports
-if ($blog_data->reply[$reply_id]['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder))
+if ($reply_data->reply[$reply_id]['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder))
 {
 	if (confirm_box(true))
 	{
@@ -55,7 +55,7 @@ if ($blog_data->reply[$reply_id]['reply_reported'] && ($auth->acl_get('m_blogrep
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -71,7 +71,7 @@ else
 	if (confirm_box(true))
 	{
 		// we are making it look like the user can report the reply even if it has already been reported...but if it already has reported we can skip the extra SQL query
-		if (!$blog_data->reply[$reply_id]['reply_reported'])
+		if (!$reply_data->reply[$reply_id]['reply_reported'])
 		{
 			$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
 				SET reply_reported = \'1\'
@@ -92,7 +92,7 @@ else
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 

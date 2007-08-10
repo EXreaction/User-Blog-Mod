@@ -35,7 +35,7 @@ page_header($user->lang['UNDELETE_REPLY']);
 generate_blog_breadcrumbs($user->lang['UNDELETE_REPLY']);
 
 // if someone is trying to un-delete a reply and the reply is not deleted
-if ($blog_data->reply[$reply_id]['reply_deleted'] == 0)
+if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 {
 	trigger_error('REPLY_NOT_DELETED');
 }
@@ -59,7 +59,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

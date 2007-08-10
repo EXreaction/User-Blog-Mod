@@ -76,11 +76,11 @@ else
 	{
 		if ($reply_id != 0)
 		{
-			if ($blog_data->get_reply_data(array('reply_id' => $reply_id, 'simple' => true)) !== false)
+			if ($reply_data->get_reply_data(array('reply_id' => $reply_id, 'simple' => true)) !== false)
 			{
-				$reply_subject = 'RE: ' . $blog_data->reply[$reply_id]['reply_subject'];
-				decode_message($blog_data->reply[$reply_id]['reply_text'], $blog_data->reply[$reply_id]['bbcode_uid']);
-				$reply_text = '[quote="' . $blog_data->user[$reply_user_id]['username'] . '"]' . $blog_data->reply[$reply_id]['reply_text'] . '[/quote]';;
+				$reply_subject = 'RE: ' . $reply_data->reply[$reply_id]['reply_subject'];
+				decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
+				$reply_text = '[quote="' . $user_data->user[$reply_user_id]['username'] . '"]' . $reply_data->reply[$reply_id]['reply_text'] . '[/quote]';;
 			}
 		}
 		else if ($blog_id != 0)
@@ -89,7 +89,7 @@ else
 			{
 				decode_message($blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['bbcode_uid']);
 				$reply_subject = 'RE: ' . $blog_data->blog[$blog_id]['blog_subject'];
-				$reply_text = '[quote="' . $blog_data->user[$user_id]['username'] . '"]' . $blog_data->blog[$blog_id]['blog_text'] . '[/quote]';;
+				$reply_text = '[quote="' . $user_data->user[$user_id]['username'] . '"]' . $blog_data->blog[$blog_id]['blog_text'] . '[/quote]';;
 			}
 		}
 	}
@@ -177,7 +177,7 @@ else // user submitted and there are no errors
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
 
-		handle_subscription(censor_text($reply_subject), $user_id, $blog_id, $reply_id);
+		handle_subscription('new_reply', censor_text($reply_subject));
 	}
 	else
 	{
@@ -187,7 +187,7 @@ else // user submitted and there are no errors
 		inform_approve_report('reply_approve', $reply_id);
 	}
 
-	$message = (!check_blog_permissions('reply', 'no_approve', true)) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = (!$auth->acl_get('u_blogreplynoapprove') && !$user_founder) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 	if ($user_id == $user->data['user_id'])
@@ -196,7 +196,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

@@ -51,6 +51,8 @@ if (confirm_box(true))
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user_id . '\'';
 	$db->sql_query($sql);
 
+	handle_blog_cache('delete_blog', $user_id);
+
 	meta_refresh(3, $blog_urls['view_blog']);
 
 	$message = $user->lang['BLOG_UNDELETED'] .'<br/><br/>';
@@ -61,7 +63,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

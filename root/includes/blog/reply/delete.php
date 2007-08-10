@@ -29,7 +29,7 @@ if ($cancel)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($blog_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
+if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -43,7 +43,7 @@ generate_blog_breadcrumbs($user->lang['DELETE_REPLY']);
 if (confirm_box(true))
 {
 	// if it has already been soft deleted
-	if ($blog_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
+	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
 	{
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = \'' . $reply_id . '\'';
 		$db->sql_query($sql);
@@ -52,7 +52,7 @@ if (confirm_box(true))
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
 	}
-	else if ($blog_data->reply[$reply_id]['reply_deleted'] == 0)
+	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 	{
 		// soft delete the reply
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'' . $user->data['user_id'] . ' \', reply_deleted_time = \'' . time() . '\' WHERE reply_id = \'' . $reply_id . '\'';
@@ -73,7 +73,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
@@ -82,11 +82,11 @@ if (confirm_box(true))
 else
 {
 	// if it has already been soft deleted
-	if ($blog_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
+	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_REPLY');
 	}
-	else if ($blog_data->reply[$reply_id]['reply_deleted'] == 0)
+	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 	{
 		confirm_box(false, 'DELETE_REPLY');
 	}

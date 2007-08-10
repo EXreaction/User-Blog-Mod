@@ -41,7 +41,9 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user_id . '\'';
 		$db->sql_query($sql);
 
-		handle_subscription($blog_data->blog[$blog_id]['blog_subject'], $user_id, $blog_id);
+		handle_blog_cache('approve_blog', $user_id);
+
+		handle_subscription('new_blog', censor_text($blog_data->blog[$blog_id]['blog_subject']));
 
 		meta_refresh(3, $blog_urls['view_blog']);
 
@@ -53,7 +55,7 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -74,7 +76,7 @@ else
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

@@ -23,7 +23,7 @@ if ($reply_id == 0)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($blog_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
+if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -45,24 +45,24 @@ $post_options = new post_options;
 if ( (!$submit) && (!$preview) )
 {
 	// Setup the message so we can import it to the edit page
-	decode_message($blog_data->reply[$reply_id]['reply_text'], $blog_data->reply[$reply_id]['bbcode_uid']);
-	$post_options->set_status($blog_data->reply[$reply_id]['enable_bbcode'], $blog_data->reply[$reply_id]['enable_smilies'], $blog_data->reply[$reply_id]['enable_magic_url']);
+	decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
+	$post_options->set_status($reply_data->reply[$reply_id]['enable_bbcode'], $reply_data->reply[$reply_id]['enable_smilies'], $reply_data->reply[$reply_id]['enable_magic_url']);
 }
 else
 {
 	// so we can check if they did edit any text when they hit submit
-	$original_subject = $blog_data->reply[$reply_id]['reply_subject'];
-	$original_text = $blog_data->reply[$reply_id]['reply_text'];
-	decode_message($original_text, $blog_data->reply[$reply_id]['bbcode_uid']);
+	$original_subject = $reply_data->reply[$reply_id]['reply_subject'];
+	$original_text = $reply_data->reply[$reply_id]['reply_text'];
+	decode_message($original_text, $reply_data->reply[$reply_id]['bbcode_uid']);
 
-	$blog_data->reply[$reply_id]['reply_subject'] = utf8_normalize_nfc(request_var('subject', '', true));
-	$blog_data->reply[$reply_id]['reply_text'] = utf8_normalize_nfc(request_var('message', '', true));
+	$reply_data->reply[$reply_id]['reply_subject'] = utf8_normalize_nfc(request_var('subject', '', true));
+	$reply_data->reply[$reply_id]['reply_text'] = utf8_normalize_nfc(request_var('message', '', true));
 
 	$post_options->set_status(!isset($_POST['disable_bbcode']), !isset($_POST['disable_smilies']), !isset($_POST['disable_magic_url']));
 
 	// set up the message parser to parse BBCode, Smilies, etc
 	$message_parser = new parse_message();
-	$message_parser->message = $blog_data->reply[$reply_id]['reply_text'];
+	$message_parser->message = $reply_data->reply[$reply_id]['reply_text'];
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
 	// If any errors were reported by the message parser add those as well
@@ -72,7 +72,7 @@ else
 	}
 
 	// If they did not include a subject, give them the empty subject error
-	if ($blog_data->reply[$reply_id]['reply_subject'] == '')
+	if ($reply_data->reply[$reply_id]['reply_subject'] == '')
 	{
 		$error[] = $user->lang['EMPTY_SUBJECT'];
 	}
@@ -90,9 +90,9 @@ if ( (!$submit) || (sizeof($error)) )
 		// output some data to the template parser
 		$template->assign_vars(array(
 			'S_DISPLAY_PREVIEW'			=> true,
-			'PREVIEW_SUBJECT'			=> censor_text($blog_data->reply[$reply_id]['reply_subject']),
+			'PREVIEW_SUBJECT'			=> censor_text($reply_data->reply[$reply_id]['reply_subject']),
 			'PREVIEW_MESSAGE'			=> $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false),
-			'POST_DATE'					=> $user->format_date($blog_data->reply[$reply_id]['reply_time']),
+			'POST_DATE'					=> $user->format_date($reply_data->reply[$reply_id]['reply_time']),
 		));
 	}
 
@@ -108,8 +108,8 @@ if ( (!$submit) || (sizeof($error)) )
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 
 		// If they hit preview or submit and got an error, or are editing their post make sure we carry their existing post info & options over
-		'SUBJECT'					=> $blog_data->reply[$reply_id]['reply_subject'],
-		'MESSAGE'					=> $blog_data->reply[$reply_id]['reply_text'],
+		'SUBJECT'					=> $reply_data->reply[$reply_id]['reply_subject'],
+		'MESSAGE'					=> $reply_data->reply[$reply_id]['reply_text'],
 
 		// if there are any errors report them
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
@@ -133,14 +133,14 @@ if ( (!$submit) || (sizeof($error)) )
 else // user submitted and there are no errors
 {
 	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ( ($original_subject != $blog_data->reply[$reply_id]['reply_subject']) || (request_var('edit_reason', '', true) != '') || ($original_text != $blog_data->reply[$reply_id]['reply_text']) )
+	if ( ($original_subject != $reply_data->reply[$reply_id]['reply_subject']) || (request_var('edit_reason', '', true) != '') || ($original_text != $reply_data->reply[$reply_id]['reply_text']) )
 	{
 		$sql_data = array(
-			'user_ip'			=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : $blog_data->reply[$reply_id]['user_ip'],
-			'reply_subject'		=> $blog_data->reply[$reply_id]['reply_subject'],
+			'user_ip'			=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : $reply_data->reply[$reply_id]['user_ip'],
+			'reply_subject'		=> $reply_data->reply[$reply_id]['reply_subject'],
 			'reply_text'		=> $message_parser->message,
 			'reply_checksum'	=> md5($message_parser->message),
-			'reply_approved' 	=> ($blog_data->reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0 : 1,
+			'reply_approved' 	=> ($reply_data->reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0 : 1,
 			'enable_bbcode' 	=> $post_options->enable_bbcode,
 			'enable_smilies'	=> $post_options->enable_smilies,
 			'enable_magic_url'	=> $post_options->enable_magic_url,
@@ -149,12 +149,12 @@ else // user submitted and there are no errors
 			'reply_edit_time'	=> time(),
 			'reply_edit_reason'	=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
 			'reply_edit_user'	=> $user->data['user_id'],
-			'reply_edit_count'	=> $blog_data->reply[$reply_id]['reply_edit_count'] + 1,
+			'reply_edit_count'	=> $reply_data->reply[$reply_id]['reply_edit_count'] + 1,
 			'reply_edit_locked'	=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
 		);
 
 		// add the delete section to the array if it was deleted, if it was already deleted ignore
-		if ( (!$blog_data->reply[$reply_id]['reply_deleted']) && (isset($_POST['delete'])) && $can_delete)
+		if ( (!$reply_data->reply[$reply_id]['reply_deleted']) && (isset($_POST['delete'])) && $can_delete)
 		{
 			$sql_data['reply_deleted'] = $user->data['user_id'];
 			$sql_data['reply_deleted_time'] = time();
@@ -199,7 +199,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $blog_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
