@@ -15,6 +15,11 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'BLOG_ENABLE_ZEBRA'	=> 'Enable Friend/Foe Sections',
+'BLOG_ENABLE_FEEDS' => 'Enable RSS/ATOM/Javascript output feeds',
+'BLOG_ENABLE_ATTACHMENTS' => 'Enable Attachments in Blogs and Replies',
+'BLOG_MAX_ATTACHMENTS'	=> 'Maximum amount of attachments allowed per post',
+'BLOG_MAX_ATTACHMENTS_EXPLAIN' => 'Note that this can be over ridden per user in user permissions.',
 	'ACP_BLOGS'							=> 'User Blog Mod',
 	'ADD_BLOG'							=> 'Add a new blog',
 	'ALLOWED_IN_BLOG'					=> 'Allowed in User Blogs',
