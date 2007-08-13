@@ -121,7 +121,7 @@ if (!$submit || sizeof($error))
 		// output some data to the template parser
 		$template->assign_vars(array(
 			'S_DISPLAY_PREVIEW'			=> true,
-			'PREVIEW_SUBJECT'			=> censor_text($reply_data->reply[$reply_id]['reply_subject']),
+			'PREVIEW_SUBJECT'			=> censor_text($reply_subject),
 			'PREVIEW_MESSAGE'			=> $preview_message,
 			'POST_DATE'					=> $user->format_date($reply_data->reply[$reply_id]['reply_time']),
 		));
@@ -137,7 +137,7 @@ if (!$submit || sizeof($error))
 	// Attachment entry
 	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
 	{
-		posting_gen_attachment_entry($attachment_data, $filename_data);
+		$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
 	}
 
 	// Generate smiley listing
@@ -177,11 +177,11 @@ else // user submitted and there are no errors
 	$attachment_changed = ($reply_data->reply[$reply_id]['reply_attachment'] != $new_att_val) ? true : false;
 
 	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ($original_subject != $reply_data->reply[$reply_id]['reply_subject'] || ($original_text != $reply_text) || (request_var('edit_reason', '', true) != ''))
+	if ($original_subject != $reply_subject || $original_text != $reply_text || $attachment_changed || (request_var('edit_reason', '', true) != ''))
 	{
 		$sql_data = array(
 			'user_ip'			=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : $reply_data->reply[$reply_id]['user_ip'],
-			'reply_subject'		=> $reply_data->reply[$reply_id]['reply_subject'],
+			'reply_subject'		=> $reply_subject,
 			'reply_text'		=> $message_parser->message,
 			'reply_checksum'	=> md5($message_parser->message),
 			'reply_approved' 	=> ($reply_data->reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0 : 1,
