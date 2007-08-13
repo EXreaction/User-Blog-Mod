@@ -238,7 +238,7 @@ class blog_attachment
 								phpbb_unlink($row['physical_filename'], 'thumbnail');
 							}
 
-							$db->sql_query('DELETE FROM ' . BLOG_ATTACHMENT_TABLE . ' WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id']);
+							$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id']);
 						}
 					}
 					else
