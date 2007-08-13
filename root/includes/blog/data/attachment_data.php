@@ -699,7 +699,7 @@ class blog_attachment
 		global $template, $cache, $user, $config, $phpbb_root_path, $phpEx, $auth;
 		global $user_founder;
 
-		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_blogattach') && !$user_founder))
+		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_download') && !$user_founder))
 		{
 			return;
 		}
