@@ -114,7 +114,8 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 	}
 	else
 	{
-		$is_auth = (!$auth->acl_get('u_blogview')) ? false : $is_auth;
+		// if it is the install page they will not have viewing permissions :P
+		$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
 	}
 
 	if (!$return)

@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 
 // If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
@@ -41,12 +41,20 @@ $can_delete = check_blog_permissions('reply', 'delete', true, $blog_id, $reply_i
 // Posting permissions
 $post_options = new post_options;
 
+$blog_attachment->get_submitted_attachment_data();
+
 // If they select edit mode and didn't submit or hit preview(means they came directly from the view reply page)
-if ( (!$submit) && (!$preview) )
+if (!$submit && !$preview && !$refresh)
 {
 	// Setup the message so we can import it to the edit page
-	decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
+	$reply_subject = $reply_data->reply[$reply_id]['reply_subject'];
+	$reply_text = $reply_data->reply[$reply_id]['reply_text'];
+	decode_message($reply_text, $reply_data->reply[$reply_id]['bbcode_uid']);
 	$post_options->set_status($reply_data->reply[$reply_id]['enable_bbcode'], $reply_data->reply[$reply_id]['enable_smilies'], $reply_data->reply[$reply_id]['enable_magic_url']);
+
+	// get the attachment_data
+	$blog_attachment->get_attachment_data(0, $reply_id);
+	$blog_attachment->attachment_data = $reply_data->reply[$reply_id]['attachment_data'];
 }
 else
 {
@@ -55,26 +63,33 @@ else
 	$original_text = $reply_data->reply[$reply_id]['reply_text'];
 	decode_message($original_text, $reply_data->reply[$reply_id]['bbcode_uid']);
 
-	$reply_data->reply[$reply_id]['reply_subject'] = utf8_normalize_nfc(request_var('subject', '', true));
-	$reply_data->reply[$reply_id]['reply_text'] = utf8_normalize_nfc(request_var('message', '', true));
+	$reply_subject = utf8_normalize_nfc(request_var('subject', '', true));
+	$reply_text = utf8_normalize_nfc(request_var('message', '', true));
 
 	$post_options->set_status(!isset($_POST['disable_bbcode']), !isset($_POST['disable_smilies']), !isset($_POST['disable_magic_url']));
 
 	// set up the message parser to parse BBCode, Smilies, etc
 	$message_parser = new parse_message();
-	$message_parser->message = $reply_data->reply[$reply_id]['reply_text'];
+	$message_parser->message = $reply_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
+	// Attachments
+	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
+
+	// If they did not include a subject, give them the empty subject error
+	if ($reply_subject == '' && !$refresh)
+	{
+		$error[] = $user->lang['EMPTY_SUBJECT'];
+	}
+
 	// If any errors were reported by the message parser add those as well
-	if (sizeof($message_parser->warn_msg))
+	if (sizeof($message_parser->warn_msg) && !$refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
 	}
-
-	// If they did not include a subject, give them the empty subject error
-	if ($reply_data->reply[$reply_id]['reply_subject'] == '')
+	if (sizeof($blog_attachment->warn_msg))
 	{
-		$error[] = $user->lang['EMPTY_SUBJECT'];
+		$error[] = implode('<br />', $blog_attachment->warn_msg);
 	}
 }
 
@@ -82,18 +97,47 @@ else
 $post_options->set_in_template();
 
 // if they did not submit or they have an error
-if ( (!$submit) || (sizeof($error)) )
+if (!$submit || sizeof($error))
 {
 	// if they are trying to preview the message and do not have an error
-	if ( ($preview) && (!sizeof($error)) )
+	if ($preview && !sizeof($error))
 	{
+		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
+
+		// Attachment Preview
+		if (sizeof($blog_attachment->attachment_data))
+		{
+			$template->assign_var('S_HAS_ATTACHMENTS', true);
+
+			$update_count = array();
+			$attachment_data = $blog_attachment->attachment_data;
+
+			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
+
+			$blog_attachment->output_attachment_data($attachment_data);
+			unset($attachment_data);
+		}
+
 		// output some data to the template parser
 		$template->assign_vars(array(
 			'S_DISPLAY_PREVIEW'			=> true,
 			'PREVIEW_SUBJECT'			=> censor_text($reply_data->reply[$reply_id]['reply_subject']),
-			'PREVIEW_MESSAGE'			=> $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false),
+			'PREVIEW_MESSAGE'			=> $preview_message,
 			'POST_DATE'					=> $user->format_date($reply_data->reply[$reply_id]['reply_time']),
 		));
+	}
+
+	$attachment_data = $blog_attachment->attachment_data;
+	$filename_data = $blog_attachment->filename_data;
+	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
+
+	// Generate inline attachment select box
+	posting_gen_inline_attachments($attachment_data);
+
+	// Attachment entry
+	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
+	{
+		posting_gen_attachment_entry($attachment_data, $filename_data);
 	}
 
 	// Generate smiley listing
@@ -104,24 +148,21 @@ if ( (!$submit) || (sizeof($error)) )
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
-		// If we have any limit on the number of chars a user can enter display that, otherwise don't
-		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-
-		// If they hit preview or submit and got an error, or are editing their post make sure we carry their existing post info & options over
-		'SUBJECT'					=> $reply_data->reply[$reply_id]['reply_subject'],
-		'MESSAGE'					=> $reply_data->reply[$reply_id]['reply_text'],
-
-		// if there are any errors report them
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
+		'MESSAGE'					=> $reply_text,
+		'SUBJECT'					=> $reply_subject,
 
-		// for editing
-		'S_EDIT_REASON'				=> true,
-
-		// Delete check box
-		'S_DELETE_ALLOWED'			=> $can_delete,
 		'L_DELETE_POST'				=> $user->lang['DELETE_REPLY'],
 		'L_DELETE_POST_WARN'		=> $user->lang['DELETE_REPLY_WARN'],
+		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+		'L_POST_A'					=> $user->lang['POST_A_REPLY'],
 
+		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
+
+		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
+		'S_DELETE_ALLOWED'			=> $can_delete,
+		'S_EDIT_REASON'				=> true,
+		'S_FORM_ENCTYPE'			=> $form_enctype,
 		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? true : false,
 	));
 
@@ -132,8 +173,11 @@ if ( (!$submit) || (sizeof($error)) )
 }
 else // user submitted and there are no errors
 {
+	$new_att_val = (count($blog_attachment->attachment_data)) ? 1 : 0;
+	$attachment_changed = ($reply_data->reply[$reply_id]['reply_attachment'] != $new_att_val) ? true : false;
+
 	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ( ($original_subject != $reply_data->reply[$reply_id]['reply_subject']) || (request_var('edit_reason', '', true) != '') || ($original_text != $reply_data->reply[$reply_id]['reply_text']) )
+	if ($original_subject != $reply_data->reply[$reply_id]['reply_subject'] || ($original_text != $reply_text) || (request_var('edit_reason', '', true) != ''))
 	{
 		$sql_data = array(
 			'user_ip'			=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : $reply_data->reply[$reply_id]['user_ip'],
@@ -151,6 +195,7 @@ else // user submitted and there are no errors
 			'reply_edit_user'	=> $user->data['user_id'],
 			'reply_edit_count'	=> $reply_data->reply[$reply_id]['reply_edit_count'] + 1,
 			'reply_edit_locked'	=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
+			'reply_attachment'	=> $new_att_val,
 		);
 
 		// add the delete section to the array if it was deleted, if it was already deleted ignore
@@ -170,6 +215,9 @@ else // user submitted and there are no errors
 
 	// we no longer need the message parser
 	unset($message_parser);
+
+	// update attachment data
+	$blog_attachment->update_attachment_data(0, $reply_id);
 
 	// the confirm message & redirect
 	if (isset($_POST['delete']) && $can_delete)

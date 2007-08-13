@@ -36,6 +36,10 @@
 		.deleted {
 			background-color: #33FF00;
 		}
+
+		.foe {
+			background-color: #FF6600;
+		}
 	-->
 	</style>
 
@@ -218,6 +222,17 @@
 
 							<div class="content">{blogrow.BLOG_MESSAGE}</div>
 
+							<!-- IF blogrow.S_HAS_ATTACHMENTS -->
+								<dl class="attachbox">
+									<dt>{L_ATTACHMENTS}</dt>
+									<!-- BEGIN attachment -->
+										<dd>{blogrow.attachment.DISPLAY_ATTACHMENT}</dd>
+									<!-- END attachment -->
+								</dl>
+							<!-- ENDIF -->
+
+							<!-- IF postrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
+
 							<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 								<div class="notice">{blogrow.EDITED_MESSAGE}
 									<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
@@ -279,20 +294,24 @@
 						</form>
 					<!-- ENDIF -->
 					<!-- BEGIN replyrow -->
-						<!-- IF replyrow.DELETED_MESSAGE -->
-							<div id="d{replyrow.ID}" class="post reported" style="width: 96%; margin: 0 auto;">
+						<!-- IF replyrow.S_DELETED or replyrow.USER_FOE-->
+							<div id="d{replyrow.ID}" class="post<!-- IF replyrow.USER_FOE --> foe<!-- ENDIF --><!-- IF replyrow.S_DELETED --> deleted<!-- ENDIF -->" style="width: 96%; margin: 0 auto;">
 								<div class="inner"><span class="corners-top"><span></span></span>
 									<div class="postbody" style="width: 100%;">
 										<div style="text-align: center;">
-											<a href="#none" onClick="toggleDiv('r{replyrow.ID}'); toggleDiv('d{replyrow.ID}');">{L_DELETED_REPLY_SHOW}</a>
-											<noscript><br/>{L_DELETED_REPLY_SHOW_NO_JS}</noscript>
+											<!-- IF replyrow.S_DELETED -->
+												<a href="#none" onClick="toggleDiv('r{replyrow.ID}'); toggleDiv('d{replyrow.ID}');">{L_DELETED_REPLY_SHOW}</a>
+											<!-- ELSE -->
+												{replyrow.L_USER_FOE} <a href="#none" onClick="toggleDiv('r{replyrow.ID}'); toggleDiv('d{replyrow.ID}');">{L_CLICK_HERE_SHOW_POST}</a>
+											<!-- ENDIF -->
+											<noscript><br/>{L_REPLY_SHOW_NO_JS}</noscript>
 										</div>
 									</div>
 								<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
 								<span class="corners-bottom"><span></span></span></div>
 							</div>
 						<!-- ENDIF -->
-						<div id="r{replyrow.ID}" class="post <!-- IF replyrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF replyrow.S_REPORTED or replyrow.DELETED_MESSAGE or replyrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF replyrow.S_ONLINE --> online<!-- ENDIF -->" style="width: 96%; margin: 0 auto;<!-- IF replyrow.DELETED_MESSAGE --> display: none;<!-- ENDIF -->">
+						<div id="r{replyrow.ID}" class="post <!-- IF replyrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF replyrow.S_REPORTED or replyrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF replyrow.USER_FOE --> foe<!-- ENDIF --><!-- IF replyrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF replyrow.S_ONLINE --> online<!-- ENDIF -->" style="width: 96%; margin: 0 auto;<!-- IF replyrow.S_DELETED or replyrow.USER_FOE --> display: none;<!-- ENDIF -->">
 							<div class="inner"><span class="corners-top"><span></span></span>
 								<div class="postbody" style="width: 70%;">
 									<!-- IF replyrow.U_QUOTE or replyrow.U_INFO or replyrow.U_DELETE or replyrow.U_EDIT -->
@@ -307,16 +326,27 @@
 
 									<h3><a href="{replyrow.U_VIEW}">{replyrow.TITLE}</a></h3>
 									<p class="author"><a href="{replyrow.U_VIEW}">{MINI_POST_IMG}</a>{L_POST_BY_AUTHOR} <strong>{replyrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {replyrow.DATE} </p>
-		
+
 									<!-- IF replyrow.S_UNAPPROVED or replyrow.S_REPORTED -->
 										<p class="rules">
 											<!-- IF replyrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{replyrow.U_APPROVE}"><strong>{L_REPLY_UNAPPROVED}</strong></a><!-- ENDIF -->
 											<!-- IF replyrow.S_REPORTED -->{REPORTED_IMG} <a href="{replyrow.U_REPORT}"><strong>{L_REPLY_REPORTED}</strong></a><!-- ENDIF -->
 										</p>
 									<!-- ENDIF -->
-		
+
 									<div class="content">{replyrow.REPLY_MESSAGE}</div>
-		
+
+							<!-- IF replyrow.S_HAS_ATTACHMENTS -->
+								<dl class="attachbox">
+									<dt>{L_ATTACHMENTS}</dt>
+									<!-- BEGIN attachment -->
+										<dd>{replyrow.attachment.DISPLAY_ATTACHMENT}</dd>
+									<!-- END attachment -->
+								</dl>
+							<!-- ENDIF -->
+
+							<!-- IF postrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
+
 									<!-- IF replyrow.EDITED_MESSAGE or replyrow.EDIT_REASON -->
 										<div class="notice">{replyrow.EDITED_MESSAGE}
 											<!-- IF replyrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{replyrow.EDIT_REASON}</em><!-- ENDIF -->
@@ -325,7 +355,7 @@
 									<!-- IF replyrow.DELETED_MESSAGE -->
 										<div class="notice">{replyrow.DELETED_MESSAGE}</div>
 									<!-- ENDIF -->
-		
+
 									<!-- IF replyrow.SIGNATURE --><div class="signature">{replyrow.SIGNATURE}</div><!-- ENDIF -->
 								</div>
 
@@ -336,11 +366,11 @@
 										<!-- ENDIF -->
 										<strong>{replyrow.USER_FULL}</strong>
 									</dt>
-		
+
 									<!-- IF replyrow.RANK_TITLE or replyrow.RANK_IMG --><dd>{replyrow.RANK_TITLE}<!-- IF replyrow.RANK_TITLE and replyrow.RANK_IMG --><br /><!-- ENDIF -->{replyrow.RANK_IMG}</dd><!-- ENDIF -->
 		
 									<dd>&nbsp;</dd>
-		
+
 									<!-- IF replyrow.POSTER_POSTS != '' --><dd><strong>{L_POSTS}:</strong> {replyrow.POSTER_POSTS}</dd><!-- ENDIF -->
 									<!-- IF replyrow.POSTER_JOINED --><dd><strong>{L_JOINED}:</strong> {replyrow.POSTER_JOINED}</dd><!-- ENDIF -->
 									<!-- IF replyrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {replyrow.POSTER_FROM}</dd><!-- ENDIF -->
@@ -348,7 +378,7 @@
 									<!-- BEGIN custom_fields -->
 										<dd><strong>{replyrow.custom_fields.PROFILE_FIELD_NAME}:</strong> {replyrow.custom_fields.PROFILE_FIELD_VALUE}</dd>
 									<!-- END custom_fields -->
-		
+
 									<!-- IF replyrow.U_PM or replyrow.U_EMAIL or replyrow.U_WWW or replyrow.U_MSN or replyrow.U_ICQ or replyrow.U_YIM or replyrow.U_AIM -->
 										<dd>
 											<ul class="profile-icons">

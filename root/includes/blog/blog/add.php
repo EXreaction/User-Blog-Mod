@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 
 // If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
@@ -30,7 +30,7 @@ $post_options->set_in_template();
 // setup the message parser
 $message_parser = new parse_message();
 
-//$message_parser->get_submitted_attachment_data();
+$blog_attachment->get_submitted_attachment_data();
 
 // If they did submit or hit preview
 if ($submit || $preview || $refresh)
@@ -50,18 +50,22 @@ if ($submit || $preview || $refresh)
 	}
 
 	// Attachments
-	//$message_parser->parse_attachments('fileupload', 'post', 2, $submit, $preview, $refresh);
+	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
 
 	// If they did not include a subject, give them the empty subject error
-	if ($blog_subject == '')
+	if ($blog_subject == '' && !$refresh)
 	{
 		$error[] = $user->lang['EMPTY_SUBJECT'];
 	}
 
 	// If any errors were reported by the message parser add those as well
-	if (sizeof($message_parser->warn_msg))
+	if (sizeof($message_parser->warn_msg) && !$refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
+	}
+	if (sizeof($blog_attachment->warn_msg))
+	{
+		$error[] = implode('<br />', $blog_attachment->warn_msg);
 	}
 }
 else
@@ -69,13 +73,6 @@ else
 	$blog_subject = '';
 	$blog_text = '';
 }
-
-/*
-$template->assign_vars(array(
-	'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
-	'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "f=2&mode=popup", false),
-));
-*/
 
 // if they did not submit or they have an error
 if (!$submit || sizeof($error))
@@ -89,23 +86,18 @@ if (!$submit || sizeof($error))
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
 		// Attachment Preview
-		/*if (sizeof($message_parser->attachment_data))
+		if (sizeof($blog_attachment->attachment_data))
 		{
 			$template->assign_var('S_HAS_ATTACHMENTS', true);
 
 			$update_count = array();
-			$attachment_data = $message_parser->attachment_data;
+			$attachment_data = $blog_attachment->attachment_data;
 
-			parse_attachments(2, $preview_message, $attachment_data, $update_count, true);
+			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
 
-			foreach ($attachment_data as $i => $attachment)
-			{
-				$template->assign_block_vars('attachment', array(
-					'DISPLAY_ATTACHMENT'	=> $attachment)
-				);
-			}
+			$blog_attachment->output_attachment_data($attachment_data);
 			unset($attachment_data);
-		}*/
+		}
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -116,8 +108,18 @@ if (!$submit || sizeof($error))
 		));
 	}
 
-/*	$attachment_data = $message_parser->attachment_data;
-	$filename_data = $message_parser->filename_data;  */
+	$attachment_data = $blog_attachment->attachment_data;
+	$filename_data = $blog_attachment->filename_data;
+	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
+
+	// Generate inline attachment select box
+	posting_gen_inline_attachments($attachment_data);
+
+	// Attachment entry
+	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
+	{
+		posting_gen_attachment_entry($attachment_data, $filename_data);
+	}
 
 	// Generate smiley listing
 	generate_smilies('inline', false);
@@ -125,29 +127,18 @@ if (!$submit || sizeof($error))
 	// Build custom bbcodes array
 	display_custom_bbcodes();
 
-	// Generate inline attachment select box
-/*	posting_gen_inline_attachments($attachment_data);
-
-	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
-
-	// Attachment entry
-	// Not using acl_gets here, because it is using OR logic
-	//if ($auth->acl_get('u_attach') && $config['allow_attachments'] && $form_enctype)
-	//{
-		posting_gen_attachment_entry($attachment_data, $filename_data);
-	//}  */
-
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
-		// If we have any limit on the number of chars a user can enter display that, otherwise don't
+		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
+		'MESSAGE'					=> $blog_text,
+		'SUBJECT'					=> $blog_subject,
+
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 
-		// If they hit preview or submit and got an error, or are editing their post make sure we carry their existing post info & options over
-		'SUBJECT'					=> $blog_subject,
-		'MESSAGE'					=> $blog_text,
+		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
 
-		// if there are any errors report them
-		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
+		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
+		'S_FORM_ENCTYPE'			=> $form_enctype,
 	));
 
 	// Tell the template parser what template file to use
@@ -172,18 +163,18 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'			=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'				=> $message_parser->bbcode_uid,
 		'blog_edit_reason'			=> '',
+		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
-	// insert query
 	$sql = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
-
-	// run the query
 	$db->sql_query($sql);
 
-	// we no longer need the message parser
 	unset($message_parser);
 
 	$blog_id = $db->sql_nextid();
+
+	// update attachment data
+	$blog_attachment->update_attachment_data($blog_id);
 
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();

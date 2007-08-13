@@ -14,8 +14,42 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Gets Zebra (friend/foe)  info
+*
+* Just grabs the foe info right now.  I see no reason to grab the friend info ATM.
+*
+* @param int|bool $uid The user_id we will grab the zebra data for.  If this is false we will use $user->data['user_id']
+*/
+function get_zebra_info($uid = false)
+{
+	global $config, $user, $db;
+	global $foe_list;
+
+	if ($config['user_blog_enable_zebra'] && $user->data['user_id'] != ANONYMOUS)
+	{
+		$uid = ($uid !== false) ? $uid : $user->data['user_id'];
+
+		$sql = 'SELECT zebra_id FROM ' . ZEBRA_TABLE . '
+			WHERE user_id = \'' . $uid . '\'
+				AND foe = \'1\'';
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$foe_list[] = $row['zebra_id'];
+		}
+		$db->sql_freeresult($result);
+	}
+}
+
+/**
 * Get subscription info
 *
+* Grabs subscription info from the DB if not already in the cache and finds out if the user is subscribed to the blog/user.
+*
+* @param int|bool $blog_id The blog_id to check, set to false if we are checking a user_id.
+* @param int|bool $user_id The user_id to check, set to false if we are checking a blog_id.
+*
+* @return Returns true if the user is subscribed to the blog or user, false if not.
 */
 function get_subscription_info($blog_id, $user_id = false)
 {

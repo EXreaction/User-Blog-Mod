@@ -30,6 +30,9 @@ class acp_blogs
 			'legend1'							=> 'BLOG_SETTINGS',
 			'user_blog_enable'					=> array('lang' => 'ENABLE_USER_BLOG',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_subscription_enabled'	=> array('lang'	=> 'ENABLE_SUBSCRIPTIONS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
+			'user_blog_enable_zebra'			=> array('lang' => 'BLOG_ENABLE_ZEBRA',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
+			'user_blog_enable_feeds'			=> array('lang' => 'BLOG_ENABLE_FEEDS',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
+			'user_blog_enable_attachments'	 	=> array('lang' => 'BLOG_ENABLE_ATTACHMENTS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_custom_profile_enable'	=> array('lang' => 'ENABLE_BLOG_CUSTOM_PROFILES',	'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 			'user_blog_founder_all_perm'		=> array('lang'	=> 'FOUNDER_ALL_PERMISSION',		'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 			'user_blog_always_show_blog_url'	=> array('lang' => 'BLOG_ALWAYS_SHOW_URL', 			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
@@ -39,7 +42,16 @@ class acp_blogs
 			'user_blog_text_limit'				=> array('lang' => 'DEFAULT_TEXT_LIMIT', 			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_user_text_limit'			=> array('lang' => 'USER_TEXT_LIMIT', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_inform'					=> array('lang' => 'BLOG_INFORM', 					'validate' => 'string',	'type' => 'text:25:100',				'explain' => true),
+			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 		);
+
+		// check to see if prosilver is installed and style_id 1.  If it isn't we won't display the user_blog_force_prosilver option.
+		$sql = 'SELECT style_name FROM ' . STYLES_TABLE . '
+			WHERE style_id = \'1\'';
+		$result = $db->sql_query($sql);
+		$style_1 = $db->sql_fetchrow($result);
+		$prosilver_1 = ($style_1['style_name'] == 'prosilver') ? true : false;
+		$db->sql_freeresult($result);
 
 		$this->new_config = $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
@@ -65,6 +77,12 @@ class acp_blogs
 		));
 		foreach ($settings as $config_key => $vars)
 		{
+			if ($config_key == 'user_blog_force_prosilver' && !$prosilver_1)
+			{
+				set_config($config_key, 0);
+				continue;
+			}
+
 			if ($submit)
 			{
 				if (!isset($cfg_array[$config_key]) || strpos($config_key, 'legend') !== false)

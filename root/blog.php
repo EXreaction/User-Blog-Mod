@@ -1,26 +1,27 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
-
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 /*
 * TODO List
 *
 * PRIORITY -------------------------------
-* new blogs/replies needing approval notice by Blog MCP link
-* option to enable/disable feeds
+* Delete attachments with hard delete
+* In Blog ACP -> add option to remove orphan blog attachments
+*
 * Resetup the MCP page to have URLS/etc like the Main page
 *
-* Finish RSS/ATOM/Javascript Output Feed & icons
+* Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
-* follow friend/foe rules to automatically hide or show the replies with the javascript open/close button used for deleted replies
 * give option to control users who reply to blogs - all - friends - none
-* Attachments
 * Polls
+*
+* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
+*	new blogs/replies needing approval notice by Blog MCP link (use the record blog reads for this)
 *
 * LOW PRIORITY --------------------
 * Make a plugin function to automatically load files in the plugins/ folder, then put all the following things like search/SEO/gallery in the plugins - Also make a way for this to check for plugins to enable/disable in ACP.
@@ -28,7 +29,6 @@
 * Integrate with search - make as an add-on - to enable have one of the instructions for the add-on to be editing a config file in the includes/blog directory
 * SEO Url's make as an add-on
 *
-* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
 * Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
 * OTHER ---------------------------------
@@ -55,7 +55,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A12';
+$user_blog_version = 'A13';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -94,6 +94,7 @@ include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/attachment_data.' . $phpEx);
 
 // We will set all of the initial data by including this file
 include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
@@ -146,6 +147,7 @@ switch ($page)
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for special developmental purposes
 	case 'resync' : // to resync the blog data
+	case 'download' : // download a file
 		include($phpbb_root_path . "includes/blog/{$page}.$phpEx");
 		break;
 	default :

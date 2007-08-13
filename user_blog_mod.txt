@@ -4,12 +4,14 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.11
+## MOD Version: 0.3.12
 ##
 ## Installation Level:	Easy
-## Installation Time:	~5 Minutes
+## Installation Time:	~10 Minutes
 ##
-## Files To Edit:	adm/index.php
+## Files To Edit:	adm/style/acp_attachments.html
+##					adm/index.php
+##					includes/acp/acp_attachments.php
 ##					includes/constants.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
@@ -46,9 +48,7 @@
 ## 2007-07-08 Alpha 7 Released
 ## 2007-07-12 Alpha 8 Released
 ## 2007-07-28 Alpha 9 Released
-## 2007-07-29
-##		Alpha 9.a Released
-##			+ Fixing some problems with the update script.
+## 2007-07-29 Alpha 9.a Released
 ## 2007-07-30
 ##		Alpha 10 Released
 ##			+ Fixing many bugs that were introduced with the code overhaul in Alpha 9.
@@ -64,6 +64,13 @@
 ## 2007-08-07
 ##		Alpha 12 Released
 ##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
+## 2007-08-12
+##		Alpha 13 Released
+##			+ Say hello to Attachments. :)
+##				- Because of all the major changes that were put in this release may be buggy.  Attachments will probably be buggy for sure,
+##					+ since I had to do a lot of quick hacks over the existing phpBB3 attachment code to get it to work.
+##			+ To upgrade, first do the new file edits to adm/style/acp_attachments.html and includes/acp/acp_attachments.php, then re-do the edits to includes/constants.php
+##				- then upload the new files, and finally, point your browser to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -73,6 +80,42 @@
 # Copy everything from the root/ folder to your phpBB3 forums' root
 
 root/* to /
+
+#
+#-----[ OPEN ]----------------------
+#
+
+adm/style/acp_attachments.html
+
+#
+#-----[ FIND ]----------------------
+#
+
+		<dl>
+			<dt><label for="allow_in_pm">{L_ALLOW_IN_PM}:</label></dt>
+			<dd><input type="checkbox" class="radio" id="allow_in_pm" name="allow_in_pm" value="1"<!-- IF ALLOW_IN_PM --> checked="checked"<!-- ENDIF --> /></dd>
+		</dl>
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+		<dl>
+			<dt><label for="allow_in_blog">{L_ALLOW_IN_BLOG}:</label></dt>
+			<dd><input type="checkbox" class="radio" id="allow_in_blog" name="allow_in_blog" value="1"<!-- IF ALLOW_IN_BLOG --> checked="checked"<!-- ENDIF --> /></dd>
+		</dl>
+
+#
+#-----[ FIND ]----------------------
+#
+
+					<!-- ELSE --><br /><span>&raquo; {L_ALLOWED_IN_PM_POST}</span><!-- ENDIF -->
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+					<br /><span>&raquo; <!-- IF groups.S_ALLOWED_IN_BLOG -->{L_ALLOWED_IN_BLOG}<!-- ELSE -->{L_NOT_ALLOWED_IN_BLOG}<!-- ENDIF -->
 
 #
 #-----[ OPEN ]----------------------
@@ -99,6 +142,75 @@ $user->add_lang('mods/blog');
 #-----[ OPEN ]---------------------------------------------
 #
 
+includes/acp/acp_attachments.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+					if (!sizeof($error))
+					{
+						// Ok, build the update/insert array
+
+#
+#-----[ BEFORE, ADD ]---------------------------------------
+#
+
+					$allow_in_blog	= (isset($_POST['allow_in_blog'])) ? true : false;
+					$cache->destroy('_blog_extensions');
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+							'allow_in_pm'	=> ($allow_in_pm) ? 1 : 0,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+							'allow_in_blog'	=> ($allow_in_blog) ? 1 : 0,
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+								'allow_in_pm'	=> 1,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+								'allow_in_blog'	=> 1,
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+							'ALLOW_IN_PM'			=> $ext_group_row['allow_in_pm'],
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+							'ALLOW_IN_BLOG'			=> $ext_group_row['allow_in_blog'],
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+						'S_ALLOWED_IN_PM'	=> ($row['allow_in_pm']) ? true : false,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+						'S_ALLOWED_IN_BLOG'	=> ($row['allow_in_blog']) ? true : false,
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
 includes/constants.php
 
 #
@@ -115,6 +227,7 @@ includes/constants.php
 define('BLOGS_TABLE',				$table_prefix . 'blogs');
 define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
 define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
+define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 // End Add User Blog Mod --------------------
 
 #

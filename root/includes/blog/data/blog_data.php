@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 
 // If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
@@ -183,6 +183,8 @@ class blog_data
 
 		while ($row = $db->sql_fetchrow($result))
 		{
+			$row['attachment_data'] = array();
+
 			// now put all the data in the blog array
 			$this->blog[$row['blog_id']] = $row;
 
@@ -305,7 +307,7 @@ class blog_data
 				if ($auth->acl_gets('m_blogapprove', 'm_blogdelete', 'a_blogdelete') || $user_founder || $sort_days_sql != '')
 				{
 					$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_TABLE . '
-						WHERE user_id = \'' . $id[0] . '\'' .
+						WHERE user_id = \'' . $id . '\'' .
 							$view_deleted_sql .
 								$view_unapproved_sql .
 									$sort_days_sql .
@@ -316,7 +318,7 @@ class blog_data
 				}
 				else
 				{
-					return $this->user[$id[0]]['blog_count'];
+					return $user_data->user[$id]['blog_count'];
 				}
 			break;
 			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
@@ -421,9 +423,9 @@ class blog_data
 	function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $reply_data, $user_data, $user_founder;
+		global $reply_data, $user_data, $blog_attachment, $user_founder;
 
-		$blog = $this->blog[$id];
+		$blog = &$this->blog[$id];
 		$user_id = $blog['user_id'];
 
 		if ($trim_text !== false)
@@ -454,6 +456,10 @@ class blog_data
 			$blog_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog_text);
 		}
 
+		// attachments
+		$update_count = array();
+		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
+
 		$reply_count = $reply_data->get_reply_data('reply_count', $id);
 
 		$blog_row = array(	
@@ -471,7 +477,6 @@ class blog_data
 
 			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=approve&amp;b=$id") : '',
 			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=delete&amp;b=$id") : '',
-			'U_DELETE_RATING'	=> (isset($this->user_rating[$user->data['user_id']][$id])) ? append_sid("{$phpbb_root_path}blogs.$phpEx", "page=rate&amp;delete=true&amp;b=$id") : '',
 			'U_DIGG'			=> (!$shortened) ? 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']) : '',
 			'U_EDIT'			=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=edit&amp;b=$id") : '',
 			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=quote&amp;b=$id") : '',
@@ -479,10 +484,12 @@ class blog_data
 			'U_VIEW'			=> append_sid("{$phpbb_root_path}blog.$phpEx", "b=$id"),
 			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
-			'S_DELETED'			=> ($blog['blog_deleted'] != 0) ? true : false,
+			'S_DELETED'			=> ($blog['blog_deleted']) ? true : false,
+			'S_DISPLAY_NOTICE'	=> (!$auth->acl_get('u_download') && $blog['blog_attachment']) ? true : false,
+			'S_HAS_ATTACHMENTS'	=> ($blog['blog_attachment']) ? true : false,
 			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport') || $user_founder)) ? true : false,
 			'S_SHORTENED'		=> $shortened,
-			'S_UNAPPROVED'		=> ($blog['blog_approved'] == 0 && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
+			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
 		);
 
 		return $blog_row;

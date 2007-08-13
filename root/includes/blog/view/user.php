@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 $user->add_lang('viewtopic');
 
 // for sorting and pagination
-$total_blogs = $blog_data->get_blog_data('user_count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false));
+$total_blogs = $blog_data->get_blog_info('user_count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false));
 $sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['BLOG_REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
 $sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
 gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);

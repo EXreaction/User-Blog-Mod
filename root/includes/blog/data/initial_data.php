@@ -14,12 +14,13 @@ if (!defined('IN_PHPBB'))
 }
 
 // set some initial variables that we will use
-$error = $blog_urls = array();
 $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
+$blog_attachment = new blog_attachment();
 $bbcode = new bbcode();
 $cp = new custom_profile();
+$error = $blog_urls = $foe_list = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
@@ -67,6 +68,9 @@ else
 {
 	$highlight_match = false;
 }
+
+// Get the Zebra data
+get_zebra_info();
 
 // get the replies data if it was requested
 if ($reply_id != 0)
@@ -124,7 +128,7 @@ $username = ($user_id != 0) ? $user_data->user[$user_id]['username'] : '';
 generate_blog_urls();
 
 // check to see if they are trying to view a feed, and make sure they used a variable that we accept for the format
-$feed = ( ($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT') ) ? $feed : false;
+$feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT')) && $config['user_blog_enable_feeds']) ? $feed : false;
 
 // Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];

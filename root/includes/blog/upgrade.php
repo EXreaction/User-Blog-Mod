@@ -111,6 +111,7 @@ while ($row = $old_db->sql_fetchrow($result))
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
 		'blog_deleted'			=> ($row['entry_deleted']) ? $row['entry_poster_id'] : 0,
 		'blog_read_count'		=> $row['entry_views'],
+		'blog_edit_reason'		=> '',
 	);
 
 	$sql2 = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
@@ -165,6 +166,7 @@ while ($row = $old_db->sql_fetchrow($result))
 		'enable_magic_url'		=> 1,
 		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
+		'reply_edit_reason'		=> '',
 	);
 
 	$sql2 = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);

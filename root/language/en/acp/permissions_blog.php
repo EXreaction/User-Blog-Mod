@@ -32,6 +32,8 @@ $lang = array_merge($lang, array(
 	'acl_u_blogimg'				=> array('lang' => 'Can post images in blogs and replies', 'cat' => 'blog'),
 	'acl_u_blogurl'				=> array('lang' => 'Can post URL\'s in blogs and replies', 'cat' => 'blog'),
 	'acl_u_blogflash'			=> array('lang' => 'Can post flash in blogs and replies', 'cat' => 'blog'),
+	'acl_u_blogattach'			=> array('lang' => 'Can post attachments in blogs and replies', 'cat' => 'blog'),
+	'acl_u_blognolimitattach'	=> array('lang' => 'Can ignore attachment size and amount limits', 'cat' => 'blog'),
 ));
 
 // Moderator Permissions

@@ -51,6 +51,11 @@ class user_data
 			$id = array($id);
 		}
 
+		if (!count($id))
+		{
+			return;
+		}
+
 		// this holds the user_id's we will query
 		$users_to_query = array();
 
@@ -62,7 +67,7 @@ class user_data
 			}
 		}
 
-		if (count($users_to_query) == 0)
+		if (!count($users_to_query))
 		{
 			return;
 		}
@@ -166,7 +171,7 @@ class user_data
 	function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
-		global $blog_data, $reply_data, $user_founder;
+		global $blog_data, $reply_data, $user_founder, $foe_list;
 
 		if ($output_custom == false)
 		{
@@ -180,9 +185,12 @@ class user_data
 				'RANK_TITLE'		=> $this->user[$user_id]['rank_title'],
 				'SIGNATURE'			=> $this->user[$user_id]['user_sig'],
 				'STATUS_IMG'		=> (($this->user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE')),
+				'USERNAME'			=> $this->user[$user_id]['username'],
 				'USER_COLOUR'		=> $this->user[$user_id]['user_colour'],
 				'USER_FULL'			=> $this->user[$user_id]['username_full'],
-				'USERNAME'			=> $this->user[$user_id]['username'],
+				'USER_FOE'			=> (in_array($user_id, $foe_list)) ? true : false,
+
+				'L_USER_FOE'		=> sprintf($user->lang['POST_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 
 				'U_AIM'				=> $this->user[$user_id]['aim_url'],
 				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete') || $user_founder) ? '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "mode=deleted&amp;u=$user_id") . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',

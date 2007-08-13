@@ -18,7 +18,7 @@ if (isset($config['user_blog_version']))
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
 }
 
-if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE'))
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_ATTACHMENT_TABLE'))
 {
 	trigger_error('INSTALL_IN_FILES_FIRST');
 }
@@ -56,6 +56,7 @@ if (confirm_box(true))
 				blog_read_count mediumint(8) unsigned NOT NULL default '1',
 				blog_reply_count mediumint(8) unsigned NOT NULL default '0',
 				blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
+				blog_attachment tinyint(1) unsigned NOT NULL default '0',
 				PRIMARY KEY (blog_id),
 				KEY user_id (user_id),
 				KEY user_ip (user_ip),
@@ -86,6 +87,7 @@ if (confirm_box(true))
 				reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
 				reply_deleted tinyint(1) unsigned NOT NULL default '0',
 				reply_deleted_time int(11) unsigned NOT NULL default '0',
+				reply_attachment tinyint(1) unsigned NOT NULL default '0',
 				PRIMARY KEY (reply_id),
 				KEY blog_id (blog_id),
 				KEY user_id (user_id),
@@ -99,10 +101,34 @@ if (confirm_box(true))
 				sub_type tinyint(1) unsigned NOT NULL default '0',
 				blog_id mediumint(8) unsigned NOT NULL default '0',
 				user_id mediumint(8) unsigned NOT NULL default '0',
-				PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id),
+				PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
+			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+
+			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
+				attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+				physical_filename varchar(255) DEFAULT '' NOT NULL,
+				real_filename varchar(255) DEFAULT '' NOT NULL,
+				download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				attach_comment text NOT NULL,
+				extension varchar(100) DEFAULT '' NOT NULL,
+				mimetype varchar(100) DEFAULT '' NOT NULL,
+				filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
+				filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
+				thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+				PRIMARY KEY (attach_id),
+				KEY filetime (filetime),
+				KEY blog_id (blog_id),
+				KEY reply_id (reply_id),
+				KEY poster_id (poster_id),
+				KEY is_orphan (is_orphan)
 			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
 			$sql_array[] = 'ALTER TABLE ' . USERS_TABLE . " ADD blog_count MEDIUMINT(8) default '0'";
+			$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
 			break;
 		default :
 			trigger_error('Only MySQL is supported at this time.  Please wait for a future release for this to be compatible with your DB.');
@@ -138,6 +164,8 @@ if (confirm_box(true))
 			'u_blogimg',
 			'u_blogurl',
 			'u_blogflash',
+			'u_blogattach',
+			'u_blognolimitattach',
 			'm_blogapprove',
 			'm_blogedit',
 			'm_bloglockedit',
@@ -154,6 +182,21 @@ if (confirm_box(true))
 			)
 	);
 	$auth_admin->acl_add_option($blog_permissions);
+
+	// Add config options
+	set_config('user_blog_enable', 1, 0);
+	set_config('user_blog_custom_profile_enable', 0, 0);
+	set_config('user_blog_text_limit', '50', 0);
+	set_config('user_blog_user_text_limit', '500', 0);
+	set_config('user_blog_inform', '2', 0);
+	set_config('user_blog_always_show_blog_url', 0, 0);
+	set_config('user_blog_founder_all_perm', 1, 0);
+	set_config('user_blog_force_prosilver', 0, 0);
+	set_config('user_blog_subscription_enabled', 1, 0);
+	set_config('user_blog_enable_zebra', 1, 0);
+	set_config('user_blog_enable_feeds', 1, 0);
+	set_config('user_blog_max_attachments', 3, 0);
+	set_config('user_blog_enable_attachments', 1, 0);
 
 	//insert the modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";
@@ -203,16 +246,6 @@ if (confirm_box(true))
 	
 	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 	$db->sql_query($sql);
-
-	set_config('user_blog_enable', 1, 0);
-	set_config('user_blog_custom_profile_enable', 0, 0);
-	set_config('user_blog_text_limit', '50', 0);
-	set_config('user_blog_user_text_limit', '500', 0);
-	set_config('user_blog_inform', '2', 0);
-	set_config('user_blog_always_show_blog_url', 0, 0);
-	set_config('user_blog_founder_all_perm', 1, 0);
-	set_config('user_blog_force_prosilver', 0, 0);
-	set_config('user_blog_subscription_enabled', 1, 0);
 
 	set_config('user_blog_version', $user_blog_version, 0);
 

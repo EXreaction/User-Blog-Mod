@@ -17,6 +17,8 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_BLOGS'							=> 'User Blog Mod',
 	'ADD_BLOG'							=> 'Add a new blog',
+	'ALLOWED_IN_BLOG'					=> 'Allowed in User Blogs',
+	'ALLOW_IN_BLOG'						=> 'Allow in User Blogs',
 	'ALREADY_INSTALLED'					=> 'You have already installed the user blog mod.<br/><br/>Click %shere%s to return to the main blog page.',
 	'ALREADY_SUBSCRIBED'				=> 'You are already subscribed',
 	'ALREADY_UPDATED'					=> 'You are running the latest version of the User Blog Mod.<br/><br/>Click %shere%s to return to the main blog page.',
@@ -72,6 +74,7 @@ $lang = array_merge($lang, array(
 	'BLOG_VIEW'							=> 'This blog has been viewed <b>1</b> time',
 	'BLOG_VIEWS'						=> 'This blog has been viewed <b>%s</b> times',
 
+	'CLICK_HERE_SHOW_POST'				=> 'Click here to show the post.',
 	'CONTINUED'							=> 'Continued',
 
 	'DEFAULT_TEXT_LIMIT'				=> 'Default text limit for main blog pages',
@@ -82,7 +85,6 @@ $lang = array_merge($lang, array(
 	'DELETED_MESSAGE_EXPLAIN_SINGLE'	=> 'There is a link in the "This blog was deleted by..." section to un-delete the blog.',
 	'DELETED_MESSAGE_SINGLE'			=> 'This blog has been deleted.',
 	'DELETED_REPLY_SHOW'				=> 'This reply has been soft deleted.  Click here to show the reply.',
-	'DELETED_REPLY_SHOW_NO_JS'			=> 'You must enable Javascript to view this post.',
 	'DELETE_BLOG'						=> 'Delete Blog',
 	'DELETE_BLOG_CONFIRM'				=> 'Are you sure you want to delete this blog?',
 	'DELETE_BLOG_WARN'					=> 'Once deleted, only a moderator or administrator can un-delete this blog',
@@ -116,6 +118,7 @@ $lang = array_merge($lang, array(
 	'MUST_BE_FOUNDER'					=> 'You must be a board founder to access this page.',
 	'MY_BLOGS'							=> 'My Blogs',
 
+	'NOT_ALLOWED_IN_BLOG'				=> 'Not allowed in User Blogs',
 	'NOT_SUBSCRIBED_BLOG'				=> 'You are not subscribed to this blog.',
 	'NOT_SUBSCRIBED_USER'				=> 'You are not subscribed to this user.',
 	'NO_BLOG'							=> 'The requested blog does not exist.',
@@ -133,6 +136,7 @@ $lang = array_merge($lang, array(
 	'POPULAR_BLOGS'						=> 'Popular Blogs',
 	'POST_A'							=> 'Post a new blog',
 	'POST_A_REPLY'						=> 'Post a new reply',
+	'POST_FOE'							=> 'This post was made by %s who is currently on your ignore list.',
 
 	'RANDOM_BLOGS'						=> 'Random Blogs',
 	'RECENT_BLOGS'						=> 'Recent Blogs',
@@ -152,6 +156,7 @@ $lang = array_merge($lang, array(
 	'REPLY_REPORT_CONFIRM'				=> 'Are you sure you want to report this reply?',
 	'REPLY_REPORT_PM'					=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just reported <a href="%2$s">this reply</a>.<br/>Please take the time to read over the reply and decide what needs to be done.',
 	'REPLY_REPORT_PM_SUBJECT'			=> 'Blog Reply Reported!',
+	'REPLY_SHOW_NO_JS'					=> 'You must enable Javascript to view this post.',
 	'REPLY_SUBMITTED'					=> 'Your reply has been submitted!',
 	'REPLY_UNAPPROVED'					=> 'Reply Needs Approval',
 	'REPLY_UNDELETED'					=> 'The reply has been un-deleted.',
