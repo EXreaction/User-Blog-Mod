@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.12
+## MOD Version: 0.3.12b
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~10 Minutes
@@ -49,15 +49,8 @@
 ## 2007-07-12 Alpha 8 Released
 ## 2007-07-28 Alpha 9 Released
 ## 2007-07-29 Alpha 9.a Released
-## 2007-07-30
-##		Alpha 10 Released
-##			+ Fixing many bugs that were introduced with the code overhaul in Alpha 9.
-##			+ To upgrade, first apply the code changes to adm/index.php, then make sure the code is updated for includes/constants.php and viewtopic.php
-##				- Then upload the new files and go to blog.php?page=update in your web browser
-## 2007-07-31
-##		Alpha 10.a Released
-##			+ Had an oops in blog.php. :P
-##			+ To upgrade just upload the new blog.php file
+## 2007-07-30 Alpha 10 Released
+## 2007-07-31 Alpha 10.a Released
 ## 2007-08-04
 ##		Alpha 11 Released
 ##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
@@ -71,6 +64,13 @@
 ##					+ since I had to do a lot of quick hacks over the existing phpBB3 attachment code to get it to work.
 ##			+ To upgrade, first do the new file edits to adm/style/acp_attachments.html and includes/acp/acp_attachments.php, then re-do the edits to includes/constants.php
 ##				- then upload the new files, and finally, point your browser to blog.php?page=update
+## 2007-08-13
+##		Alpha 13a Released
+##			+ Fixing a bug where certain users couldn't view attachments even if they had the correct permissions.
+##			+ To upgrade just upload the new files.## 2007-08-13
+##		Alpha 13b Released
+##			+ Fixing the bug where blogs/replies are always approved even though they shouldn't be via permissions for the user
+##			+ To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

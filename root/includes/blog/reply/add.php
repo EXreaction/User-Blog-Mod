@@ -189,7 +189,7 @@ else // user submitted and there are no errors
 		'reply_subject'			=> $reply_subject,
 		'reply_text'			=> $message_parser->message,
 		'reply_checksum'		=> md5($message_parser->message),
-		'reply_approved' 		=> check_blog_permissions('reply', 'no_approve', true),
+		'reply_approved' 		=> ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0,
 		'enable_bbcode' 		=> $post_options->enable_bbcode,
 		'enable_smilies'		=> $post_options->enable_smilies,
 		'enable_magic_url'		=> $post_options->enable_magic_url,

@@ -156,7 +156,7 @@ else // user submitted and there are no errors
 		'blog_subject'				=> $blog_subject,
 		'blog_text'					=> $message_parser->message,
 		'blog_checksum'				=> md5($message_parser->message),
-		'blog_approved' 			=> check_blog_permissions('blog', 'no_approve', true),
+		'blog_approved' 			=> ($auth->acl_get('u_blognoapprove') || $user_founder) ? 1 : 0,
 		'enable_bbcode' 			=> $post_options->enable_bbcode,
 		'enable_smilies'			=> $post_options->enable_smilies,
 		'enable_magic_url'			=> $post_options->enable_magic_url,
