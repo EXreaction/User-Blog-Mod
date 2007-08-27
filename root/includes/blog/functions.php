@@ -14,7 +14,7 @@ if (!defined('IN_PHPBB'))
 }
 
 // Include the constants.php file
-if (!$phpbb_root_path || !$phpEx)
+if (!isset($phpbb_root_path) || !isset($phpEx))
 {
 	global $phpbb_root_path, $phpEx;
 }

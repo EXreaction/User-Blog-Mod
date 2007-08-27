@@ -90,14 +90,6 @@ include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/attachment_data.' . $phpEx);
 
 // We will set all of the initial data by including this file
 include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);

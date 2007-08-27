@@ -13,6 +13,16 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// include the files for this mod
+include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/data/attachment_data.' . $phpEx);
+
 // set some initial variables that we will use
 $blog_data = new blog_data();
 $reply_data = new reply_data();

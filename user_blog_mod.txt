@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.13
+## MOD Version: 0.3.13a
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~10 Minutes
@@ -51,9 +51,7 @@
 ## 2007-07-30 Alpha 10 Released
 ## 2007-07-31 Alpha 10.a Released
 ## 2007-08-04 Alpha 11 Released
-## 2007-08-07
-##		Alpha 12 Released
-##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
+## 2007-08-07 Alpha 12 Released
 ## 2007-08-12
 ##		Alpha 13 Released
 ##			+ Say hello to Attachments. :)
@@ -73,6 +71,10 @@
 ##		Alpha 14 Released
 ##			+ Fixing a few bugs mostly.
 ##			+ To upgrade, upload the new files, remove the old file edits from includes/constants.php, and then point your browser to blog.php?page=update.
+## 2007-08-27
+##		Alpha 14a Released
+##			+ Fixing a bug with the way I changed constants.php around (strange how I didn't get this error yesterday yet I did first thing this morning).
+##			+ To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
