@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.12b
+## MOD Version: 0.3.13
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~10 Minutes
@@ -12,7 +12,6 @@
 ## Files To Edit:	adm/style/acp_attachments.html
 ##					adm/index.php
 ##					includes/acp/acp_attachments.php
-##					includes/constants.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
 ##					viewtopic.php
@@ -24,7 +23,7 @@
 ## Author Notes:
 ##	This is Alpha quality software.  Do not install unless you are willing to lose any
 ##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
-##		I will take no resposibility for the use of this mod in a live environment.
+##		I will take no resposibility for any damage with the use of this mod in a live environment.
 ##
 ##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
 ##
@@ -51,9 +50,7 @@
 ## 2007-07-29 Alpha 9.a Released
 ## 2007-07-30 Alpha 10 Released
 ## 2007-07-31 Alpha 10.a Released
-## 2007-08-04
-##		Alpha 11 Released
-##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
+## 2007-08-04 Alpha 11 Released
 ## 2007-08-07
 ##		Alpha 12 Released
 ##			+ To upgrade upload the new files, then point your browser to blog.php?page=update
@@ -64,13 +61,18 @@
 ##					+ since I had to do a lot of quick hacks over the existing phpBB3 attachment code to get it to work.
 ##			+ To upgrade, first do the new file edits to adm/style/acp_attachments.html and includes/acp/acp_attachments.php, then re-do the edits to includes/constants.php
 ##				- then upload the new files, and finally, point your browser to blog.php?page=update
-## 2007-08-13
+## 2007-08-14
 ##		Alpha 13a Released
 ##			+ Fixing a bug where certain users couldn't view attachments even if they had the correct permissions.
-##			+ To upgrade just upload the new files.## 2007-08-13
+##			+ To upgrade just upload the new files.
+## 2007-08-15
 ##		Alpha 13b Released
 ##			+ Fixing the bug where blogs/replies are always approved even though they shouldn't be via permissions for the user
 ##			+ To upgrade just upload the new files.
+## 2007-08-26
+##		Alpha 14 Released
+##			+ Fixing a few bugs mostly.
+##			+ To upgrade, upload the new files, remove the old file edits from includes/constants.php, and then point your browser to blog.php?page=update.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -211,29 +213,6 @@ includes/acp/acp_attachments.php
 #-----[ OPEN ]---------------------------------------------
 #
 
-includes/constants.php
-
-#
-#-----[ FIND ]---------------------------------------------
-#
-
-// Additional tables
-
-#
-#-----[ AFTER, ADD ]---------------------------------------
-#
-
-// Start Add User Blog Mod ------------------
-define('BLOGS_TABLE',				$table_prefix . 'blogs');
-define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
-define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
-define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
-// End Add User Blog Mod --------------------
-
-#
-#-----[ OPEN ]---------------------------------------------
-#
-
 includes/functions.php
 
 #
@@ -309,6 +288,8 @@ viewtopic.php
 #
 #-----[ DIY ]---------------------------------------------
 #
+
+CHMOD files/blog_mod 777.
 
 Go to blog.php?page=install in your web browser to install the database.
 

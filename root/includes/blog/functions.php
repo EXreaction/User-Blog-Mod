@@ -13,6 +13,13 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Include the constants.php file
+if (!$phpbb_root_path || !$phpEx)
+{
+	global $phpbb_root_path, $phpEx;
+}
+include($phpbb_root_path . 'includes/blog/data/constants.' . $phpEx);
+
 /**
 * Gets Zebra (friend/foe)  info
 *
@@ -669,7 +676,7 @@ function generate_menu($user_id)
 function generate_blog_urls()
 {
 	global $phpbb_root_path, $phpEx, $config, $user;
-	global $blog_id, $reply_id, $user_id;
+	global $blog_id, $reply_id, $user_id, $start;
 	global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls;
 
 	$self = $_SERVER['REQUEST_URI'];
@@ -678,7 +685,7 @@ function generate_blog_urls()
 		'main'				=> append_sid("{$phpbb_root_path}blog.$phpEx"),
 		'self'				=> reapply_sid($self),
 		'self_print'		=> reapply_sid($self . '&amp;view=print'),
-		'self_minus_start'	=> (strpos($self, 'start=')) ? reapply_sid(substr($self, 0, (strpos($self, 'start=')) - 1) . substr($self, (strpos($self, 'start=')) + 8)) : reapply_sid($self),
+		'self_minus_start'	=> (strpos($self, 'start=')) ? reapply_sid(substr($self, 0, (strpos($self, 'start=')) - 1) . substr($self, (strpos($self, 'start=')) + 6 + strlen($start))) : reapply_sid($self),
 		'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=subscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
 		'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=unsubscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
 

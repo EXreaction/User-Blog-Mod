@@ -108,6 +108,7 @@ $lang = array_merge($lang, array(
 	'ENABLE_USER_BLOG_EXPLAIN'			=> 'Note that the ACP sections of the User Blog Mod will always stay enabled as long as it is installed.',
 
 	'FEED'								=> 'Blog Feed',
+	'FILES_CANT_WRITE'					=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
 	'FOUNDER_ALL_PERMISSION'			=> 'Give Board Founders all permissions for this mod',
 
 	'INSTALL_BLOG_DB'					=> 'Install User Blog Mod',

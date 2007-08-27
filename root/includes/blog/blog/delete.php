@@ -54,6 +54,18 @@ if (confirm_box(true))
 		// delete the replies
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
+
+		// delete the attachments
+		$blog_attachment->get_attachment_data($blog_id);
+		if (count($blog_data->blog[$blog_id]['attachment_data']))
+		{
+			foreach ($blog_data->blog[$blog_id]['attachment_data'] as $null => $data)
+			{
+				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
+				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
+				$db->sql_query($sql);
+			}
+		}
 	}
 	else
 	{

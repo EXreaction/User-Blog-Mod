@@ -23,6 +23,15 @@ if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_
 	trigger_error('INSTALL_IN_FILES_FIRST');
 }
 
+if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
+{
+	@chmod($phpbb_root_path . 'files/blog_mod/', 0777);
+	if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
+	{
+		trigger_error('FILES_CANT_WRITE');
+	}
+}
+
 if (confirm_box(true))
 {
 	$sql_array = array();
@@ -31,101 +40,202 @@ if (confirm_box(true))
 	{
 		case 'mysql' :
 		case 'mysqli' :
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_TABLE . " (
-				blog_id mediumint(8) unsigned NOT NULL auto_increment,
-				user_id mediumint(8) unsigned NOT NULL default '0',
-				user_ip varchar(40) collate utf8_bin NOT NULL default '',
-				blog_subject varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
-				blog_text mediumtext character set utf8 collate utf8_unicode_ci NOT NULL,
-				blog_checksum varchar(32) collate utf8_bin NOT NULL default '',
-				blog_time int(11) unsigned NOT NULL default '0',
-				blog_approved tinyint(1) unsigned NOT NULL default '1',
-				blog_reported tinyint(1) unsigned NOT NULL default '0',
-				enable_bbcode tinyint(1) unsigned NOT NULL default '1',
-				enable_smilies tinyint(1) unsigned NOT NULL default '1',
-				enable_magic_url tinyint(1) unsigned NOT NULL default '1',
-				bbcode_bitfield varchar(255) collate utf8_bin NOT NULL default '',
-				bbcode_uid varchar(5) collate utf8_bin NOT NULL default '',
-				blog_edit_time int(11) unsigned NOT NULL default '0',
-				blog_edit_reason varchar(255) collate utf8_bin NOT NULL,
-				blog_edit_user mediumint(8) unsigned NOT NULL default '0',
-				blog_edit_count smallint(4) unsigned NOT NULL default '0',
-				blog_edit_locked tinyint(1) unsigned NOT NULL default '0',
-				blog_deleted tinyint(1) unsigned NOT NULL default '0',
-				blog_deleted_time int(11) unsigned NOT NULL default '0',
-				blog_read_count mediumint(8) unsigned NOT NULL default '1',
-				blog_reply_count mediumint(8) unsigned NOT NULL default '0',
-				blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
-				blog_attachment tinyint(1) unsigned NOT NULL default '0',
-				PRIMARY KEY (blog_id),
-				KEY user_id (user_id),
-				KEY user_ip (user_ip),
-				KEY blog_approved (blog_approved),
-				KEY blog_deleted (blog_deleted)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+			if (version_compare($db->mysql_version, '4.1.3', '>='))
+			{
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_TABLE . " (
+					blog_id mediumint(8) unsigned NOT NULL auto_increment,
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					user_ip varchar(40) NOT NULL default '',
+					blog_subject varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
+					blog_text mediumtext character set utf8 collate utf8_unicode_ci NOT NULL,
+					blog_checksum varchar(32) NOT NULL default '',
+					blog_time int(11) unsigned NOT NULL default '0',
+					blog_approved tinyint(1) unsigned NOT NULL default '1',
+					blog_reported tinyint(1) unsigned NOT NULL default '0',
+					enable_bbcode tinyint(1) unsigned NOT NULL default '1',
+					enable_smilies tinyint(1) unsigned NOT NULL default '1',
+					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
+					bbcode_bitfield varchar(255) NOT NULL default '',
+					bbcode_uid varchar(5) NOT NULL default '',
+					blog_edit_time int(11) unsigned NOT NULL default '0',
+					blog_edit_reason varchar(255) NOT NULL,
+					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
+					blog_edit_count smallint(4) unsigned NOT NULL default '0',
+					blog_edit_locked tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted_time int(11) unsigned NOT NULL default '0',
+					blog_read_count mediumint(8) unsigned NOT NULL default '1',
+					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
+					blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
+					blog_attachment tinyint(1) unsigned NOT NULL default '0',
+					PRIMARY KEY (blog_id),
+					KEY user_id (user_id),
+					KEY user_ip (user_ip),
+					KEY blog_approved (blog_approved),
+					KEY blog_deleted (blog_deleted)
+				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_REPLY_TABLE . " (
-				reply_id mediumint(8) unsigned NOT NULL auto_increment,
-				blog_id mediumint(8) unsigned NOT NULL,
-				user_id mediumint(8) unsigned NOT NULL default '0',
-				user_ip varchar(40) collate utf8_bin NOT NULL default '',
-				reply_subject varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
-				reply_text mediumtext character set utf8 collate utf8_unicode_ci NOT NULL,
-				reply_checksum varchar(32) collate utf8_bin NOT NULL default '',
-				reply_time int(11) unsigned NOT NULL default '0',
-				reply_approved tinyint(1) unsigned NOT NULL default '1',
-				reply_reported tinyint(1) unsigned NOT NULL default '0',
-				enable_bbcode tinyint(1) unsigned NOT NULL default '1',
-				enable_smilies tinyint(1) unsigned NOT NULL default '1',
-				enable_magic_url tinyint(1) unsigned NOT NULL default '1',
-				bbcode_bitfield varchar(255) collate utf8_bin NOT NULL default '',
-				bbcode_uid varchar(5) collate utf8_bin NOT NULL default '',
-				reply_edit_time int(11) unsigned NOT NULL default '0',
-				reply_edit_reason varchar(255) collate utf8_bin NOT NULL,
-				reply_edit_user mediumint(8) unsigned NOT NULL default '0',
-				reply_edit_count smallint(4) unsigned NOT NULL default '0',
-				reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
-				reply_deleted tinyint(1) unsigned NOT NULL default '0',
-				reply_deleted_time int(11) unsigned NOT NULL default '0',
-				reply_attachment tinyint(1) unsigned NOT NULL default '0',
-				PRIMARY KEY (reply_id),
-				KEY blog_id (blog_id),
-				KEY user_id (user_id),
-				KEY user_ip (user_ip),
-				KEY reply_approved (reply_approved),
-				KEY reply_deleted (reply_deleted)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_REPLY_TABLE . " (
+					reply_id mediumint(8) unsigned NOT NULL auto_increment,
+					blog_id mediumint(8) unsigned NOT NULL,
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					user_ip varchar(40) NOT NULL default '',
+					reply_subject varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
+					reply_text mediumtext character set utf8 collate utf8_unicode_ci NOT NULL,
+					reply_checksum varchar(32) NOT NULL default '',
+					reply_time int(11) unsigned NOT NULL default '0',
+					reply_approved tinyint(1) unsigned NOT NULL default '1',
+					reply_reported tinyint(1) unsigned NOT NULL default '0',
+					enable_bbcode tinyint(1) unsigned NOT NULL default '1',
+					enable_smilies tinyint(1) unsigned NOT NULL default '1',
+					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
+					bbcode_bitfield varchar(255) NOT NULL default '',
+					bbcode_uid varchar(5) NOT NULL default '',
+					reply_edit_time int(11) unsigned NOT NULL default '0',
+					reply_edit_reason varchar(255) collate utf8_bin NOT NULL,
+					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
+					reply_edit_count smallint(4) unsigned NOT NULL default '0',
+					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted_time int(11) unsigned NOT NULL default '0',
+					reply_attachment tinyint(1) unsigned NOT NULL default '0',
+					PRIMARY KEY (reply_id),
+					KEY blog_id (blog_id),
+					KEY user_id (user_id),
+					KEY user_ip (user_ip),
+					KEY reply_approved (reply_approved),
+					KEY reply_deleted (reply_deleted)
+				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_SUBSCRIPTION_TABLE . " (
-				sub_user_id mediumint(8) unsigned NOT NULL default '0',
-				sub_type tinyint(1) unsigned NOT NULL default '0',
-				blog_id mediumint(8) unsigned NOT NULL default '0',
-				user_id mediumint(8) unsigned NOT NULL default '0',
-				PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_SUBSCRIPTION_TABLE . " (
+					sub_user_id mediumint(8) unsigned NOT NULL default '0',
+					sub_type tinyint(1) unsigned NOT NULL default '0',
+					blog_id mediumint(8) unsigned NOT NULL default '0',
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
+				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-				attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-				physical_filename varchar(255) DEFAULT '' NOT NULL,
-				real_filename varchar(255) DEFAULT '' NOT NULL,
-				download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				attach_comment text NOT NULL,
-				extension varchar(100) DEFAULT '' NOT NULL,
-				mimetype varchar(100) DEFAULT '' NOT NULL,
-				filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-				filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-				PRIMARY KEY (attach_id),
-				KEY filetime (filetime),
-				KEY blog_id (blog_id),
-				KEY reply_id (reply_id),
-				KEY poster_id (poster_id),
-				KEY is_orphan (is_orphan)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
+					attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+					blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+					physical_filename varchar(255) DEFAULT '' NOT NULL,
+					real_filename varchar(255) DEFAULT '' NOT NULL,
+					download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					attach_comment text NOT NULL,
+					extension varchar(100) DEFAULT '' NOT NULL,
+					mimetype varchar(100) DEFAULT '' NOT NULL,
+					filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
+					filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
+					thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+					PRIMARY KEY (attach_id),
+					KEY filetime (filetime),
+					KEY blog_id (blog_id),
+					KEY reply_id (reply_id),
+					KEY poster_id (poster_id),
+					KEY is_orphan (is_orphan)
+				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+			}
+			else
+			{
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_TABLE . " (
+					blog_id mediumint(8) unsigned NOT NULL auto_increment,
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					user_ip varchar(40) NOT NULL default '',
+					blog_subject varchar(255) NOT NULL,
+					blog_text mediumtext NOT NULL,
+					blog_checksum varchar(32) NOT NULL default '',
+					blog_time int(11) unsigned NOT NULL default '0',
+					blog_approved tinyint(1) unsigned NOT NULL default '1',
+					blog_reported tinyint(1) unsigned NOT NULL default '0',
+					enable_bbcode tinyint(1) unsigned NOT NULL default '1',
+					enable_smilies tinyint(1) unsigned NOT NULL default '1',
+					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
+					bbcode_bitfield varchar(255) NOT NULL default '',
+					bbcode_uid varchar(5) NOT NULL default '',
+					blog_edit_time int(11) unsigned NOT NULL default '0',
+					blog_edit_reason varchar(255) NOT NULL,
+					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
+					blog_edit_count smallint(4) unsigned NOT NULL default '0',
+					blog_edit_locked tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted_time int(11) unsigned NOT NULL default '0',
+					blog_read_count mediumint(8) unsigned NOT NULL default '1',
+					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
+					blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
+					blog_attachment tinyint(1) unsigned NOT NULL default '0',
+					PRIMARY KEY (blog_id),
+					KEY user_id (user_id),
+					KEY user_ip (user_ip),
+					KEY blog_approved (blog_approved),
+					KEY blog_deleted (blog_deleted)
+				);";
+
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_REPLY_TABLE . " (
+					reply_id mediumint(8) unsigned NOT NULL auto_increment,
+					blog_id mediumint(8) unsigned NOT NULL,
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					user_ip varchar(40) NOT NULL default '',
+					reply_subject varchar(255) NOT NULL,
+					reply_text mediumtext NOT NULL,
+					reply_checksum varchar(32) NOT NULL default '',
+					reply_time int(11) unsigned NOT NULL default '0',
+					reply_approved tinyint(1) unsigned NOT NULL default '1',
+					reply_reported tinyint(1) unsigned NOT NULL default '0',
+					enable_bbcode tinyint(1) unsigned NOT NULL default '1',
+					enable_smilies tinyint(1) unsigned NOT NULL default '1',
+					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
+					bbcode_bitfield varchar(255) NOT NULL default '',
+					bbcode_uid varchar(5) NOT NULL default '',
+					reply_edit_time int(11) unsigned NOT NULL default '0',
+					reply_edit_reason varchar(255) collate utf8_bin NOT NULL,
+					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
+					reply_edit_count smallint(4) unsigned NOT NULL default '0',
+					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted_time int(11) unsigned NOT NULL default '0',
+					reply_attachment tinyint(1) unsigned NOT NULL default '0',
+					PRIMARY KEY (reply_id),
+					KEY blog_id (blog_id),
+					KEY user_id (user_id),
+					KEY user_ip (user_ip),
+					KEY reply_approved (reply_approved),
+					KEY reply_deleted (reply_deleted)
+				);";
+
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_SUBSCRIPTION_TABLE . " (
+					sub_user_id mediumint(8) unsigned NOT NULL default '0',
+					sub_type tinyint(1) unsigned NOT NULL default '0',
+					blog_id mediumint(8) unsigned NOT NULL default '0',
+					user_id mediumint(8) unsigned NOT NULL default '0',
+					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
+				);";
+
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
+					attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+					blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+					physical_filename varchar(255) DEFAULT '' NOT NULL,
+					real_filename varchar(255) DEFAULT '' NOT NULL,
+					download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+					attach_comment text NOT NULL,
+					extension varchar(100) DEFAULT '' NOT NULL,
+					mimetype varchar(100) DEFAULT '' NOT NULL,
+					filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
+					filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
+					thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+					PRIMARY KEY (attach_id),
+					KEY filetime (filetime),
+					KEY blog_id (blog_id),
+					KEY reply_id (reply_id),
+					KEY poster_id (poster_id),
+					KEY is_orphan (is_orphan)
+				);";
+			}
 
 			$sql_array[] = 'ALTER TABLE ' . USERS_TABLE . " ADD blog_count MEDIUMINT(8) default '0'";
 			$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";

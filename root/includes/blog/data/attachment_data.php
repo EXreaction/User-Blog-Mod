@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 
 // If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
@@ -126,7 +126,7 @@ class blog_attachment
 	/**
 	* Get Attachment Data
 	*
-	* Grabs attachment data for blogs and replies
+	* Grabs attachment data for blogs and replies.
 	*
 	* @param int|array $blog_ids An array of blog_ids to look up
 	* @param int|array|bool $reply_ids An array of reply_ids to look up
@@ -168,6 +168,44 @@ class blog_attachment
 				$blog_data->blog[$row['blog_id']]['attachment_data'][] = $row;
 			}
 		}
+
+		/* This code really isn't needed I guess...it checks for every blog/reply viewed to make sure that if it says it has an attachment that it does, otherwise it updates accordingly.
+			The reason it isn't needed is because the only way it would require this is if you had manually deleted data from the database (not a good idea).  But I will keep the code here...
+		$remove_att_from_blog = array();
+		$remove_att_from_reply = array();
+		foreach ($blog_ids as $blog_id)
+		{
+			if ($blog_data->blog[$blog_id]['blog_attachment'] && !count($blog_data->blog[$blog_id]['attachment_data']))
+			{
+				$remove_att_from_blog[] = $blog_id;
+				$blog_data->blog[$blog_id]['blog_attachment'] = '0';
+			}
+		}
+		if ($reply_ids !== false)
+		{
+			foreach ($reply_ids as $reply_id)
+			{
+				if ($reply_data->reply[$reply_id]['reply_attachment'] && !count($reply_data->reply[$reply_id]['attachment_data']))
+				{
+					$remove_att_from_reply[] = $reply_id;
+					$reply_data->reply[$reply_id]['reply_attachment'] = '0';
+				}
+			}
+		}
+
+		if (count($remove_att_from_blog))
+		{
+			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_attachment = \'0\'
+				WHERE ' . $db->sql_in_set('blog_id', $remove_att_from_blog);
+			$db->sql_query($sql);
+		}
+		if (count($remove_att_from_reply))
+		{
+			$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_attachment = \'0\'
+				WHERE ' . $db->sql_in_set('reply_id', $remove_att_from_reply);
+			$db->sql_query($sql);
+		}
+		*/
 	}
 
 	/**

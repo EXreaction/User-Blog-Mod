@@ -85,21 +85,15 @@ else
 	{
 		if ($reply_id != 0)
 		{
-			if ($reply_data->get_reply_data(array('reply_id' => $reply_id, 'simple' => true)) !== false)
-			{
-				$reply_subject = 'RE: ' . $reply_data->reply[$reply_id]['reply_subject'];
-				decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
-				$reply_text = '[quote="' . $user_data->user[$reply_user_id]['username'] . '"]' . $reply_data->reply[$reply_id]['reply_text'] . '[/quote]';;
-			}
+			$reply_subject = 'RE: ' . $reply_data->reply[$reply_id]['reply_subject'];
+			decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
+			$reply_text = '[quote="' . $user_data->user[$reply_user_id]['username'] . '"]' . $reply_data->reply[$reply_id]['reply_text'] . '[/quote]';;
 		}
-		else if ($blog_id != 0)
+		else
 		{
-			if ($blog_data->get_blog_data(array('blog_id' => $blog_id, 'simple' => true)) !== false)
-			{
-				decode_message($blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['bbcode_uid']);
-				$reply_subject = 'RE: ' . $blog_data->blog[$blog_id]['blog_subject'];
-				$reply_text = '[quote="' . $user_data->user[$user_id]['username'] . '"]' . $blog_data->blog[$blog_id]['blog_text'] . '[/quote]';;
-			}
+			decode_message($blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['bbcode_uid']);
+			$reply_subject = 'RE: ' . $blog_data->blog[$blog_id]['blog_subject'];
+			$reply_text = '[quote="' . $user_data->user[$user_id]['username'] . '"]' . $blog_data->blog[$blog_id]['blog_text'] . '[/quote]';;
 		}
 	}
 	else

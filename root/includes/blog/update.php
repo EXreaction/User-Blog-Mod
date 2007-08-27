@@ -151,6 +151,7 @@ if (confirm_box(true))
 					)
 			);
 			$auth_admin->acl_add_option($blog_permissions);
+		case 'A13' :
 	}
 
 	if (count($sql_array))
