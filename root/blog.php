@@ -13,7 +13,6 @@
 *
 * LOW PRIORITY --------------------
 * Make attachments option an add-on.
-* Check to make sure any kind of files are allowed to be uploaded.  If not then do not show the upload section at all.
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
@@ -165,6 +164,9 @@ $template->assign_vars(array(
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 ));
 
-// setup the page footer
-page_footer();
+if ($page != 'download')
+{
+	// setup the page footer
+	page_footer();
+}
 ?>

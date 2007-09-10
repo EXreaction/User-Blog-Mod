@@ -136,5 +136,3 @@ function getElementsByClassName(strClassName, strTagName, oElm){
     }
     return (arrReturnElements)
 }
-
-window.onload = init;

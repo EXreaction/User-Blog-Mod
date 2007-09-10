@@ -13,22 +13,24 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-if (!isset($phpbb_root_path) || !isset($phpEx))
+if (!defined('BLOGS_TABLE'))
 {
-	global $phpbb_root_path, $phpEx;
+	if (!isset($phpbb_root_path) || !isset($phpEx))
+	{
+		global $phpbb_root_path, $phpEx;
+	}
+
+	if (!isset($table_prefix))
+	{
+		include($phpbb_root_path . 'config.' . $phpEx);
+		unset($dbname);
+		unset($dbuser);
+		unset($dbpasswd);
+	}
+
+	define('BLOGS_TABLE',				$table_prefix . 'blogs');
+	define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
+	define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
+	define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 }
-
-if (!isset($table_prefix))
-{
-	include($phpbb_root_path . 'config.' . $phpEx);
-	unset($dbname);
-	unset($dbuser);
-	unset($dbpasswd);
-}
-
-define('BLOGS_TABLE',				$table_prefix . 'blogs');
-define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
-define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
-define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
-
 ?>

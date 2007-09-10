@@ -39,7 +39,7 @@ if ($reported_blog_ids !== false)
 {
 	foreach ($reported_blog_ids as $id)
 	{
-		$user_row = $blog_data->handle_user_data($blog_data->blog[$id]['user_id']);
+		$user_row = $user_data->handle_user_data($blog_data->blog[$id]['user_id']);
 		$blog_row = $blog_data->handle_blog_data($id, 50, 'reported_blogs');
 
 		$template->assign_block_vars('blog_reportedrow', $user_row + $blog_row);

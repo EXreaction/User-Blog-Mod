@@ -425,6 +425,11 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		return;
 	}
 
+	if (!isset($user->lang['BLOG']))
+	{
+		$user->add_lang('mods/blog');
+	}
+
 	// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
 	if ($user_id > 1 && !isset($user_data['blog_count']) && $grab_from_db)
 	{
@@ -588,14 +593,12 @@ function generate_menu($user_id)
 	// Last Month's ID(set to 0 now, will be updated in the loop)
 	$last_mon = 0;
 
-	// Count Variable
-	$i = 0;
 	$archive_rows = array();
 
 	// attempt to get the data from the cache
-	$cache_data = $cache->get("_blogarchive{$user_id}");
+	$cache_data = $cache->get("_blog_archive{$user_id}");
 
-	if ($cache->get("_blogarchive{$user_id}") === false)
+	if ($cache_data === false)
 	{
 		$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
 					WHERE user_id = \'' . $user_id . '\'
@@ -610,23 +613,14 @@ function generate_menu($user_id)
 			// If we are starting a new month
 			if ($date['mon'] != $last_mon)
 			{
-				if (isset($archive_row))
-				{
-					$archive_rows[] = $archive_row;
-				}
-
 				$archive_row = array(
 					'MONTH'			=> $date['month'],
 					'YEAR'			=> $date['year'],
 
-					'S_FIRST'		=> ($i == 0) ? true : false,
-					'I'				=> $i,
-
 					'monthrow'		=> array(),
 				);
 
-				// Output the month and year
-				$template->assign_block_vars('archiverow', $archive_row);
+				$archive_rows[] = $archive_row;
 			}
 
 			$archive_row_month = array(
@@ -635,38 +629,30 @@ function generate_menu($user_id)
 				'DATE'			=> $user->format_date($row['blog_time']),
 			);
 
-			// Now output the title, view blog link, and date
-			$template->assign_block_vars('archiverow.monthrow', $archive_row_month);
-
-			$archive_row['monthrow'][] = $archive_row_month;
+			$archive_rows[count($archive_rows) - 1]['monthrow'][] = $archive_row_month;
 
 			// set the last month variable as the current month
 			$last_mon = $date['mon'];
-
-			// Increment the counter
-			$i++;
 		}
 		$db->sql_freeresult($result);
 
 		// cache the result
-		$cache->put("_blogarchive{$user_id}", $archive_rows);
+		$cache->put("_blog_archive{$user_id}", $archive_rows);
+		$cache_data = $archive_rows;
 	}
-	else
+
+	if (count($cache_data))
 	{
-		if (count($cache_data))
+		foreach($cache_data as $row)
 		{
-			foreach($cache_data as $row)
-			{
-				$template->assign_block_vars('archiverow', $row);
-				$i++;
-			}
+			$template->assign_block_vars('archiverow', $row);
 		}
 	}
 
 	// output some data
 	$template->assign_vars(array(
 		// are there any archives?
-		'S_ARCHIVES'	=> ($i > 0) ? true : false,
+		'S_ARCHIVES'	=> (count($cache_data)) ? true : false,
 	));
 }
 

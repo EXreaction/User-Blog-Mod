@@ -418,6 +418,7 @@ class blog_attachment
 	function get_submitted_attachment_data($check_user_id = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth;
+		global $user_founder;
 
 		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_blogattach') && !$user_founder))
 		{

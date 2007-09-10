@@ -136,7 +136,12 @@ if (!$submit || sizeof($error))
 	// Attachment entry
 	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
 	{
-		$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
+		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
+
+		if (count($allowed_extensions['_allowed_']))
+		{
+			$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
+		}
 	}
 
 	// Generate smiley listing

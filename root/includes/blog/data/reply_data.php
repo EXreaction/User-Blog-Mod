@@ -125,6 +125,11 @@ class reply_data
 									$limit_sql;
 				break;
 			case 'reply_count' : // for counting how many replies there are for a blog
+				if ($blog_data->blog[$id[0]]['blog_real_reply_count'] == 0 || $blog_data->blog[$id[0]]['blog_real_reply_count'] == $blog_data->blog[$id[0]]['blog_reply_count'])
+				{
+					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
+				}
+
 				if ($sort_days_sql == '' && (($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')) || $user_founder))
 				{
 					return $blog_data->blog[$id[0]]['blog_real_reply_count'];

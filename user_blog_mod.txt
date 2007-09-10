@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.13a
+## MOD Version: 0.3.13b
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~10 Minutes
@@ -52,13 +52,7 @@
 ## 2007-07-31 Alpha 10.a Released
 ## 2007-08-04 Alpha 11 Released
 ## 2007-08-07 Alpha 12 Released
-## 2007-08-12
-##		Alpha 13 Released
-##			+ Say hello to Attachments. :)
-##				- Because of all the major changes that were put in this release may be buggy.  Attachments will probably be buggy for sure,
-##					+ since I had to do a lot of quick hacks over the existing phpBB3 attachment code to get it to work.
-##			+ To upgrade, first do the new file edits to adm/style/acp_attachments.html and includes/acp/acp_attachments.php, then re-do the edits to includes/constants.php
-##				- then upload the new files, and finally, point your browser to blog.php?page=update
+## 2007-08-12 Alpha 13 Released
 ## 2007-08-14
 ##		Alpha 13a Released
 ##			+ Fixing a bug where certain users couldn't view attachments even if they had the correct permissions.
@@ -74,6 +68,10 @@
 ## 2007-08-27
 ##		Alpha 14a Released
 ##			+ Fixing a bug with the way I changed constants.php around (strange how I didn't get this error yesterday yet I did first thing this morning).
+##			+ To upgrade just upload the new files.
+## 2007-09-10
+##		Alpha 14b Released
+##			+ Fixing a few bugs.
 ##			+ To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
@@ -248,9 +246,9 @@ styles/prosilver/templates/overall_header.html
 #-----[ BEFORE, ADD ]--------------------------------------
 #
 
-					<!-- BEGIN blog_links -->
-						<a href="{blog_links.URL}" class="{blog_links.CLASS}">{blog_links.TEXT}</a>
-					<!-- END blog_links -->
+				<!-- BEGIN blog_links -->
+					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
+				<!-- END blog_links -->
 
 #
 #-----[ OPEN ]---------------------------------------------
