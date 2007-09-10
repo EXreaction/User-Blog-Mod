@@ -62,7 +62,7 @@ class blog_data
 		}
 		else
 		{
-			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR user_id = \'' . $user->data['user_id'] . '\' )';
+			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR blog_deleted = \'' . $user->data['user_id'] . '\' )';
 		}
 
 		// make sure $id is an array for consistency
