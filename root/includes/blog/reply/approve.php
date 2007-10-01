@@ -31,6 +31,8 @@ $user->add_lang('posting');
 // Setup the page header and sent the title of the page that will go into the browser header
 page_header($user->lang['APPROVE_REPLY']);
 
+$blog_plugins->plugin_do('reply_approve');
+
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['APPROVE_REPLY']);
 
@@ -38,6 +40,8 @@ if ($reply_data->reply[$reply_id]['reply_approved'] == 0)
 {
 	if (confirm_box(true))
 	{
+		$blog_plugins->plugin_do('reply_approve_confirm');
+
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
 			SET reply_approved = \'1\'
 			WHERE reply_id = ' . $reply_id;

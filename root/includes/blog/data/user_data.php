@@ -37,7 +37,7 @@ class user_data
 	function get_user_data($id, $user_queue = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp, $bbcode;
-		global $blog_data, $reply_data, $user_founder;
+		global $blog_data, $reply_data, $user_founder, $blog_plugins;
 
 		// if we are using the user_queue, set $user_id as that for consistency
 		if ($user_queue)
@@ -55,6 +55,8 @@ class user_data
 		{
 			return;
 		}
+
+		$blog_plugins->plugin_do('user_data_start');
 
 		// this holds the user_id's we will query
 		$users_to_query = array();
@@ -92,13 +94,16 @@ class user_data
 		$db->sql_freeresult($result);
 		$update_time = $config['load_online_time'] * 60;
 
-		// Get the rest of th data on the users and parse everything we need
+		// Get the rest of the data on the users and parse everything we need
 		$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
+		$blog_plugins->plugin_do_arg('user_data_sql', $sql);
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$user_id = $row['user_id'];
+
+			$blog_plugins->plugin_do_arg('user_data_while', $row);
 
 			// view profile link
 			$row['view_profile'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=" . $user_id);
@@ -171,7 +176,7 @@ class user_data
 	function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
-		global $blog_data, $reply_data, $user_founder, $foe_list;
+		global $blog_data, $reply_data, $user_founder, $foe_list, $blog_plugins;
 
 		if ($output_custom == false)
 		{
@@ -205,7 +210,11 @@ class user_data
 
 				'S_CUSTOM_FIELDS'	=> (isset($this->user[$user_id]['cp_row']['blockrow'])) ? true : false,
 				'S_ONLINE'			=> $this->user[$user_id]['status'],
+
+				'USER_EXTRA'		=> '',
 			);
+
+			$blog_plugins->plugin_do_arg('user_handle_data', $output_data);
 
 			return ($output_data);
 		}

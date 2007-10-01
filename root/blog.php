@@ -10,17 +10,18 @@
 * TODO List
 *
 * HIGH PRIORITY -------------------------------
+* Javascript
+* Look at user points & rank for hot blogs
 *
 * LOW PRIORITY --------------------
-* Make attachments option an add-on.
-*
 * In Blog ACP -> add option to remove orphan blog attachments
 *
-* Resetup the MCP page to have URLS/etc like the Main page
+* Resetup the MCP to actually be in the MCP
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
 * give option to control users who reply to blogs - all - friends - none
+*
 * Polls
 *
 * new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
@@ -34,6 +35,10 @@
 * Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
 * OTHER ---------------------------------
+* External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
+*
+* Users able to moderate their own blogs - delete and edit everyone else's posts
+*
 * Comments - update function and class comments to the better style, like used in functions.php
 *
 * Main Blog Page - sections - latest replied to - latest reply?
@@ -47,6 +52,7 @@
 /*
 * BUG LIST
 * javascript archives in safari 3 & konqueror - I hate Javascript so this is not one of my priorities ATM. :P
+* Javascript archives dont work in IE
 */
 
 /*
@@ -70,11 +76,11 @@ $user->session_begin();
 $auth->acl($user->data);
 if ($config['user_blog_force_prosilver'])
 {
-	$user->setup('mods/blog', 1);
+	$user->setup('mods/blog/blog', 1);
 }
 else
 {
-	$user->setup('mods/blog');
+	$user->setup('mods/blog/blog');
 }
 
 // check if the User Blog Mod is enabled
@@ -83,12 +89,8 @@ if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!is
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
 
-// include the files that we shall need
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+// checked for later in the header.php file
+define('IN_BLOG', true);
 
 // We will set all of the initial data by including this file
 include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
@@ -163,6 +165,8 @@ switch ($page)
 $template->assign_vars(array(
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 ));
+
+$blog_plugins->plugin_do('blog_end');
 
 if ($page != 'download')
 {

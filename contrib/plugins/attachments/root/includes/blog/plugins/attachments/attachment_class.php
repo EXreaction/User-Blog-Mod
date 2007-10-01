@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package phpBB3 User Blog
+* @package phpBB3 User Blog Attachments
 * @copyright (c) 2007 EXreaction, Lithium Studios
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -99,28 +99,6 @@ class blog_attachment
 		);
 
 		return sizeof($attachment_data);
-	}
-
-	/**
-	* Output Attachment Data to Template
-	*/
-	function output_attachment_data($attachment_data, $prefix = false)
-	{
-		global $template, $auth;
-
-		if (!count($attachment_data) || !$auth->acl_get('u_download'))
-		{
-			return;
-		}
-
-		$block = ($prefix !== false) ? $prefix . '.attachment' : 'attachment';
-
-		foreach ($attachment_data as $i => $attachment)
-		{
-			$template->assign_block_vars($block, array(
-				'DISPLAY_ATTACHMENT'	=> $attachment)
-			);
-		}
 	}
 
 	/**

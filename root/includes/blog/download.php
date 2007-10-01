@@ -59,6 +59,8 @@ if (!$user_founder && !$auth->acl_get('u_download'))
 	trigger_error('SORRY_AUTH_VIEW_ATTACH');
 }
 
+$blog_plugins->plugin_do('download_start');
+
 // Obtain all extensions...
 $extensions = $blog_attachment->obtain_blog_attach_extensions(true);
 
@@ -101,6 +103,8 @@ else if (($display_cat == ATTACHMENT_CATEGORY_NONE || $display_cat == ATTACHMENT
 	$db->sql_query($sql);
 }
 
+$blog_plugins->plugin_do('download_before_send');
+
 if ($display_cat == ATTACHMENT_CATEGORY_IMAGE && $mode === 'view' && (strpos($attachment['mimetype'], 'image') === 0) && strpos(strtolower($user->browser), 'msie') !== false)
 {
 	wrap_img_in_html(append_sid('./blog.' . $phpEx, 'page=download&amp;id=' . $attachment['attach_id']), $attachment['real_filename']);
@@ -125,6 +129,8 @@ else
 		exit;
 	}
 }
+
+$blog_plugins->plugin_do('download_end');
 
 /**
 * Wraps an url into a simple html page. Used to display attachments in IE.

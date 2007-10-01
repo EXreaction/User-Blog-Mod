@@ -31,23 +31,30 @@ if ($subscribed)
 	trigger_error('ALREADY_SUBSCRIBED');
 }
 
+$subscribe_modes = array($user->lang['PRIVATE_MESSAGE'] => 0, $user->lang['EMAIL'] => 1, $user->lang['PM_AND_EMAIL'] => 2);
+$blog_plugins->plugin_do_arg('subscribe_start', $subscribe_modes);
+
 if ($blog_id != 0)
 {
 	if ($submit)
 	{
-		switch($subscribe_mode)
+		$blog_plugins->plugin_do('subscribe_blog_confirm');
+
+		foreach($subscribe_modes as $check => $val)
 		{
-			case $user->lang['PRIVATE_MESSAGE'] :
-				add_subscription($user->data['user_id'], 0, false, $blog_id);
-				break;
-			case $user->lang['EMAIL'] :
-				add_subscription($user->data['user_id'], 1, false, $blog_id);
-				break;
-			case $user->lang['PM_AND_EMAIL'] :
-				add_subscription($user->data['user_id'], 2, false, $blog_id);
-				break;
-			default :
-				redirect($blog_urls['view_blog']);
+			if ($subscribe_mode == $check)
+			{
+				$mode_id = $val;
+			}
+		}
+
+		if (!isset($mode_id))
+		{
+			redirect($blog_urls['view_blog']);
+		}
+		else
+		{
+			add_subscription($user->data['user_id'], $mode_id, false, $blog_id);
 		}
 
 		handle_blog_cache('subscription', $user->data['user_id']);
@@ -70,6 +77,8 @@ if ($blog_id != 0)
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
+		$blog_plugins->plugin_do('subscribe_blog_confirm_end');
+
 		// redirect
 		meta_refresh(3, $blog_urls['view_blog']);
 
@@ -77,6 +86,8 @@ if ($blog_id != 0)
 	}
 	else
 	{
+		$blog_plugins->plugin_do('subscribe_blog');
+
 		$template->assign_vars(array(
 			'S_CONFIRM_ACTION'		=> $blog_urls['self'],
 			'MESSAGE_TITLE'			=> $user->lang['SUBSCRIBE_BLOG_TITLE'],
@@ -89,19 +100,23 @@ else if ($user_id != 0)
 {
 	if ($submit)
 	{
-		switch($subscribe_mode)
+		$blog_plugins->plugin_do('subscribe_user_confirm');
+
+		foreach($subscribe_modes as $check => $val)
 		{
-			case $user->lang['PRIVATE_MESSAGE'] :
-				add_subscription($user->data['user_id'], 0, $user_id, false);
-				break;
-			case $user->lang['EMAIL'] :
-				add_subscription($user->data['user_id'], 1, $user_id, false);
-				break;
-			case $user->lang['PM_AND_EMAIL'] :
-				add_subscription($user->data['user_id'], 2, $user_id, false);
-				break;
-			default :
-				redirect($blog_urls['view_user']);
+			if ($subscribe_mode == $check)
+			{
+				$mode_id = $val;
+			}
+		}
+
+		if (!isset($mode_id))
+		{
+			redirect($blog_urls['view_user']);
+		}
+		else
+		{
+			add_subscription($user->data['user_id'], $mode_id, $user_id, false);
 		}
 
 		handle_blog_cache('subscription', $user->data['user_id']);
@@ -123,6 +138,8 @@ else if ($user_id != 0)
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
+		$blog_plugins->plugin_do('subscribe_user_confirm_end');
+
 		// redirect
 		meta_refresh(3, $blog_urls['view_user']);
 
@@ -130,6 +147,8 @@ else if ($user_id != 0)
 	}
 	else
 	{
+		$blog_plugins->plugin_do('subscribe_user');
+
 		$template->assign_vars(array(
 			'S_CONFIRM_ACTION'		=> $blog_urls['self'],
 			'MESSAGE_TITLE'			=> $user->lang['SUBSCRIBE_USER_TITLE'],
@@ -158,7 +177,7 @@ $template->set_filenames(array(
  */
 function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
 {
-	global $db;
+	global $db, $blog_plugins;
 
 	$sql_data = array(
 		'sub_user_id'	=> $subscribe_user_id,
@@ -166,6 +185,8 @@ function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
 		'blog_id'		=> $blog_id,
 		'user_id'		=> $user_id,
 	);
+
+	$blog_plugins->plugin_do_arg('subscription_add', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);

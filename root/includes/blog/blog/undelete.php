@@ -35,15 +35,15 @@ if ($blog_data->blog[$blog_id]['blog_deleted'] == 0)
 page_header($user->lang['UNDELETE_BLOG']);
 
 // Generate the breadcrumbs
-generate_blog_breadcrumbs(array(
-	sprintf($user->lang['USERNAMES_BLOGS'], $username)			=> $blog_urls['view_user'],
-	censor_text($blog_data->blog[$blog_id]['blog_subject'])		=> $blog_urls['view_blog'],
-	$user->lang['UNDELETE_BLOG']								=> $blog_urls['self'],
-));
+generate_blog_breadcrumbs($user->lang['UNDELETE_BLOG']);
+
+$blog_plugins->plugin_do('blog_undelete_start');
 
 if (confirm_box(true))
 {
-	// magically un-delete the blog ;-)
+	$blog_plugins->plugin_do('blog_undelete_confirm');
+
+	// undelete the blog
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = \'0\', blog_deleted_time = \'0\' WHERE blog_id = \'' . $blog_id . '\'';
 	$db->sql_query($sql);
 

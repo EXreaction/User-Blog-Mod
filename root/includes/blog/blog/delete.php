@@ -42,8 +42,12 @@ if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogde
 	trigger_error('BLOG_ALREADY_DELETED');
 }
 
+$blog_plugins->plugin_do('blog_delete');
+
 if (confirm_box(true))
 {
+	$blog_plugins->plugin_do('blog_delete_confirm');
+
 	// if it has already been soft deleted, and we want to hard delete it
 	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && ($auth->acl_get('a_blogdelete') || $user_founder))
 	{
@@ -54,18 +58,6 @@ if (confirm_box(true))
 		// delete the replies
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
-
-		// delete the attachments
-		$blog_attachment->get_attachment_data($blog_id);
-		if (count($blog_data->blog[$blog_id]['attachment_data']))
-		{
-			foreach ($blog_data->blog[$blog_id]['attachment_data'] as $null => $data)
-			{
-				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
-				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
-				$db->sql_query($sql);
-			}
-		}
 	}
 	else
 	{

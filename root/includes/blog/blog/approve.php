@@ -28,10 +28,14 @@ page_header($user->lang['APPROVE_BLOG']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['APPROVE_BLOG']);
 
+$blog_plugins->plugin_do('blog_approve');
+
 if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 {
 	if (confirm_box(true))
 	{
+		$blog_plugins->plugin_do('blog_approve_confirm');
+
 		$sql = 'UPDATE ' . BLOGS_TABLE . '
 			SET blog_approved = \'1\'
 			WHERE blog_id = ' . $blog_id;

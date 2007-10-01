@@ -34,14 +34,13 @@ page_header($user->lang['EDIT_REPLY']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['EDIT_REPLY']);
 
-
 // can they delete the reply?  Setting this for later.
 $can_delete = check_blog_permissions('reply', 'delete', true, $blog_id, $reply_id);
 
 // Posting permissions
 $post_options = new post_options;
 
-$blog_attachment->get_submitted_attachment_data();
+$blog_plugins->plugin_do('reply_edit_start');
 
 // If they select edit mode and didn't submit or hit preview(means they came directly from the view reply page)
 if (!$submit && !$preview && !$refresh)
@@ -51,10 +50,6 @@ if (!$submit && !$preview && !$refresh)
 	$reply_text = $reply_data->reply[$reply_id]['reply_text'];
 	decode_message($reply_text, $reply_data->reply[$reply_id]['bbcode_uid']);
 	$post_options->set_status($reply_data->reply[$reply_id]['enable_bbcode'], $reply_data->reply[$reply_id]['enable_smilies'], $reply_data->reply[$reply_id]['enable_magic_url']);
-
-	// get the attachment_data
-	$blog_attachment->get_attachment_data(0, $reply_id);
-	$blog_attachment->attachment_data = $reply_data->reply[$reply_id]['attachment_data'];
 }
 else
 {
@@ -73,9 +68,6 @@ else
 	$message_parser->message = $reply_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
-	// Attachments
-	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
-
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
 	{
@@ -86,10 +78,6 @@ else
 	if (sizeof($message_parser->warn_msg) && !$refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
-	}
-	if (sizeof($blog_attachment->warn_msg))
-	{
-		$error[] = implode('<br />', $blog_attachment->warn_msg);
 	}
 }
 
@@ -104,19 +92,7 @@ if (!$submit || sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
-		// Attachment Preview
-		if (sizeof($blog_attachment->attachment_data))
-		{
-			$template->assign_var('S_HAS_ATTACHMENTS', true);
-
-			$update_count = array();
-			$attachment_data = $blog_attachment->attachment_data;
-
-			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
-
-			$blog_attachment->output_attachment_data($attachment_data);
-			unset($attachment_data);
-		}
+		$blog_plugins->plugin_do_arg('reply_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -127,23 +103,7 @@ if (!$submit || sizeof($error))
 		));
 	}
 
-	$attachment_data = $blog_attachment->attachment_data;
-	$filename_data = $blog_attachment->filename_data;
-	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
-
-	// Generate inline attachment select box
-	posting_gen_inline_attachments($attachment_data);
-
-	// Attachment entry
-	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
-	{
-		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
-
-		if (count($allowed_extensions['_allowed_']))
-		{
-			$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
-		}
-	}
+	$blog_plugins->plugin_do('reply_edit_after_preview');
 
 	// Generate smiley listing
 	generate_smilies('inline', false);
@@ -162,12 +122,8 @@ if (!$submit || sizeof($error))
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['POST_A_REPLY'],
 
-		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
-
-		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
 		'S_DELETE_ALLOWED'			=> $can_delete,
 		'S_EDIT_REASON'				=> true,
-		'S_FORM_ENCTYPE'			=> $form_enctype,
 		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? true : false,
 	));
 
@@ -178,11 +134,8 @@ if (!$submit || sizeof($error))
 }
 else // user submitted and there are no errors
 {
-	$new_att_val = (count($blog_attachment->attachment_data)) ? 1 : 0;
-	$attachment_changed = ($reply_data->reply[$reply_id]['reply_attachment'] != $new_att_val) ? true : false;
-
 	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ($original_subject != $reply_subject || $original_text != $reply_text || $attachment_changed || (request_var('edit_reason', '', true) != ''))
+	if ($original_subject != $reply_subject || $original_text != $reply_text || (request_var('edit_reason', '', true) != ''))
 	{
 		$sql_data = array(
 			'user_ip'			=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : $reply_data->reply[$reply_id]['user_ip'],
@@ -200,7 +153,6 @@ else // user submitted and there are no errors
 			'reply_edit_user'	=> $user->data['user_id'],
 			'reply_edit_count'	=> $reply_data->reply[$reply_id]['reply_edit_count'] + 1,
 			'reply_edit_locked'	=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
-			'reply_attachment'	=> $new_att_val,
 		);
 
 		// add the delete section to the array if it was deleted, if it was already deleted ignore
@@ -210,6 +162,8 @@ else // user submitted and there are no errors
 			$sql_data['reply_deleted_time'] = time();
 		}
 
+		$blog_plugins->plugin_do_arg('reply_edit_sql', $sql_data);
+
 		// the update query
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
 			SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
@@ -218,15 +172,15 @@ else // user submitted and there are no errors
 		$db->sql_query($sql);
 	}
 
-	// we no longer need the message parser
-	unset($message_parser);
+	$blog_plugins->plugin_do_arg('reply_edit_after_sql', $reply_id);
 
-	// update attachment data
-	$blog_attachment->update_attachment_data(0, $reply_id);
+	unset($message_parser);
 
 	// the confirm message & redirect
 	if (isset($_POST['delete']) && $can_delete)
 	{
+		$blog_plugins->plugin_do('reply_edit_delete');
+
 		// update the reply count for the blog
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);

@@ -35,7 +35,9 @@ class reply_data
 	function get_reply_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth;
-		global $blog_data, $user_data, $user_founder;
+		global $blog_data, $user_data, $user_founder, $blog_plugins;
+
+		$blog_plugins->plugin_do_arg('reply_data_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -154,11 +156,13 @@ class reply_data
 				return false;
 		}
 
+		$blog_plugins->plugin_do_arg('reply_data_sql', $sql);
+
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$row['attachment_data'] = array();
+			$blog_plugins->plugin_do_arg('reply_data_while', $row);
 
 			// now put all the data in the reply array
 			$this->reply[$row['reply_id']] = $row;
@@ -205,11 +209,13 @@ class reply_data
 	function handle_reply_data($id)
 	{
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_data, $user_data, $blog_attachment, $user_founder;
+		global $blog_data, $user_data, $user_founder, $blog_plugins;
 
 		$reply = &$this->reply[$id];
 		$blog_id = $reply['blog_id'];
 		$user_id = $reply['user_id'];
+
+		$blog_plugins->plugin_do('reply_handle_data_start');
 
 		// censor the text of the subject
 		$reply['reply_subject'] = censor_text($reply['reply_subject']);
@@ -224,13 +230,11 @@ class reply_data
 			$reply['reply_text'] = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply['reply_text']);
 		}
 
-		// attachments
-		$update_count = array();
-		$blog_attachment->parse_attachments_for_view($reply['reply_text'], $reply['attachment_data'], $update_count);
-
 		$replyrow = array(
+			'ID'				=> $id,
 			'TITLE'				=> censor_text($reply['reply_subject']),
 			'DATE'				=> $user->format_date($reply['reply_time']),
+			'REPLY_EXTRA'		=> '',
 
 			'REPLY_MESSAGE'		=> $reply['reply_text'],
 
@@ -248,13 +252,11 @@ class reply_data
 			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=approve&amp;r=$id") : '',
 
 			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
-			'S_DISPLAY_NOTICE'	=> (!$auth->acl_get('u_download') && $reply['reply_attachment']) ? true : false,
-			'S_HAS_ATTACHMENTS'	=> ($reply['reply_attachment']) ? true : false,
 			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,
 			'S_REPORTED'		=> ($reply['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder)) ? true : false,
-
-			'ID'				=> $id,
 		);
+
+		$blog_plugins->plugin_do_arg('reply_handle_data_end', $replyrow);
 
 		return $replyrow;
 	}

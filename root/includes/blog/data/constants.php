@@ -23,14 +23,14 @@ if (!defined('BLOGS_TABLE'))
 	if (!isset($table_prefix))
 	{
 		include($phpbb_root_path . 'config.' . $phpEx);
-		unset($dbname);
-		unset($dbuser);
 		unset($dbpasswd);
+		unset($dbuser);
+		unset($dbname);
 	}
 
 	define('BLOGS_TABLE',				$table_prefix . 'blogs');
 	define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
 	define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
-	define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
+	define('BLOGS_PLUGINS_TABLE',		$table_prefix . 'blogs_plugins');
 }
 ?>

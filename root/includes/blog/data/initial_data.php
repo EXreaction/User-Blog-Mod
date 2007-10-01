@@ -14,6 +14,12 @@ if (!defined('IN_PHPBB'))
 }
 
 // include the files for this mod
+include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+
 include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
@@ -21,18 +27,23 @@ include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/attachment_data.' . $phpEx);
+include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
-$blog_attachment = new blog_attachment();
+$blog_plugins = new blog_plugins();
 $bbcode = new bbcode();
+$message_parser = new parse_message();
 $cp = new custom_profile();
 $error = $blog_urls = $foe_list = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
+
+$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+$blog_plugins->load_plugins();
+$blog_plugins->plugin_do('blog_start');
 
 // get some initial data
 $submit = (isset($_POST['post'])) ? true : false;
@@ -144,7 +155,7 @@ $feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') 
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
 // Add some data to the template
-$template->assign_vars(array(
+$initial_data = array(
 	'MODE'					=> $mode,
 	'PAGE'					=> $page,
 
@@ -178,5 +189,9 @@ $template->assign_vars(array(
 	'WARN_IMG'				=> $user->img('icon_user_warn', 'WARN_USER'),
 	'WWW_IMG'				=> $user->img('icon_contact_www', 'VISIT_WEBSITE'),
 	'YIM_IMG'				=> $user->img('icon_contact_yahoo', 'YIM'),
-));
+);
+
+$blog_plugins->plugin_do_arg('initial_output', $initial_data);
+
+$template->assign_vars($initial_data);
 ?>

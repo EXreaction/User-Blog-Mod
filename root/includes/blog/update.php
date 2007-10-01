@@ -27,7 +27,7 @@ if (!isset($config['user_blog_version']))
 	trigger_error('Either you do not have the User Blog Mod installed in your database, or you are running a very old version.<br/>If you have the mod installed already please delete the tables and information which was inserted by the version you used and reinstall the mod.');
 }
 
-if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_ATTACHMENT_TABLE'))
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE'))
 {
 	trigger_error('UPDATE_IN_FILES_FIRST');
 }
@@ -39,7 +39,7 @@ if ($user_blog_version == $config['user_blog_version'])
 
 if (strpos($user_blog_version, 'dev'))
 {
-	//trigger_error('Automatic Updating is disabled for Dev versions.');
+	trigger_error('Automatic Updating is disabled for Dev versions.');
 }
 
 if (confirm_box(true))
@@ -137,7 +137,7 @@ if (confirm_box(true))
 				KEY reply_id (reply_id),
 				KEY poster_id (poster_id),
 				KEY is_orphan (is_orphan)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+			);";
 
 			$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " ADD blog_attachment TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
@@ -152,6 +152,14 @@ if (confirm_box(true))
 			);
 			$auth_admin->acl_add_option($blog_permissions);
 		case 'A13' :
+		case 'A14' :
+			$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+				plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+				plugin_name varchar(255) NOT NULL,
+				plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
+				plugin_version_db varchar(255) NOT NULL,
+				PRIMARY KEY (plugin_id)
+			);";
 	}
 
 	if (count($sql_array))

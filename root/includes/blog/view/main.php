@@ -34,6 +34,7 @@ $recent_blog_ids = ($recent || $all) ? $blog_data->get_blog_data('recent', 0, ar
 // Popular blogs
 $popular_blog_ids =($popular || $all) ? $blog_data->get_blog_data('popular', 0, array('limit' => $limit)) : false;
 
+$blog_plugins->plugin_do('view_main_start');
 
 $user_data->get_user_data(false, true);
 update_edit_delete('blog');
@@ -108,6 +109,8 @@ if ($feed == false || $all)
 		}
 	}
 
+	$blog_plugins->plugin_do('view_main_end');
+
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
 		'body' => 'view_blog_main.html'
@@ -123,9 +126,11 @@ else
 	{
 		feed_output($recent_blog_ids, $feed);
 	}
-	else
+	else if ($popular)
 	{
 		feed_output($popular_blog_ids, $feed);
 	}
+
+	$blog_plugins->plugin_do('view_main_feed_end');
 }
 ?>

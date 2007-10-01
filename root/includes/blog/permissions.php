@@ -29,15 +29,15 @@ if (!defined('IN_PHPBB'))
 function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $reply_id = 0)
 {
 	global $user, $config, $auth;
-	global $blog_data, $reply_data, $user_data;
+	global $blog_data, $reply_data, $user_data, $blog_plugins;
+
+	$blog_plugins->plugin_do('permissions_start');
 
 	// lets automatically give founders ALL permissions if the config settings are set that way
 	if ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm'])
 	{
 		return true;
 	}
-
-	$founder = false;
 
 	switch ($page)
 	{
@@ -118,6 +118,8 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
 	}
 
+	$blog_plugins->plugin_do_arg('permissions_end', $is_auth);
+
 	if (!$return)
 	{
 		if (!$is_auth)
@@ -128,7 +130,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 			}
 			else
 			{
-				if ($founder)
+				if (isset($founder) && $founder)
 				{
 					trigger_error('MUST_BE_FOUNDER');
 				}

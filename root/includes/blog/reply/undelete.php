@@ -40,8 +40,12 @@ if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 	trigger_error('REPLY_NOT_DELETED');
 }
 
+$blog_plugins->plugin_do('reply_undelete');
+
 if (confirm_box(true))
 {
+	$blog_plugins->plugin_do('reply_undelete_confirm');
+
 	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'0\', reply_deleted_time = \'0\' WHERE reply_id = \'' . $reply_id . '\'';
 	$db->sql_query($sql);
 

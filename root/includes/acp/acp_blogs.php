@@ -19,12 +19,21 @@ class acp_blogs
 	{
 		global $config, $db, $user, $auth, $template, $cache;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
-		
+		global $blog_plugins_path;
+
+		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+
+		$blog_plugins = new blog_plugins();
+		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+		$blog_plugins->load_plugins();
+
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$action = request_var('action', '');
 
 		$this->tpl_name = 'acp_board';
 		$this->page_title = $user->lang['ACP_BLOGS'];
+
+		$blog_plugins->plugin_do('acp_main_start');
 
 		$settings = array(
 			'legend1'							=> 'BLOG_SETTINGS',
@@ -32,7 +41,6 @@ class acp_blogs
 			'user_blog_subscription_enabled'	=> array('lang'	=> 'ENABLE_SUBSCRIPTIONS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_zebra'			=> array('lang' => 'BLOG_ENABLE_ZEBRA',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 			'user_blog_enable_feeds'			=> array('lang' => 'BLOG_ENABLE_FEEDS',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
-			'user_blog_enable_attachments'	 	=> array('lang' => 'BLOG_ENABLE_ATTACHMENTS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 			'user_blog_custom_profile_enable'	=> array('lang' => 'ENABLE_BLOG_CUSTOM_PROFILES',	'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 			'user_blog_founder_all_perm'		=> array('lang'	=> 'FOUNDER_ALL_PERMISSION',		'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 			'user_blog_always_show_blog_url'	=> array('lang' => 'BLOG_ALWAYS_SHOW_URL', 			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
@@ -42,8 +50,9 @@ class acp_blogs
 			'user_blog_text_limit'				=> array('lang' => 'DEFAULT_TEXT_LIMIT', 			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_user_text_limit'			=> array('lang' => 'USER_TEXT_LIMIT', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_inform'					=> array('lang' => 'BLOG_INFORM', 					'validate' => 'string',	'type' => 'text:25:100',				'explain' => true),
-			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 		);
+
+		$blog_plugins->plugin_do_arg('acp_main_settings', $settings);
 
 		// check to see if prosilver is installed and style_id 1.  If it isn't we won't display the user_blog_force_prosilver option.
 		$sql = 'SELECT style_name FROM ' . STYLES_TABLE . '

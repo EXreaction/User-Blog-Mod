@@ -222,16 +222,7 @@
 
 							<div class="content">{blogrow.BLOG_MESSAGE}</div>
 
-							<!-- IF blogrow.S_HAS_ATTACHMENTS -->
-								<dl class="attachbox">
-									<dt>{L_ATTACHMENTS}</dt>
-									<!-- BEGIN attachment -->
-										<dd>{blogrow.attachment.DISPLAY_ATTACHMENT}</dd>
-									<!-- END attachment -->
-								</dl>
-							<!-- ENDIF -->
-
-							<!-- IF postrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
+							{blogrow.BLOG_EXTRA}
 
 							<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 								<div class="notice">{blogrow.EDITED_MESSAGE}
@@ -336,16 +327,8 @@
 
 									<div class="content">{replyrow.REPLY_MESSAGE}</div>
 
-							<!-- IF replyrow.S_HAS_ATTACHMENTS -->
-								<dl class="attachbox">
-									<dt>{L_ATTACHMENTS}</dt>
-									<!-- BEGIN attachment -->
-										<dd>{replyrow.attachment.DISPLAY_ATTACHMENT}</dd>
-									<!-- END attachment -->
-								</dl>
-							<!-- ENDIF -->
+									{replyrow.REPLY_EXTRA}
 
-							<!-- IF postrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
 
 									<!-- IF replyrow.EDITED_MESSAGE or replyrow.EDIT_REASON -->
 										<div class="notice">{replyrow.EDITED_MESSAGE}

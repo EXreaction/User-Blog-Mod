@@ -1,0 +1,164 @@
+##############################################################
+## MOD Title: User Blog Mod Attachments (plugin)
+## MOD Author: EXreaction < exreaction@lithiumstudios.org > (Nathan Guse) http://www.lithiumstudios.org
+##
+## MOD Description: Adds attachments to the User Blog Mod
+##
+## MOD Version: 0.7.0
+##
+## Installation Level:	Easy
+## Installation Time:	~3 Minutes
+##
+## Files To Edit:	adm/style/acp_attachments.html
+##					includes/acp/acp_attachments.php
+##
+## Included Files:	(many)
+##
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## Author Notes:
+##	This is Alpha quality software.  Do not install unless you are willing to lose any
+##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
+##		I will take no resposibility for any damage with the use of this mod in a live environment.
+##
+##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
+##
+##	Only MySQL is supported at this time.  If you have a different DB please wait for a future release.
+##
+##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
+##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
+##############################################################
+## MOD History:
+##(yyyy-mm-dd)
+## 2007-9-30
+##		0.7.0 Released
+##			+ No longer included by default in the User Blog Mod.
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+#
+#-----[ COPY ]---------------------------------------------
+# Copy everything from the root/ folder to your phpBB3 forums' root
+
+root/* to /
+
+#
+#-----[ OPEN ]----------------------
+#
+
+adm/style/acp_attachments.html
+
+#
+#-----[ FIND ]----------------------
+#
+
+		<dl>
+			<dt><label for="allow_in_pm">{L_ALLOW_IN_PM}:</label></dt>
+			<dd><input type="checkbox" class="radio" id="allow_in_pm" name="allow_in_pm" value="1"<!-- IF ALLOW_IN_PM --> checked="checked"<!-- ENDIF --> /></dd>
+		</dl>
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+		<dl>
+			<dt><label for="allow_in_blog">{L_ALLOW_IN_BLOG}:</label></dt>
+			<dd><input type="checkbox" class="radio" id="allow_in_blog" name="allow_in_blog" value="1"<!-- IF ALLOW_IN_BLOG --> checked="checked"<!-- ENDIF --> /></dd>
+		</dl>
+
+#
+#-----[ FIND ]----------------------
+#
+
+					<!-- ELSE --><br /><span>&raquo; {L_ALLOWED_IN_PM_POST}</span><!-- ENDIF -->
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+					<br /><span>&raquo; <!-- IF groups.S_ALLOWED_IN_BLOG -->{L_ALLOWED_IN_BLOG}<!-- ELSE -->{L_NOT_ALLOWED_IN_BLOG}<!-- ENDIF -->
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+includes/acp/acp_attachments.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+					if (!sizeof($error))
+					{
+						// Ok, build the update/insert array
+
+#
+#-----[ BEFORE, ADD ]---------------------------------------
+#
+
+					$allow_in_blog	= (isset($_POST['allow_in_blog'])) ? true : false;
+					$cache->destroy('_blog_extensions');
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+							'allow_in_pm'	=> ($allow_in_pm) ? 1 : 0,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+							'allow_in_blog'	=> ($allow_in_blog) ? 1 : 0,
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+								'allow_in_pm'	=> 1,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+								'allow_in_blog'	=> 1,
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+							'ALLOW_IN_PM'			=> $ext_group_row['allow_in_pm'],
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+							'ALLOW_IN_BLOG'			=> $ext_group_row['allow_in_blog'],
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+						'S_ALLOWED_IN_PM'	=> ($row['allow_in_pm']) ? true : false,
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+						'S_ALLOWED_IN_BLOG'	=> ($row['allow_in_blog']) ? true : false,
+
+#
+#-----[ DIY ]---------------------------------------------
+#
+
+CHMOD files/blog_mod 777.
+
+Install the plugin in the User Blog Plugins ACP.
+
+Set the user/group permissions.
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]-----------------------------
+#
+# EoM

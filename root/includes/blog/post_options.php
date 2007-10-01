@@ -42,13 +42,15 @@ class post_options
 	 */
 	function post_options()
 	{
-		global $auth, $user_founder;
+		global $auth, $user_founder, $blog_plugins;
 
 		$this->auth_bbcode = ($auth->acl_get('u_blogbbcode') || $user_founder) ? true : false;
 		$this->auth_smilies = ($auth->acl_get('u_blogsmilies') || $user_founder) ? true : false;
 		$this->auth_img = ($auth->acl_get('u_blogimg') || $user_founder) ? true : false;
 		$this->auth_url = ($auth->acl_get('u_blogurl') || $user_founder) ? true : false;
 		$this->auth_flash = ($auth->acl_get('u_blogflash') || $user_founder) ? true : false;
+
+		$blog_plugins->plugin_do('post_options');
 	}
 
 	/**
@@ -56,7 +58,7 @@ class post_options
 	 */
 	function set_status($bbcode, $smilies, $url)
 	{
-		global $config, $auth, $user_founder;
+		global $config, $auth, $user_founder, $blog_plugins;
 
 		$this->bbcode_status = (($config['allow_bbcode'] && $this->auth_bbcode) || $user_founder) ? true : false;
 		$this->smilies_status = (($config['allow_smilies'] && $this->auth_smilies) || $user_founder) ? true : false;
@@ -67,6 +69,8 @@ class post_options
 		$this->enable_bbcode = ($this->bbcode_status && $bbcode) ? true : false;
 		$this->enable_smilies = ($this->smilies_status && $smilies) ? true : false;
 		$this->enable_magic_url = ($this->url_status && $url) ? true : false;
+
+		$blog_plugins->plugin_do('post_options_set_status');
 	}
 
 	/**
@@ -74,7 +78,7 @@ class post_options
 	 */
 	function set_in_template()
 	{
-		global $template, $user, $phpbb_root_path, $phpEx;
+		global $template, $user, $phpbb_root_path, $phpEx, $blog_plugins;
 
 		// Assign some variables to the template parser
 		$template->assign_vars(array(
@@ -100,6 +104,8 @@ class post_options
 			'S_BBCODE_URL'				=> $this->url_status,
 			'S_BBCODE_FLASH'			=> $this->flash_status,
 		));
+
+		$blog_plugins->plugin_do('post_options_set_in_template');
 	}
 }
 ?>

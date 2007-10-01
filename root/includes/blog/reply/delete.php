@@ -40,8 +40,12 @@ page_header($user->lang['DELETE_REPLY']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['DELETE_REPLY']);
 
+$blog_plugins->plugin_do('reply_delete');
+
 if (confirm_box(true))
 {
+	$blog_plugins->plugin_do('reply_delete_confirm');
+
 	// if it has already been soft deleted
 	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
 	{

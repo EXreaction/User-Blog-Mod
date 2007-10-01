@@ -10,12 +10,24 @@
 // check if the User Blog Mod is enabled
 if ($config['user_blog_enable'])
 {
-	// Add some language variables
-	$user->add_lang('mods/blog');
+	global $blog_plugins;
 
-	// include the functions & permissions file
-	include_once($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
+	if (!defined('IN_BLOG'))
+	{
+		// Add some language variables
+		$user->add_lang('mods/blog/blog');
+
+		// include the functions & permissions file
+		include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+
+		$blog_plugins = new blog_plugins();
+		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+		$blog_plugins->load_plugins();
+	}
+
+	$blog_plugins->plugin_do('blog_header');
 
 	// Add the User Blog's Link if they can view blog's
 	if (check_blog_permissions('', '', true))

@@ -33,6 +33,8 @@ else
 	$blog_ids = $blog_data->get_blog_data('user', $user_id, array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 }
 
+$blog_plugins->plugin_do('view_user_start');
+
 $user_data->get_user_data(false, true);
 update_edit_delete('blog');
 
@@ -78,18 +80,16 @@ if (!$feed)
 		// read blogs, for updating the read count
 		$read_blogs = array();
 
-		// Since the get_blog_data function returns the id's of the blogs it found, we can use $blog_data->blog[$id] this way to get the blog's data
 		foreach($blog_ids as $id)
 		{
 			$blogrow = $blog_data->handle_blog_data($id, true);
 		
-			// for updating the readcount later
+			// for updating the read count later
 			if (!$blogrow['S_SHORTENED'])
 			{
 				array_push($read_blogs, $id);
 			}
 		
-			// Now output the data to the template
 			$template->assign_block_vars('blogrow', $blogrow);
 		}
 
@@ -101,6 +101,8 @@ if (!$feed)
 		}
 	}
 
+	$blog_plugins->plugin_do('view_user_end');
+
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
 		'body' => 'view_blog.html'
@@ -109,5 +111,7 @@ if (!$feed)
 else // if $feed
 {
 	feed_output($blog_ids, $feed);
+
+	$blog_plugins->plugin_do('view_user_feed_end');
 }
 ?>

@@ -1,0 +1,53 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_ACP_BLOG_PLUGINS}</h1>
+
+<p>{L_ACP_BLOG_PLUGINS_EXPLAIN}</p>
+
+<table cellspacing="1">
+	<col class="row1" /><col class="row2" /><col class="row2" />
+<thead>
+<tr>
+	<th>{L_PLUGINS_NAME}</th>
+	<th>{L_ACTIONS}</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td class="row3" colspan="2"><strong>{L_INSTALLED_PLUGINS}</strong></td>
+</tr>
+<!-- IF not .installed -->
+	<tr>
+		<td class="row1" colspan="2" style="text-align: center;">{L_NO_INSTALLED_PLUGINS}</td>
+	</tr>
+<!-- ENDIF -->
+<!-- BEGIN installed -->
+<tr>
+	<td><strong>{installed.NAME}</strong><br /><span>{L_COPYRIGHT}: {installed.COPYRIGHT}<br/>{L_VERSION}: {installed.VERSION} &nbsp; {L_INSTALLED_VERSION}: {installed.INSTALLED_VERSION}</span></td>
+	<td style="text-align: center;">
+		{installed.S_ACTIONS}
+	</td>
+</tr>
+<!-- END installed -->
+<tr>
+	<td class="row3" colspan="2"><strong>{L_UNINSTALLED_PLUGINS}</strong></td>
+</tr>
+<!-- IF not .uninstalled -->
+	<tr>
+		<td class="row1" colspan="2" style="text-align: center;">{L_NO_UNINSTALLED_PLUGINS}</td>
+	</tr>
+<!-- ENDIF -->
+<!-- BEGIN uninstalled -->
+	<tr>
+	<td><strong>{uninstalled.NAME}</strong><br /><span>{L_COPYRIGHT}: {uninstalled.COPYRIGHT}<br/>{L_VERSION}: {uninstalled.VERSION}</span></td>
+		<td style="text-align: center;">
+			{uninstalled.S_ACTIONS}
+		</td>
+	</tr>
+<!-- END uninstalled -->
+</tbody>
+</table>
+
+<!-- INCLUDE overall_footer.html -->

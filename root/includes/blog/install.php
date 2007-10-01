@@ -18,7 +18,7 @@ if (isset($config['user_blog_version']))
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
 }
 
-if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_ATTACHMENT_TABLE'))
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_PLUGINS_TABLE'))
 {
 	trigger_error('INSTALL_IN_FILES_FIRST');
 }
@@ -40,7 +40,7 @@ if (confirm_box(true))
 	{
 		case 'mysql' :
 		case 'mysqli' :
-			if (version_compare($db->mysql_version, '4.1.3', '>='))
+			if ($dbms == 'mysqli' || version_compare($db->mysql_version, '4.1.3', '>='))
 			{
 				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_TABLE . " (
 					blog_id mediumint(8) unsigned NOT NULL auto_increment,
@@ -67,7 +67,6 @@ if (confirm_box(true))
 					blog_read_count mediumint(8) unsigned NOT NULL default '1',
 					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
 					blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
-					blog_attachment tinyint(1) unsigned NOT NULL default '0',
 					PRIMARY KEY (blog_id),
 					KEY user_id (user_id),
 					KEY user_ip (user_ip),
@@ -98,7 +97,6 @@ if (confirm_box(true))
 					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
 					reply_deleted tinyint(1) unsigned NOT NULL default '0',
 					reply_deleted_time int(11) unsigned NOT NULL default '0',
-					reply_attachment tinyint(1) unsigned NOT NULL default '0',
 					PRIMARY KEY (reply_id),
 					KEY blog_id (blog_id),
 					KEY user_id (user_id),
@@ -115,27 +113,12 @@ if (confirm_box(true))
 					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
-				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-					attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-					blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-					physical_filename varchar(255) DEFAULT '' NOT NULL,
-					real_filename varchar(255) DEFAULT '' NOT NULL,
-					download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					attach_comment text NOT NULL,
-					extension varchar(100) DEFAULT '' NOT NULL,
-					mimetype varchar(100) DEFAULT '' NOT NULL,
-					filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-					filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-					thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-					PRIMARY KEY (attach_id),
-					KEY filetime (filetime),
-					KEY blog_id (blog_id),
-					KEY reply_id (reply_id),
-					KEY poster_id (poster_id),
-					KEY is_orphan (is_orphan)
+				$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+					plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+					plugin_name varchar(255) NOT NULL,
+					plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
+					plugin_version_db varchar(255) NOT NULL,
+					PRIMARY KEY (plugin_id)
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 			}
 			else
@@ -165,7 +148,6 @@ if (confirm_box(true))
 					blog_read_count mediumint(8) unsigned NOT NULL default '1',
 					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
 					blog_real_reply_count mediumint(8) unsigned NOT NULL default '0',
-					blog_attachment tinyint(1) unsigned NOT NULL default '0',
 					PRIMARY KEY (blog_id),
 					KEY user_id (user_id),
 					KEY user_ip (user_ip),
@@ -196,7 +178,6 @@ if (confirm_box(true))
 					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
 					reply_deleted tinyint(1) unsigned NOT NULL default '0',
 					reply_deleted_time int(11) unsigned NOT NULL default '0',
-					reply_attachment tinyint(1) unsigned NOT NULL default '0',
 					PRIMARY KEY (reply_id),
 					KEY blog_id (blog_id),
 					KEY user_id (user_id),
@@ -213,32 +194,15 @@ if (confirm_box(true))
 					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
 				);";
 
-				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-					attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-					blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-					physical_filename varchar(255) DEFAULT '' NOT NULL,
-					real_filename varchar(255) DEFAULT '' NOT NULL,
-					download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-					attach_comment text NOT NULL,
-					extension varchar(100) DEFAULT '' NOT NULL,
-					mimetype varchar(100) DEFAULT '' NOT NULL,
-					filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-					filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-					thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-					PRIMARY KEY (attach_id),
-					KEY filetime (filetime),
-					KEY blog_id (blog_id),
-					KEY reply_id (reply_id),
-					KEY poster_id (poster_id),
-					KEY is_orphan (is_orphan)
+				$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+					plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+					plugin_name varchar(255) NOT NULL,
+					plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
+					PRIMARY KEY (plugin_id)
 				);";
 			}
 
 			$sql_array[] = 'ALTER TABLE ' . USERS_TABLE . " ADD blog_count MEDIUMINT(8) default '0'";
-			$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
 			break;
 		default :
 			trigger_error('Only MySQL is supported at this time.  Please wait for a future release for this to be compatible with your DB.');
@@ -274,8 +238,6 @@ if (confirm_box(true))
 			'u_blogimg',
 			'u_blogurl',
 			'u_blogflash',
-			'u_blogattach',
-			'u_blognolimitattach',
 			'm_blogapprove',
 			'm_blogedit',
 			'm_bloglockedit',
@@ -305,8 +267,6 @@ if (confirm_box(true))
 	set_config('user_blog_subscription_enabled', 1, 0);
 	set_config('user_blog_enable_zebra', 1, 0);
 	set_config('user_blog_enable_feeds', 1, 0);
-	set_config('user_blog_max_attachments', 3, 0);
-	set_config('user_blog_enable_attachments', 1, 0);
 
 	//insert the modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";
@@ -321,7 +281,7 @@ if (confirm_box(true))
 		'module_class'		=> 'acp',
 		'parent_id'			=> $row['module_id'],
 		'left_id'			=> $row['right_id'],
-		'right_id'			=> $row['right_id'] + 3,
+		'right_id'			=> $row['right_id'] + 5,
 		'module_langname'	=> 'ACP_BLOGS',
 		'module_mode'		=> 'default',
 		'module_auth'		=> 'acl_a_blogmanage',
@@ -332,12 +292,12 @@ if (confirm_box(true))
 	$module_id = $db->sql_nextid();
 	
 	$sql = 'UPDATE ' . MODULES_TABLE . "
-	SET left_id = left_id + 4, right_id = right_id + 4
+	SET left_id = left_id + 6, right_id = right_id + 6
 	WHERE left_id >= {$sql_ary['left_id']} AND module_id != $module_id";
 	$db->sql_query($sql);
 						
 	$sql = 'UPDATE ' . MODULES_TABLE . "
-	SET right_id = right_id + 4
+	SET right_id = right_id + 6
 	WHERE left_id < {$sql_ary['left_id']} AND right_id >= {$sql_ary['left_id']} AND module_id != $module_id";
 	$db->sql_query($sql);
 	
@@ -350,6 +310,22 @@ if (confirm_box(true))
 		'left_id'			=> $row['right_id'] + 1,
 		'right_id'			=> $row['right_id'] + 2,
 		'module_langname'	=> 'ACP_BLOGS',
+		'module_mode'		=> 'default',
+		'module_auth'		=> 'acl_a_blogmanage',
+	);
+	
+	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+	$db->sql_query($sql);
+
+	$sql_ary = array(
+		'module_enabled'	=> 1,
+		'module_display'	=> 1,
+		'module_basename'	=> 'blog_plugins',
+		'module_class'		=> 'acp',
+		'parent_id'			=> $module_id,
+		'left_id'			=> $row['right_id'] + 3,
+		'right_id'			=> $row['right_id'] + 4,
+		'module_langname'	=> 'ACP_BLOG_PLUGINS',
 		'module_mode'		=> 'default',
 		'module_auth'		=> 'acl_a_blogmanage',
 	);

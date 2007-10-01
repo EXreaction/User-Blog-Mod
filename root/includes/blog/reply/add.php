@@ -33,7 +33,7 @@ $post_options = new post_options;
 $post_options->set_status(!isset($_POST['disable_bbcode']), !isset($_POST['disable_smilies']), !isset($_POST['disable_magic_url']));
 $post_options->set_in_template();
 
-$blog_attachment->get_submitted_attachment_data();
+$blog_plugins->plugin_do('reply_add_start');
 
 // If they did submit or hit preview
 if ($submit || $preview || $refresh)
@@ -53,9 +53,6 @@ if ($submit || $preview || $refresh)
 		$error[] = $user->lang['CONFIRM_CODE_WRONG'];
 	}
 
-	// Attachments
-	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
-
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
 	{
@@ -66,10 +63,6 @@ if ($submit || $preview || $refresh)
 	if (sizeof($message_parser->warn_msg) && !$refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
-	}
-	if (sizeof($blog_attachment->warn_msg))
-	{
-		$error[] = implode('<br />', $blog_attachment->warn_msg);
 	}
 }
 else
@@ -110,19 +103,7 @@ if ( (!$submit) || (sizeof($error)) )
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
-		// Attachment Preview
-		if (sizeof($blog_attachment->attachment_data))
-		{
-			$template->assign_var('S_HAS_ATTACHMENTS', true);
-
-			$update_count = array();
-			$attachment_data = $blog_attachment->attachment_data;
-
-			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
-
-			$blog_attachment->output_attachment_data($attachment_data);
-			unset($attachment_data);
-		}
+		$blog_plugins->plugin_do_arg('reply_add_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -133,23 +114,7 @@ if ( (!$submit) || (sizeof($error)) )
 		));
 	}
 
-	$attachment_data = $blog_attachment->attachment_data;
-	$filename_data = $blog_attachment->filename_data;
-	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
-
-	// Generate inline attachment select box
-	posting_gen_inline_attachments($attachment_data);
-
-	// Attachment entry
-	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
-	{
-		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
-
-		if (count($allowed_extensions['_allowed_']))
-		{
-			$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
-		}
-	}
+	$blog_plugins->plugin_do('reply_add_after_preview');
 
 	// Generate smiley listing
 	generate_smilies('inline', false);
@@ -165,11 +130,6 @@ if ( (!$submit) || (sizeof($error)) )
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['POST_A_REPLY'],
-
-		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
-
-		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
-		'S_FORM_ENCTYPE'			=> $form_enctype,
 	));
 
 	// Tell the template parser what template file to use
@@ -195,8 +155,9 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
 		'reply_edit_reason'		=> '',
-		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 	);
+
+	$blog_plugins->plugin_do_arg('reply_add_sql', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);
@@ -206,8 +167,7 @@ else // user submitted and there are no errors
 
 	$reply_id = $db->sql_nextid();
 
-	// update attachment data
-	$blog_attachment->update_attachment_data(0, $reply_id);
+	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
 
 	// update the URLS to include the new reply_id
 	generate_blog_urls();

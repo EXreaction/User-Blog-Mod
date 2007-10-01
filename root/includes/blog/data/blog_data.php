@@ -35,7 +35,9 @@ class blog_data
 	function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $cache;
-		global $blog_data, $reply_data, $user_data, $user_founder;
+		global $blog_data, $reply_data, $user_data, $user_founder, $blog_plugins;
+
+		$blog_plugins->plugin_do_arg('blog_data_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -179,11 +181,13 @@ class blog_data
 				return false;
 		}
 
+		$blog_plugins->plugin_do_arg('blog_data_sql', $sql);
+
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$row['attachment_data'] = array();
+			$blog_plugins->plugin_do_arg('blog_data_while', $row);
 
 			// now put all the data in the blog array
 			$this->blog[$row['blog_id']] = $row;
@@ -232,7 +236,9 @@ class blog_data
 	function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $cache, $user, $auth;
-		global $reply_data, $user_data, $user_founder;
+		global $reply_data, $user_data, $user_founder, $blog_plugins;
+
+		$blog_plugins->plugin_do_arg('blog_info_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -248,6 +254,7 @@ class blog_data
 		$sort_days_sql = ($sort_days != 0) ? ' AND blog_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
 		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
 		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
+		$custom_sql = '';
 
 		if (check_blog_permissions('blog', 'undelete', true) && $deleted)
 		{
@@ -261,6 +268,8 @@ class blog_data
 		{
 			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		}
+
+		$blog_plugins->plugin_do_arg('blog_info_sql', $custom_sql);
 
 		// Switch for the modes
 		switch ($mode)
@@ -311,7 +320,8 @@ class blog_data
 							$view_deleted_sql .
 								$view_unapproved_sql .
 									$sort_days_sql .
-										$limit_sql;
+										$custom_sql .
+											$limit_sql;
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
 					return $total['total'];
@@ -330,7 +340,8 @@ class blog_data
 				$all_ids = array();
 				$sql = 'SELECT blog_id FROM ' . BLOGS_TABLE . '
 					WHERE blog_deleted = \'0\'
-						AND blog_approved = \'1\'';
+						AND blog_approved = \'1\'' . 
+							$custom_sql;
 				$result = $db->sql_query($sql);
 
 				while($row = $db->sql_fetchrow($result))
@@ -352,7 +363,8 @@ class blog_data
 
 				$all_ids = array();
 				$sql = 'SELECT blog_id FROM ' . BLOGS_TABLE . '
-					WHERE blog_deleted != \'0\'';
+					WHERE blog_deleted != \'0\'' .
+						$custom_sql;
 				$result = $db->sql_query($sql);
 
 				while($row = $db->sql_fetchrow($result))
@@ -374,7 +386,8 @@ class blog_data
 
 				$all_ids = array();
 				$sql = 'SELECT blog_id FROM ' . BLOGS_TABLE . '
-					WHERE blog_approved = \'0\'';
+					WHERE blog_approved = \'0\'' .
+						$custom_sql;
 				$result = $db->sql_query($sql);
 
 				while($row = $db->sql_fetchrow($result))
@@ -393,6 +406,7 @@ class blog_data
 					$view_deleted_sql .
 						$view_unapproved_sql .
 							$sort_days_sql .
+								$custom_sql .
 								$order_by_sql;
 				$sql = fix_where_sql($sql);
 				$cid = $cache->sql_load($sql);
@@ -423,10 +437,12 @@ class blog_data
 	function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $reply_data, $user_data, $blog_attachment, $user_founder;
+		global $reply_data, $user_data, $user_founder, $blog_plugins;
 
 		$blog = &$this->blog[$id];
 		$user_id = $blog['user_id'];
+
+		$blog_plugins->plugin_do('blog_handle_data_start');
 
 		if ($trim_text !== false)
 		{
@@ -456,10 +472,6 @@ class blog_data
 			$blog_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog_text);
 		}
 
-		// attachments
-		$update_count = array();
-		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
-
 		$reply_count = $reply_data->get_reply_data('reply_count', $id);
 
 		$blog_row = array(	
@@ -469,6 +481,7 @@ class blog_data
 			'DELETED_MESSAGE'	=> $blog['deleted_message'],
 			'EDIT_REASON'		=> $blog['edit_reason'],
 			'EDITED_MESSAGE'	=> $blog['edited_message'],
+			'BLOG_EXTRA'		=> '',
 			'PUB_DATE'			=> date('r', $blog['blog_time']),
 			'REPLIES'			=> ($reply_count != 1) ? ($reply_count == 0) ? sprintf($user->lang['BLOG_REPLIES'], $reply_count, '', '') : sprintf($user->lang['BLOG_REPLIES'], $reply_count, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "b=$id") . '#replies">', '</a>') : sprintf($user->lang['BLOG_REPLY'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "b=$id") . '#replies">', '</a>'),
 			'TITLE'				=> $blog['blog_subject'],
@@ -485,12 +498,12 @@ class blog_data
 			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
 			'S_DELETED'			=> ($blog['blog_deleted']) ? true : false,
-			'S_DISPLAY_NOTICE'	=> (!$auth->acl_get('u_download') && $blog['blog_attachment']) ? true : false,
-			'S_HAS_ATTACHMENTS'	=> ($blog['blog_attachment']) ? true : false,
 			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport') || $user_founder)) ? true : false,
 			'S_SHORTENED'		=> $shortened,
 			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
 		);
+
+		$blog_plugins->plugin_do_arg('blog_handle_data_end', $blog_row);
 
 		return $blog_row;
 	}

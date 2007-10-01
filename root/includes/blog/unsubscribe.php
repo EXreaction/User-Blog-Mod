@@ -26,6 +26,8 @@ page_header($user->lang['UNSUBSCRIBE']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['UNSUBSCRIBE']);
 
+$blog_plugins->plugin_do('unsubscribe_start');
+
 if ($blog_id != 0)
 {
 	if (!$subscribed)
@@ -35,6 +37,8 @@ if ($blog_id != 0)
 
 	if (confirm_box(true))
 	{
+		$blog_plugins->plugin_do('unsubscribe_blog_confirm');
+
 		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
 			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
 				AND blog_id = \'' . $blog_id . '\'';
@@ -66,6 +70,8 @@ if ($blog_id != 0)
 	}
 	else
 	{
+		$blog_plugins->plugin_do('unsubscribe_blog');
+
 		confirm_box(false, 'UNSUBSCRIBE_BLOG');
 	}
 }
@@ -78,6 +84,8 @@ else if ($user_id != 0)
 
 	if (confirm_box(true))
 	{
+		$blog_plugins->plugin_do('unsubscribe_user_confirm');
+
 		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
 			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
 				AND user_id = \'' . $user_id . '\'';
@@ -108,6 +116,8 @@ else if ($user_id != 0)
 	}
 	else
 	{
+		$blog_plugins->plugin_do('unsubscribe_user');
+
 		confirm_box(false, 'UNSUBSCRIBE_USER');
 	}
 }
