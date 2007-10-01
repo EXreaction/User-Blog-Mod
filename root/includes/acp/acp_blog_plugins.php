@@ -26,7 +26,10 @@ class acp_blog_plugins
 
 		$blog_plugins = new blog_plugins();
 		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
-		$blog_plugins->load_plugins();
+		if ($blog_plugins->load_plugins() === false)
+		{
+			trigger_error('PLUGINS_DISABLED');
+		}
 
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$action = request_var('action', '');
@@ -84,9 +87,9 @@ class acp_blog_plugins
 					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=uninstall&amp;name=" . $name . '">' . $user->lang['PLUGIN_UNINSTALL'] . '</a>';
 				}
 
-				if ($data['version'] != $blog_plugins->plugins[$name]['plugin_version'])
+				if ($data['plugin_version'] != $blog_plugins->plugins[$name]['plugin_version'])
 				{
-					$version = array('files' => explode('.', $data['version']), 'db' => explode('.', $blog_plugins->plugins[$name]['plugin_version']));
+					$version = array('files' => explode('.', $data['plugin_version']), 'db' => explode('.', $blog_plugins->plugins[$name]['plugin_version']));
 
 					$i = 0;
 					$newer_files = false;
@@ -117,8 +120,8 @@ class acp_blog_plugins
 			$template->assign_block_vars((($installed) ? 'installed' : 'uninstalled'), array(
 				'NAME'				=> $name,
 				'S_ACTIONS'			=> implode(' | ', $s_actions),
-				'COPYRIGHT'			=> $data['copyright'],
-				'VERSION'			=> $data['version'],
+				'COPYRIGHT'			=> $data['plugin_copyright'],
+				'VERSION'			=> $data['plugin_version'],
 				'INSTALLED_VERSION'	=> ($installed) ? $blog_plugins->plugins[$name]['plugin_version'] : false,
 			));
 		}

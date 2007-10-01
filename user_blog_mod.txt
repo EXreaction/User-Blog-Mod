@@ -75,6 +75,7 @@
 ##				- run the update script, and then manually add the new plugins module to the ACP.
 ##				- Then copy the files required to install the attachments plugin, then run this sql query manually:
 ##				- INSERT INTO phpbb_blogs_plugins (plugin_name, plugin_enabled, plugin_version) VALUES ('attachments', 1, '0.7.0');
+##				- Then clear phpBB3's cache.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

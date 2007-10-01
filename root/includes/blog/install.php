@@ -23,15 +23,6 @@ if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_
 	trigger_error('INSTALL_IN_FILES_FIRST');
 }
 
-if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
-{
-	@chmod($phpbb_root_path . 'files/blog_mod/', 0777);
-	if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
-	{
-		trigger_error('FILES_CANT_WRITE');
-	}
-}
-
 if (confirm_box(true))
 {
 	$sql_array = array();
@@ -113,11 +104,11 @@ if (confirm_box(true))
 					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 
-				$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+				$sql_array[] = 'CREATE TABLE . ' . BLOGS_PLUGINS_TABLE . " (
 					plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
 					plugin_name varchar(255) NOT NULL,
 					plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
-					plugin_version_db varchar(255) NOT NULL,
+					plugin_version varchar(255) NOT NULL,
 					PRIMARY KEY (plugin_id)
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 			}
@@ -194,10 +185,11 @@ if (confirm_box(true))
 					PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
 				);";
 
-				$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+				$sql_array[] = 'CREATE TABLE . ' . BLOGS_PLUGINS_TABLE . " (
 					plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
 					plugin_name varchar(255) NOT NULL,
 					plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
+					plugin_version varchar(255) NOT NULL,
 					PRIMARY KEY (plugin_id)
 				);";
 			}
@@ -267,6 +259,7 @@ if (confirm_box(true))
 	set_config('user_blog_subscription_enabled', 1, 0);
 	set_config('user_blog_enable_zebra', 1, 0);
 	set_config('user_blog_enable_feeds', 1, 0);
+	set_config('user_blog_enable_plugins', 1);
 
 	//insert the modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";

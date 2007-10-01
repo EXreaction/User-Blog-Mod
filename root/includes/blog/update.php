@@ -153,13 +153,14 @@ if (confirm_box(true))
 			$auth_admin->acl_add_option($blog_permissions);
 		case 'A13' :
 		case 'A14' :
-			$sql_array[] = 'CREATE TABLE . ' BLOGS_PLUGINS_TABLE . " (
+			$sql_array[] = 'CREATE TABLE . ' . BLOGS_PLUGINS_TABLE . " (
 				plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
 				plugin_name varchar(255) NOT NULL,
 				plugin_enabled tinyint(1) UNSIGNED NOT NULL default '0',
-				plugin_version_db varchar(255) NOT NULL,
+				plugin_version varchar(255) NOT NULL,
 				PRIMARY KEY (plugin_id)
 			);";
+			set_config('user_blog_enable_plugins', 1);
 	}
 
 	if (count($sql_array))

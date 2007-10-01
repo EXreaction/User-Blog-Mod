@@ -28,7 +28,7 @@ function attach_blog_add_start($arg = false)
 function attach_blog_add_preview(&$args)
 {
 	global $blog_attachment;
-	global $template;
+	global $template, $user;
 
 	if (sizeof($blog_attachment->attachment_data))
 	{
@@ -39,7 +39,13 @@ function attach_blog_add_preview(&$args)
 
 		$blog_attachment->parse_attachments_for_view($args, $attachment_data, $update_count, true);
 
-		$blog_attachment->output_attachment_data($attachment_data);
+		foreach ($attachment_data as $row)
+		{
+			$template->assign_block_vars('attachment', array(
+				'DISPLAY_ATTACHMENT' => $row,
+			));
+		}
+
 		unset($attachment_data);
 	}
 }

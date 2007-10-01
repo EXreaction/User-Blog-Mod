@@ -63,7 +63,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A14';
+$user_blog_version = 'A15';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

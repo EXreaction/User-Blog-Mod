@@ -13,6 +13,15 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
+{
+	@chmod($phpbb_root_path . 'files/blog_mod/', 0777);
+	if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
+	{
+		trigger_error('FILES_CANT_WRITE');
+	}
+}
+
 $sql_array = array();
 switch ($dbms)
 {

@@ -122,7 +122,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function handle_blog_cache($mode, $user_id = 0)
 	{
-		global $cache, $auth, $user, $db, $blog_plugins;
+		global $cache, $auth, $user, $db, $blog_plugins, $user_founder;
 
 		$blog_plugins->plugin_do('function_handle_blog_cache');
 

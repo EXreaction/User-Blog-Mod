@@ -106,6 +106,8 @@ $lang = array_merge($lang, array(
 	'ENABLE_SUBSCRIPTIONS_EXPLAIN'		=> 'Allows registered users to subscribe to blogs or users and recieve notifications when a new blog/reply is added where they are subscribed.',
 	'ENABLE_USER_BLOG'					=> 'Enable or Disable the entire User Blog Mod',
 	'ENABLE_USER_BLOG_EXPLAIN'			=> 'Note that the ACP sections of the User Blog Mod will always stay enabled as long as it is installed.',
+	'ENABLE_USER_BLOG_PLUGINS'			=> 'Enable or Disable all plugins and the plugins system for the User Blog Mod',
+	'ENABLE_USER_BLOG_PLUGINS_EXPLAIN'	=> 'Note that the Plugins ACP section will still show even if this is disabled.',
 
 	'FEED'								=> 'Blog Feed',
 	'FILES_CANT_WRITE'					=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
@@ -153,6 +155,7 @@ $lang = array_merge($lang, array(
 	'PLUGIN_UNINSTALL'					=> 'Uninstall',
 	'PLUGIN_UNINSTALL_CONFIRM'			=> 'Are you sure you want to uninstall this plugin?<br/><strong>This will remove all added data by this mod from the database (so any saved data by it will be lost)!</strong><br/><br/>You must manually uninstall any file changes made by this plugin and delete the plugin files to completely remove this plugin.',
 	'PLUGIN_UPDATE'						=> 'Update DB',
+	'PLUGINS_DISABLED'					=> 'Plugins are disabled.',
 	'PM_AND_EMAIL'						=> 'Private message and E-mail',
 	'POPULAR_BLOGS'						=> 'Popular Blogs',
 	'POST_A'							=> 'Post a new blog',

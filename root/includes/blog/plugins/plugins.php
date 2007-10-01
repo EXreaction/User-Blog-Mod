@@ -24,7 +24,12 @@ class blog_plugins
 
 	function load_plugins()
 	{
-		global $cache, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
+		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
+
+		if (!isset($config['user_blog_enable_plugins']) || !$config['user_blog_enable_plugins'])
+		{
+			return false;
+		}
 
 		if (!defined('BLOGS_PLUGINS_TABLE'))
 		{
@@ -70,6 +75,8 @@ class blog_plugins
 
 			closedir($dh);
 		}
+
+		return true;
 	}
 
 	function plugin_do($what)
@@ -116,7 +123,7 @@ class blog_plugins
 		$sql_data = array(
 			'plugin_name'		=> $which,
 			'plugin_enabled'	=> 1,
-			'plugin_version'	=> $this->available_plugins[$which]['version'],
+			'plugin_version'	=> $this->available_plugins[$which]['plugin_version'],
 		);
 
 		$sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
@@ -154,9 +161,9 @@ class blog_plugins
 		}
 
 		$newer_files = false;
-		if ($blog_plugins->available_plugins[$which]['version'] != $blog_plugins->plugins[$which]['plugin_version'])
+		if ($blog_plugins->available_plugins[$which]['plugin_version'] != $blog_plugins->plugins[$which]['plugin_version'])
 		{
-			$version = array('files' => explode('.', $blog_plugins->available_plugins[$which]['version']), 'db' => explode('.', $blog_plugins->plugins[$which]['plugin_version']));
+			$version = array('files' => explode('.', $blog_plugins->available_plugins[$which]['plugin_version']), 'db' => explode('.', $blog_plugins->plugins[$which]['plugin_version']));
 
 			$i = 0;
 			foreach ($version['files'] as $v)
@@ -178,10 +185,10 @@ class blog_plugins
 		{
 			include($blog_plugins_path . $which . '/update.' . $phpEx);
 
-			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . $this->available_plugins[$which]['version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
+			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . $this->available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 			$db->sql_query($sql);
 
-			$this->plugins[$which]['plugin_version'] = $this->available_plugins[$which]['version'];
+			$this->plugins[$which]['plugin_version'] = $this->available_plugins[$which]['plugin_version'];
 
 			handle_blog_cache('plugins');
 		}
