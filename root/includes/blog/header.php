@@ -10,7 +10,7 @@
 // check if the User Blog Mod is enabled
 if ($config['user_blog_enable'])
 {
-	global $blog_plugins;
+	global $blog_plugins, $blog_data, $reply_data, $user_data;
 
 	if (!defined('IN_BLOG'))
 	{
@@ -21,10 +21,17 @@ if ($config['user_blog_enable'])
 		include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
 		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
 		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
 		$blog_plugins->load_plugins();
+
+		$blog_data = new blog_data();
+		$reply_data = new reply_data();
+		$user_data = new user_data();
 	}
 
 	$blog_plugins->plugin_do('blog_header');
