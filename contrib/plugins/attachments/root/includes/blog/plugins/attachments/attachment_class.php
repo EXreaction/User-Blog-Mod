@@ -78,7 +78,14 @@ class blog_attachment
 					$hidden .= '<input type="hidden" name="attachment_data[' . $count . '][' . $key . ']" value="' . $value . '" />';
 				}
 
-				$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . intval($attach_row['attach_id'])));
+				if ($config['user_blog_seo'])
+				{
+					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . intval($attach_row['attach_id'])));
+				}
+				else
+				{
+					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => intval($attach_row['attach_id'])));
+				}
 
 				$template->assign_block_vars('attach_row', array(
 					'FILENAME'			=> basename($attach_row['real_filename']),
@@ -893,14 +900,28 @@ class blog_attachment
 					$display_cat = ATTACHMENT_CATEGORY_NONE;
 				}
 
-				$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
+				if ($config['user_blog_seo'])
+				{
+					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
+				}
+				else
+				{
+					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
+				}
 
 				switch ($display_cat)
 				{
 					// Images
 					case ATTACHMENT_CATEGORY_IMAGE:
 						$l_downloaded_viewed = 'VIEWED_COUNT';
-						$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
+						if ($config['user_blog_seo'])
+						{
+							$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
+						}
+						else
+						{
+							$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
+						}
 
 						$block_array += array(
 							'S_IMAGE'		=> true,
@@ -913,7 +934,14 @@ class blog_attachment
 					// Images, but display Thumbnail
 					case ATTACHMENT_CATEGORY_THUMB:
 						$l_downloaded_viewed = 'VIEWED_COUNT';
-						$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail_id-' . $attachment['attach_id']));
+						if ($config['user_blog_seo'])
+						{
+							$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail_id-' . $attachment['attach_id']));
+						}
+						else
+						{
+							$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail', 'id' => $attachment['attach_id']));
+						}
 
 						$block_array += array(
 							'S_THUMBNAIL'		=> true,

@@ -920,7 +920,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* Blog Meta Refresh (the normal one does not work with the SEO Url's
 	*/
-	function blog_blog_meta_refresh($time, $url)
+	function blog_meta_refresh($time, $url)
 	{
 		global $config, $template;
 
@@ -932,7 +932,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		}
 		else
 		{
-			blog_meta_refresh($time, $url);
+			meta_refresh($time, $url);
 		}
 	}
 
