@@ -80,7 +80,7 @@ if ($blog_id != 0)
 		$blog_plugins->plugin_do('subscribe_blog_confirm_end');
 
 		// redirect
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 
 		trigger_error($message);
 	}
@@ -141,7 +141,7 @@ else if ($user_id != 0)
 		$blog_plugins->plugin_do('subscribe_user_confirm_end');
 
 		// redirect
-		meta_refresh(3, $blog_urls['view_user']);
+		blog_meta_refresh(3, $blog_urls['view_user']);
 
 		trigger_error($message);
 	}

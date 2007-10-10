@@ -42,7 +42,7 @@ if ($blog_data->blog[$blog_id]['blog_reported'] && ($auth->acl_get('m_blogreport
 			WHERE blog_id = ' . $blog_id;
 		$db->sql_query($sql);
 
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 
 		$message = $user->lang['REPORT_CLOSED_SUCCESS'];
 		$message .= '<br /><br /><a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a>';
@@ -67,7 +67,7 @@ else
 
 		inform_approve_report('blog_report', $blog_id);
 
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 	
 		$message = $user->lang['POST_REPORTED_SUCCESS'] . '<br /><br /><a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a>';
 		trigger_error($message);

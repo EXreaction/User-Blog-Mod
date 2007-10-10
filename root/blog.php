@@ -10,8 +10,7 @@
 * TODO List
 *
 * HIGH PRIORITY -------------------------------
-* Javascript
-* Look at user points & rank for hot blogs
+* remove download stuff from blog
 *
 * LOW PRIORITY --------------------
 * In Blog ACP -> add option to remove orphan blog attachments
@@ -27,10 +26,8 @@
 * new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
 *	new blogs/replies needing approval notice by Blog MCP link (use the record blog reads for this)
 *
-* Make a plugin function to automatically load files in the plugins/ folder, then put all the following things like search/SEO/gallery in the plugins - Also make a way for this to check for plugins to enable/disable in ACP.
 * add in a section for gallery display - make gallery.php hold the main code for it so it can be replaced with the core code later by the user (by just uploading 1 file to install the add on).  All the other code needs to be in place and call the gallery.php file to check.
 * Integrate with search - make as an add-on - to enable have one of the instructions for the add-on to be editing a config file in the includes/blog directory
-* SEO Url's make as an add-on (this will come sometime after Handyman finishes his SEO mod)
 *
 * Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
@@ -38,8 +35,6 @@
 * External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
 * Users able to moderate their own blogs - delete and edit everyone else's posts
-*
-* Comments - update function and class comments to the better style, like used in functions.php
 *
 * Main Blog Page - sections - latest replied to - latest reply?
 *
@@ -51,8 +46,6 @@
 
 /*
 * BUG LIST
-* javascript archives in safari 3 & konqueror - I hate Javascript so this is not one of my priorities ATM. :P
-* Javascript archives dont work in IE
 */
 
 /*
@@ -63,11 +56,11 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A15';
+$user_blog_version = 'A16';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
-$phpbb_root_path = './';
+$phpbb_root_path = ((isset($phpbb_root_path)) ? $phpbb_root_path : './');
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 
@@ -112,7 +105,7 @@ switch ($page)
 				include($phpbb_root_path . "includes/blog/blog/{$mode}.$phpEx");
 				break;
 			default :
-				include($phpbb_root_path . 'includes/blog/view/main.' . $phpEx);
+				$default = true;
 		}
 		break;
 	case 'reply' :
@@ -130,7 +123,7 @@ switch ($page)
 				include($phpbb_root_path . "includes/blog/reply/add.$phpEx");
 				break;
 			default :
-				include($phpbb_root_path . 'includes/blog/view/main.' . $phpEx);
+				$default = true;
 		}
 		break;
 	case 'mcp' : // moderator control panel
@@ -147,18 +140,23 @@ switch ($page)
 		include($phpbb_root_path . "includes/blog/{$page}.$phpEx");
 		break;
 	default :
-		if ($blog_id != 0 || $reply_id != 0)
-		{
-			include($phpbb_root_path . 'includes/blog/view/blog.' . $phpEx);
-		}
-		else if ($user_id != 0)
-		{
-			include($phpbb_root_path . 'includes/blog/view/user.' . $phpEx);
-		}
-		else
-		{
-			include($phpbb_root_path . 'includes/blog/view/main.' . $phpEx);
-		}
+		$default = true;
+}
+
+if (isset($default) && $default)
+{
+	if ($blog_id != 0 || $reply_id != 0)
+	{
+		include($phpbb_root_path . 'includes/blog/view/blog.' . $phpEx);
+	}
+	else if ($user_id != 0)
+	{
+		include($phpbb_root_path . 'includes/blog/view/user.' . $phpEx);
+	}
+	else
+	{
+		include($phpbb_root_path . 'includes/blog/view/main.' . $phpEx);
+	}
 }
 
 // assign some common variables before the end of the page

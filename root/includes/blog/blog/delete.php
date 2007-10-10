@@ -72,7 +72,7 @@ if (confirm_box(true))
 
 	handle_blog_cache('delete_blog', $user_id);
 
-	meta_refresh(3, $blog_urls['view_user']);
+	blog_meta_refresh(3, $blog_urls['view_user']);
 
 	$message = $user->lang['BLOG_DELETED'];
 

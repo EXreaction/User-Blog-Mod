@@ -21,8 +21,8 @@ if (!isset($table_prefix))
 define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 
 // setup some basic information about the plugin
-$this->available_plugins[$name]['copyright'] = '2007 EXreaction';
-$this->available_plugins[$name]['version'] = '0.7.0';
+$this->available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
+$this->available_plugins[$name]['plugin_version'] = '0.7.1';
 
 // Only do this if the plugin is enabled (set in the load_plugins function right before this file is loaded)
 if ($plugin_enabled)

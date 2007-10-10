@@ -188,7 +188,7 @@ else // user submitted and there are no errors
 		$message = $user->lang['REPLY_DELETED'] . '<br/><br/>';
 
 		// redirect
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 	}
 	else
 	{
@@ -196,7 +196,7 @@ else // user submitted and there are no errors
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 
 		// redirect
-		meta_refresh(3, $blog_urls['view_reply']);
+		blog_meta_refresh(3, $blog_urls['view_reply']);
 	}
 
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';

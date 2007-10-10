@@ -49,7 +49,7 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 
 		handle_subscription('new_blog', censor_text($blog_data->blog[$blog_id]['blog_subject']));
 
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 
 		$message = $user->lang['APPROVE_BLOG_SUCCESS'];
 		$message .= '<br /><br /><a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';

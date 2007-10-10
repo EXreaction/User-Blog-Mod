@@ -26,6 +26,285 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	include($phpbb_root_path . 'includes/blog/data/constants.' . $phpEx);
 
 	/**
+	* URL handler
+	*/
+	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array())
+	{
+		global $config, $phpbb_root_path, $phpEx, $user;
+		global $blog_data, $reply_data, $user_data;
+
+		if ($config['user_blog_seo'])
+		{
+			if ($user_id != false)
+			{
+				if (!array_key_exists($user_id, $user_data->user))
+				{
+					$user_data->get_user_data($user_id);
+				}
+				$username = utf8_clean_string($user_data->user[$user_id]['username']);
+			}
+			else
+			{
+				$username = 'data';
+			}
+
+			$start = ((isset($url_data['start'])) ? '_s-' . $url_data['start'] : '');
+
+			if (isset($url_data['page']))
+			{
+				if (isset($url_data['mode']))
+				{
+					$return = "{$phpbb_root_path}blog/{$url_data['page']}/m-{$url_data['mode']}" . (($blog_id) ? "_b-$blog_id" : '') . (($reply_id) ? "_r-$reply_id" : '') . '.html';
+				}
+				else
+				{
+					$return = "{$phpbb_root_path}blog/{$url_data['page']}/index.html";
+				}
+			}
+			else if (isset($url_data['mode']))
+			{
+				$return = "{$phpbb_root_path}blog/{$username}/{$url_data['mode']}{$start}.html";
+			}
+			else if ($reply_id !== false)
+			{
+				$return = "{$phpbb_root_path}blog/{$username}/r-" . $reply_id . $start . '.html' . '#r' . $reply_id;
+			}
+			else if ($blog_id !== false)
+			{
+				if (array_key_exists($blog_id, $blog_data->blog))
+				{
+					$return = "{$phpbb_root_path}blog/{$username}/" . utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']) . '_b-' . $blog_id . $start . '.html';
+				}
+				else if (array_key_exists('blog_subject', $extra_data))
+				{
+					$return = "{$phpbb_root_path}blog/{$username}/" . utf8_clean_string($extra_data['blog_subject']) . '_b-' . $blog_id . $start . '.html';
+				}
+				else
+				{
+					$return = "{$phpbb_root_path}blog/{$username}/b-" . $blog_id . $start . '.html';
+				}
+			}
+			else if ($user_id !== false)
+			{
+				if ($start != '')
+				{
+					$return = "{$phpbb_root_path}blog/{$username}/u-" . $user_id . $start . '.html';
+				}
+				else
+				{
+					$return = "{$phpbb_root_path}blog/{$username}/index.html";
+				}
+			}
+			else
+			{
+				$return = "{$phpbb_root_path}blog/index.html";
+			}
+
+			if (isset($return))
+			{
+				return $return;
+			}
+		}
+
+		$extras = '';
+		if (count($url_data))
+		{
+			foreach ($url_data as $name => $var)
+			{
+				// Do not add the blog/reply/user id to the url string, they got added already
+				if ($name == 'b' || $name == 'u' || $name == 'r')
+				{
+					continue;
+				}
+
+				$extras .= '&amp;' . $name . '=' . $var;
+			}
+
+			$extras = substr($extras, 5);
+		}
+
+		$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
+		$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
+		$extras .= (($reply_id) ? '&amp;r=' . $reply_id . '#r' . $reply_id: '');
+		$url = $phpbb_root_path . 'blog.' . $phpEx;
+		return append_sid($url, $extras);
+	}
+
+	/**
+	* generates the basic URL's used by this mod
+	*/
+	function generate_blog_urls()
+	{
+		global $phpbb_root_path, $phpEx, $config, $user;
+		global $blog_id, $reply_id, $user_id, $start;
+		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+
+		$self_data = array();
+		foreach ($_GET as $name => $var)
+		{
+			$self_data[$name] = $var;
+		}
+
+		$blog_urls = array(
+			'main'				=> blog_url(false),
+			'self'				=> blog_url($user_id, $blog_id, $reply_id, $self_data),
+			'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
+			'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
+			'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
+
+			'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add')),
+			'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')) : '',
+
+			'view_blog'			=> ($blog_id != 0) ? blog_url($user_id, $blog_id) : '',
+			'view_reply'		=> ($reply_id != 0) ? blog_url($user_id, $blog_id, $reply_id) : '',
+			'view_user'			=> ($user_id != 0) ? blog_url($user_id) : false,
+			'view_user_deleted'	=> ($user_id != 0) ? blog_url($user_id, false, false, array('mode' => 'deleted')) : false,
+			'view_user_self'	=> blog_url($user->data['user_id']),
+		);
+
+		if (isset($self_data['start']))
+		{
+			unset($self_data['start']);
+		}
+		$blog_urls['self_minus_start'] = blog_url($user_id, $blog_id, $reply_id, $self_data);
+		$blog_urls['start_zero'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*')));
+
+		$blog_plugins->plugin_do_arg('function_generate_blog_urls', $blog_urls);
+	}
+
+	/**
+	* Create the breadcrumbs
+	*
+	* @param string $crumb_lang The last language option in the breadcrumbs
+	*/
+	function generate_blog_breadcrumbs($crumb_lang = '')
+	{
+		global $template, $user;
+		global $page, $username, $blog_id, $reply_id;
+		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls;
+
+		$template->assign_block_vars('navlinks', array(
+			'FORUM_NAME'		=> $user->lang['USER_BLOGS'],
+			'U_VIEW_FORUM'		=> $blog_urls['main'],
+		));
+
+		if ($username != '')
+		{
+			$template->assign_block_vars('navlinks', array(
+				'FORUM_NAME'		=> sprintf($user->lang['USERNAMES_BLOGS'], $username),
+				'U_VIEW_FORUM'		=> $blog_urls['view_user'],
+			));
+
+			if ($blog_id != 0)
+			{
+				$template->assign_block_vars('navlinks', array(
+					'FORUM_NAME'		=> censor_text($blog_data->blog[$blog_id]['blog_subject']),
+					'U_VIEW_FORUM'		=> $blog_urls['view_blog'],
+				));
+
+				if ($reply_id != 0 && $page == 'reply')
+				{
+					$template->assign_block_vars('navlinks', array(
+						'FORUM_NAME'		=> (censor_text($reply_data->reply[$reply_id]['reply_subject']) != '') ? censor_text($reply_data->reply[$reply_id]['reply_subject']) : $user->lang['UNTITLED_REPLY'],
+						'U_VIEW_FORUM'		=> $blog_urls['view_reply'],
+					));
+				}
+			}
+		}
+
+		if ($crumb_lang != '')
+		{
+			$template->assign_block_vars('navlinks', array(
+				'FORUM_NAME'		=> $crumb_lang,
+				'U_VIEW_FORUM'		=> $blog_urls['self'],
+			));
+		}
+	}
+
+	/**
+	* Generates the left side menu
+	*
+	* @param int $user_id The user_id of the user whom we are building the menu for
+	*/
+	function generate_menu($user_id)
+	{
+		global $db, $template, $phpbb_root_path, $phpEx, $user, $cache;
+		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+
+	// output the data for the left author info menu
+		$template->assign_vars($user_data->handle_user_data($user_id));
+		$user_data->handle_user_data($user_id, 'custom_fields');
+
+	// archive menu
+		// Last Month's ID(set to 0 now, will be updated in the loop)
+		$last_mon = 0;
+
+		$archive_rows = array();
+
+		// attempt to get the data from the cache
+		$cache_data = $cache->get("_blog_archive{$user_id}");
+
+		if ($cache_data === false)
+		{
+			$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
+						WHERE user_id = \'' . $user_id . '\'
+							AND blog_deleted = \'0\'
+								ORDER BY blog_id DESC';
+			$result = $db->sql_query($sql);
+
+			while($row = $db->sql_fetchrow($result))
+			{
+				$date = getdate($row['blog_time']);
+
+				// If we are starting a new month
+				if ($date['mon'] != $last_mon)
+				{
+					$archive_row = array(
+						'MONTH'			=> $date['month'],
+						'YEAR'			=> $date['year'],
+
+						'monthrow'		=> array(),
+					);
+
+					$archive_rows[] = $archive_row;
+				}
+
+				$archive_row_month = array(
+					'TITLE'			=> censor_text($row['blog_subject']),
+					'U_VIEW'		=> blog_url($user_id, $row['blog_id'], false, array(), array('blog_subject' => $row['blog_subject'])),
+					'DATE'			=> $user->format_date($row['blog_time']),
+				);
+
+				$archive_rows[count($archive_rows) - 1]['monthrow'][] = $archive_row_month;
+
+				// set the last month variable as the current month
+				$last_mon = $date['mon'];
+			}
+			$db->sql_freeresult($result);
+
+			// cache the result
+			$cache->put("_blog_archive{$user_id}", $archive_rows);
+			$cache_data = $archive_rows;
+		}
+
+		if (count($cache_data))
+		{
+			foreach($cache_data as $row)
+			{
+				$template->assign_block_vars('archiverow', $row);
+			}
+		}
+
+		// output some data
+		$template->assign_vars(array(
+			// are there any archives?
+			'S_ARCHIVES'	=> (count($cache_data)) ? true : false,
+		));
+
+		$blog_plugins->plugin_do('function_generate_menu');
+	}
+
+	/**
 	* Gets Zebra (friend/foe)  info
 	*
 	* Just grabs the foe info right now.  No reason to grab the friend info ATM.
@@ -435,8 +714,8 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
 
-		// check if the User Blog Mod is enabled
-		if (!$config['user_blog_enable'])
+		// check if the User Blog Mod is enabled, and if the user is anonymous
+		if (!$config['user_blog_enable'] || $user_id == ANONYMOUS)
 		{
 			return;
 		}
@@ -462,14 +741,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "u=$user_id") . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 			));
 		}
 		else if (!$grab_from_db && $user_data['blog_count'] == -1)
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "u=$user_id") . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
 			));
 		}
 	}
@@ -546,167 +825,115 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	}
 
 	/**
-	* Create the breadcrumbs
-	*
-	* @param string $crumb_lang The last language option in the breadcrumbs
+	* Pagination routine, generates page number sequence
+	* tpl_prefix is for using different pagination blocks at one page
 	*/
-	function generate_blog_breadcrumbs($crumb_lang = '')
+	function generate_blog_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = false, $tpl_prefix = '')
 	{
-		global $template, $user;
-		global $page, $username, $blog_id, $reply_id;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls;
+		global $config, $template, $user;
 
-		$template->assign_block_vars('navlinks', array(
-			'FORUM_NAME'		=> $user->lang['USER_BLOGS'],
-			'U_VIEW_FORUM'		=> $blog_urls['main'],
-		));
-
-		if ($username != '')
+		if (strpos($base_url, '#'))
 		{
-			$template->assign_block_vars('navlinks', array(
-				'FORUM_NAME'		=> sprintf($user->lang['USERNAMES_BLOGS'], $username),
-				'U_VIEW_FORUM'		=> $blog_urls['view_user'],
-			));
-
-			if ($blog_id != 0)
-			{
-				$template->assign_block_vars('navlinks', array(
-					'FORUM_NAME'		=> censor_text($blog_data->blog[$blog_id]['blog_subject']),
-					'U_VIEW_FORUM'		=> $blog_urls['view_blog'],
-				));
-
-				if ($reply_id != 0 && $page == 'reply')
-				{
-					$template->assign_block_vars('navlinks', array(
-						'FORUM_NAME'		=> (censor_text($reply_data->reply[$reply_id]['reply_subject']) != '') ? censor_text($reply_data->reply[$reply_id]['reply_subject']) : $user->lang['UNTITLED_REPLY'],
-						'U_VIEW_FORUM'		=> $blog_urls['view_reply'],
-					));
-				}
-			}
+			$base_url = substr($base_url, 0, strpos($base_url, '#'));
 		}
 
-		if ($crumb_lang != '')
+		if ($config['user_blog_seo'])
 		{
-			$template->assign_block_vars('navlinks', array(
-				'FORUM_NAME'		=> $crumb_lang,
-				'U_VIEW_FORUM'		=> $blog_urls['self'],
-			));
+			// Make sure $per_page is a valid value
+			$per_page = ($per_page <= 0) ? 1 : $per_page;
+
+			$seperator = '<span class="page-sep">' . $user->lang['COMMA_SEPARATOR'] . '</span>';
+			$total_pages = ceil($num_items / $per_page);
+
+			if ($total_pages == 1 || !$num_items)
+			{
+				return false;
+			}
+
+			$on_page = floor($start_item / $per_page) + 1;
+			$page_string = ($on_page == 1) ? '<strong>1</strong>' : '<a href="' . str_replace('*start*', '0', $base_url) . '">1</a>';
+
+			if ($total_pages > 5)
+			{
+				$start_cnt = min(max(1, $on_page - 4), $total_pages - 5);
+				$end_cnt = max(min($total_pages, $on_page + 4), 6);
+
+				$page_string .= ($start_cnt > 1) ? ' ... ' : $seperator;
+
+				for ($i = $start_cnt + 1; $i < $end_cnt; $i++)
+				{
+					$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
+					if ($i < $end_cnt - 1)
+					{
+						$page_string .= $seperator;
+					}
+				}
+
+				$page_string .= ($end_cnt < $total_pages) ? ' ... ' : $seperator;
+			}
+			else
+			{
+				$page_string .= $seperator;
+
+				for ($i = 2; $i < $total_pages; $i++)
+				{
+					$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
+					if ($i < $total_pages)
+					{
+						$page_string .= $seperator;
+					}
+				}
+			}
+
+			$page_string .= ($on_page == $total_pages) ? '<strong>' . $total_pages . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $total_pages . '</a>';
+
+			if ($add_prevnext_text)
+			{
+				if ($on_page != 1) 
+				{
+					$page_string = '<a href="' . str_replace('*start*', (($on_page - 2) * $per_page), $base_url) . '">' . $user->lang['PREVIOUS'] . '</a>&nbsp;&nbsp;' . $page_string;
+				}
+
+				if ($on_page != $total_pages)
+				{
+					$page_string .= '&nbsp;&nbsp;<a href="' . str_replace('*start*', ($on_page * $per_page), $base_url) . '">' . $user->lang['NEXT'] . '</a>';
+				}
+			}
+
+			$template->assign_vars(array(
+				$tpl_prefix . 'BASE_URL'	=> $base_url,
+				$tpl_prefix . 'PER_PAGE'	=> $per_page,
+
+				$tpl_prefix . 'PREVIOUS_PAGE'	=> ($on_page == 1) ? '' : str_replace('*start*', (($on_page - 2) * $per_page), $base_url),
+				$tpl_prefix . 'NEXT_PAGE'		=> ($on_page == $total_pages) ? '' : str_replace('*start*', ($on_page  * $per_page), $base_url),
+				$tpl_prefix . 'TOTAL_PAGES'		=> $total_pages)
+			);
+
+			return $page_string;
+		}
+		else
+		{
+			return generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text, $tpl_prefix);
 		}
 	}
 
 	/**
-	* Generates the left side menu
-	*
-	* @param int $user_id The user_id of the user whom we are building the menu for
+	* Blog Meta Refresh (the normal one does not work with the SEO Url's
 	*/
-	function generate_menu($user_id)
+	function blog_blog_meta_refresh($time, $url)
 	{
-		global $db, $template, $phpbb_root_path, $phpEx, $user, $cache;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+		global $config, $template;
 
-	// output the data for the left author info menu
-		$template->assign_vars($user_data->handle_user_data($user_id));
-		$user_data->handle_user_data($user_id, 'custom_fields');
-
-	// archive menu
-		// Last Month's ID(set to 0 now, will be updated in the loop)
-		$last_mon = 0;
-
-		$archive_rows = array();
-
-		// attempt to get the data from the cache
-		$cache_data = $cache->get("_blog_archive{$user_id}");
-
-		if ($cache_data === false)
+		if ($config['user_blog_seo'])
 		{
-			$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
-						WHERE user_id = \'' . $user_id . '\'
-							AND blog_deleted = \'0\'
-								ORDER BY blog_id DESC';
-			$result = $db->sql_query($sql);
-
-			while($row = $db->sql_fetchrow($result))
-			{
-				$date = getdate($row['blog_time']);
-
-				// If we are starting a new month
-				if ($date['mon'] != $last_mon)
-				{
-					$archive_row = array(
-						'MONTH'			=> $date['month'],
-						'YEAR'			=> $date['year'],
-
-						'monthrow'		=> array(),
-					);
-
-					$archive_rows[] = $archive_row;
-				}
-
-				$archive_row_month = array(
-					'TITLE'			=> censor_text($row['blog_subject']),
-					'U_VIEW'		=> append_sid("{$phpbb_root_path}blog.$phpEx", 'b=' . $row['blog_id']),
-					'DATE'			=> $user->format_date($row['blog_time']),
-				);
-
-				$archive_rows[count($archive_rows) - 1]['monthrow'][] = $archive_row_month;
-
-				// set the last month variable as the current month
-				$last_mon = $date['mon'];
-			}
-			$db->sql_freeresult($result);
-
-			// cache the result
-			$cache->put("_blog_archive{$user_id}", $archive_rows);
-			$cache_data = $archive_rows;
+			$template->assign_vars(array(
+				'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . str_replace('&', '&amp;', $url) . '" />')
+			);
 		}
-
-		if (count($cache_data))
+		else
 		{
-			foreach($cache_data as $row)
-			{
-				$template->assign_block_vars('archiverow', $row);
-			}
+			blog_meta_refresh($time, $url);
 		}
-
-		// output some data
-		$template->assign_vars(array(
-			// are there any archives?
-			'S_ARCHIVES'	=> (count($cache_data)) ? true : false,
-		));
-
-		$blog_plugins->plugin_do('function_generate_menu');
-	}
-
-	/**
-	* generates the basic URL's used by this mod
-	*/
-	function generate_blog_urls()
-	{
-		global $phpbb_root_path, $phpEx, $config, $user;
-		global $blog_id, $reply_id, $user_id, $start;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
-
-		$self = $_SERVER['REQUEST_URI'];
-
-		$blog_urls = array(
-			'main'				=> append_sid("{$phpbb_root_path}blog.$phpEx"),
-			'self'				=> reapply_sid($self),
-			'self_print'		=> reapply_sid($self . '&amp;view=print'),
-			'self_minus_start'	=> (strpos($self, 'start=')) ? reapply_sid(substr($self, 0, (strpos($self, 'start=')) - 1) . substr($self, (strpos($self, 'start=')) + 6 + strlen($start))) : reapply_sid($self),
-			'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=subscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
-			'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=unsubscribe&amp;b={$blog_id}&amp;u=$user_id") : '',
-
-			'add_blog'			=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=blog&amp;mode=add'),
-			'add_reply'			=> ($blog_id) ? append_sid("{$phpbb_root_path}blog.$phpEx", 'page=reply&amp;mode=add&amp;b=' . $blog_id) : '',
-
-			'view_blog'			=> ($blog_id != 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "b={$blog_id}") : '',
-			'view_reply'		=> ($reply_id != 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "b={$blog_id}&amp;r={$reply_id}#r{$reply_id}") : '',
-			'view_user'			=> ($user_id != 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "u={$user_id}") : false,
-			'view_user_deleted'	=> ($user_id != 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "mode=deleted&amp;u={$user_id}") : false,
-			'view_user_self'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user->data['user_id']),
-		);
-
-		$blog_plugins->plugin_do_arg('function_generate_blog_urls', $blog_urls);
 	}
 
 	/**

@@ -76,7 +76,7 @@ if ($total_replies > 0 || $sort_days != 0)
 	$sort_by_text = array('t' => $user->lang['POST_TIME']);
 	$sort_by_sql = array('t' => 'blog_time');
 	gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
-	$pagination = generate_pagination($blog_urls['self_minus_start'], $total_replies, $limit, $start, false);
+	$pagination = generate_blog_pagination($blog_urls['start_zero'], $total_replies, $limit, $start, false);
 
 	$template->assign_vars(array(
 		'PAGINATION'			=> $pagination,

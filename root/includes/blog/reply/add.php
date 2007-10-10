@@ -202,7 +202,7 @@ else // user submitted and there are no errors
 	}
 
 	// redirect
-	meta_refresh(3, $blog_urls['view_reply']);
+	blog_meta_refresh(3, $blog_urls['view_reply']);
 
 	trigger_error($message);
 }

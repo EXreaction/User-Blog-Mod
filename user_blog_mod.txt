@@ -4,12 +4,13 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.14
+## MOD Version: 0.3.15
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
 ##
-## Files To Edit:	adm/index.php
+## Files To Edit:	.htaccess
+##					adm/index.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
 ##					viewtopic.php
@@ -52,10 +53,7 @@
 ## 2007-08-07 Alpha 12 Released
 ## 2007-08-12 Alpha 13 Released
 ## 2007-08-14 Alpha 13a Released
-## 2007-08-15
-##		Alpha 13b Released
-##			+ Fixing the bug where blogs/replies are always approved even though they shouldn't be via permissions for the user
-##			+ To upgrade just upload the new files.
+## 2007-08-15 Alpha 13b Released
 ## 2007-08-26
 ##		Alpha 14 Released
 ##			+ Fixing a few bugs mostly.
@@ -76,6 +74,12 @@
 ##				- Then copy the files required to install the attachments plugin, then run this sql query manually:
 ##				- INSERT INTO phpbb_blogs_plugins (plugin_name, plugin_enabled, plugin_version) VALUES ('attachments', 1, '0.7.0');
 ##				- Then clear phpBB3's cache.
+## 2007-10-09
+##		Alpha 16 Released
+##			+ Say hello to SEO Url's! :D
+##				- Also, the included upgrade script for The Blog Mod 0.24b to the User Blog Mod has been updated (thanks IngerK for letting me know about the bugs)
+##			+ To update, copy the new files over, make the file changes to the .htaccess file as required, then the update script by going to blog.php?page=update
+##				- If you have the Attachments plugin installed make sure you update it as well (just upload the new files).
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -85,6 +89,40 @@
 # Copy everything from the root/ folder to your phpBB3 forums' root
 
 root/* to /
+
+#
+#-----[ OPEN ]----------------------
+#
+
+.htaccess
+
+#
+#-----[ FIND ]----------------------
+#
+
+<Files "common.php">
+Order Allow,Deny
+Deny from All
+</Files>
+
+#
+#-----[ AFTER, ADD ]----------------------
+#
+
+RewriteEngine on
+
+Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*)_s-(.+).html$				./includes/blog/seo.php?$2=$3&start=$4
+Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*).html$						./includes/blog/seo.php?$2=$3
+Rewriterule ^blog/(.+)/m-(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$	./includes/blog/seo.php?page=$1&mode=$2&$3=$4&$5=$6
+Rewriterule ^blog/(.+)/m-(.+)_(b|r|id)-([0-9]*).html$				./includes/blog/seo.php?page=$1&mode=$2&$3=$4&$5
+Rewriterule ^blog/(.+)/m-(.+)_s-(.+).html$							./includes/blog/seo.php?page=$1&mode=$2&start=$3
+Rewriterule ^blog/(.+)/m-(.+).html$									./includes/blog/seo.php?page=$1&mode=$2
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$		./includes/blog/seo.php?un=$1&$3=$4&$5=$6
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_s-(.+).html$				./includes/blog/seo.php?un=$1&$3=$4&start=$5
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*).html$					./includes/blog/seo.php?un=$1&$3=$4
+Rewriterule ^blog/(.+)/(.+)_s-(.+).html$							./includes/blog/seo.php?un=$1&mode=$2&start=$3
+Rewriterule ^blog/(.+)/(.+).html$									./includes/blog/seo.php?un=$1&mode=$2
+Rewriterule ^blog/index.html$										./blog/seo.php
 
 #
 #-----[ OPEN ]----------------------

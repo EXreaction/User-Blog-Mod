@@ -33,7 +33,7 @@ if ($config['user_blog_enable'])
 	if (check_blog_permissions('', '', true))
 	{
 		$template->assign_block_vars('blog_links', array(
-			'URL'		=> append_sid("{$phpbb_root_path}blog.$phpEx"),
+			'URL'		=> blog_url(false),
 			'CLASS'		=> 'icon-members',
 			'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_members.gif" />',
 			'TEXT'		=> $user->lang['USER_BLOGS'],
@@ -43,7 +43,7 @@ if ($config['user_blog_enable'])
 		if (check_blog_permissions('blog', 'add', true))// || ($user->data['blog_count'] > 0 && check_blog_permissions('', '', true)))
 		{
 			$template->assign_block_vars('blog_links', array(
-				'URL'		=> append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user->data['user_id']),
+				'URL'		=> blog_url($user->data['user_id']),
 				'CLASS'		=> 'icon-ucp',
 				'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_message.gif" alt="' . $user->lang['MY_BLOGS'] . '" />',
 				'TEXT'		=> $user->lang['MY_BLOGS'],

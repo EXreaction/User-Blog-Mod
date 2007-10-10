@@ -170,6 +170,19 @@ class user_data
 			$this->user_queue = array();
 		}
 	}
+
+	// Gets the user_id from the username
+	function get_id_by_username($username)
+	{
+		global $db;
+
+		$sql = 'SELECT user_id FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		return $row['user_id'];
+	}
 	
 	// prepares the user data for output to the template, and outputs the custom profile rows when requested
 	// Mostly for shortenting up code
@@ -181,6 +194,8 @@ class user_data
 		if ($output_custom == false)
 		{
 			$output_data = array(
+				'USER_ID'			=> $user_id,
+
 				'AVATAR'			=> $this->user[$user_id]['avatar'],
 				'POSTER_FROM'		=> $this->user[$user_id]['user_from'],
 				'POSTER_JOINED'		=> $user->format_date($this->user[$user_id]['user_regdate']),
@@ -198,7 +213,7 @@ class user_data
 				'L_USER_FOE'		=> sprintf($user->lang['POST_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 
 				'U_AIM'				=> $this->user[$user_id]['aim_url'],
-				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete') || $user_founder) ? '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "mode=deleted&amp;u=$user_id") . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',
+				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete') || $user_founder) ? '<a href="' . blog_url($user_id, false, false, array('mode' => 'deleted')) . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',
 				'U_EMAIL'			=> $this->user[$user_id]['email_url'],
 				'U_ICQ'				=> $this->user[$user_id]['icq_url'],
 				'U_JABBER'			=> $this->user[$user_id]['jabber_url'],
@@ -220,6 +235,9 @@ class user_data
 		}
 		else 
 		{
+			$args = array('output_custom' => $output_custom, 'user_id' => $user_id);
+			$blog_plugins->plugin_do_arg('user_handle_data_cp', $args);
+
 			if ($config['user_blog_custom_profile_enable'])
 			{	
 				// output the custom profile fields

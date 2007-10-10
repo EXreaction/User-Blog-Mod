@@ -152,6 +152,26 @@ class reply_data
 					return $blog_data->blog[$id[0]]['blog_reply_count'];
 				}
 				break;
+			case 'page' :
+				$cnt = 0;
+				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
+					WHERE blog_id = \'' . $id[0] . '\'' .
+						$sort_days_sql .
+							$order_by_sql;
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					if ($row['reply_id'] == $id[1])
+					{
+						break;
+					}
+
+					$cnt++;
+				}
+				$db->sql_freeresult($result);
+
+				return $cnt;
+				break;
 			default :
 				return false;
 		}
@@ -242,14 +262,14 @@ class reply_data
 			'EDIT_REASON'		=> $reply['edit_reason'],
 			'DELETED_MESSAGE'	=> $reply['deleted_message'],
 
-			'U_VIEW'			=> append_sid("{$phpbb_root_path}blog.$phpEx", "b={$blog_id}r={$id}#r{$id}"),
+			'U_VIEW'			=> blog_url($user_id, $blog_id, $id),
 
-			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, 0, $id)) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=quote&amp;r=$id") : '',
-			'U_EDIT'			=> (check_blog_permissions('reply', 'edit', true, 0, $id)) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=edit&amp;r=$id") : '',
-			'U_DELETE'			=> (check_blog_permissions('reply', 'delete', true, 0, $id)) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=delete&amp;r=$id") : '',
-			'U_REPORT'			=> (check_blog_permissions('reply', 'report', true, 0, $id)) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=report&amp;r=$id") : '',
+			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, 0, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_EDIT'			=> (check_blog_permissions('reply', 'edit', true, 0, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
+			'U_DELETE'			=> (check_blog_permissions('reply', 'delete', true, 0, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
+			'U_REPORT'			=> (check_blog_permissions('reply', 'report', true, 0, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'report')) : '',
 			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
-			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=approve&amp;r=$id") : '',
+			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
 
 			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
 			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,

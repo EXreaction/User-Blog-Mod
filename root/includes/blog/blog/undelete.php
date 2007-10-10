@@ -53,7 +53,7 @@ if (confirm_box(true))
 
 	handle_blog_cache('delete_blog', $user_id);
 
-	meta_refresh(3, $blog_urls['view_blog']);
+	blog_meta_refresh(3, $blog_urls['view_blog']);
 
 	$message = $user->lang['BLOG_UNDELETED'] .'<br/><br/>';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';

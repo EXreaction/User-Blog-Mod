@@ -64,7 +64,7 @@ if ($blog_id != 0)
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
-		meta_refresh(3, $blog_urls['view_blog']);
+		blog_meta_refresh(3, $blog_urls['view_blog']);
 
 		trigger_error($message);
 	}
@@ -110,7 +110,7 @@ else if ($user_id != 0)
 			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
-		meta_refresh(3, $blog_urls['view_user']);
+		blog_meta_refresh(3, $blog_urls['view_user']);
 
 		trigger_error($message);
 	}

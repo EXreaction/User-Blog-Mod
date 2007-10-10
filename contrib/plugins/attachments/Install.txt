@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds attachments to the User Blog Mod
 ##
-## MOD Version: 0.7.0
+## MOD Version: 0.7.1
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -33,6 +33,10 @@
 ## 2007-9-30
 ##		0.7.0 Released
 ##			+ No longer included by default in the User Blog Mod.
+## 2007-10-09
+##		0.7.1 Released
+##			+ Added SEO Url's to the attachments
+##				- To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

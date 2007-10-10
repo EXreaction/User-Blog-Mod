@@ -53,7 +53,7 @@ if (confirm_box(true))
 					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
 					blog_edit_count smallint(4) unsigned NOT NULL default '0',
 					blog_edit_locked tinyint(1) unsigned NOT NULL default '0',
-					blog_deleted tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted mediumint(8) unsigned NOT NULL default '0',
 					blog_deleted_time int(11) unsigned NOT NULL default '0',
 					blog_read_count mediumint(8) unsigned NOT NULL default '1',
 					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
@@ -86,7 +86,7 @@ if (confirm_box(true))
 					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
 					reply_edit_count smallint(4) unsigned NOT NULL default '0',
 					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
-					reply_deleted tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted mediumint(8) unsigned NOT NULL default '0',
 					reply_deleted_time int(11) unsigned NOT NULL default '0',
 					PRIMARY KEY (reply_id),
 					KEY blog_id (blog_id),
@@ -134,7 +134,7 @@ if (confirm_box(true))
 					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
 					blog_edit_count smallint(4) unsigned NOT NULL default '0',
 					blog_edit_locked tinyint(1) unsigned NOT NULL default '0',
-					blog_deleted tinyint(1) unsigned NOT NULL default '0',
+					blog_deleted mediumint(8) unsigned NOT NULL default '0',
 					blog_deleted_time int(11) unsigned NOT NULL default '0',
 					blog_read_count mediumint(8) unsigned NOT NULL default '1',
 					blog_reply_count mediumint(8) unsigned NOT NULL default '0',
@@ -167,7 +167,7 @@ if (confirm_box(true))
 					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
 					reply_edit_count smallint(4) unsigned NOT NULL default '0',
 					reply_edit_locked tinyint(1) unsigned NOT NULL default '0',
-					reply_deleted tinyint(1) unsigned NOT NULL default '0',
+					reply_deleted mediumint(8) unsigned NOT NULL default '0',
 					reply_deleted_time int(11) unsigned NOT NULL default '0',
 					PRIMARY KEY (reply_id),
 					KEY blog_id (blog_id),
@@ -260,6 +260,7 @@ if (confirm_box(true))
 	set_config('user_blog_enable_zebra', 1, 0);
 	set_config('user_blog_enable_feeds', 1, 0);
 	set_config('user_blog_enable_plugins', 1);
+	set_config('user_blog_seo', false);
 
 	//insert the modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";

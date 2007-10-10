@@ -161,6 +161,11 @@ if (confirm_box(true))
 				PRIMARY KEY (plugin_id)
 			);";
 			set_config('user_blog_enable_plugins', 1);
+		case 'A15' :
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . ' CHANGE blog_deleted blog_deleted MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\'';
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_REPLY_TABLE . ' CHANGE reply_deleted reply_deleted MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\'';
+
+			set_config('user_blog_seo', false);
 	}
 
 	if (count($sql_array))

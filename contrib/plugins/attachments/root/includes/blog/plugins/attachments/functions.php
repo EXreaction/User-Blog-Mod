@@ -93,11 +93,11 @@ function attach_blog_add_after_sql($args)
 	$blog_attachment->update_attachment_data($args);
 }
 
-function blog_delete_confirm($args = false)
+function attach_blog_delete_confirm($args = false)
 {
 	global $blog_attachment;
 	global $auth, $phpbb_root_path;
-	global $blog_data, $user_founder;
+	global $blog_data, $user_founder, $blog_id;
 
 	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && ($auth->acl_get('a_blogdelete') || $user_founder))
 	{

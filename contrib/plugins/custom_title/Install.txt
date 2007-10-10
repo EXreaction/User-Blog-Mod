@@ -26,6 +26,7 @@
 ##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
 ##
 ##	You MUST have the Custom Titles Mod already installed to use this!  If not you will get errors.
+##		Link to the Custom Titles Mod: http://www.phpbb.com/community/viewtopic.php?f=70&t=574342
 ##############################################################
 ## MOD History:
 ##(yyyy-mm-dd)

@@ -15,7 +15,6 @@ if (!defined('IN_PHPBB'))
 
 $download_id = intval(request_var('id', 0));
 $mode = request_var('mode', '');
-$thumbnail = request_var('t', false);
 
 if (!$download_id)
 {
@@ -90,7 +89,7 @@ if ($display_cat == ATTACHMENT_CATEGORY_FLASH && !$user->optionget('viewflash'))
 	$display_cat = ATTACHMENT_CATEGORY_NONE;
 }
 
-if ($thumbnail)
+if ($mode == 'thumbnail')
 {
 	$attachment['physical_filename'] = 'thumb_' . $attachment['physical_filename'];
 }

@@ -56,6 +56,7 @@ $cancel = (isset($_POST['cancel'])) ? true : false;
 $page = request_var('page', '');
 $mode = request_var('mode', '');
 $user_id = ($page == 'blog' && $mode == 'add') ? $user->data['user_id'] : intval(request_var('u', 0));
+$username = request_var('un', '');
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
 $feed = request_var('feed', '');
@@ -66,6 +67,8 @@ $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
 $user_founder = ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm']) ? true : false;
+
+//echo $page . ' ' . $mode . ' ' . $blog_id . ' ' . $reply_id;
 
 // setting some variables for sorting
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
@@ -103,6 +106,12 @@ if ($reply_id != 0)
 
 	$reply_user_id = $reply_data->reply[$reply_id]['user_id'];
 	$blog_id = $reply_data->reply[$reply_id]['blog_id'];
+
+	if (intval(request_var('start', -1)) == -1)
+	{
+		$total_replies = $reply_data->get_reply_data('page', array($blog_id, $reply_id), array('start' => $start, 'limit' => $limit, 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+		$start = (intval($total_replies / $limit) * $limit);
+	}
 }
 
 // get the blog's data if it was requested
@@ -117,6 +126,12 @@ if ($blog_id != 0)
 
 	$subscribed = get_subscription_info($blog_id);
 	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
+}
+
+// if they sent the username instead of the user_id, get the user_id from that username
+if ($username != '' && $user_id == 0)
+{
+	$user_id = $user_data->get_id_by_username($username);
 }
 
 // add the user_id to the queue

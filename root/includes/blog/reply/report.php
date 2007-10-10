@@ -48,7 +48,7 @@ if ($reply_data->reply[$reply_id]['reply_reported'] && ($auth->acl_get('m_blogre
 			WHERE reply_id = ' . $reply_id;
 		$db->sql_query($sql);
 
-		meta_refresh(3, $$blog_urls['view_reply']);
+		blog_meta_refresh(3, $$blog_urls['view_reply']);
 
 		$message = $user->lang['REPORT_CLOSED_SUCCESS'] . '<br/><br/>';
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
@@ -85,7 +85,7 @@ else
 
 		inform_approve_report('reply_report', $reply_id);
 
-		meta_refresh(3, $blog_urls['view_reply']);
+		blog_meta_refresh(3, $blog_urls['view_reply']);
 	
 		$message = $user->lang['POST_REPORTED_SUCCESS'] . '<br/><br/>';
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';

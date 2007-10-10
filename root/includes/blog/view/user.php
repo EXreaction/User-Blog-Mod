@@ -21,7 +21,7 @@ $total_blogs = $blog_data->get_blog_info('user_count', $user_id, array('sort_day
 $sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['BLOG_REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
 $sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
 gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
-$pagination = generate_pagination($blog_urls['self_minus_start'], $total_blogs, $limit, $start, false);
+$pagination = generate_blog_pagination($blog_urls['start_zero'], $total_blogs, $limit, $start, false);
 
 // Get the blogs
 if ($mode == 'deleted')

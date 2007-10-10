@@ -16,6 +16,7 @@ if (!defined('IN_PHPBB'))
 switch ($this->plugins[$which]['plugin_version'])
 {
 	case '0.7.0' :
+	case '0.7.1' :
 	break;
 }
 ?>

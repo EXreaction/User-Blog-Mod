@@ -53,7 +53,7 @@ if ($reply_data->reply[$reply_id]['reply_approved'] == 0)
 
 		handle_subscription('new_reply',  censor_text($reply_data->reply[$reply_id]['reply_subject']));
 
-		meta_refresh(3, $blog_urls['view_reply']);
+		blog_meta_refresh(3, $blog_urls['view_reply']);
 
 		$message = $user->lang['APPROVE_REPLY_SUCCESS'] . '<br/><br/>';
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
