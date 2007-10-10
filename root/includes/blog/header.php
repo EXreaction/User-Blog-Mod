@@ -10,7 +10,7 @@
 // check if the User Blog Mod is enabled
 if ($config['user_blog_enable'])
 {
-	global $blog_plugins, $blog_data, $reply_data, $user_data;
+	global $blog_plugins;
 
 	if (!defined('IN_BLOG'))
 	{
@@ -21,17 +21,10 @@ if ($config['user_blog_enable'])
 		include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
 		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
 		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
 		$blog_plugins->load_plugins();
-
-		$blog_data = new blog_data();
-		$reply_data = new reply_data();
-		$user_data = new user_data();
 	}
 
 	$blog_plugins->plugin_do('blog_header');
@@ -40,7 +33,7 @@ if ($config['user_blog_enable'])
 	if (check_blog_permissions('', '', true))
 	{
 		$template->assign_block_vars('blog_links', array(
-			'URL'		=> blog_url(false),
+			'URL'		=> ((defined('IN_BLOG')) ? blog_url(false) : append_sid("{$phpbb_root_path}blog.$phpEx")),
 			'CLASS'		=> 'icon-members',
 			'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_members.gif" />',
 			'TEXT'		=> $user->lang['USER_BLOGS'],
@@ -50,7 +43,7 @@ if ($config['user_blog_enable'])
 		if (check_blog_permissions('blog', 'add', true))// || ($user->data['blog_count'] > 0 && check_blog_permissions('', '', true)))
 		{
 			$template->assign_block_vars('blog_links', array(
-				'URL'		=> blog_url($user->data['user_id']),
+				'URL'		=> ((defined('IN_BLOG')) ? blog_url($user->data['user_id']) : append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user->data['user_id'])),
 				'CLASS'		=> 'icon-ucp',
 				'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_message.gif" alt="' . $user->lang['MY_BLOGS'] . '" />',
 				'TEXT'		=> $user->lang['MY_BLOGS'],

@@ -741,14 +741,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user_id) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 			));
 		}
 		else if (!$grab_from_db && $user_data['blog_count'] == -1)
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user_id) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
 			));
 		}
 	}
