@@ -31,17 +31,21 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array())
 	{
 		global $config, $phpbb_root_path, $phpEx, $user;
-		global $blog_data, $reply_data, $user_data;
+		global $blog_data, $user_data;
 
 		if ($config['user_blog_seo'])
 		{
-			if ($user_id != false)
+			if ($user_id != false && !empty($user_data))
 			{
 				if (!array_key_exists($user_id, $user_data->user))
 				{
 					$user_data->get_user_data($user_id);
 				}
 				$username = utf8_clean_string($user_data->user[$user_id]['username']);
+			}
+			else if ($user_id != false && isset($extra_data['username']))
+			{
+				$username = utf8_clean_string($extra_data['username']);
 			}
 			else
 			{
@@ -71,7 +75,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			}
 			else if ($blog_id !== false)
 			{
-				if (array_key_exists($blog_id, $blog_data->blog))
+				if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
 				{
 					$return = "{$phpbb_root_path}blog/{$username}/" . utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']) . '_b-' . $blog_id . $start . '.html';
 				}

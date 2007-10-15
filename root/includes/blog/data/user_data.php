@@ -200,7 +200,7 @@ class user_data
 				'POSTER_FROM'		=> $this->user[$user_id]['user_from'],
 				'POSTER_JOINED'		=> $user->format_date($this->user[$user_id]['user_regdate']),
 				'POSTER_POSTS'		=> $this->user[$user_id]['user_posts'],
-				'RANK_IMG'			=> $this->user[$user_id]['rank_img'],
+				'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, $this->user[$user_id]['rank_img']),
 				'RANK_IMG_SRC'		=> $this->user[$user_id]['rank_img_src'],
 				'RANK_TITLE'		=> $this->user[$user_id]['rank_title'],
 				'SIGNATURE'			=> $this->user[$user_id]['user_sig'],

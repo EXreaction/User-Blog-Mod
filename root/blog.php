@@ -10,6 +10,7 @@
 * TODO List
 *
 * HIGH PRIORITY -------------------------------
+* fix blog urls in header to work with SEO url's (add option to include the username in extra_data and check for that instead of using $user_data)
 * remove download stuff from blog
 *
 * LOW PRIORITY --------------------
