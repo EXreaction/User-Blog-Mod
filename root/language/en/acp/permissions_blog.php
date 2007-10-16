@@ -18,7 +18,6 @@ $lang['permission_cat']['blog'] = 'Blog';
 $lang = array_merge($lang, array(
 	'acl_u_blogview'			=> array('lang' => 'Can view blogs', 'cat' => 'blog'),
 	'acl_u_blogpost'			=> array('lang' => 'Can post blogs', 'cat' => 'blog'),
-	'acl_u_blognocaptcha'		=> array('lang' => 'Does not need to enter CAPTCHA code to post new blogs or replies', 'cat' => 'blog'),
 	'acl_u_blogedit'			=> array('lang' => 'Can edit own blogs', 'cat' => 'blog'),
 	'acl_u_blogdelete'			=> array('lang' => 'Can delete own blogs', 'cat' => 'blog'),
 	'acl_u_blognoapprove'		=> array('lang' => 'Blogs do not need approval before public viewing', 'cat' => 'blog'),
@@ -32,6 +31,7 @@ $lang = array_merge($lang, array(
 	'acl_u_blogimg'				=> array('lang' => 'Can post images in blogs and replies', 'cat' => 'blog'),
 	'acl_u_blogurl'				=> array('lang' => 'Can post URL\'s in blogs and replies', 'cat' => 'blog'),
 	'acl_u_blogflash'			=> array('lang' => 'Can post flash in blogs and replies', 'cat' => 'blog'),
+	'acl_u_blogmoderate'		=> array('lang' => 'Can moderate (edit and delete) replies in own blog.', 'cat' => 'blog'),
 ));
 
 // Moderator Permissions

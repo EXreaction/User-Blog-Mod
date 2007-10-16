@@ -101,5 +101,4 @@ $blog_permissions = array(
 $auth_admin->acl_add_option($blog_permissions);
 
 set_config('user_blog_max_attachments', 3, 0);
-set_config('user_blog_enable_attachments', 1, 0);
 ?>

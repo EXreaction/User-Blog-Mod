@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.15
+## MOD Version: 0.3.16
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -54,10 +54,7 @@
 ## 2007-08-12 Alpha 13 Released
 ## 2007-08-14 Alpha 13a Released
 ## 2007-08-15 Alpha 13b Released
-## 2007-08-26
-##		Alpha 14 Released
-##			+ Fixing a few bugs mostly.
-##			+ To upgrade, upload the new files, remove the old file edits from includes/constants.php, and then point your browser to blog.php?page=update.
+## 2007-08-26 Alpha 14 Released
 ## 2007-08-27
 ##		Alpha 14a Released
 ##			+ Fixing a bug with the way I changed constants.php around (strange how I didn't get this error yesterday yet I did first thing this morning).
@@ -80,6 +77,12 @@
 ##				- Also, the included upgrade script for The Blog Mod 0.24b to the User Blog Mod has been updated (thanks IngerK for letting me know about the bugs)
 ##			+ To update, copy the new files over, make the file changes to the .htaccess file as required, then the update script by going to blog.php?page=update
 ##				- If you have the Attachments plugin installed make sure you update it as well (just upload the new files).
+## 2007-10-15
+##		Alpha 17 Released
+##			+ Bug fixes & updates to work with RC7
+##			+ To update, copy the new files over, then the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have the Attachments plugin installed make sure you update it as well.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -107,7 +110,7 @@ Deny from All
 
 #
 #-----[ AFTER, ADD ]----------------------
-#
+# Note: Only add this if your server has mod_rewrite enabled, otherwise skip this step.
 
 RewriteEngine on
 
@@ -170,7 +173,7 @@ includes/functions.php
 #-----[ OPEN ]---------------------------------------------
 # do this for all styles
 
-styles/prosilver/templates/overall_header.html
+styles/prosilver/template/overall_header.html
 
 #
 #-----[ FIND ]---------------------------------------------
@@ -228,6 +231,8 @@ viewtopic.php
 Go to blog.php?page=install in your web browser to install the database.
 
 Set the user/group permissions.
+
+Install Plugins (if you want).  Plugins are located in the contrib/plugins folder.
 
 #
 #-----[ SAVE/CLOSE ALL FILES ]-----------------------------

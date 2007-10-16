@@ -29,7 +29,12 @@ class blog_attachment
 	*/
 	function update_attachment_data($blog_id, $reply_id = 0)
 	{
-		global $db;
+		global $auth, $config, $db, $user_founder;
+
+		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		{
+			return;
+		}
 
 		$attach_ids = array();
 
@@ -53,7 +58,12 @@ class blog_attachment
 	*/
 	function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
-		global $template, $config, $phpbb_root_path, $phpEx, $user;
+		global $auth, $template, $config, $phpbb_root_path, $phpEx, $user, $user_founder;
+
+		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		{
+			return;
+		}
 
 		$template->assign_vars(array(
 			'S_SHOW_ATTACH_BOX'	=> true)
@@ -201,7 +211,7 @@ class blog_attachment
 		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser;
 		global $user_founder;
 
-		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_blogattach') && !$user_founder))
+		if (!$auth->acl_get('u_blogattach') && !$user_founder)
 		{
 			return;
 		}
@@ -405,7 +415,7 @@ class blog_attachment
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth;
 		global $user_founder;
 
-		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_blogattach') && !$user_founder))
+		if (!$auth->acl_get('u_blogattach') && !$user_founder)
 		{
 			return;
 		}
@@ -500,7 +510,7 @@ class blog_attachment
 		global $auth, $user, $config, $db, $cache, $phpbb_root_path, $phpEx;
 		global $user_founder;
 
-		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_blogattach') && !$user_founder))
+		if (!$auth->acl_get('u_blogattach') && !$user_founder)
 		{
 			return;
 		}
@@ -723,7 +733,7 @@ class blog_attachment
 		global $template, $cache, $user, $config, $phpbb_root_path, $phpEx, $auth;
 		global $user_founder;
 
-		if (!$config['user_blog_enable_attachments'] || (!$auth->acl_get('u_download') && !$user_founder))
+		if (!$auth->acl_get('u_download') && !$user_founder)
 		{
 			return;
 		}

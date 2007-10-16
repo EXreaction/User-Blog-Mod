@@ -47,7 +47,7 @@ if (confirm_box(true))
 					enable_smilies tinyint(1) unsigned NOT NULL default '1',
 					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
 					bbcode_bitfield varchar(255) NOT NULL default '',
-					bbcode_uid varchar(5) NOT NULL default '',
+					bbcode_uid varchar(8) NOT NULL default '',
 					blog_edit_time int(11) unsigned NOT NULL default '0',
 					blog_edit_reason varchar(255) NOT NULL,
 					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
@@ -80,7 +80,7 @@ if (confirm_box(true))
 					enable_smilies tinyint(1) unsigned NOT NULL default '1',
 					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
 					bbcode_bitfield varchar(255) NOT NULL default '',
-					bbcode_uid varchar(5) NOT NULL default '',
+					bbcode_uid varchar(8) NOT NULL default '',
 					reply_edit_time int(11) unsigned NOT NULL default '0',
 					reply_edit_reason varchar(255) collate utf8_bin NOT NULL,
 					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
@@ -128,7 +128,7 @@ if (confirm_box(true))
 					enable_smilies tinyint(1) unsigned NOT NULL default '1',
 					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
 					bbcode_bitfield varchar(255) NOT NULL default '',
-					bbcode_uid varchar(5) NOT NULL default '',
+					bbcode_uid varchar(8) NOT NULL default '',
 					blog_edit_time int(11) unsigned NOT NULL default '0',
 					blog_edit_reason varchar(255) NOT NULL,
 					blog_edit_user mediumint(8) unsigned NOT NULL default '0',
@@ -161,7 +161,7 @@ if (confirm_box(true))
 					enable_smilies tinyint(1) unsigned NOT NULL default '1',
 					enable_magic_url tinyint(1) unsigned NOT NULL default '1',
 					bbcode_bitfield varchar(255) NOT NULL default '',
-					bbcode_uid varchar(5) NOT NULL default '',
+					bbcode_uid varchar(8) NOT NULL default '',
 					reply_edit_time int(11) unsigned NOT NULL default '0',
 					reply_edit_reason varchar(255) collate utf8_bin NOT NULL,
 					reply_edit_user mediumint(8) unsigned NOT NULL default '0',
@@ -216,7 +216,6 @@ if (confirm_box(true))
 		'global'   => array(
 			'u_blogview',
 			'u_blogpost',
-			'u_blognocaptcha',
 			'u_blogedit',
 			'u_blogdelete',
 			'u_blognoapprove',
@@ -230,6 +229,7 @@ if (confirm_box(true))
 			'u_blogimg',
 			'u_blogurl',
 			'u_blogflash',
+			'u_blogmoderate',
 			'm_blogapprove',
 			'm_blogedit',
 			'm_bloglockedit',
@@ -261,6 +261,7 @@ if (confirm_box(true))
 	set_config('user_blog_enable_feeds', 1, 0);
 	set_config('user_blog_enable_plugins', 1);
 	set_config('user_blog_seo', false);
+	set_config('user_blog_guest_captcha', true);
 
 	//insert the modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";

@@ -103,7 +103,7 @@ class blog_plugins
 
 	function plugin_install($which)
 	{
-		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
+		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 
 		if (!array_key_exists($which, $this->available_plugins))
 		{
@@ -131,12 +131,12 @@ class blog_plugins
 
 		$this->plugins[$which] = $sql_data;
 
-		handle_blog_cache('plugins');
+		$cache->purge();
 	}
 
 	function plugin_uninstall($which)
 	{
-		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
+		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 		if (!array_key_exists($which, $this->plugins))
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
@@ -149,7 +149,7 @@ class blog_plugins
 
 		unset($this->plugins[$which]);
 
-		handle_blog_cache('plugins');
+		$cache->purge();
 	}
 
 	function plugin_update($which)

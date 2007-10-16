@@ -20,6 +20,19 @@ if (!isset($table_prefix))
 
 define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 
+if (file_exists($user->lang_path . 'mods/blog/plugins/attachments.' . $phpEx))
+{
+	$user->add_lang('mods/blog/plugins/attachments');
+	$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ATTACHMENT_TITLE'];
+	$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ATTACHMENT_DESCRIPTION'];
+}
+else
+{
+	$this->available_plugins[$name]['plugin_title'] = 'Attachments';
+	$this->available_plugins[$name]['plugin_description'] = 'Adds Attachments to User Blogs';
+}
+
+
 // setup some basic information about the plugin
 $this->available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
 $this->available_plugins[$name]['plugin_version'] = '0.7.1';
@@ -31,6 +44,8 @@ if ($plugin_enabled)
 	* Setup the To Do list and add it to the plugin's to-do list
 	*/
 	$attach_to_do = array(
+		'blog_page_switch'			=> array('attach_blog_page_switch'),
+
 		'blog_add_start'			=> array('attach_blog_add_start'),
 		'blog_add_preview'			=> array('attach_blog_add_preview'),
 		'blog_add_after_preview'	=> array('attach_blog_add_after_preview'),
@@ -76,11 +91,6 @@ if ($plugin_enabled)
 			$this->to_do[$do] = array_merge($this->to_do[$do], $what);
 		}
 	}
-
-	/**
-	* Add the needed language files
-	*/
-	$user->add_lang('mods/blog/plugins/attachments');
 
 	/**
 	* Include the necessary files

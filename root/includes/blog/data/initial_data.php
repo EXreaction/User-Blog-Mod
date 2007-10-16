@@ -14,7 +14,6 @@ if (!defined('IN_PHPBB'))
 }
 
 // include the files for this mod
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
@@ -34,7 +33,6 @@ $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
 $blog_plugins = new blog_plugins();
-$bbcode = new bbcode();
 $message_parser = new parse_message();
 $cp = new custom_profile();
 $error = $blog_urls = $foe_list = array();
@@ -67,8 +65,6 @@ $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
 $user_founder = ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm']) ? true : false;
-
-//echo $page . ' ' . $mode . ' ' . $blog_id . ' ' . $reply_id;
 
 // setting some variables for sorting
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);

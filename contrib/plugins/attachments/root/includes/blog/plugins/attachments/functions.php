@@ -7,6 +7,18 @@
 *
 */
 
+function attach_blog_page_switch(&$arg)
+{
+	global $auth, $config, $db, $page, $phpbb_root_path, $phpEx, $user;
+	global $user_founder, $blog_attachment, $blog_plugins;
+
+	if ($page == 'download')
+	{
+		include($phpbb_root_path . "includes/blog/plugins/attachments/download.$phpEx");
+		$arg = false;
+	}
+}
+
 function attach_blog_add_start($arg = false)
 {
 	global $blog_attachment;
@@ -269,7 +281,6 @@ function attach_acp_main_settings(&$args)
 	global $user;
 
 	$args['legend_attach'] = 'BLOG_ATTACHMENT_SETTINGS';
-	$args['user_blog_enable_attachments'] = array('lang' => 'BLOG_ENABLE_ATTACHMENTS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false);
 	$args['user_blog_max_attachments'] = array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true);
 }
 ?>

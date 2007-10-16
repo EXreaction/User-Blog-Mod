@@ -10,8 +10,6 @@
 * TODO List
 *
 * HIGH PRIORITY -------------------------------
-* fix blog urls in header to work with SEO url's (add option to include the username in extra_data and check for that instead of using $user_data)
-* remove download stuff from blog
 *
 * LOW PRIORITY --------------------
 * In Blog ACP -> add option to remove orphan blog attachments
@@ -57,7 +55,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A16';
+$user_blog_version = 'A17';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -91,6 +89,8 @@ include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
 
 // check the permissions and see if the user can access this page
 check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+
+$default = false;
 
 switch ($page)
 {
@@ -135,16 +135,21 @@ switch ($page)
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
-	case 'dev' : // used for special developmental purposes
+	case 'dev' : // used for developmental purposes
 	case 'resync' : // to resync the blog data
-	case 'download' : // download a file
 		include($phpbb_root_path . "includes/blog/{$page}.$phpEx");
 		break;
 	default :
 		$default = true;
 }
 
-if (isset($default) && $default)
+if ($default)
+{
+	// If you are adding your own page with this, make sure to set $default to false, otherwise it will load the default page below
+	$blog_plugins->plugin_do_arg('blog_page_switch', $default);
+}
+
+if ($default)
 {
 	if ($blog_id != 0 || $reply_id != 0)
 	{
@@ -167,9 +172,6 @@ $template->assign_vars(array(
 
 $blog_plugins->plugin_do('blog_end');
 
-if ($page != 'download')
-{
-	// setup the page footer
-	page_footer();
-}
+// setup the page footer
+page_footer();
 ?>

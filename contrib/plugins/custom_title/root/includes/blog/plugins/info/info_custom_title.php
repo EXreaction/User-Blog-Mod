@@ -7,9 +7,21 @@
 *
 */
 
+if (file_exists($user->lang_path . 'mods/blog/plugins/attachments.' . $phpEx))
+{
+	$user->add_lang('mods/blog/plugins/attachments');
+	$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_CUSTOM_TITLE_TITLE'];
+	$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_CUSTOM_TITLE_DESCRIPTION'];
+}
+else
+{
+	$this->available_plugins[$name]['plugin_title'] = 'Custom Titles';
+	$this->available_plugins[$name]['plugin_description'] = 'Adds display for Custom Titles to the User Blog Mod';
+}
+
 // setup some basic information about the plugin
 $this->available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.0';
+$this->available_plugins[$name]['plugin_version'] = '0.7.1';
 
 // Only do this if the plugin is enabled (set in the load_plugins function right before this file is loaded)
 if ($plugin_enabled)

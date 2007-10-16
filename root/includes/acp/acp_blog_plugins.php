@@ -118,11 +118,12 @@ class acp_blog_plugins
 			}
 
 			$template->assign_block_vars((($installed) ? 'installed' : 'uninstalled'), array(
-				'NAME'				=> $name,
+				'NAME'				=> (isset($data['plugin_title'])) ? $data['plugin_title'] : $name,
+				'DESCRIPTION'		=> (isset($data['plugin_description'])) ? $data['plugin_description'] : '',
 				'S_ACTIONS'			=> implode(' | ', $s_actions),
-				'COPYRIGHT'			=> $data['plugin_copyright'],
-				'VERSION'			=> $data['plugin_version'],
-				'INSTALLED_VERSION'	=> ($installed) ? $blog_plugins->plugins[$name]['plugin_version'] : false,
+				'COPYRIGHT'			=> (isset($data['plugin_copyright'])) ? $data['plugin_copyright'] : '',
+				'DATABASE_VERSION'	=> ($installed) ? $blog_plugins->plugins[$name]['plugin_version'] : false,
+				'FILES_VERSION'		=> (isset($data['plugin_version'])) ? $data['plugin_version'] : '',
 			));
 		}
 	}

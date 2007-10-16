@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds display for Custom Titles to the User Blog Mod
 ##
-## MOD Version: 0.7.0
+## MOD Version: 0.7.1
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~1 Minutes
@@ -32,6 +32,9 @@
 ##(yyyy-mm-dd)
 ## 2007-10-04
 ##		0.7.0 Released
+## 2007-10-15
+##		0.7.1 Released
+##			+ Adding title/description to details.  To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

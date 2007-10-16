@@ -166,6 +166,19 @@ if (confirm_box(true))
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_REPLY_TABLE . ' CHANGE reply_deleted reply_deleted MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\'';
 
 			set_config('user_blog_seo', false);
+		case 'A16' :
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . ' CHANGE bbcode_uid bbcode_uid VARCHAR( 8 ) NOT NULL';
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_REPLY_TABLE . ' CHANGE bbcode_uid bbcode_uid VARCHAR( 8 ) NOT NULL';
+			$sql_array[] = 'DELETE FROM ' . ACL_OPTIONS_TABLE . ' WHERE auth_option = \'u_blognocaptcha\'';
+			set_config('user_blog_guest_captcha', true);
+
+			$blog_permissions = array(
+				'local'      => array(),
+				'global'   => array(
+					'u_blogmoderate',
+					)
+			);
+			$auth_admin->acl_add_option($blog_permissions);
 	}
 
 	if (count($sql_array))

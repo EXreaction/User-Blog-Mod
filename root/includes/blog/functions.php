@@ -49,7 +49,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			}
 			else
 			{
-				$username = 'data';
+				$username = 'user';
 			}
 
 			$start = ((isset($url_data['start'])) ? '_s-' . $url_data['start'] : '');
@@ -630,11 +630,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function handle_captcha($mode)
 	{
-		global $auth, $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields;
-		global $user_founder;
+		global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields;
 
-		// check if they need to have the captcha displayed at all.  If they don't just return.
-		if ($auth->acl_get('u_blognocaptcha') || $user_founder)
+		if ($user->data['user_id'] != ANONYMOUS || !$config['user_blog_guest_captcha'])
 		{
 			return true;
 		}
@@ -730,9 +728,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		}
 
 		// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
-		if ($user_id > 1 && !isset($user_data['blog_count']) && $grab_from_db)
+		if ($user_id > 1 && (!isset($user_data['blog_count']) || !isset($user_data['username'])) && $grab_from_db)
 		{
-			$sql = 'SELECT blog_count FROM ' . USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
 			$result = $db->sql_query($sql);
 			$user_data = $db->sql_fetchrow($result);
 		}
@@ -745,14 +743,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user_id) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 			));
 		}
 		else if (!$grab_from_db && $user_data['blog_count'] == -1)
 		{
 			$template->assign_block_vars($block, array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user_id) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
 			));
 		}
 	}

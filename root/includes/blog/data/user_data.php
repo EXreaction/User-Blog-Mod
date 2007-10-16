@@ -36,7 +36,7 @@ class user_data
 	 */
 	function get_user_data($id, $user_queue = false)
 	{
-		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp, $bbcode;
+		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp;
 		global $blog_data, $reply_data, $user_founder, $blog_plugins;
 
 		// if we are using the user_queue, set $user_id as that for consistency
@@ -137,15 +137,7 @@ class user_data
 			// Signature
 			if ($config['allow_sig'] && $user->optionget('viewsigs') && $row['user_sig'] != '')
 			{
-				$row['user_sig'] = censor_text($row['user_sig']);
-				$row['user_sig'] = str_replace("\n", '<br />', $row['user_sig']);
-
-				if ($row['user_sig_bbcode_bitfield'])
-				{
-					$bbcode->bbcode_second_pass($row['user_sig'], $row['user_sig_bbcode_uid'], $row['user_sig_bbcode_bitfield']);
-				}
-
-				$row['user_sig'] = smiley_text($row['user_sig']);
+				$row['user_sig'] = generate_text_for_display($row['user_sig'], $row['user_sig_bbcode_uid'], $row['user_sig_bbcode_bitfield'], 7);
 			}
 			else
 			{
