@@ -15,7 +15,7 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'BLOG_ATTACHMENT_TITLE'				=> 'Blog Attachments',
+	'BLOG_ATTACHMENT_TITLE'				=> 'Attachments',
 	'BLOG_ATTACHMENT_DESCRIPTION'		=> 'Adds Attachments to User Blogs',
 
 	'BLOG_ATTACHMENT_SETTINGS'			=> 'Attachment Settings (plugin)',
