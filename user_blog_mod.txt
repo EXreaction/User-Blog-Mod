@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.16
+## MOD Version: 0.3.17
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -46,19 +46,16 @@
 ## 2007-07-08 Alpha 7 Released
 ## 2007-07-12 Alpha 8 Released
 ## 2007-07-28 Alpha 9 Released
-## 2007-07-29 Alpha 9.a Released
+## 2007-07-29 Alpha 9a Released
 ## 2007-07-30 Alpha 10 Released
-## 2007-07-31 Alpha 10.a Released
+## 2007-07-31 Alpha 10a Released
 ## 2007-08-04 Alpha 11 Released
 ## 2007-08-07 Alpha 12 Released
 ## 2007-08-12 Alpha 13 Released
 ## 2007-08-14 Alpha 13a Released
 ## 2007-08-15 Alpha 13b Released
 ## 2007-08-26 Alpha 14 Released
-## 2007-08-27
-##		Alpha 14a Released
-##			+ Fixing a bug with the way I changed constants.php around (strange how I didn't get this error yesterday yet I did first thing this morning).
-##			+ To upgrade just upload the new files.
+## 2007-08-27 Alpha 14a Released
 ## 2007-09-10
 ##		Alpha 14b Released
 ##			+ Fixing a few bugs.
@@ -83,6 +80,12 @@
 ##			+ To update, copy the new files over, then the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have the Attachments plugin installed make sure you update it as well.
+## 2007-10-17
+##		Alpha 18 Released
+##			+ Optimizations (uses about 1.3MB less memory), file layout changes
+##			+ To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -114,17 +117,17 @@ Deny from All
 
 RewriteEngine on
 
-Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*)_s-(.+).html$				./includes/blog/seo.php?$2=$3&start=$4
-Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*).html$						./includes/blog/seo.php?$2=$3
-Rewriterule ^blog/(.+)/m-(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$	./includes/blog/seo.php?page=$1&mode=$2&$3=$4&$5=$6
-Rewriterule ^blog/(.+)/m-(.+)_(b|r|id)-([0-9]*).html$				./includes/blog/seo.php?page=$1&mode=$2&$3=$4&$5
-Rewriterule ^blog/(.+)/m-(.+)_s-(.+).html$							./includes/blog/seo.php?page=$1&mode=$2&start=$3
-Rewriterule ^blog/(.+)/m-(.+).html$									./includes/blog/seo.php?page=$1&mode=$2
-Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$		./includes/blog/seo.php?un=$1&$3=$4&$5=$6
-Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_s-(.+).html$				./includes/blog/seo.php?un=$1&$3=$4&start=$5
-Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*).html$					./includes/blog/seo.php?un=$1&$3=$4
-Rewriterule ^blog/(.+)/(.+)_s-(.+).html$							./includes/blog/seo.php?un=$1&mode=$2&start=$3
-Rewriterule ^blog/(.+)/(.+).html$									./includes/blog/seo.php?un=$1&mode=$2
+Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*)_s-(.+).html$				./blog/view/seo.php?$2=$3&start=$4
+Rewriterule ^blog/(.+)/(b|r|u)-([0-9]*).html$						./blog/view/seo.php?$2=$3
+Rewriterule ^blog/(.+)/m-(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$	./blog/view/seo.php?page=$1&mode=$2&$3=$4&$5=$6
+Rewriterule ^blog/(.+)/m-(.+)_(b|r|id)-([0-9]*).html$				./blog/view/seo.php?page=$1&mode=$2&$3=$4&$5
+Rewriterule ^blog/(.+)/m-(.+)_s-(.+).html$							./blog/view/seo.php?page=$1&mode=$2&start=$3
+Rewriterule ^blog/(.+)/m-(.+).html$									./blog/view/seo.php?page=$1&mode=$2
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_(b|r)-([0-9]*).html$		./blog/view/seo.php?un=$1&$3=$4&$5=$6
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*)_s-(.+).html$				./blog/view/seo.php?un=$1&$3=$4&start=$5
+Rewriterule ^blog/(.+)/(.+)_(b|r)-([0-9]*).html$					./blog/view/seo.php?un=$1&$3=$4
+Rewriterule ^blog/(.+)/(.+)_s-(.+).html$							./blog/view/seo.php?un=$1&mode=$2&start=$3
+Rewriterule ^blog/(.+)/(.+).html$									./blog/view/seo.php?un=$1&mode=$2
 Rewriterule ^blog/index.html$										./blog/seo.php
 
 #
@@ -166,7 +169,7 @@ includes/functions.php
 #
 
 	// Start Add User Blog Mod ------------------
-	include($phpbb_root_path . 'includes/blog/header.' . $phpEx);
+	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End Add User Blog Mod --------------------
 
 #
@@ -219,7 +222,7 @@ viewtopic.php
 #
 
 	// Start Add User Blog Mod ------------------
-	include_once($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
+	include_once($phpbb_root_path . 'blog/functions.' . $phpEx);
 	$user->add_lang('mods/blog/blog');
 	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
 	// End Add User Blog Mod --------------------

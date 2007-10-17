@@ -33,7 +33,7 @@ class blog_plugins
 
 		if (!defined('BLOGS_PLUGINS_TABLE'))
 		{
-			include($phpbb_root_path . 'includes/blog/data/constants.' . $phpEx);
+			include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
 		}
 
 		$cache_data = $cache->get('_blog_plugins');

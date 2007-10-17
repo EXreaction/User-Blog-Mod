@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds attachments to the User Blog Mod
 ##
-## MOD Version: 0.7.2
+## MOD Version: 0.7.3
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -39,6 +39,10 @@
 ##				- To upgrade just upload the new files.
 ## 2007-10-15
 ##		0.7.2 Released
+##			+ Some fixes
+##				- To upgrade just upload the new files.
+## 2007-10-17
+##		0.7.3 Released
 ##			+ Some fixes
 ##				- To upgrade just upload the new files.
 ##############################################################

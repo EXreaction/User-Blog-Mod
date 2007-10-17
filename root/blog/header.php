@@ -10,7 +10,7 @@
 // check if the User Blog Mod is enabled
 if ($config['user_blog_enable'])
 {
-	global $blog_plugins;
+	global $blog_plugins, $blog_plugins_path;
 
 	if (!defined('IN_BLOG'))
 	{
@@ -18,12 +18,12 @@ if ($config['user_blog_enable'])
 		$user->add_lang('mods/blog/blog');
 
 		// include the functions & permissions file
-		include_once($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+		include_once($phpbb_root_path . 'blog/functions.' . $phpEx);
+		include($phpbb_root_path . 'blog/permissions.' . $phpEx);
+		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 		$blog_plugins->load_plugins();
 	}
 

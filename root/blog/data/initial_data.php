@@ -16,13 +16,13 @@ if (!defined('IN_PHPBB'))
 // include the files for this mod
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 
-include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/data/handle_data.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+include($phpbb_root_path . 'blog/functions.' . $phpEx);
+include($phpbb_root_path . 'blog/permissions.' . $phpEx);
+include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/handle_data.' . $phpEx);
+include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
@@ -33,7 +33,7 @@ $error = $blog_urls = $foe_list = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
-$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 $blog_plugins->load_plugins();
 $blog_plugins->plugin_do('blog_start');
 

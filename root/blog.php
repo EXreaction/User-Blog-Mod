@@ -79,7 +79,7 @@ if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!is
 define('IN_BLOG', true);
 
 // We will set all of the initial data by including this file
-include($phpbb_root_path . 'includes/blog/data/initial_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 
 // check the permissions and see if the user can access this page
 check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
@@ -91,7 +91,7 @@ switch ($page)
 	case 'blog' :
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
+		include($phpbb_root_path . 'blog/post_options.' . $phpEx);
 
 		$message_parser = new parse_message();
 
@@ -103,7 +103,7 @@ switch ($page)
 			case 'undelete' :
 			case 'report' :
 			case 'approve' :
-				include($phpbb_root_path . "includes/blog/blog/{$mode}.$phpEx");
+				include($phpbb_root_path . "blog/blog/{$mode}.$phpEx");
 				break;
 			default :
 				$default = true;
@@ -112,7 +112,7 @@ switch ($page)
 	case 'reply' :
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
+		include($phpbb_root_path . 'blog/post_options.' . $phpEx);
 
 		$message_parser = new parse_message();
 
@@ -124,17 +124,17 @@ switch ($page)
 			case 'undelete' :
 			case 'report' :
 			case 'approve' :
-				include($phpbb_root_path . "includes/blog/reply/{$mode}.$phpEx");
+				include($phpbb_root_path . "blog/reply/{$mode}.$phpEx");
 				break;
 			case 'quote' :
-				include($phpbb_root_path . "includes/blog/reply/add.$phpEx");
+				include($phpbb_root_path . "blog/reply/add.$phpEx");
 				break;
 			default :
 				$default = true;
 		}
 		break;
 	case 'mcp' : // moderator control panel
-		include($phpbb_root_path . 'includes/blog/view/mcp.' . $phpEx);
+		include($phpbb_root_path . 'blog/view/mcp.' . $phpEx);
 		break;
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
@@ -143,7 +143,7 @@ switch ($page)
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for developmental purposes
 	case 'resync' : // to resync the blog data
-		include($phpbb_root_path . "includes/blog/{$page}.$phpEx");
+		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;
 	default :
 		$default = true;
@@ -159,15 +159,15 @@ if ($default)
 {
 	if ($blog_id != 0 || $reply_id != 0)
 	{
-		include($phpbb_root_path . 'includes/blog/view/blog.' . $phpEx);
+		include($phpbb_root_path . 'blog/view/blog.' . $phpEx);
 	}
 	else if ($user_id != 0)
 	{
-		include($phpbb_root_path . 'includes/blog/view/user.' . $phpEx);
+		include($phpbb_root_path . 'blog/view/user.' . $phpEx);
 	}
 	else
 	{
-		include($phpbb_root_path . 'includes/blog/view/main.' . $phpEx);
+		include($phpbb_root_path . 'blog/view/main.' . $phpEx);
 	}
 }
 

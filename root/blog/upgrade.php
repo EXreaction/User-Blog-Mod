@@ -38,7 +38,7 @@ if ($cancel)
 generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG']);
 
 // Comment out the following like to test the upgrade
-trigger_error('This page is only FOR TESTING.  Under no circumstances should you use this for the actual upgrade.<br/>There is absolutely no support for upgrades at this time.  If you are a tester who is willing to test the upgrade on a dev server please follow the instructions in includes/blog/upgrade.php.');
+trigger_error('This page is only FOR TESTING.  Under no circumstances should you use this for the actual upgrade.<br/>There is absolutely no support for upgrades at this time.  If you are a tester who is willing to test the upgrade on a dev server please follow the instructions in blog/upgrade.php.');
 
 // Enter in your old DB information to test the upgrade
 $dbhost			= 'localhost';

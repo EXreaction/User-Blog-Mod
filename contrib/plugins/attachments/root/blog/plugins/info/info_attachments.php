@@ -23,6 +23,10 @@ define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 if (file_exists($user->lang_path . "mods/blog/plugins/{$name}.$phpEx"))
 {
 	$user->add_lang('mods/blog/plugins/' . $name);
+}
+
+if (isset($user->lang['BLOG_ATTACHMENT_TITLE']))
+{
 	$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ATTACHMENT_TITLE'];
 	$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ATTACHMENT_DESCRIPTION'];
 }

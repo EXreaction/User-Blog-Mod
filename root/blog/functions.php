@@ -23,7 +23,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $phpbb_root_path, $phpEx;
 	}
-	include($phpbb_root_path . 'includes/blog/data/constants.' . $phpEx);
+	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
 
 	/**
 	* URL handler
