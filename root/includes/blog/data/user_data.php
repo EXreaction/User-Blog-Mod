@@ -34,7 +34,7 @@ class user_data
 	 * @param int|bool $id The user_id (or multiple user_ids if given an array) of the user we want to grab the data for
 	 * @param bool $user_queue If user_queue is true then we just grab the user_ids from the user_queue, otherwise we select data from $id.
 	 */
-	function get_user_data($id, $user_queue = false)
+	function get_user_data($id, $user_queue = false, $username = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp;
 		global $blog_data, $reply_data, $user_founder, $blog_plugins;
@@ -45,15 +45,18 @@ class user_data
 			$id = $this->user_queue;
 		}
 
-		// if the $user_id isn't an array, make it one for consistency
-		if (!is_array($id))
+		if (!$username)
 		{
-			$id = array($id);
-		}
+			// if the $user_id isn't an array, make it one for consistency
+			if (!is_array($id))
+			{
+				$id = array($id);
+			}
 
-		if (!count($id))
-		{
-			return;
+			if (!count($id))
+			{
+				return;
+			}
 		}
 
 		$blog_plugins->plugin_do('user_data_start');
@@ -61,43 +64,58 @@ class user_data
 		// this holds the user_id's we will query
 		$users_to_query = array();
 
-		foreach ($id as $i)
+		if (!$username)
 		{
-			if ( (!array_key_exists($i, $this->user)) && (!in_array($i, $users_to_query)) )
+			foreach ($id as $i)
 			{
-				array_push($users_to_query, $i);
+				if ( (!array_key_exists($i, $this->user)) && (!in_array($i, $users_to_query)) )
+				{
+					array_push($users_to_query, $i);
+				}
 			}
-		}
 
-		if (!count($users_to_query))
+			if (!count($users_to_query))
+			{
+				return;
+			}
+
+			// Grab all profile fields from users in id cache for later use - similar to the poster cache
+			if ($config['user_blog_custom_profile_enable'])
+			{
+				if (!class_exists('custom_profile'))
+				{
+					include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+					$cp = new custom_profile();
+				}
+
+				$profile_fields_cache = $cp->generate_profile_fields_template('grab', $users_to_query);
+			}
+
+			// Grab user status information
+			$status_data = array();
+			$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
+				FROM ' . SESSIONS_TABLE . '
+					WHERE ' . $db->sql_in_set('session_user_id', $users_to_query) . '
+						GROUP BY session_user_id';
+			$result = $db->sql_query($sql);
+			while($row = $db->sql_fetchrow($result))
+			{
+				$status_data[$row['session_user_id']] = $row;
+			}
+			$db->sql_freeresult($result);
+			$update_time = $config['load_online_time'] * 60;
+
+			// Get the rest of the data on the users and parse everything we need
+			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
+			$blog_plugins->plugin_do_arg('user_data_sql', $sql);
+			$result = $db->sql_query($sql);
+		}
+		else
 		{
-			return;
+			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
+			$blog_plugins->plugin_do_arg('user_data_sql', $sql);
+			$result = $db->sql_query($sql);
 		}
-
-		// Grab all profile fields from users in id cache for later use - similar to the poster cache
-		if ($config['user_blog_custom_profile_enable'])
-		{
-			$profile_fields_cache = $cp->generate_profile_fields_template('grab', $users_to_query);
-		}
-
-		// Grab user status information
-		$status_data = array();
-		$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
-			FROM ' . SESSIONS_TABLE . '
-				WHERE ' . $db->sql_in_set('session_user_id', $users_to_query) . '
-					GROUP BY session_user_id';
-		$result = $db->sql_query($sql);
-		while($row = $db->sql_fetchrow($result))
-		{
-			$status_data[$row['session_user_id']] = $row;
-		}
-		$db->sql_freeresult($result);
-		$update_time = $config['load_online_time'] * 60;
-
-		// Get the rest of the data on the users and parse everything we need
-		$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
-		$blog_plugins->plugin_do_arg('user_data_sql', $sql);
-		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -154,12 +172,42 @@ class user_data
 			$this->user[$user_id] = $row;
 		}
 		$db->sql_freeresult($result);
+		unset($status_data, $row);
 
 		// if we did use the user_queue, reset it
 		if ($user_queue)
 		{
 			unset($this->user_queue);
 			$this->user_queue = array();
+		}
+
+		if ($username)
+		{
+			if (isset($user_id))
+			{
+				// Grab user status information
+				$status_data = array();
+				$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
+					FROM ' . SESSIONS_TABLE . '
+						WHERE session_user_id = \'' . $user_id . '\'
+							GROUP BY session_user_id';
+				$result = $db->sql_query($sql);
+				while($row = $db->sql_fetchrow($result))
+				{
+					$status_data[$row['session_user_id']] = $row;
+				}
+				$db->sql_freeresult($result);
+				$update_time = $config['load_online_time'] * 60;
+
+				$this->user[$user_id]['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
+				unset($status_data);
+
+				return $user_id;
+			}
+			else
+			{
+				trigger_error('NO_USER');
+			}
 		}
 	}
 

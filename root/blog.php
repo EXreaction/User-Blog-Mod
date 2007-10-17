@@ -6,45 +6,39 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
 */
+
 /*
 * TODO List
 *
-* HIGH PRIORITY -------------------------------
+* HIGH PRIORITY -----------------------------------------------------------------------------------
+* UCP
 *
-* LOW PRIORITY --------------------
+* LOW PRIORITY ------------------------------------------------------------------------------------
+* Polls
+*
 * In Blog ACP -> add option to remove orphan blog attachments
 *
 * Resetup the MCP to actually be in the MCP
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
-* give option to control users who reply to blogs - all - friends - none
+* OTHER -------------------------------------------------------------------------------------------
 *
-* Polls
-*
-* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
-*	new blogs/replies needing approval notice by Blog MCP link (use the record blog reads for this)
+* Waiting on UCP
+*	give option to control users who reply to blogs - all - friends - none
+*	custom CSS coding allowed?
+*	customizable blog message to be displayed like forum rules for each user
+*	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
 * add in a section for gallery display - make gallery.php hold the main code for it so it can be replaced with the core code later by the user (by just uploading 1 file to install the add on).  All the other code needs to be in place and call the gallery.php file to check.
 * Integrate with search - make as an add-on - to enable have one of the instructions for the add-on to be editing a config file in the includes/blog directory
 *
+* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
+*	new blogs/replies needing approval notice by Blog MCP link (use the record blog reads for this)
+*
 * Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
-* OTHER ---------------------------------
-* External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
-*
-* Users able to moderate their own blogs - delete and edit everyone else's posts
-*
-* Main Blog Page - sections - latest replied to - latest reply?
-*
-* custom CSS coding allowed?
-* customizable blog message to be displayed like forum rules for each user
-*
-* In late Beta or early RC finish upgrade page
-*/
-
-/*
-* BUG LIST
+* Finish upgrade page
 */
 
 /*
@@ -95,6 +89,12 @@ $default = false;
 switch ($page)
 {
 	case 'blog' :
+		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
+
+		$message_parser = new parse_message();
+
 		switch ($mode)
 		{
 			case 'add' :
@@ -110,6 +110,12 @@ switch ($page)
 		}
 		break;
 	case 'reply' :
+		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
+
+		$message_parser = new parse_message();
+
 		switch ($mode)
 		{
 			case 'add' :

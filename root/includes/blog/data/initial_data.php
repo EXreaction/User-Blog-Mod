@@ -15,13 +15,9 @@ if (!defined('IN_PHPBB'))
 
 // include the files for this mod
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
 
 include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/permissions.' . $phpEx);
-include($phpbb_root_path . 'includes/blog/post_options.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/blog_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/reply_data.' . $phpEx);
 include($phpbb_root_path . 'includes/blog/data/user_data.' . $phpEx);
@@ -33,8 +29,6 @@ $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
 $blog_plugins = new blog_plugins();
-$message_parser = new parse_message();
-$cp = new custom_profile();
 $error = $blog_urls = $foe_list = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
@@ -127,14 +121,15 @@ if ($blog_id != 0)
 // if they sent the username instead of the user_id, get the user_id from that username
 if ($username != '' && $user_id == 0)
 {
-	$user_id = $user_data->get_id_by_username($username);
+	$user_id = $user_data->get_user_data(false, false, $username);
 }
-
-// add the user_id to the queue
-if ($user_id != 0)
+else if ($user_id != 0)
 {
 	array_push($user_data->user_queue, $user_id);
+}
 
+if ($user_id != 0)
+{
 	// find out if they are subscribed to this user's blogs
 	if ($blog_id == 0)
 	{

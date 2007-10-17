@@ -26,8 +26,6 @@ $user->add_lang('viewtopic');
 generate_menu($user_id);
 
 // Generate the breadcrumbs, setup the page header, and setup some variables we will use...
-$breadcrumbs[sprintf($user->lang['USERNAMES_BLOGS'], $user_data->user[$user_id]['username'])] = $blog_urls['view_user'];
-
 generate_blog_breadcrumbs();
 page_header($user->lang['VIEW_BLOG'] .' - ' . $blog_data->blog[$blog_id]['blog_subject']);
 
@@ -88,6 +86,7 @@ if ($total_replies > 0 || $sort_days != 0)
 		'S_SELECT_SORT_KEY' 	=> $s_sort_key,
 		'S_SELECT_SORT_DAYS' 	=> $s_limit_days,
 	));
+	unset($pagination);
 
 	// For the replies
 	if ($reply_ids !== false)
@@ -104,6 +103,8 @@ if ($total_replies > 0 || $sort_days != 0)
 
 			// output the custom fields
 			$user_data->handle_user_data($reply_data->reply[$id]['user_id'], 'replyrow.custom_fields');
+
+			unset($data);
 		}
 	}
 }

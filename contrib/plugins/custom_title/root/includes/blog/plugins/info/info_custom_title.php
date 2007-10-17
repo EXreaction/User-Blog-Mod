@@ -7,9 +7,9 @@
 *
 */
 
-if (file_exists($user->lang_path . 'mods/blog/plugins/attachments.' . $phpEx))
+if (file_exists($user->lang_path . "mods/blog/plugins/{$name}.$phpEx"))
 {
-	$user->add_lang('mods/blog/plugins/attachments');
+	$user->add_lang('mods/blog/plugins/' . $name);
 	$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_CUSTOM_TITLE_TITLE'];
 	$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_CUSTOM_TITLE_DESCRIPTION'];
 }

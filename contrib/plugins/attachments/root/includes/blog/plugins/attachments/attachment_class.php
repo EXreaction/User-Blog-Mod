@@ -163,6 +163,7 @@ class blog_attachment
 				$blog_data->blog[$row['blog_id']]['attachment_data'][] = $row;
 			}
 		}
+		$db->sql_freeresult($result);
 
 		/* This code really isn't needed I guess...it checks for every blog/reply viewed to make sure that if it says it has an attachment that it does, otherwise it updates accordingly.
 			The reason it isn't needed is because the only way it would require this is if you had manually deleted data from the database (not a good idea).  But I will keep the code here...
@@ -264,6 +265,7 @@ class blog_attachment
 					);
 
 					$db->sql_query('INSERT INTO ' . BLOGS_ATTACHMENT_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+					unset($sql_ary);
 
 					$new_entry = array(
 						'attach_id'		=> $db->sql_nextid(),
@@ -381,6 +383,7 @@ class blog_attachment
 						);
 
 						$db->sql_query('INSERT INTO ' . BLOGS_ATTACHMENT_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+						unset($sql_ary);
 
 						$new_entry = array(
 							'attach_id'		=> $db->sql_nextid(),
@@ -405,6 +408,7 @@ class blog_attachment
 		{
 			$this->warn_msg[] = $error_msg;
 		}
+		unset($error);
 	}
 
 	/**
@@ -519,7 +523,11 @@ class blog_attachment
 			'error'	=> array()
 		);
 
-		include_once($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
+		if (!class_exists('fileupload'))
+		{
+			include($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
+		}
+
 		$upload = new fileupload();
 
 		if (!$local)
@@ -706,11 +714,7 @@ class blog_attachment
 		}
 
 		$extensions = $return;
-
-		if (!isset($extensions['_allowed_']))
-		{
-			$extensions['_allowed_'] = array();
-		}
+		unset($return);
 
 		return $extensions;
 	}

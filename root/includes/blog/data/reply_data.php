@@ -145,6 +145,7 @@ class reply_data
 									$sort_days_sql;
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
 					return $total['total'];
 				}
 				else

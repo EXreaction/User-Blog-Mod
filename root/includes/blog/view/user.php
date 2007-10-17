@@ -73,6 +73,7 @@ if (!$feed)
 		'L_NO_DELETED_BLOGS'	=> ($sort_days == 0) ? $user->lang['NO_DELETED_BLOGS'] : sprintf($user->lang['NO_DELETED_BLOGS_SORT_DAYS'], $limit_days[$sort_days]),
 		'L_NO_BLOGS_USER'		=> ($sort_days == 0) ? $user->lang['NO_BLOGS_USER'] : sprintf($user->lang['NO_BLOGS_USER_SORT_DAYS'], $limit_days[$sort_days]),
 	));
+	unset($pagination);
 
 	// parse and output the blogs
 	if ($blog_ids !== false)
@@ -99,6 +100,7 @@ if (!$feed)
 			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_read_count = blog_read_count + 1 WHERE ' . $db->sql_in_set('blog_id', $read_blogs);
 			$db->sql_query($sql);
 		}
+		unset($read_blogs);
 	}
 
 	$blog_plugins->plugin_do('view_user_end');

@@ -62,6 +62,7 @@ if ($feed == false || $all)
 			
 				$template->assign_block_vars('column.row', $user_row + $blog_row);
 			}
+			unset($user_row, $blog_row);
 		}
 	}
 
@@ -84,6 +85,7 @@ if ($feed == false || $all)
 
 				$template->assign_block_vars('column.row', $user_row + $blog_row);
 			}
+			unset($user_row, $blog_row);
 		}
 	}
 
@@ -106,6 +108,7 @@ if ($feed == false || $all)
 
 				$template->assign_block_vars('column.row', $user_row + $blog_row);
 			}
+			unset($user_row, $blog_row);
 		}
 	}
 

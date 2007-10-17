@@ -324,6 +324,7 @@ class blog_data
 											$limit_sql;
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
 					return $total['total'];
 				}
 				else

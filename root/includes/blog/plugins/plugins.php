@@ -53,6 +53,7 @@ class blog_plugins
 		{
 			$this->plugins = $cache_data;
 		}
+		unset($cache_data);
 
 		$dh = @opendir($blog_plugins_path . 'info/');
 
@@ -81,7 +82,7 @@ class blog_plugins
 
 	function plugin_do($what)
 	{
-		if (array_key_exists($what, $this->to_do))
+		if (isset($this->to_do[$what]))
 		{
 			foreach ($this->to_do[$what] as $function_name)
 			{
@@ -128,6 +129,7 @@ class blog_plugins
 
 		$sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 		$db->sql_query($sql);
+		unset($sql_data);
 
 		$this->plugins[$which] = $sql_data;
 
