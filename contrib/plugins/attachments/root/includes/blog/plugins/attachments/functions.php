@@ -180,7 +180,7 @@ function attach_blog_handle_data_end(&$args)
 		$output .= '</dl>';
 	}
 
-	if (!$auth->acl_get('u_download'))
+	if (!$auth->acl_get('u_download') && $blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data']))
 	{
 		$output .= '<div class="rules">' . $user->lang['DOWNLOAD_NOTICE'] . '</div>';
 	}
@@ -214,7 +214,7 @@ function attach_reply_handle_data_end(&$args)
 		$output .= '</dl>';
 	}
 
-	if (!$auth->acl_get('u_download'))
+	if (!$auth->acl_get('u_download') && $reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data']))
 	{
 		$output .= '<div class="rules">' . $user->lang['DOWNLOAD_NOTICE'] . '</div>';
 	}
