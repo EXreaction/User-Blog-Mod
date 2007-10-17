@@ -163,9 +163,9 @@ class blog_plugins
 		}
 
 		$newer_files = false;
-		if ($blog_plugins->available_plugins[$which]['plugin_version'] != $blog_plugins->plugins[$which]['plugin_version'])
+		if ($this->available_plugins[$which]['plugin_version'] != $this->plugins[$which]['plugin_version'])
 		{
-			$version = array('files' => explode('.', $blog_plugins->available_plugins[$which]['plugin_version']), 'db' => explode('.', $blog_plugins->plugins[$which]['plugin_version']));
+			$version = array('files' => explode('.', $this->available_plugins[$which]['plugin_version']), 'db' => explode('.', $this->plugins[$which]['plugin_version']));
 
 			$i = 0;
 			foreach ($version['files'] as $v)
