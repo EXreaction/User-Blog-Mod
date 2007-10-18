@@ -1,0 +1,155 @@
+blog_start
+blog_output
+blog_page_switch
+blog_end
+
+includes/
+	acp/
+		acp_blogs
+			acp_main_start
+			acp_main_settings
+
+	blog/
+		add
+			blog_add_start
+			blog_add_preview
+			blog_add_after_preview
+			blog_add_sql
+			blog_add_after_sql
+
+		approve
+			blog_approve
+			blog_approve_confirm
+
+		delete
+			blog_delete
+			blog_delete_confirm
+
+		edit
+			blog_edit_start
+			blog_edit_preview
+			blog_edit_before_submit
+			blog_edit_delete
+
+		report
+			blog_report_start
+			blog_report_confirm
+
+		undelete
+			blog_undelete_start
+			blog_undelete_confirm
+
+	data/
+		blog_data
+			blog_data_start
+			blog_data_sql
+			blog_data_while
+			blog_info_start
+			blog_info_sql
+			blog_handle_data_start
+			blog_handle_data_end
+
+		reply_data
+			reply_data_start
+			reply_data_sql
+			reply_data_while
+			reply_handle_data_start
+			reply_handle_data_end
+
+		user_data
+			user_data_start
+			user_data_sql
+			user_data_while
+			user_handle_data
+			user_handle_data_cp
+
+	reply/
+		add
+			reply_add_start
+			reply_add_preview
+			reply_add_after_preview
+			reply_add_sql
+			reply_add_after_sql
+
+		approve
+			reply_approve
+			reply_approve_confirm
+
+		delete
+			reply_delete
+			reply_delete_confirm
+
+		edit
+			reply_edit_start
+			reply_edit_preview
+			reply_edit_before_submit
+			reply_edit_delete
+
+		report
+			reply_report_start
+			reply_report_confirm
+
+		undelete
+			reply_undelete_start
+			reply_undelete_confirm
+
+	view/
+		blog
+			view_blog_start
+			view_blog_after_blogrow
+			view_blog_end
+
+		main
+			view_main_start
+			view_main_end
+			view_main_feed_end
+
+		user
+			view_user_start
+			view_user_end
+			view_user_feed_end
+
+	download
+		download_start
+		download_before_send
+		download_end
+
+	functions
+		function_get_subscription_info
+		function_handle_blog_cache
+		function_handle_blog_cache_mode
+		function_handle_subscription
+		function_handle_subscription_end
+		function_inform_approve_report
+		function_generate_menu
+		function_generate_blog_urls
+		function_resync_blog
+
+	header
+		blog_header
+
+	permissions
+		permissions_start
+		permissions_end
+
+	post_options
+		post_options
+		post_options_set_status
+		post_options_set_in_template
+
+	subscribe
+		subscribe_start
+		subscribe_blog_confirm
+		subscribe_blog_confirm_end
+		subscribe_blog
+		subscribe_user_confirm
+		subscribe_user_confirm_end
+		subscribe_user
+		subscription_add
+
+	unsubscribe
+		unsubscribe_blog_start
+		unsubscribe_blog_confirm
+		unsubscribe_blog
+		unsubscribe_user_confirm
+		unsubscribe_user
