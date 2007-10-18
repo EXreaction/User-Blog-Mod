@@ -21,11 +21,11 @@ class acp_blog_plugins
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
 		global $blog_plugins_path, $blog_plugins;
 
-		include($phpbb_root_path . 'includes/blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+		include($phpbb_root_path . 'blog/functions.' . $phpEx);
+		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 		if ($blog_plugins->load_plugins() === false)
 		{
 			trigger_error('PLUGINS_DISABLED');

@@ -14,7 +14,7 @@ function attach_blog_page_switch(&$arg)
 
 	if ($page == 'download')
 	{
-		include($phpbb_root_path . "includes/blog/plugins/attachments/download.$phpEx");
+		include($phpbb_root_path . "blog/plugins/attachments/download.$phpEx");
 		$arg = false;
 	}
 }

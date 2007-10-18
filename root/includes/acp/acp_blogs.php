@@ -21,10 +21,10 @@ class acp_blogs
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
 		global $blog_plugins_path;
 
-		include($phpbb_root_path . 'includes/blog/plugins/plugins.' . $phpEx);
+		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'includes/blog/plugins/';
+		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 		$blog_plugins->load_plugins();
 
 		$submit = (isset($_POST['submit'])) ? true : false;

@@ -25,7 +25,7 @@ else
 
 // setup some basic information about the plugin
 $this->available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.1';
+$this->available_plugins[$name]['plugin_version'] = '0.7.2';
 
 // Only do this if the plugin is enabled (set in the load_plugins function right before this file is loaded)
 if ($plugin_enabled)

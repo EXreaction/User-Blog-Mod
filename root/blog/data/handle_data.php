@@ -79,6 +79,11 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		// now trim the text
 		$text = substr($text, 0, $str_limit);
 
+		if (!class_exists('parse_message'))
+		{
+			include("{$phpbb_root_path}includes/message_parser.$phpEx");
+		}
+
 		// Now lets get the URL's back and nl2br
 		$message_parser = new parse_message();
 		$message_parser->message = $text;
