@@ -72,7 +72,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 			{
 				case 'add' :
 				case 'quote' :
-						$is_auth = ($auth->acl_get('u_blogreply')) ? true : false;
+						$is_auth = ($auth->acl_get('u_blogreply') && handle_user_blog_permissions($blog_data->blog[$blog_id]['user_id'], 'reply')) ? true : false;
 					break;
 				case 'edit' :
 					$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplyedit') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogreplyedit'))) ? true : false;

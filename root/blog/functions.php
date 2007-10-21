@@ -33,6 +33,10 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		global $config, $phpbb_root_path, $phpEx, $user;
 		global $blog_data, $user_data;
 
+		// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
+		static $start_url = ''; // Sadly, setting it directly to generate_board_url() . '/' throws us an error. :(
+		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
+
 		if ($config['user_blog_seo'])
 		{
 			if ($user_id != false && !empty($user_data))
@@ -47,6 +51,10 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			{
 				$username = utf8_clean_string($extra_data['username']);
 			}
+			else if ($user_id == $user->data['user_id'])
+			{
+				$username = utf8_clean_string($user->data['username']);
+			}
 			else
 			{
 				$username = 'user';
@@ -58,55 +66,55 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			{
 				if (isset($url_data['mode']))
 				{
-					$return = "{$phpbb_root_path}blog/{$url_data['page']}/m-{$url_data['mode']}" . (($blog_id) ? "_b-$blog_id" : '') . (($reply_id) ? "_r-$reply_id" : '') . '.html';
+					$return = "blog/{$url_data['page']}/m-{$url_data['mode']}" . (($blog_id) ? "_b-$blog_id" : '') . (($reply_id) ? "_r-$reply_id" : '') . '.html';
 				}
 				else
 				{
-					$return = "{$phpbb_root_path}blog/{$url_data['page']}/index.html";
+					$return = "blog/{$url_data['page']}/index.html";
 				}
 			}
 			else if (isset($url_data['mode']))
 			{
-				$return = "{$phpbb_root_path}blog/{$username}/{$url_data['mode']}{$start}.html";
+				$return = "blog/{$username}/{$url_data['mode']}{$start}.html";
 			}
 			else if ($reply_id !== false)
 			{
-				$return = "{$phpbb_root_path}blog/{$username}/r-" . $reply_id . $start . '.html' . '#r' . $reply_id;
+				$return = "blog/{$username}/r-" . $reply_id . $start . '.html' . '#r' . $reply_id;
 			}
 			else if ($blog_id !== false)
 			{
 				if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
 				{
-					$return = "{$phpbb_root_path}blog/{$username}/" . utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']) . '_b-' . $blog_id . $start . '.html';
+					$return = "blog/{$username}/" . utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']) . '_b-' . $blog_id . $start . '.html';
 				}
 				else if (array_key_exists('blog_subject', $extra_data))
 				{
-					$return = "{$phpbb_root_path}blog/{$username}/" . utf8_clean_string($extra_data['blog_subject']) . '_b-' . $blog_id . $start . '.html';
+					$return = "blog/{$username}/" . utf8_clean_string($extra_data['blog_subject']) . '_b-' . $blog_id . $start . '.html';
 				}
 				else
 				{
-					$return = "{$phpbb_root_path}blog/{$username}/b-" . $blog_id . $start . '.html';
+					$return = "blog/{$username}/b-" . $blog_id . $start . '.html';
 				}
 			}
 			else if ($user_id !== false)
 			{
 				if ($start != '')
 				{
-					$return = "{$phpbb_root_path}blog/{$username}/u-" . $user_id . $start . '.html';
+					$return = "blog/{$username}/u-" . $user_id . $start . '.html';
 				}
 				else
 				{
-					$return = "{$phpbb_root_path}blog/{$username}/index.html";
+					$return = "blog/{$username}/index.html";
 				}
 			}
 			else
 			{
-				$return = "{$phpbb_root_path}blog/index.html";
+				$return = "blog/index.html";
 			}
 
 			if (isset($return))
 			{
-				return $return;
+				return $start_url . $return;
 			}
 		}
 
@@ -115,7 +123,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			foreach ($url_data as $name => $var)
 			{
-				// Do not add the blog/reply/user id to the url string, they got added already
+				// Do not add the blog/reply/user id to the url string, they get added later
 				if ($name == 'b' || $name == 'u' || $name == 'r')
 				{
 					continue;
@@ -228,29 +236,178 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* Gets Zebra (friend/foe)  info
 	*
-	* Just grabs the foe info right now.  No reason to grab the friend info ATM.
-	*
 	* @param int|bool $uid The user_id we will grab the zebra data for.  If this is false we will use $user->data['user_id']
 	*/
-	function get_zebra_info($uid = false)
+	function get_zebra_info($user_ids)
 	{
 		global $config, $user, $db;
-		global $foe_list;
+		global $zebra_list;
 
-		if ($config['user_blog_enable_zebra'] && $user->data['user_id'] != ANONYMOUS)
+		$to_query = array();
+
+		if (!is_array($user_ids))
 		{
-			$uid = ($uid !== false) ? $uid : $user->data['user_id'];
+			$user_ids = array($user_ids);
+		}
 
-			$sql = 'SELECT zebra_id FROM ' . ZEBRA_TABLE . '
-				WHERE user_id = \'' . $uid . '\'
-					AND foe = \'1\'';
+		foreach ($user_ids as $user_id)
+		{
+			if (!array_key_exists($user_id, $zebra_list))
+			{
+				$to_query[] = $user_id;
+			}
+		}
+
+		if (!count($to_query))
+		{
+			return;
+		}
+
+		if ($config['user_blog_enable_zebra'])
+		{
+			$sql = 'SELECT * FROM ' . ZEBRA_TABLE . '
+				WHERE ' . $db->sql_in_set('user_id', $to_query);
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$foe_list[] = $row['zebra_id'];
+				if ($row['foe'])
+				{
+					$zebra_list[$row['user_id']]['foe'][] = $row['zebra_id'];
+				}
+				else if ($row['friend'])
+				{
+					$zebra_list[$row['user_id']]['friend'][] = $row['zebra_id'];
+				}
 			}
 			$db->sql_freeresult($result);
 		}
+	}
+
+	/**
+	* Handles blog view/reply permissions (those set by users)
+	*/
+	function handle_user_blog_permissions($user_id, $mode)
+	{
+		global $cache, $config, $db, $blog_data, $user, $zebra_list, $blog_plugins;
+
+		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id)
+		{
+			return true;
+		}
+
+		$sql = 'SELECT * FROM ' . BLOGS_PERMISSIONS_TABLE . ' WHERE user_id = \'' . $user_id . '\'';
+		$cache_data = $cache->sql_load($sql);
+		if ($cache_data !== false)
+		{
+			$row = $cache->sql_fetchrow($cache_data);
+		}
+		else
+		{
+			$result = $db->sql_query($sql);
+			$cache->sql_save($sql, $result, 31536000);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+		}
+
+		if (!$row)
+		{
+			return true;
+		}
+
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+			switch ($mode)
+			{
+				case 'read' :
+					if ($row['guest'] > 0)
+					{
+						return true;
+					}
+					return false;
+				break;
+				case 'reply' :
+					if ($row['guest'] > 1)
+					{
+						return true;
+					}
+					return false;
+				break;
+			}
+		}
+
+		if ($config['user_blog_enable_zebra'])
+		{
+			if (!array_key_exists($user_id, $zebra_list))
+			{
+				get_zebra_info($user_id);
+			}
+
+			if (isset($zebra_list[$user_id]['foe']) && in_array($user->data['user_id'], $zebra_list[$user_id]['foe']))
+			{
+				switch ($mode)
+				{
+					case 'read' :
+						if ($row['foe'] > 0)
+						{
+							return true;
+						}
+						return false;
+					break;
+					case 'reply' :
+						if ($row['foe'] > 1)
+						{
+							return true;
+						}
+						return false;
+					break;
+				}
+			}
+			else if (isset($zebra_list[$user_id]['friend']) && in_array($user->data['user_id'], $zebra_list[$user_id]['friend']))
+			{
+				switch ($mode)
+				{
+					case 'read' :
+						if ($row['friend'] > 0)
+						{
+							return true;
+						}
+						return false;
+					break;
+					case 'reply' :
+						if ($row['friend'] > 1)
+						{
+							return true;
+						}
+						return false;
+					break;
+				}
+			}
+		}
+
+		if ($user->data['user_id'] != ANONYMOUS)
+		{
+			switch ($mode)
+			{
+				case 'read' :
+					if ($row['registered'] > 0)
+					{
+						return true;
+					}
+					return false;
+				break;
+				case 'reply' :
+					if ($row['registered'] > 1)
+					{
+						return true;
+					}
+					return false;
+				break;
+			}
+		}
+
+		$temp = array('user_id' => $user_id, 'mode' => $mode, 'return' => false);
+		$blog_plugins->plugin_do_arg('handle_user_blog_permissions', $temp);
+		return $temp['return'];
 	}
 
 	/**

@@ -1,0 +1,36 @@
+<?php
+/**
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
+
+/**
+* @package module_install
+*/
+class ucp_blog_info
+{
+	function module()
+	{
+		return array(
+			'filename'	=> 'ucp_blog',
+			'title'		=> 'BLOG',
+			'version'	=> '1.0.0',
+			'modes'		=> array(
+				'ucp_blog_permissions'	=> array('title' => 'UCP_BLOG_PERMISSIONS', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),
+			),
+		);
+	}
+
+	function install()
+	{
+	}
+
+	function uninstall()
+	{
+	}
+}
+
+?>

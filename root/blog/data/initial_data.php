@@ -29,7 +29,7 @@ $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
 $blog_plugins = new blog_plugins();
-$error = $blog_urls = $foe_list = array();
+$error = $blog_urls = $zebra_list = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
@@ -83,9 +83,6 @@ else
 	$highlight_match = false;
 }
 
-// Get the Zebra data
-get_zebra_info();
-
 // get the replies data if it was requested
 if ($reply_id != 0)
 {
@@ -138,6 +135,25 @@ if ($user_id != 0)
 	}
 }
 
+get_zebra_info(array($user->data['user_id'], $user_id));
+if ($user_id != 0 || $blog_id != 0)
+{
+	if ($user_id == 0)
+	{
+		if (!handle_user_blog_permissions($blog_data->blog[$blog_id]['user_id'], 'read'))
+		{
+			trigger_error('NO_PERMISSIONS_READ');
+		}
+	}
+	else
+	{
+		if (!handle_user_blog_permissions($user_id, 'read'))
+		{
+			trigger_error('NO_PERMISSIONS_READ');
+		}
+	}
+}
+
 // get the user data for what we have and update the edit and delete info
 $user_data->get_user_data(false, true);
 update_edit_delete();
@@ -177,6 +193,7 @@ $initial_data = array(
 	'S_WATCHING_FORUM'		=> $subscribed,
 
 	'ADD_BLOG_IMG'			=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/' . $user->data['user_lang'] . '/button_blog_new.gif',
+	'DIGG_IMG'				=> $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_digg.png',
 	'AIM_IMG'				=> $user->img('icon_contact_aim', 'AIM'),
 	'DELETE_IMG'			=> $user->img('icon_post_delete', 'DELETE_POST'),
 	'EDIT_IMG'				=> $user->img('icon_post_edit', 'EDIT_POST'),

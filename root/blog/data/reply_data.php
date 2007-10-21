@@ -270,7 +270,7 @@ class reply_data
 			'U_DELETE'			=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
 			'U_REPORT'			=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'report')) : '',
 			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
-			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'approve')) : '',
 
 			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
 			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,

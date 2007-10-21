@@ -111,6 +111,15 @@ if (confirm_box(true))
 					plugin_version varchar(255) NOT NULL,
 					PRIMARY KEY (plugin_id)
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_PERMISSIONS_TABLE . ' (
+				user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL,
+				guest TINYINT( 1 ) UNSIGNED NOT NULL,
+				registered TINYINT( 1 ) UNSIGNED NOT NULL,
+				foe TINYINT( 1 ) UNSIGNED NOT NULL,
+				friend TINYINT( 1 ) UNSIGNED NOT NULL,
+				PRIMARY KEY ( user_id )
+				);';
 			}
 			else
 			{
@@ -192,6 +201,15 @@ if (confirm_box(true))
 					plugin_version varchar(255) NOT NULL,
 					PRIMARY KEY (plugin_id)
 				);";
+
+				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_PERMISSIONS_TABLE . ' (
+				user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL,
+				guest TINYINT( 1 ) UNSIGNED NOT NULL,
+				registered TINYINT( 1 ) UNSIGNED NOT NULL,
+				foe TINYINT( 1 ) UNSIGNED NOT NULL,
+				friend TINYINT( 1 ) UNSIGNED NOT NULL,
+				PRIMARY KEY ( user_id )
+				);';
 			}
 
 			$sql_array[] = 'ALTER TABLE ' . USERS_TABLE . " ADD blog_count MEDIUMINT(8) default '0'";
@@ -263,7 +281,7 @@ if (confirm_box(true))
 	set_config('user_blog_seo', false);
 	set_config('user_blog_guest_captcha', true);
 
-	//insert the modules
+	//insert the ACP modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -325,6 +343,46 @@ if (confirm_box(true))
 		'module_auth'		=> 'acl_a_blogmanage',
 	);
 	
+	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+	$db->sql_query($sql);
+
+	/**
+	* Insert UCP Modules
+	*/
+	$sql = 'SELECT MAX(right_id) AS top FROM ' . MODULES_TABLE . ' WHERE module_class = \'ucp\'';
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+
+	$sql_ary = array(
+		'module_enabled'	=> 1,
+		'module_display'	=> 1,
+		'module_basename'	=> '',
+		'module_class'		=> 'ucp',
+		'parent_id'			=> 0,
+		'left_id'			=> $row['top'] + 1,
+		'right_id'			=> $row['top'] + 4,
+		'module_langname'	=> 'BLOG',
+		'module_mode'		=> '',
+		'module_auth'		=> '',
+	);
+
+	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+	$db->sql_query($sql);
+	$parent_id = $db->sql_nextid();
+
+	$sql_ary = array(
+		'module_enabled'	=> 1,
+		'module_display'	=> 1,
+		'module_basename'	=> 'blog',
+		'module_class'		=> 'ucp',
+		'parent_id'			=> $parent_id,
+		'left_id'			=> $row['top'] + 2,
+		'right_id'			=> $row['top'] + 3,
+		'module_langname'	=> 'UCP_BLOG_PERMISSIONS',
+		'module_mode'		=> 'ucp_blog_permissions',
+		'module_auth'		=> 'acl_u_blogpost',
+	);
+
 	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 	$db->sql_query($sql);
 

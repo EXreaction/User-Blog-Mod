@@ -229,7 +229,7 @@ class user_data
 	function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
-		global $blog_data, $reply_data, $user_founder, $foe_list, $blog_plugins;
+		global $blog_data, $reply_data, $user_founder, $zebra_list, $blog_plugins;
 
 		if ($output_custom == false)
 		{
@@ -248,7 +248,7 @@ class user_data
 				'USERNAME'			=> $this->user[$user_id]['username'],
 				'USER_COLOUR'		=> $this->user[$user_id]['user_colour'],
 				'USER_FULL'			=> $this->user[$user_id]['username_full'],
-				'USER_FOE'			=> (in_array($user_id, $foe_list)) ? true : false,
+				'USER_FOE'			=> (isset($zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $zebra_list[$user->data['user_id']]['foe'])) ? true : false,
 
 				'L_USER_FOE'		=> sprintf($user->lang['POST_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 

@@ -299,7 +299,8 @@ function fix_where_sql($sql)
 */
 function feed_output($blog_ids, $feed_type)
 {
-	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user, $blog_data;
+	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user;
+	global $blog_data, $user_data, $reply_data;
 
 	if (!is_array($blog_ids))
 	{
@@ -336,7 +337,7 @@ function feed_output($blog_ids, $feed_type)
 		$blog_row = $blog_data->handle_blog_data($id, true);
 
 		$row = array(
-			'URL'		=> $board_url . "/blog.{$phpEX}?b=$id",
+			'URL'		=> $board_url . "/blog.{$phpEx}?b=$id",
 			'USERNAME'	=> $user_data->user[$blog_data->blog[$id]['user_id']]['username'],
 		);
 
@@ -698,7 +699,8 @@ function handle_captcha($mode)
 */
 function inform_approve_report($mode, $id)
 {
-	global $phpbb_root_path, $phpEx, $config, $user, $blog_plugins;
+	global $phpbb_root_path, $phpEx, $config, $user;
+	global $user_data, $blog_plugins;
 	
 	if ($config['user_blog_inform'] == '')
 	{
@@ -708,19 +710,19 @@ function inform_approve_report($mode, $id)
 	switch ($mode)
 	{
 		case 'blog_report' :
-			$message = sprintf($user->lang['BLOG_REPORT_PM'], $user->data['username'], append_sid("{$phpbb_root_path}blog.$phpEx", "b=$id"));
+			$message = sprintf($user->lang['BLOG_REPORT_PM'], $user->data['username'], blog_url($user->data['user_id'], $id));
 			$subject = $user->lang['BLOG_REPORT_PM_SUBJECT'];
 			break;
 		case 'reply_report' :
-			$message = sprintf($user->lang['REPLY_REPORT_PM'], $user->data['username'], append_sid("{$phpbb_root_path}blog.$phpEx", "r=$id"));
+			$message = sprintf($user->lang['REPLY_REPORT_PM'], $user->data['username'], blog_url($user->data['user_id'], false, $id));
 			$subject = $user->lang['REPLY_REPORT_PM_SUBJECT'];
 			break;
 		case 'blog_approve' :
-			$message = sprintf($user->lang['BLOG_APPROVE_PM'], $user->data['username'], append_sid("{$phpbb_root_path}blog.$phpEx", "b=$id"));
+			$message = sprintf($user->lang['BLOG_APPROVE_PM'], $user->data['username'], blog_url($user->data['user_id'], $id));
 			$subject = $user->lang['BLOG_APPROVE_PM_SUBJECT'];
 			break;
 		case 'reply_approve' :
-			$message = sprintf($user->lang['REPLY_APPROVE_PM'], $user->data['username'], append_sid("{$phpbb_root_path}blog.$phpEx", "r=$id"));
+			$message = sprintf($user->lang['REPLY_APPROVE_PM'], $user->data['username'], blog_url($user->data['user_id'], false, $id));
 			$subject = $user->lang['REPLY_APPROVE_PM_SUBJECT'];
 			break;
 		default:

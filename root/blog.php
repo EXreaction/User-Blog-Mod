@@ -11,7 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* UCP
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Polls
@@ -25,7 +24,6 @@
 * OTHER -------------------------------------------------------------------------------------------
 *
 * Waiting on UCP
-*	give option to control users who reply to blogs - all - friends - none
 *	custom CSS coding allowed?
 *	customizable blog message to be displayed like forum rules for each user
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
@@ -49,7 +47,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A18';
+$user_blog_version = 'A19_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
