@@ -208,7 +208,7 @@ if (confirm_box(true))
 				'module_class'		=> 'ucp',
 				'parent_id'			=> 0,
 				'left_id'			=> $row['top'] + 1,
-				'right_id'			=> $row['top'] + 4,
+				'right_id'			=> $row['top'] + 6,
 				'module_langname'	=> 'BLOG',
 				'module_mode'		=> '',
 				'module_auth'		=> '',
@@ -228,6 +228,22 @@ if (confirm_box(true))
 				'right_id'			=> $row['top'] + 3,
 				'module_langname'	=> 'UCP_BLOG_PERMISSIONS',
 				'module_mode'		=> 'ucp_blog_permissions',
+				'module_auth'		=> 'acl_u_blogpost',
+			);
+
+			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+
+			$sql_ary = array(
+				'module_enabled'	=> 1,
+				'module_display'	=> 1,
+				'module_basename'	=> 'blog',
+				'module_class'		=> 'ucp',
+				'parent_id'			=> $parent_id,
+				'left_id'			=> $row['top'] + 4,
+				'right_id'			=> $row['top'] + 5,
+				'module_langname'	=> 'UCP_BLOG_TITLE_DESCRIPTION',
+				'module_mode'		=> 'ucp_blog_title_description',
 				'module_auth'		=> 'acl_u_blogpost',
 			);
 
