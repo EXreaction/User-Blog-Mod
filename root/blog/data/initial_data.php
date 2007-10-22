@@ -29,7 +29,7 @@ $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
 $blog_plugins = new blog_plugins();
-$error = $blog_urls = $zebra_list = array();
+$error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
@@ -125,32 +125,20 @@ else if ($user_id != 0)
 	array_push($user_data->user_queue, $user_id);
 }
 
+get_zebra_info(array($user->data['user_id'], $user_id));
 if ($user_id != 0)
 {
-	// find out if they are subscribed to this user's blogs
 	if ($blog_id == 0)
 	{
 		$subscribed = get_subscription_info(false, $user_id);
 		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
 	}
-}
 
-get_zebra_info(array($user->data['user_id'], $user_id));
-if ($user_id != 0 || $blog_id != 0)
-{
-	if ($user_id == 0)
+	get_user_settings($user_id);
+	
+	if (!handle_user_blog_permissions($user_id, 'read'))
 	{
-		if (!handle_user_blog_permissions($blog_data->blog[$blog_id]['user_id'], 'read'))
-		{
-			trigger_error('NO_PERMISSIONS_READ');
-		}
-	}
-	else
-	{
-		if (!handle_user_blog_permissions($user_id, 'read'))
-		{
-			trigger_error('NO_PERMISSIONS_READ');
-		}
+		trigger_error('NO_PERMISSIONS_READ');
 	}
 }
 
@@ -176,10 +164,23 @@ $feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') 
 // Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
+// The blog title/description
+if ($user_settings)
+{
+	$blog_title = censor_text($user_settings['title']);
+	$blog_description = generate_text_for_display($user_settings['description'], $user_settings['description_bbcode_uid'], $user_settings['description_bbcode_bitfield'], 7);
+}
+else
+{
+	$blog_title = $blog_description = false;
+}
+
 // Add some data to the template
 $initial_data = array(
 	'MODE'					=> $mode,
 	'PAGE'					=> $page,
+	'BLOG_TITLE'			=> $blog_title,
+	'BLOG_DESCRIPTION'		=> $blog_description,
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
 	'U_BLOG'				=> ($print) ? generate_board_url() . "/blog.{$phpEx}?b=$blog_id" : $blog_urls['self'],
@@ -214,7 +215,7 @@ $initial_data = array(
 	'YIM_IMG'				=> $user->img('icon_contact_yahoo', 'YIM'),
 );
 
-$blog_plugins->plugin_do_arg('initial_output', $initial_data);
+$blog_plugins->plugin_do_arg_ref('initial_output', $initial_data);
 
 $template->assign_vars($initial_data);
 ?>

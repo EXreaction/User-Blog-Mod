@@ -1,6 +1,6 @@
 <!-- INCLUDE ucp_header.html -->
 
-<form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+<form id="postform" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
 
 <h2>{L_TITLE}</h2>
 
@@ -11,41 +11,55 @@
 
 	<fieldset>
 		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
-		<!-- IF SET_PERMISSIONS -->
+		<!-- IF MODE == 'ucp_blog_permissions' -->
+			<!-- BEGIN permissions -->
 			<dl>
-				<dt><label for="guest_permissions0">{L_GUEST_PERMISSIONS}:</label></dt>
+				<dt><label for="{permissions.NAME}0">{permissions.TITLE}:</label></dt>
 				<dd>
-					<label for="guest_permissions0"><input type="radio" name="guest_permissions" id="guest_permissions0" value="0"<!-- IF S_GUEST_PERMISSIONS == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br/>
-					<label for="guest_permissions1"><input type="radio" name="guest_permissions" id="guest_permissions1" value="1"<!-- IF S_GUEST_PERMISSIONS == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br/>
-					<label for="guest_permissions2"><input type="radio" name="guest_permissions" id="guest_permissions2" value="2"<!-- IF S_GUEST_PERMISSIONS == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br/>
+					<label for="{permissions.NAME}0"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}0" value="0"<!-- IF permissions.DEFAULT == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br/>
+					<label for="{permissions.NAME}1"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}1" value="1"<!-- IF permissions.DEFAULT == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br/>
+					<label for="{permissions.NAME}2"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}2" value="2"<!-- IF permissions.DEFAULT == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br/>
 				</dd>
 			</dl>
-			<dl>
-				<dt><label for="registered_permissions0">{L_REGISTERED_PERMISSIONS}:</label></dt>
-				<dd>
-					<label for="registered_permissions0"><input type="radio" name="registered_permissions" id="registered_permissions0" value="0"<!-- IF S_REGISTERED_PERMISSIONS == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br/>
-					<label for="registered_permissions1"><input type="radio" name="registered_permissions" id="registered_permissions1" value="1"<!-- IF S_REGISTERED_PERMISSIONS == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br/>
-					<label for="registered_permissions2"><input type="radio" name="registered_permissions" id="registered_permissions2" value="2"<!-- IF S_REGISTERED_PERMISSIONS == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br/>
-				</dd>
+			<!-- END permissions -->
+		<!-- ENDIF -->
+		<!-- IF MODE == 'ucp_blog_title_description' -->
+
+			<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
+
+			<dl style="clear: left;">
+				<dt><label for="title">{L_BLOG_TITLE}:</label></dt>
+				<dd><input type="text" name="title" id="title" size="45" maxlength="255" tabindex="2" value="{TITLE}" class="inputbox autowidth" /></dd>
 			</dl>
-			<!-- IF SET_FOE_FRIEND -->
-				<dl>
-					<dt><label for="foe_permissions0">{L_FOE_PERMISSIONS}:</label></dt>
-					<dd>
-						<label for="foe_permissions0"><input type="radio" name="foe_permissions" id="foe_permissions0" value="0"<!-- IF S_FOE_PERMISSIONS == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br/>
-						<label for="foe_permissions1"><input type="radio" name="foe_permissions" id="foe_permissions1" value="1"<!-- IF S_FOE_PERMISSIONS == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br/>
-						<label for="foe_permissions2"><input type="radio" name="foe_permissions" id="foe_permissions2" value="2"<!-- IF S_FOE_PERMISSIONS == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br/>
-					</dd>
-				</dl>
-				<dl>
-					<dt><label for="friend_permissions0">{L_FRIEND_PERMISSIONS}:</label></dt>
-					<dd>
-						<label for="friend_permissions0"><input type="radio" name="friend_permissions" id="friend_permissions0" value="0"<!-- IF S_FRIEND_PERMISSIONS == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br/>
-						<label for="friend_permissions1"><input type="radio" name="friend_permissions" id="friend_permissions1" value="1"<!-- IF S_FRIEND_PERMISSIONS == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br/>
-						<label for="friend_permissions2"><input type="radio" name="friend_permissions" id="friend_permissions2" value="2"<!-- IF S_FRIEND_PERMISSIONS == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br/>
-					</dd>
-				</dl>
-			<!-- ENDIF -->
+
+			<!-- INCLUDE posting_buttons.html -->
+
+			<div id="smiley-box">
+				<!-- IF S_SMILIES_ALLOWED and .smiley -->
+					<strong>{L_SMILIES}</strong><br />
+					<!-- BEGIN smiley -->
+						<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+					<!-- END smiley -->
+				<!-- ENDIF -->
+				<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+					<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 300, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a>
+				<!-- ENDIF -->
+
+				<!-- IF BBCODE_STATUS -->
+				<!-- IF .smiley --><hr /><!-- ENDIF -->
+				{BBCODE_STATUS}<br />
+				<!-- IF S_BBCODE_ALLOWED -->
+					{IMG_STATUS}<br />
+					{FLASH_STATUS}<br />
+					{URL_STATUS}<br />
+					{SMILIES_STATUS}
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+			</div>
+
+			<div id="message-box">
+				<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+			</div>
 		<!-- ENDIF -->
 	</fieldset>
 
@@ -54,6 +68,7 @@
 
 <fieldset class="submit-buttons">
 	{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<!-- IF S_PREVIEW_BUTTON --><input type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" class="button1" onclick="document.getElementById('postform').action += '#preview';" />&nbsp;<!-- ENDIF -->
 	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
 </fieldset>
 {S_FORM_TOKEN}

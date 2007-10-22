@@ -37,7 +37,7 @@ class reply_data
 		global $db, $user, $phpbb_root_path, $phpEx, $auth;
 		global $blog_data, $user_data, $user_founder, $blog_plugins;
 
-		$blog_plugins->plugin_do_arg('reply_data_start', $selection_data);
+		$blog_plugins->plugin_do_arg_ref('reply_data_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -177,13 +177,13 @@ class reply_data
 				return false;
 		}
 
-		$blog_plugins->plugin_do_arg('reply_data_sql', $sql);
+		$blog_plugins->plugin_do_arg_ref('reply_data_sql', $sql);
 
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$blog_plugins->plugin_do_arg('reply_data_while', $row);
+			$blog_plugins->plugin_do_arg_ref('reply_data_while', $row);
 
 			// now put all the data in the reply array
 			$this->reply[$row['reply_id']] = $row;
@@ -277,7 +277,7 @@ class reply_data
 			'S_REPORTED'		=> ($reply['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder)) ? true : false,
 		);
 
-		$blog_plugins->plugin_do_arg('reply_handle_data_end', $replyrow);
+		$blog_plugins->plugin_do_arg_ref('reply_handle_data_end', $replyrow);
 
 		return $replyrow;
 	}

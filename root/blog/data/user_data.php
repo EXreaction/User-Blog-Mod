@@ -107,13 +107,13 @@ class user_data
 
 			// Get the rest of the data on the users and parse everything we need
 			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
-			$blog_plugins->plugin_do_arg('user_data_sql', $sql);
+			$blog_plugins->plugin_do_arg_ref('user_data_sql', $sql);
 			$result = $db->sql_query($sql);
 		}
 		else
 		{
 			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
-			$blog_plugins->plugin_do_arg('user_data_sql', $sql);
+			$blog_plugins->plugin_do_arg_ref('user_data_sql', $sql);
 			$result = $db->sql_query($sql);
 		}
 
@@ -121,7 +121,7 @@ class user_data
 		{
 			$user_id = $row['user_id'];
 
-			$blog_plugins->plugin_do_arg('user_data_while', $row);
+			$blog_plugins->plugin_do_arg_ref('user_data_while', $row);
 
 			// view profile link
 			$row['view_profile'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=" . $user_id);
@@ -269,14 +269,14 @@ class user_data
 				'USER_EXTRA'		=> '',
 			);
 
-			$blog_plugins->plugin_do_arg('user_handle_data', $output_data);
+			$blog_plugins->plugin_do_arg_ref('user_handle_data', $output_data);
 
 			return ($output_data);
 		}
 		else 
 		{
 			$args = array('output_custom' => $output_custom, 'user_id' => $user_id);
-			$blog_plugins->plugin_do_arg('user_handle_data_cp', $args);
+			$blog_plugins->plugin_do_arg_ref('user_handle_data_cp', $args);
 
 			if ($config['user_blog_custom_profile_enable'])
 			{	

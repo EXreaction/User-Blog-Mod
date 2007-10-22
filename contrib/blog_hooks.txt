@@ -3,12 +3,7 @@ blog_output
 blog_page_switch
 blog_end
 
-includes/
-	acp/
-		acp_blogs
-			acp_main_start
-			acp_main_settings
-
+blog/
 	blog/
 		add
 			blog_add_start
@@ -63,6 +58,13 @@ includes/
 			user_handle_data
 			user_handle_data_cp
 
+		handle_data
+			function_generate_menu
+			function_handle_subscription
+			function_handle_subscription_end
+			function_inform_approve_report
+			function_resync_blog
+
 	reply/
 		add
 			reply_add_start
@@ -109,21 +111,12 @@ includes/
 			view_user_end
 			view_user_feed_end
 
-	download
-		download_start
-		download_before_send
-		download_end
-
 	functions
-		function_get_subscription_info
+		function_generate_blog_urls
+		handle_user_blog_permissions
 		function_handle_blog_cache
 		function_handle_blog_cache_mode
-		function_handle_subscription
-		function_handle_subscription_end
-		function_inform_approve_report
-		function_generate_menu
-		function_generate_blog_urls
-		function_resync_blog
+		function_get_subscription_info
 
 	header
 		blog_header
@@ -153,3 +146,15 @@ includes/
 		unsubscribe_blog
 		unsubscribe_user_confirm
 		unsubscribe_user
+
+includes/
+	acp/
+		acp_blogs
+			acp_main_start
+			acp_main_settings
+
+	ucp/
+		ucp_blog
+			blog_ucp_start
+			blog_ucp_permissions
+			blog_ucp_mode

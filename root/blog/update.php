@@ -27,7 +27,7 @@ if (!isset($config['user_blog_version']))
 	trigger_error('Either you do not have the User Blog Mod installed in your database, or you are running a very old version.<br/>If you have the mod installed already please delete the tables and information which was inserted by the version you used and reinstall the mod.');
 }
 
-if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_PERMISSIONS_TABLE'))
+if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_USERS_TABLE'))
 {
 	trigger_error('UPDATE_IN_FILES_FIRST');
 }
@@ -181,14 +181,18 @@ if (confirm_box(true))
 			$auth_admin->acl_add_option($blog_permissions);
 		case 'A17' :
 		case 'A18' :
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_PERMISSIONS_TABLE . ' (
+			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_USERS_TABLE . " (
 				user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL,
-				guest TINYINT( 1 ) UNSIGNED NOT NULL,
-				registered TINYINT( 1 ) UNSIGNED NOT NULL,
-				foe TINYINT( 1 ) UNSIGNED NOT NULL,
-				friend TINYINT( 1 ) UNSIGNED NOT NULL,
+				guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				title VARCHAR ( 255 ) NOT NULL DEFAULT '',
+				description MEDIUMTEXT NOT NULL DEFAULT '',
+				description_bbcode_bitfield varchar(255) NOT NULL default '',
+				description_bbcode_uid varchar(8) NOT NULL default '',
 				PRIMARY KEY ( user_id )
-			);';
+			);";
 
 			/**
 			* Insert UCP Modules

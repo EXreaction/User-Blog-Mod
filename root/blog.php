@@ -25,7 +25,6 @@
 *
 * Waiting on UCP
 *	custom CSS coding allowed?
-*	customizable blog message to be displayed like forum rules for each user
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
 * add in a section for gallery display - make gallery.php hold the main code for it so it can be replaced with the core code later by the user (by just uploading 1 file to install the add on).  All the other code needs to be in place and call the gallery.php file to check.
@@ -37,6 +36,7 @@
 * Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
 *
 * Finish upgrade page
+*	+ Automatically put friends/foes in blocked/allow list from The Blog Mod?
 */
 
 /*
@@ -47,7 +47,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A19_dev';
+$user_blog_version = 'A19';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -150,7 +150,7 @@ switch ($page)
 if ($default)
 {
 	// If you are adding your own page with this, make sure to set $default to false, otherwise it will load the default page below
-	$blog_plugins->plugin_do_arg('blog_page_switch', $default);
+	$blog_plugins->plugin_do_arg_ref('blog_page_switch', $default);
 }
 
 if ($default)

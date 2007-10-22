@@ -92,7 +92,7 @@ if (!$submit || sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
-		$blog_plugins->plugin_do_arg('blog_edit_preview', $preview_message);
+		$blog_plugins->plugin_do_arg_ref('blog_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -154,7 +154,7 @@ else // user submitted and there are no errors
 			'blog_edit_locked'	=> (($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) || $user_founder) ? request_var('lock_post', false) : false,
 		);
 
-		$blog_plugins->plugin_do_arg('blog_edit_sql', $sql_data);
+		$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
 
 		// add the delete section to the array if it was deleted, if it was already deleted ignore
 		if ( (!$blog_data->blog[$blog_id]['blog_deleted']) && (isset($_POST['delete'])) && $can_delete)

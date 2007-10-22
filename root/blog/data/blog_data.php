@@ -37,7 +37,7 @@ class blog_data
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $cache;
 		global $blog_data, $reply_data, $user_data, $user_founder, $blog_plugins;
 
-		$blog_plugins->plugin_do_arg('blog_data_start', $selection_data);
+		$blog_plugins->plugin_do_arg_ref('blog_data_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -181,13 +181,13 @@ class blog_data
 				return false;
 		}
 
-		$blog_plugins->plugin_do_arg('blog_data_sql', $sql);
+		$blog_plugins->plugin_do_arg_ref('blog_data_sql', $sql);
 
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$blog_plugins->plugin_do_arg('blog_data_while', $row);
+			$blog_plugins->plugin_do_arg_ref('blog_data_while', $row);
 
 			// now put all the data in the blog array
 			$this->blog[$row['blog_id']] = $row;
@@ -238,7 +238,7 @@ class blog_data
 		global $db, $cache, $user, $auth;
 		global $reply_data, $user_data, $user_founder, $blog_plugins;
 
-		$blog_plugins->plugin_do_arg('blog_info_start', $selection_data);
+		$blog_plugins->plugin_do_arg_ref('blog_info_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -269,7 +269,7 @@ class blog_data
 			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		}
 
-		$blog_plugins->plugin_do_arg('blog_info_sql', $custom_sql);
+		$blog_plugins->plugin_do_arg_ref('blog_info_sql', $custom_sql);
 
 		// Switch for the modes
 		switch ($mode)
@@ -504,7 +504,7 @@ class blog_data
 			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
 		);
 
-		$blog_plugins->plugin_do_arg('blog_handle_data_end', $blog_row);
+		$blog_plugins->plugin_do_arg_ref('blog_handle_data_end', $blog_row);
 
 		return $blog_row;
 	}

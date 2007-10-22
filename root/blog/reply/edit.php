@@ -92,7 +92,7 @@ if (!$submit || sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
-		$blog_plugins->plugin_do_arg('reply_edit_preview', $preview_message);
+		$blog_plugins->plugin_do_arg_ref('reply_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -162,7 +162,7 @@ else // user submitted and there are no errors
 			$sql_data['reply_deleted_time'] = time();
 		}
 
-		$blog_plugins->plugin_do_arg('reply_edit_sql', $sql_data);
+		$blog_plugins->plugin_do_arg_ref('reply_edit_sql', $sql_data);
 
 		// the update query
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '

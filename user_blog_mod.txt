@@ -85,8 +85,8 @@
 ##			+ To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
-## 2007-10-
-##		Alpha 19 Released (DEV)
+## 2007-10-21
+##		Alpha 19 Released
 ##			+ New UCP Panel & more!
 ##			+ To update, copy the new files over, make the changes to the includes/ucp/ucp_zebra.php and ucp.php files, then the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
@@ -174,12 +174,7 @@ if ($updated)
 
 					// Start Add User Blog Mod ------------------
 					global $cache;
-					include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
-					$filename = 'sql_' . md5('SELECT * FROM ' . BLOGS_PERMISSIONS_TABLE . ' WHERE user_id = \'' . $user->data['user_id'] . '\'') . '.' . $phpEx;
-					if (file_exists($cache->cache_dir . $filename))
-					{
-						@unlink($cache->cache_dir . $filename);
-					}
+					$cache->destroy('_blog_settings_' . $user->data['user_id']);
 					// End Add User Blog Mod --------------------
 
 #

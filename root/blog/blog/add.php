@@ -60,8 +60,7 @@ if ($submit || $preview || $refresh)
 }
 else
 {
-	$blog_subject = '';
-	$blog_text = '';
+	$blog_subject = $blog_text = '';
 }
 
 // if they did not submit or they have an error
@@ -75,7 +74,7 @@ if (!$submit || sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
-		$blog_plugins->plugin_do_arg('blog_add_preview', $preview_message);
+		$blog_plugins->plugin_do_arg_ref('blog_add_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -127,7 +126,7 @@ else // user submitted and there are no errors
 		'blog_edit_reason'			=> '',
 	);
 
-	$blog_plugins->plugin_do_arg('blog_add_sql', $sql_data);
+	$blog_plugins->plugin_do_arg_ref('blog_add_sql', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);

@@ -118,7 +118,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
 	}
 
-	$blog_plugins->plugin_do_arg('permissions_end', $is_auth);
+	$blog_plugins->plugin_do_arg_ref('permissions_end', $is_auth);
 
 	if (!$return)
 	{

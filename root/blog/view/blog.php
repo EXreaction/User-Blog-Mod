@@ -96,7 +96,7 @@ if ($total_replies > 0 || $sort_days != 0)
 		{
 			$data = $reply_data->handle_reply_data($id) + $user_data->handle_user_data($reply_data->reply[$id]['user_id']);
 
-			$blog_plugins->plugin_do_arg('view_blog_reply_while', $data);
+			$blog_plugins->plugin_do_arg_ref('view_blog_reply_while', $data);
 
 			// send the data to the template
 			$template->assign_block_vars('replyrow', $data);

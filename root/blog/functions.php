@@ -181,7 +181,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		$blog_urls['self_minus_start'] = blog_url($user_id, $blog_id, $reply_id, $self_data);
 		$blog_urls['start_zero'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*')));
 
-		$blog_plugins->plugin_do_arg('function_generate_blog_urls', $blog_urls);
+		$blog_plugins->plugin_do('function_generate_blog_urls');
 	}
 
 	/**
@@ -284,32 +284,44 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	}
 
 	/**
+	* Gets user settings
+	*/
+	function get_user_settings($user_id)
+	{
+		global $cache, $db, $user_settings;
+
+		if ($user_id == ANONYMOUS)
+		{
+			return;
+		}
+
+		$cache_data = $cache->get('_blog_settings_' . intval($user_id));
+		if ($cache_data === false)
+		{
+			$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$result = $db->sql_query($sql);
+			$cache_data = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			$cache->put('_blog_settings_' . intval($user_id), $cache_data);
+		}
+
+		$user_settings = $cache_data;
+	}
+
+	/**
 	* Handles blog view/reply permissions (those set by users)
 	*/
 	function handle_user_blog_permissions($user_id, $mode)
 	{
-		global $cache, $config, $db, $blog_data, $user, $zebra_list, $blog_plugins;
+		global $cache, $config, $db, $blog_data, $user, $zebra_list, $blog_plugins, $user_settings;
 
 		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id)
 		{
 			return true;
 		}
 
-		$sql = 'SELECT * FROM ' . BLOGS_PERMISSIONS_TABLE . ' WHERE user_id = \'' . $user_id . '\'';
-		$cache_data = $cache->sql_load($sql);
-		if ($cache_data !== false)
-		{
-			$row = $cache->sql_fetchrow($cache_data);
-		}
-		else
-		{
-			$result = $db->sql_query($sql);
-			$cache->sql_save($sql, $result, 31536000);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-		}
-
-		if (!$row)
+		if (!$user_settings)
 		{
 			return true;
 		}
@@ -319,14 +331,15 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			switch ($mode)
 			{
 				case 'read' :
-					if ($row['guest'] > 0)
+					if ($user_settings['guest'] > 0)
 					{
 						return true;
 					}
+					echo $user_settings['guest'];
 					return false;
 				break;
 				case 'reply' :
-					if ($row['guest'] > 1)
+					if ($user_settings['guest'] > 1)
 					{
 						return true;
 					}
@@ -347,14 +360,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				switch ($mode)
 				{
 					case 'read' :
-						if ($row['foe'] > 0)
+						if ($user_settings['foe'] > 0)
 						{
 							return true;
 						}
 						return false;
 					break;
 					case 'reply' :
-						if ($row['foe'] > 1)
+						if ($user_settings['foe'] > 1)
 						{
 							return true;
 						}
@@ -367,14 +380,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				switch ($mode)
 				{
 					case 'read' :
-						if ($row['friend'] > 0)
+						if ($user_settings['friend'] > 0)
 						{
 							return true;
 						}
 						return false;
 					break;
 					case 'reply' :
-						if ($row['friend'] > 1)
+						if ($user_settings['friend'] > 1)
 						{
 							return true;
 						}
@@ -389,14 +402,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			switch ($mode)
 			{
 				case 'read' :
-					if ($row['registered'] > 0)
+					if ($user_settings['registered'] > 0)
 					{
 						return true;
 					}
 					return false;
 				break;
 				case 'reply' :
-					if ($row['registered'] > 1)
+					if ($user_settings['registered'] > 1)
 					{
 						return true;
 					}
@@ -406,7 +419,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		}
 
 		$temp = array('user_id' => $user_id, 'mode' => $mode, 'return' => false);
-		$blog_plugins->plugin_do_arg('handle_user_blog_permissions', $temp);
+		$blog_plugins->plugin_do_arg_ref('handle_user_blog_permissions', $temp);
 		return $temp['return'];
 	}
 

@@ -32,6 +32,6 @@ if (!defined('BLOGS_TABLE'))
 	define('BLOGS_REPLY_TABLE',			$table_prefix . 'blogs_reply');
 	define('BLOGS_SUBSCRIPTION_TABLE',	$table_prefix . 'blogs_subscription');
 	define('BLOGS_PLUGINS_TABLE',		$table_prefix . 'blogs_plugins');
-	define('BLOGS_PERMISSIONS_TABLE',	$table_prefix . 'blogs_permissions');
+	define('BLOGS_USERS_TABLE',			$table_prefix . 'blogs_users');
 }
 ?>

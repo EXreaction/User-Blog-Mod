@@ -32,7 +32,7 @@ if ($subscribed)
 }
 
 $subscribe_modes = array($user->lang['PRIVATE_MESSAGE'] => 0, $user->lang['EMAIL'] => 1, $user->lang['PM_AND_EMAIL'] => 2);
-$blog_plugins->plugin_do_arg('subscribe_start', $subscribe_modes);
+$blog_plugins->plugin_do_arg_ref('subscribe_start', $subscribe_modes);
 
 if ($blog_id != 0)
 {
@@ -186,7 +186,7 @@ function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
 		'user_id'		=> $user_id,
 	);
 
-	$blog_plugins->plugin_do_arg('subscription_add', $sql_data);
+	$blog_plugins->plugin_do_arg_ref('subscription_add', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);

@@ -91,7 +91,18 @@ class blog_plugins
 		}
 	}
 
-	function plugin_do_arg($what, &$args)
+	function plugin_do_arg($what, $args)
+	{
+		if (isset($this->to_do[$what]))
+		{
+			foreach ($this->to_do[$what] as $function_name)
+			{
+				$function_name($args);
+			}
+		}
+	}
+
+	function plugin_do_arg_ref($what, &$args)
 	{
 		if (isset($this->to_do[$what]))
 		{
