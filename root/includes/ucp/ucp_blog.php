@@ -57,6 +57,7 @@ class ucp_blog
 
 					if (!$user_settings)
 					{
+						$sql_ary['description'] = '';
 						$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 						$db->sql_query($sql);
 					}
@@ -85,12 +86,12 @@ class ucp_blog
 						array(
 							'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
 							'NAME'			=> 'guest_permissions',
-							'DEFAULT'		=> $user_settings['guest'],
+							'DEFAULT'		=> ($user_settings) ? $user_settings['guest'] : 2,
 						),
 						array(
 							'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
 							'NAME'			=> 'registered_permissions',
-							'DEFAULT'		=> $user_settings['registered'],
+							'DEFAULT'		=> ($user_settings) ? $user_settings['registered'] : 2,
 						),
 					);
 
@@ -99,12 +100,12 @@ class ucp_blog
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
 								'NAME'			=> 'foe_permissions',
-								'DEFAULT'		=> $user_settings['foe'],
+								'DEFAULT'		=> ($user_settings) ? $user_settings['foe'] : 2,
 							);
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
 								'NAME'			=> 'friend_permissions',
-								'DEFAULT'		=> $user_settings['friend'],
+								'DEFAULT'		=> ($user_settings) ? $user_settings['friend'] : 2,
 							);
 					}
 

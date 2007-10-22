@@ -188,7 +188,7 @@ if (confirm_box(true))
 				foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
 				friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
 				title VARCHAR ( 255 ) NOT NULL DEFAULT '',
-				description MEDIUMTEXT NOT NULL DEFAULT '',
+				description MEDIUMTEXT NOT NULL,
 				description_bbcode_bitfield varchar(255) NOT NULL default '',
 				description_bbcode_uid varchar(8) NOT NULL default '',
 				PRIMARY KEY ( user_id )
