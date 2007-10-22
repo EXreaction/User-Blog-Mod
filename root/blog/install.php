@@ -118,10 +118,10 @@ if (confirm_box(true))
 
 				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_USERS_TABLE . " (
 					user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL,
-					guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
 					title VARCHAR ( 255 ) character set utf8 collate utf8_unicode_ci NOT NULL DEFAULT '',
 					description MEDIUMTEXT character set utf8 collate utf8_unicode_ci NOT NULL,
 					description_bbcode_bitfield varchar(255) NOT NULL default '',
@@ -216,10 +216,10 @@ if (confirm_box(true))
 
 				$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_USERS_TABLE . " (
 					user_id MEDIUMINT( 8 ) UNSIGNED NOT NULL,
-					guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
-					friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+					perm_friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
 					title VARCHAR ( 255 ) NOT NULL DEFAULT '',
 					description MEDIUMTEXT NOT NULL,
 					description_bbcode_bitfield varchar(255) NOT NULL default '',
