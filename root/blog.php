@@ -11,8 +11,12 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* Put blog version/update link in ACP
+* Put install link if the blog has not yet been installed
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
+* Create a new dev function for automatically recording plugin hooks.
+*
 * Polls
 *
 * In Blog ACP -> add option to remove orphan blog attachments
@@ -47,7 +51,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A19';
+$user_blog_version = 'A20';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -67,7 +71,11 @@ else
 	$user->setup('mods/blog/blog');
 }
 
-// check if the User Blog Mod is enabled
+// check if the User Blog Mod is installed/enabled
+if (!isset($config['user_blog_enable']))
+{
+	// make link to install page
+}
 if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
@@ -175,6 +183,8 @@ $template->assign_vars(array(
 ));
 
 $blog_plugins->plugin_do('blog_end');
+
+//$db->sql_report('display');
 
 // setup the page footer
 page_footer();

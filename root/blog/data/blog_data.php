@@ -67,6 +67,12 @@ class blog_data
 			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR blog_deleted = \'' . $user->data['user_id'] . '\' )';
 		}
 
+		// build the user_permission_sql
+		if ($mode == 'random' || $mode == 'recent' || $mode == 'popular')
+		{
+			$user_permission_sql = build_permission_sql($user->data['user_id']);
+		}
+
 		// make sure $id is an array for consistency
 		if (!is_array($id))
 		{
@@ -129,8 +135,9 @@ class blog_data
 					$view_deleted_sql .
 						$view_unapproved_sql .
 							$sort_days_sql .
-								' ORDER BY blog_time DESC' .
-									$limit_sql;
+								$user_permission_sql .
+									' ORDER BY blog_time DESC' .
+										$limit_sql;
 				$sql = fix_where_sql($sql);
 				break;
 			case 'random' : // select random blogs
@@ -148,8 +155,9 @@ class blog_data
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE .
 					$view_deleted_sql .
 						$view_unapproved_sql .
-							$sort_days_sql . '
-								ORDER BY blog_reply_count DESC, blog_read_count DESC' .
+							$sort_days_sql .
+								$user_permission_sql .
+									' ORDER BY blog_reply_count DESC, blog_read_count DESC' .
 									$limit_sql;
 				$sql = fix_where_sql($sql);
 				break;
@@ -333,16 +341,14 @@ class blog_data
 				}
 			break;
 			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
-				if ($cache->get('all_blog_ids') !== false)
-				{
-					return $cache->get('all_blog_ids');
-				}
+				$user_permission_sql = build_permission_sql($user->data['user_id']);
 
 				$all_ids = array();
 				$sql = 'SELECT blog_id FROM ' . BLOGS_TABLE . '
 					WHERE blog_deleted = \'0\'
 						AND blog_approved = \'1\'' . 
-							$custom_sql;
+							$user_permission_sql .
+								$custom_sql;
 				$result = $db->sql_query($sql);
 
 				while($row = $db->sql_fetchrow($result))
@@ -350,9 +356,6 @@ class blog_data
 					$all_ids[] = $row['blog_id'];
 				}
 				$db->sql_freeresult($result);
-
-				// cache the result
-				$cache->put('all_blog_ids', $all_ids);
 
 				return $all_ids;
 			break;

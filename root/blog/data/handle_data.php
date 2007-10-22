@@ -274,24 +274,6 @@ function update_edit_delete($mode = 'all')
 }
 
 /**
-* Fix Where SQL function
-*
-* Checks to make sure there is a WHERE if there are any AND sections in the SQL and fixes them if needed
-*
-* @param string $sql The (possibly) broken SQL query to check
-* @return The fixed SQL query.
-*/
-function fix_where_sql($sql)
-{
-	if (!strpos($sql, 'WHERE') && strpos($sql, 'AND'))
-	{
-		return substr($sql, 0, strpos($sql, 'AND')) . 'WHERE' . substr($sql, strpos($sql, 'AND') + 3);
-	}
-
-	return $sql;
-}
-
-/**
 * Outputs data as a Feed.
  *
 * @param int|array $blog_ids The id's of blogs that are going to get outputted,
@@ -892,6 +874,28 @@ function resync_blog($mode)
 				$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = \'' . $total['total'] . '\' WHERE user_id = \'' . $row['user_id'] . '\'';
 				$db->sql_query($sql);
 			}
+		}
+		$db->sql_freeresult($result);
+	}
+
+	/**
+	* Updates the user permissions for each blog
+	*/
+	if ( ($mode == 'user_permissions' ) || ($mode == 'all') )
+	{
+		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE;
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$sql_ary = array(
+				'perm_guest'		=> $row['perm_guest'],
+				'perm_registered'	=> $row['perm_registered'],
+				'perm_foe'			=> $row['perm_foe'],
+				'perm_friend'		=> $row['perm_friend'],
+			);
+
+			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE user_id = \'' . $row['user_id'] . '\'';
+			$db->sql_query($sql);
 		}
 		$db->sql_freeresult($result);
 	}

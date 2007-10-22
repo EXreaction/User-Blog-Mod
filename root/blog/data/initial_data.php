@@ -110,6 +110,13 @@ if ($blog_id != 0)
 	}
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];
+	get_zebra_info(array($user->data['user_id'], $user_id));
+	get_user_settings($user_id);
+
+	if (!handle_user_blog_permissions($blog_id))
+	{
+		trigger_error('NO_PERMISSIONS_READ');
+	}
 
 	$subscribed = get_subscription_info($blog_id);
 	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
@@ -125,18 +132,14 @@ else if ($user_id != 0)
 	array_push($user_data->user_queue, $user_id);
 }
 
-get_zebra_info(array($user->data['user_id'], $user_id));
-if ($user_id != 0)
+if ($user_id != 0 && $blog_id == 0)
 {
-	if ($blog_id == 0)
-	{
-		$subscribed = get_subscription_info(false, $user_id);
-		$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
-	}
+	$subscribed = get_subscription_info(false, $user_id);
+	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
 
 	get_user_settings($user_id);
-	
-	if (!handle_user_blog_permissions($user_id, 'read'))
+	get_zebra_info(array($user->data['user_id'], $user_id));
+	if (!handle_user_blog_permissions(false, $user_id))
 	{
 		trigger_error('NO_PERMISSIONS_READ');
 	}

@@ -18,12 +18,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 {
 	define('BLOG_FUNCTIONS_INCLUDED', true);
 
-	// Include the constants.php file
-	if (!isset($phpbb_root_path) || !isset($phpEx))
-	{
-		global $phpbb_root_path, $phpEx;
-	}
+	// Include the constants.php and sql_functions.php files
 	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+	include($phpbb_root_path . 'blog/sql_functions.' . $phpEx);
 
 	/**
 	* URL handler
@@ -185,6 +182,52 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	}
 
 	/**
+	* Updates user settings
+	*/
+	function update_user_blog_settings($user_id, $data)
+	{
+		global $db;
+
+		$user_settings = get_user_settings($user_id, true);
+
+		if (!$user_settings)
+		{
+			$sql_array = array(
+				'user_id'							=> $user_id,
+				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 2,
+				'perm_registered'					=> (isset($data['perm_registered'])) ? $data['perm_registered'] : 2,
+				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 2,
+				'perm_friend'						=> (isset($data['perm_friend'])) ? $data['perm_friend'] : 2,
+				'title'								=> (isset($data['title'])) ? $data['title'] : '',
+				'description'						=> (isset($data['description'])) ? $data['description'] : '',
+				'description_bbcode_bitfield'		=> (isset($data['description_bbcode_bitfield'])) ? $data['description_bbcode_bitfield'] : '',
+				'description_bbcode_uid'			=> (isset($data['description_bbcode_uid'])) ? $data['description_bbcode_uid'] : '',
+			);
+
+			$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
+			$db->sql_query($sql);
+		}
+		else
+		{
+			$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$db->sql_query($sql);
+		}
+
+		if (array_key_exists('perm_guest', $data) || array_key_exists('perm_registered', $data) || array_key_exists('perm_foe', $data) || array_key_exists('perm_friend', $data))
+		{
+			$sql_array = array(
+				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 2,
+				'perm_registered'					=> (isset($data['perm_registered'])) ? $data['perm_registered'] : 2,
+				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 2,
+				'perm_friend'						=> (isset($data['perm_friend'])) ? $data['perm_friend'] : 2,
+			);
+
+			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_array) . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$db->sql_query($sql);
+		}
+	}
+
+	/**
 	* Create the breadcrumbs
 	*
 	* @param string $crumb_lang The last language option in the breadcrumbs
@@ -238,10 +281,15 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*
 	* @param int|bool $uid The user_id we will grab the zebra data for.  If this is false we will use $user->data['user_id']
 	*/
-	function get_zebra_info($user_ids)
+	function get_zebra_info($user_ids, $reverse_lookup = false)
 	{
 		global $config, $user, $db;
-		global $zebra_list;
+		global $zebra_list, $reverse_zebra_list;
+
+		if (!$config['user_blog_enable_zebra'])
+		{
+			return;
+		}
 
 		$to_query = array();
 
@@ -250,25 +298,56 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$user_ids = array($user_ids);
 		}
 
-		foreach ($user_ids as $user_id)
+		if (!$reverse_lookup)
 		{
-			if (!array_key_exists($user_id, $zebra_list))
+			foreach ($user_ids as $user_id)
 			{
-				$to_query[] = $user_id;
+				if (!is_array($zebra_list) || !array_key_exists($user_id, $zebra_list))
+				{
+					$to_query[] = $user_id;
+				}
+			}
+
+			if (!count($to_query))
+			{
+				return;
+			}
+		}
+		else
+		{
+			foreach ($user_ids as $user_id)
+			{
+				if (!is_array($reverse_zebra_list) || !array_key_exists($user_id, $reverse_zebra_list))
+				{
+					$to_query[] = $user_id;
+				}
+			}
+
+			if (!count($to_query))
+			{
+				return;
 			}
 		}
 
-		if (!count($to_query))
+		$sql = 'SELECT * FROM ' . ZEBRA_TABLE . '
+			WHERE ' . $db->sql_in_set((($reverse_lookup) ? 'zebra_id' : 'user_id'), $to_query);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
 		{
-			return;
-		}
-
-		if ($config['user_blog_enable_zebra'])
-		{
-			$sql = 'SELECT * FROM ' . ZEBRA_TABLE . '
-				WHERE ' . $db->sql_in_set('user_id', $to_query);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
+			if ($reverse_lookup)
+			{
+				if ($row['foe'])
+				{
+					$reverse_zebra_list[$row['zebra_id']]['foe'][] = $row['user_id'];
+					$zebra_list[$row['user_id']]['foe'][] = $row['zebra_id'];
+				}
+				else if ($row['friend'])
+				{
+					$reverse_zebra_list[$row['zebra_id']]['friend'][] = $row['user_id'];
+					$zebra_list[$row['user_id']]['friend'][] = $row['zebra_id'];
+				}
+			}
+			else
 			{
 				if ($row['foe'])
 				{
@@ -279,14 +358,130 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 					$zebra_list[$row['user_id']]['friend'][] = $row['zebra_id'];
 				}
 			}
+		}
+		$db->sql_freeresult($result);
+	}
+
+	/**
+	* Add the links in the custom profile fields to view the users' blog
+	*
+	* @param int $user_id The users id.
+	* @param string $block The name of the custom profile block we insert it into
+	* @param mixed $user_data Extra data on the user.  If blog_count is supplied in $user_data we can skip 1 sql query (if $grab_from_db is true)
+	* @param bool $grab_from_db If it is true we will run the query to find out how many blogs the user has if the data isn't supplied in $user_data, otherwise we won't and just display the link alone.
+	* @param bool $force_output is if you would like to force the output of the links for the single requested section
+	*/
+	function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false)
+	{
+		global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
+		global $reverse_zebra_list, $blog_user_permissions;
+
+		// check if the User Blog Mod is enabled, and if the user is anonymous
+		if (!$config['user_blog_enable'] || $user_id == ANONYMOUS)
+		{
+			return;
+		}
+
+		if (!isset($user->lang['BLOG']))
+		{
+			$user->add_lang('mods/blog');
+		}
+
+		if (isset($blog_user_permissions[$user_id]))
+		{
+			$no_perm = false;
+
+			if ($user->data['user_id'] == ANONYMOUS)
+			{
+				if ($blog_user_permissions[$user_id]['perm_guest'] == 0)
+				{
+					$no_perm = true;
+				}
+			}
+			else
+			{
+				if ($config['user_blog_enable_zebra'])
+				{
+					if (isset($reverse_zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $reverse_zebra_list[$user->data['user_id']]['foe']))
+					{
+						if ($blog_user_permissions[$user_id]['perm_foe'] == 0)
+						{
+							$no_perm = true;
+						}
+					}
+					else if (isset($reverse_zebra_list[$user->data['user_id']]['friend']) && in_array($user_id, $reverse_zebra_list[$user->data['user_id']]['friend']))
+					{
+						if ($blog_user_permissions[$user_id]['perm_friend'] == 0)
+						{
+							$no_perm = true;
+						}
+					}
+					else
+					{
+						if ($blog_user_permissions[$user_id]['perm_registered'] == 0)
+						{
+							$no_perm = true;
+						}
+					}
+				}
+				else
+				{
+					if ($blog_user_permissions[$user_id]['perm_registered'] == 0)
+					{
+						$no_perm = true;
+					}
+				}
+			}
+
+			if ($no_perm)
+			{
+				if ($config['user_blog_always_show_blog_url'] || $force_output)
+				{
+					$template->assign_block_vars($block, array(
+						'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+						'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+					));
+				}
+				else
+				{
+					return;
+				}
+			}
+		}
+
+		// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
+		if ($user_id > 1 && (!isset($user_data['blog_count']) || !isset($user_data['username'])) && $grab_from_db)
+		{
+			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$result = $db->sql_query($sql);
+			$user_data = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
+		}
+		else if (!isset($user_data['blog_count']))
+		{
+			$user_data['blog_count'] = -1;
+		}
+		
+		if ($user_data['blog_count'] > 0 || (($config['user_blog_always_show_blog_url'] || $force_output) && $user_data['blog_count'] >= 0))
+		{
+			$template->assign_block_vars($block, array(
+				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+			));
+		}
+		else if (!$grab_from_db && $user_data['blog_count'] == -1)
+		{
+			$template->assign_block_vars($block, array(
+				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+			));
 		}
 	}
 
 	/**
 	* Gets user settings
 	*/
-	function get_user_settings($user_id)
+	function get_user_settings($user_id, $return = false)
 	{
 		global $cache, $db, $user_settings;
 
@@ -306,24 +501,64 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$cache->put('_blog_settings_' . intval($user_id), $cache_data);
 		}
 
-		$user_settings = $cache_data;
+		if (!$return)
+		{
+			$user_settings = $cache_data;
+		}
+		else
+		{
+			return $cache_data;
+		}
+	}
+
+	/**
+	* Gets multiple user permissions and returns them
+	*/
+	function get_user_permissions($user_ids)
+	{
+		global $db, $blog_user_permissions;
+
+		if (!is_array($user_ids))
+		{
+			$user_ids = array($user_ids);
+		}
+
+		if (!$blog_user_permissions)
+		{
+			$blog_user_permissions = array();
+		}
+
+		$sql = 'SELECT user_id, perm_guest, perm_registered, perm_foe, perm_friend FROM ' . BLOGS_USERS_TABLE . '
+			WHERE ' . $db->sql_in_set('user_id', $user_ids);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$blog_user_permissions[$row['user_id']] = $row;
+		}
+		$db->sql_freeresult($result);
 	}
 
 	/**
 	* Handles blog view/reply permissions (those set by users)
 	*/
-	function handle_user_blog_permissions($user_id, $mode)
+	function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read')
 	{
-		global $cache, $config, $db, $blog_data, $user, $zebra_list, $blog_plugins, $user_settings;
+		global $cache, $config, $db, $user;
+		global $blog_data, $zebra_list, $blog_plugins, $user_settings;
 
-		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id)
+		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || (!$user_settings && $user_id !== false))
 		{
 			return true;
 		}
 
-		if (!$user_settings)
+		if ($blog_id !== false)
 		{
-			return true;
+			$var = $blog_data->blog[$blog_id];
+			$user_id = $blog_data->blog[$blog_id]['user_id'];
+		}
+		else if ($user_id !== false)
+		{
+			$var = $user_settings;
 		}
 
 		if ($user->data['user_id'] == ANONYMOUS)
@@ -331,15 +566,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			switch ($mode)
 			{
 				case 'read' :
-					if ($user_settings['guest'] > 0)
+					if ($var['perm_guest'] > 0)
 					{
 						return true;
 					}
-					echo $user_settings['guest'];
 					return false;
 				break;
 				case 'reply' :
-					if ($user_settings['guest'] > 1)
+					if ($var['perm_guest'] > 1)
 					{
 						return true;
 					}
@@ -360,14 +594,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				switch ($mode)
 				{
 					case 'read' :
-						if ($user_settings['foe'] > 0)
+						if ($var['perm_foe'] > 0)
 						{
 							return true;
 						}
 						return false;
 					break;
 					case 'reply' :
-						if ($user_settings['foe'] > 1)
+						if ($var['perm_foe'] > 1)
 						{
 							return true;
 						}
@@ -380,14 +614,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				switch ($mode)
 				{
 					case 'read' :
-						if ($user_settings['friend'] > 0)
+						if ($var['perm_friend'] > 0)
 						{
 							return true;
 						}
 						return false;
 					break;
 					case 'reply' :
-						if ($user_settings['friend'] > 1)
+						if ($var['perm_friend'] > 1)
 						{
 							return true;
 						}
@@ -402,14 +636,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			switch ($mode)
 			{
 				case 'read' :
-					if ($user_settings['registered'] > 0)
+					if ($var['perm_registered'] > 0)
 					{
 						return true;
 					}
 					return false;
 				break;
 				case 'reply' :
-					if ($user_settings['registered'] > 1)
+					if ($var['perm_registered'] > 1)
 					{
 						return true;
 					}
@@ -418,7 +652,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			}
 		}
 
-		$temp = array('user_id' => $user_id, 'mode' => $mode, 'return' => false);
+		$temp = array('blog_id' => $blog_id, 'user_id' => $user_id, 'mode' => $mode, 'return' => false);
 		$blog_plugins->plugin_do_arg_ref('handle_user_blog_permissions', $temp);
 		return $temp['return'];
 	}
@@ -552,59 +786,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 		unset($subscription_data);
 		return false;
-	}
-
-	/**
-	* Add the links in the custom profile fields to view the users' blog
-	*
-	* @param int $user_id The users id.
-	* @param string $block The name of the custom profile block we insert it into
-	* @param mixed $user_data Extra data on the user.  If blog_count is supplied in $user_data we can skip 1 sql query (if $grab_from_db is true)
-	* @param bool $grab_from_db If it is true we will run the query to find out how many blogs the user has if the data isn't supplied in $user_data, otherwise we won't and just display the link alone.
-	* @param bool $force_output is if you would like to force the output of the links for the single requested section
-	*/
-	function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false)
-	{
-		global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
-
-		// check if the User Blog Mod is enabled, and if the user is anonymous
-		if (!$config['user_blog_enable'] || $user_id == ANONYMOUS)
-		{
-			return;
-		}
-
-		if (!isset($user->lang['BLOG']))
-		{
-			$user->add_lang('mods/blog');
-		}
-
-		// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
-		if ($user_id > 1 && (!isset($user_data['blog_count']) || !isset($user_data['username'])) && $grab_from_db)
-		{
-			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
-			$result = $db->sql_query($sql);
-			$user_data = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-		}
-		else if (!isset($user_data['blog_count']))
-		{
-			$user_data['blog_count'] = -1;
-		}
-		
-		if ($user_data['blog_count'] > 0 || (($config['user_blog_always_show_blog_url'] || $force_output) && $user_data['blog_count'] >= 0))
-		{
-			$template->assign_block_vars($block, array(
-				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
-			));
-		}
-		else if (!$grab_from_db && $user_data['blog_count'] == -1)
-		{
-			$template->assign_block_vars($block, array(
-				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
-			));
-		}
 	}
 
 	/**

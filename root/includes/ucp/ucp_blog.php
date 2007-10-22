@@ -42,42 +42,21 @@ class ucp_blog
 		switch ($mode)
 		{
 			case 'ucp_blog_permissions' :
-				global $user_settings;
-				get_user_settings($user->data['user_id']);
-
 				if ($submit)
 				{
 					$sql_ary = array(
-						'user_id'		=> $user->data['user_id'],
-						'guest'			=> request_var('guest_permissions', 2),
-						'registered'	=> request_var('registered_permissions', 2),
-						'foe'			=> request_var('foe_permissions', 2),
-						'friend'		=> request_var('friend_permissions', 2),
+						'perm_guest'		=> request_var('guest_permissions', 2),
+						'perm_registered'	=> request_var('registered_permissions', 2),
+						'perm_foe'			=> request_var('foe_permissions', 2),
+						'perm_friend'		=> request_var('friend_permissions', 2),
 					);
 
-					if (!$user_settings)
-					{
-						$sql_ary['description'] = '';
-						$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-						$db->sql_query($sql);
-					}
-					else
-					{
-						$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE user_id = \'' . $user->data['user_id'] . '\'';
-						$db->sql_query($sql);
-					}
+					update_user_blog_settings($user->data['user_id'], $sql_ary);
 				}
 				else
 				{
-					if (!$user_settings)
-					{
-						$row = array(
-							'guest'			=> 2,
-							'registered'	=> 2,
-							'foe'			=> 2,
-							'friend'		=> 2,
-						);
-					}
+					global $user_settings;
+					get_user_settings($user->data['user_id']);
 
 					$template->assign_vars(array(
 						'SET_PERMISSIONS'				=> true,
@@ -86,12 +65,12 @@ class ucp_blog
 						array(
 							'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
 							'NAME'			=> 'guest_permissions',
-							'DEFAULT'		=> ($user_settings) ? $user_settings['guest'] : 2,
+							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_guest'] : 2,
 						),
 						array(
 							'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
 							'NAME'			=> 'registered_permissions',
-							'DEFAULT'		=> ($user_settings) ? $user_settings['registered'] : 2,
+							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_registered'] : 2,
 						),
 					);
 
@@ -100,12 +79,12 @@ class ucp_blog
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
 								'NAME'			=> 'foe_permissions',
-								'DEFAULT'		=> ($user_settings) ? $user_settings['foe'] : 2,
+								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_foe'] : 2,
 							);
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
 								'NAME'			=> 'friend_permissions',
-								'DEFAULT'		=> ($user_settings) ? $user_settings['friend'] : 2,
+								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_friend'] : 2,
 							);
 					}
 
@@ -195,16 +174,7 @@ class ucp_blog
 					);
 					unset($message_parser);
 
-					if (!$user_settings)
-					{
-						$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-						$db->sql_query($sql);
-					}
-					else
-					{
-						$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE user_id = \'' . $user->data['user_id'] . '\'';
-						$db->sql_query($sql);
-					}
+					update_user_blog_settings($user->data['user_id'], $sql_ary);
 				}
 			break;
 			default;

@@ -249,6 +249,23 @@ if (confirm_box(true))
 
 			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
+		case 'A19' :
+			$sql_array[] = "ALTER TABLE phpbb_blogs ADD perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				ADD perm_registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				ADD perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
+				ADD perm_friend TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2';";
+			$sql_array[] = "ALTER TABLE phpbb_blogs_users CHANGE guest perm_guest TINYINT( 1 ) UNSIGNED NOT NULL ,
+				CHANGE registered perm_registered TINYINT( 1 ) UNSIGNED NOT NULL ,
+				CHANGE foe perm_foe TINYINT( 1 ) UNSIGNED NOT NULL ,
+				CHANGE friend perm_friend TINYINT( 1 ) UNSIGNED NOT NULL;";
+
+			// Must do all the SQL changes before we resync.
+			foreach ($sql_array as $sql)
+			{
+				$db->sql_query($sql);
+			}
+			$sql_array = array();
+			resync_blog('user_permissions');
 	}
 
 	if (count($sql_array))

@@ -4,14 +4,13 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.18
+## MOD Version: 0.3.20
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
 ##
 ## Files To Edit:	.htaccess
 ##					adm/index.php
-##					includes/ucp/ucp_zebra.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
 ##					ucp.php
@@ -59,14 +58,7 @@
 ## 2007-08-26 Alpha 14 Released
 ## 2007-08-27 Alpha 14a Released
 ## 2007-09-10 Alpha 14b Released
-## 2007-9-30
-##		Alpha 15 Released
-##			+ New Plugins System
-##			+ To update, copy the new files over, update adm/index.php, update viewtopic.php,
-##				- run the update script, and then manually add the new plugins module to the ACP.
-##				- Then copy the files required to install the attachments plugin, then run this sql query manually:
-##				- INSERT INTO phpbb_blogs_plugins (plugin_name, plugin_enabled, plugin_version) VALUES ('attachments', 1, '0.7.0');
-##				- Then clear phpBB3's cache.
+## 2007-9-30 Alpha 15 Released
 ## 2007-10-09
 ##		Alpha 16 Released
 ##			+ Say hello to SEO Url's! :D
@@ -88,7 +80,14 @@
 ## 2007-10-21
 ##		Alpha 19 Released
 ##			+ New UCP Panel & more!
-##			+ To update, copy the new files over, make the changes to the includes/ucp/ucp_zebra.php and ucp.php files, then the update script by going to blog.php?page=update.
+##			+ To update, copy the new files over, make the changes to the ucp.php file, then the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-22
+##		Alpha 20 Released
+##			+ Fixes for the user permissions (it wasn't complete for A19)
+##			+ To update, copy the new files over, make the changes to viewtopic.php, then the update script by going to blog.php?page=update.
+##				- You can also remove the file edit for includes/ucp/ucp_zebra.php that was put in for A19 (if you want, you can just leave the file edit that was put in, it doesn't matter).
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
@@ -155,27 +154,6 @@ $user->setup('acp/common');
 // Start Add User Blog Mod ------------------
 $user->add_lang('mods/blog/blog');
 // End Add User Blog Mod --------------------
-
-#
-#-----[ OPEN ]---------------------------------------------
-#
-
-includes/ucp/ucp_zebra.php
-
-#
-#-----[ FIND ]---------------------------------------------
-#
-
-if ($updated)
-
-#
-#-----[ BEFORE, ADD ]--------------------------------------
-#
-
-					// Start Add User Blog Mod ------------------
-					global $cache;
-					$cache->destroy('_blog_settings_' . $user->data['user_id']);
-					// End Add User Blog Mod --------------------
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -260,6 +238,23 @@ viewtopic.php
 #-----[ FIND ]---------------------------------------------
 #
 
+// Load custom profile fields
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+// Start Add User Blog Mod ------------------
+include($phpbb_root_path . 'blog/functions.' . $phpEx);
+$user->add_lang('mods/blog/blog');
+get_zebra_info($user->data['user_id'], true);
+get_user_permissions($id_cache);
+// End Add User Blog Mod --------------------
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
 	// Dump vars into template
 	$template->assign_block_vars('postrow', $postrow);
 
@@ -268,8 +263,6 @@ viewtopic.php
 #
 
 	// Start Add User Blog Mod ------------------
-	include_once($phpbb_root_path . 'blog/functions.' . $phpEx);
-	$user->add_lang('mods/blog/blog');
 	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
 	// End Add User Blog Mod --------------------
 
