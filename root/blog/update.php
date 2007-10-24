@@ -266,6 +266,11 @@ if (confirm_box(true))
 			}
 			$sql_array = array();
 			resync_blog('user_permissions');
+		case 'A20' :
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_USERS_TABLE . " CHANGE perm_guest perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
+				CHANGE perm_foe perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';";
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " CHANGE perm_guest perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
+				CHANGE perm_foe perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';";
 	}
 
 	if (count($sql_array))

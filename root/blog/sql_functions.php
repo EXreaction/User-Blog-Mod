@@ -20,10 +20,16 @@ if (!defined('IN_PHPBB'))
 */
 function build_permission_sql($user_id, $add_where = false)
 {
-	global $config, $db;
+	global $auth, $config, $db;
 	global $reverse_zebra_list;
 
 	static $sql = '';
+
+	// Moderators and administrators can see all.
+	if ($auth->acl_gets('a_', 'm_'))
+	{
+		return '';
+	}
 
 	// We only want to build this query once per session...so if it is build already, don't do it again!
 	if ($sql != '')

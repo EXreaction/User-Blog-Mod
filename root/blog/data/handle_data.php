@@ -94,11 +94,11 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		$text .= '...<br/><br/><!-- m --><a href="';
 		if ($reply_id !== false)
 		{
-			$text .= append_sid("{$phpbb_root_path}blog.$phpEx", "b={$blog_id}r={$reply_id}#r{$reply_id}");
+			$text .= blog_url(false, $blog_id, $reply_id);
 		}
 		else
 		{
-			$text .= append_sid("{$phpbb_root_path}blog.$phpEx", "b=$blog_id");
+			$text .= blog_url($blog_data->blog[$blog_id]['user_id'], $blog_id);
 		}
 		$text .= '">[ ' . $user->lang['CONTINUED'] . ' ]</a><!-- m -->';
 

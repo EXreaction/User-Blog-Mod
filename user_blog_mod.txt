@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.20
+## MOD Version: 0.3.21
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -59,35 +59,35 @@
 ## 2007-08-27 Alpha 14a Released
 ## 2007-09-10 Alpha 14b Released
 ## 2007-9-30 Alpha 15 Released
-## 2007-10-09
-##		Alpha 16 Released
-##			+ Say hello to SEO Url's! :D
-##				- Also, the included upgrade script for The Blog Mod 0.24b to the User Blog Mod has been updated (thanks IngerK for letting me know about the bugs)
-##			+ To update, copy the new files over, make the file changes to the .htaccess file as required, then the update script by going to blog.php?page=update
-##				- If you have the Attachments plugin installed make sure you update it as well (just upload the new files).
-## 2007-10-15
-##		Alpha 17 Released
-##			+ Bug fixes & updates to work with RC7
-##			+ To update, copy the new files over, then the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have the Attachments plugin installed make sure you update it as well.
+## 2007-10-09 Alpha 16 Released
+## 2007-10-15 Alpha 17 Released
 ## 2007-10-17
 ##		Alpha 18 Released
 ##			+ Optimizations (uses about 1.3MB less memory), file layout changes
-##			+ To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then the update script by going to blog.php?page=update.
+##			+ To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ## 2007-10-21
 ##		Alpha 19 Released
 ##			+ New UCP Panel & more!
-##			+ To update, copy the new files over, make the changes to the ucp.php file, then the update script by going to blog.php?page=update.
+##			+ To update, copy the new files over, make the changes to the ucp.php file, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ## 2007-10-22
 ##		Alpha 20 Released
 ##			+ Fixes for the user permissions (it wasn't complete for A19)
-##			+ To update, copy the new files over, make the changes to viewtopic.php, then the update script by going to blog.php?page=update.
+##			+ To update, copy the new files over, make the changes to viewtopic.php, then run the update script by going to blog.php?page=update.
 ##				- You can also remove the file edit for includes/ucp/ucp_zebra.php that was put in for A19 (if you want, you can just leave the file edit that was put in, it doesn't matter).
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-22
+##		Alpha 20a Released
+##			+ Fixing the install/update scripts.
+##				- No need to upgrade if you've already upgraded to Alpha 20.
+## 2007-10-24
+##		Alpha 21 Released
+##			+ Some updates to the user permissions, the upgrade script, and a few other misc things...
+##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
@@ -178,26 +178,6 @@ includes/functions.php
 
 #
 #-----[ OPEN ]---------------------------------------------
-# do this for all styles
-
-styles/prosilver/template/overall_header.html
-
-#
-#-----[ FIND ]---------------------------------------------
-# Note: This is not the whole line
-
-{U_FAQ}
-
-#
-#-----[ BEFORE, ADD ]--------------------------------------
-#
-
-				<!-- BEGIN blog_links -->
-					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
-				<!-- END blog_links -->
-
-#
-#-----[ OPEN ]---------------------------------------------
 #
 
 ucp.php
@@ -265,6 +245,26 @@ get_user_permissions($id_cache);
 	// Start Add User Blog Mod ------------------
 	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
 	// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+# do this for all styles
+
+styles/prosilver/template/overall_header.html
+
+#
+#-----[ FIND ]---------------------------------------------
+# Note: This is not the whole line
+
+{U_FAQ}
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+				<!-- BEGIN blog_links -->
+					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
+				<!-- END blog_links -->
 
 #
 #-----[ DIY ]---------------------------------------------

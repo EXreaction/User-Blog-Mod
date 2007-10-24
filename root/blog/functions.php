@@ -194,9 +194,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			$sql_array = array(
 				'user_id'							=> $user_id,
-				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 2,
+				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 1,
 				'perm_registered'					=> (isset($data['perm_registered'])) ? $data['perm_registered'] : 2,
-				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 2,
+				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 0,
 				'perm_friend'						=> (isset($data['perm_friend'])) ? $data['perm_friend'] : 2,
 				'title'								=> (isset($data['title'])) ? $data['title'] : '',
 				'description'						=> (isset($data['description'])) ? $data['description'] : '',
@@ -523,6 +523,11 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$user_ids = array($user_ids);
 		}
 
+		if (!count($user_ids))
+		{
+			return;
+		}
+
 		if (!$blog_user_permissions)
 		{
 			$blog_user_permissions = array();
@@ -543,10 +548,10 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read')
 	{
-		global $cache, $config, $db, $user;
+		global $auth, $cache, $config, $db, $user;
 		global $blog_data, $zebra_list, $blog_plugins, $user_settings;
 
-		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || (!$user_settings && $user_id !== false))
+		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || (!$user_settings && $user_id !== false) || $auth->acl_gets('a_', 'm_'))
 		{
 			return true;
 		}

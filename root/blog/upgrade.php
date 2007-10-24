@@ -40,6 +40,7 @@ generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG']);
 // Comment out the following like to test the upgrade
 trigger_error('This page is only FOR TESTING.  Under no circumstances should you use this for the actual upgrade.<br/>There is absolutely no support for upgrades at this time.  If you are a tester who is willing to test the upgrade on a dev server please follow the instructions in blog/upgrade.php.');
 
+// ----------------------- START Quick Settings ---------------------------------
 // Enter in your old DB information to test the upgrade
 $dbhost			= 'localhost';
 $dbuser			= 'root';
@@ -47,8 +48,12 @@ $dbpassword		= '';
 $dbname			= 'phpbb3_blog';
 $dbtableprefix	= 'phpbb_';
 
+// Do you want to conver the friends/foes?
+$convert_friends_foes = false;
+
 // if this is set to true we do not insert any data into the database nor truncate the tables, we just test extracting the data and parsing everything.
 $test = true;
+// ----------------------- END Quick Settings ---------------------------------
 
 $old_db = new $sql_db();
 if (!@$old_db->sql_connect($dbhost, $dbuser, $dbpassword, $dbname, false, true))
@@ -222,6 +227,73 @@ while ($row = $old_db->sql_fetchrow($result))
 	unset($sql_array);
 
 	echo '<br/>';
+}
+
+if ($convert_friends_foes)
+{
+	$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_blocked';
+	echo '<br/>Current Query: ' . $sql . '<br/><br/>';
+	flush();
+	$result = $old_db->sql_query($sql);
+	while ($row = $old_db->sql_fetchrow($result))
+	{
+		if (array_key_exists($bb2_users[$row['owner_id']], $bb3_users))
+		{
+			$user_id = $bb3_users[$bb2_users[$row['owner_id']]];
+		}
+
+		if (array_key_exists($bb2_users[$row['blocked_id']], $bb3_users))
+		{
+			$zebra_id = $bb3_users[$bb2_users[$row['blocked_id']]];
+		}
+
+		if (isset($user_id) && isset($zebra_id))
+		{
+			$sql_ary = array(
+				'user_id'	=> $user_id,
+				'zebra_id'	=> $zebra_id,
+				'friend'	=> 0,
+				'foe'		=> 1,
+			);
+
+			$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+		}
+
+		unset($user_id, $zebra_id);
+	}
+
+	$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_friends';
+	echo '<br/>Current Query: ' . $sql . '<br/><br/>';
+	flush();
+	$result = $old_db->sql_query($sql);
+	while ($row = $old_db->sql_fetchrow($result))
+	{
+		if (array_key_exists($bb2_users[$row['owner_id']], $bb3_users))
+		{
+			$user_id = $bb3_users[$bb2_users[$row['owner_id']]];
+		}
+
+		if (array_key_exists($bb2_users[$row['friendd_id']], $bb3_users))
+		{
+			$zebra_id = $bb3_users[$bb2_users[$row['friend_id']]];
+		}
+
+		if (isset($user_id) && isset($zebra_id))
+		{
+			$sql_ary = array(
+				'user_id'	=> $user_id,
+				'zebra_id'	=> $zebra_id,
+				'friend'	=> 1,
+				'foe'		=> 0,
+			);
+
+			$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+		}
+
+		unset($user_id, $zebra_id);
+	}
 }
 
 echo 'Resyncing the User Blog Mod, this may take a while.<br/><br/>';

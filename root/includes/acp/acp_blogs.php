@@ -21,6 +21,7 @@ class acp_blogs
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
 		global $blog_plugins_path;
 
+		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
@@ -36,6 +37,9 @@ class acp_blogs
 		$blog_plugins->plugin_do('acp_main_start');
 
 		$settings = array(
+			'legend0'							=> 'VERSION',
+			'user_blog_version'					=> array('lang' => 'VERSION',						'type' => 'custom',		'method' => 'blog_version',				'explain' => false),
+
 			'legend1'							=> 'BLOG_SETTINGS',
 			'user_blog_enable'					=> array('lang' => 'ENABLE_USER_BLOG',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_plugins'			=> array('lang' => 'ENABLE_USER_BLOG_PLUGINS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
@@ -152,6 +156,41 @@ class acp_blogs
 
 			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 		}
+	}
+
+	/**
+	* Select default dateformat
+	*/
+	function blog_version($value, $key)
+	{
+		global $user, $config, $phpbb_root_path, $phpEx;
+
+		$handle = @fopen($phpbb_root_path . 'blog.' . $phpEx, "r");
+		if ($handle)
+		{
+			while (!feof($handle))
+			{
+				$line = fgets($handle, 4096);
+
+				if (strpos($line, 'user_blog_version'))
+				{
+					$file_version = substr($line, (strpos($line, "'") + 1), -3);
+					break;
+				}
+			}
+			fclose($handle);
+		}
+
+		$version = $user->lang['DATABASE_VERSION'] . ': ' . $value . '<br/>';
+		$version .= $user->lang['FILE_VERSION'] . ': ' . $file_version . '<br/><br/>';
+
+		if ($file_version != $value)
+		{
+			$version .= sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br/>';
+		}
+
+		$version .= sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=31&t=200">', '</a>');
+		return $version;
 	}
 }
 

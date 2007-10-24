@@ -15,6 +15,9 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'CLICK_UPDATE' => 'Click %shere%s to update the database for the User Blog Mod',
+'CLICK_CHECK_NEW_VERSION' => 'Click %shere%s to check for an updated version of the User Blog Mod',
+'CLICK_INSTALL_BLOG'	=> 'Click %shere%s to install the User Blog Mod',
 	'ACP_BLOGS'								=> 'User Blog Mod',
 	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
 	'ACP_BLOG_PLUGINS_EXPLAIN'				=> 'Here you can enable/disable/install/uninstall plugins for the User Blog Mod.',

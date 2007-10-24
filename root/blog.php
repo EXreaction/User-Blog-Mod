@@ -11,8 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Put blog version/update link in ACP
-* Put install link if the blog has not yet been installed
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Create a new dev function for automatically recording plugin hooks.
@@ -27,7 +25,8 @@
 *
 * OTHER -------------------------------------------------------------------------------------------
 *
-* Waiting on UCP
+* UCP
+*	Option to auto-redirect after post
 *	custom CSS coding allowed?
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
@@ -51,7 +50,7 @@
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = 'A20';
+$user_blog_version = 'A21';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -72,9 +71,9 @@ else
 }
 
 // check if the User Blog Mod is installed/enabled
-if (!isset($config['user_blog_enable']))
+if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && isset($_GET['page']) && $_GET['page'] != 'install')
 {
-	// make link to install page
+	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
 }
 if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
 {

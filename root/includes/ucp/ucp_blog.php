@@ -45,9 +45,9 @@ class ucp_blog
 				if ($submit)
 				{
 					$sql_ary = array(
-						'perm_guest'		=> request_var('guest_permissions', 2),
+						'perm_guest'		=> request_var('guest_permissions', 1),
 						'perm_registered'	=> request_var('registered_permissions', 2),
-						'perm_foe'			=> request_var('foe_permissions', 2),
+						'perm_foe'			=> request_var('foe_permissions', 0),
 						'perm_friend'		=> request_var('friend_permissions', 2),
 					);
 
@@ -65,7 +65,7 @@ class ucp_blog
 						array(
 							'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
 							'NAME'			=> 'guest_permissions',
-							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_guest'] : 2,
+							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_guest'] : 1,
 						),
 						array(
 							'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
@@ -79,7 +79,7 @@ class ucp_blog
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
 								'NAME'			=> 'foe_permissions',
-								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_foe'] : 2,
+								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_foe'] : 0,
 							);
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
