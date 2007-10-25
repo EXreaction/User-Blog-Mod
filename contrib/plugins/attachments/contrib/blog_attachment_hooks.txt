@@ -1,0 +1,21 @@
+/blog/plugins/attachments/attachment_class.php
+
+/blog/plugins/attachments/download.php
+	download_start
+	download_before_send
+	download_end
+
+/blog/plugins/attachments/functions.php
+
+/blog/plugins/attachments/install.php
+
+/blog/plugins/attachments/uninstall.php
+
+/blog/plugins/attachments/update.php
+
+/blog/plugins/info/info_attachments.php
+
+/language/en/acp/permissions_blog_attachments.php
+
+/language/en/mods/blog/plugins/attachments.php
+

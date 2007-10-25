@@ -1,160 +1,196 @@
-blog_start
-blog_output
-blog_page_switch
-blog_end
+/blog/blog/add.php
+	blog_add_start
+	blog_add_preview
+	blog_add_after_preview
+	blog_add_sql
+	blog_add_after_sql
 
-blog/
-	blog/
-		add
-			blog_add_start
-			blog_add_preview
-			blog_add_after_preview
-			blog_add_sql
-			blog_add_after_sql
+/blog/blog/approve.php
+	blog_approve
+	blog_approve_confirm
 
-		approve
-			blog_approve
-			blog_approve_confirm
+/blog/blog/delete.php
+	blog_delete
+	blog_delete_confirm
 
-		delete
-			blog_delete
-			blog_delete_confirm
+/blog/blog/edit.php
+	blog_edit_start
+	blog_edit_preview
+	blog_edit_after_preview
+	blog_edit_sql
+	blog_edit_after_sql
+	blog_edit_delete
 
-		edit
-			blog_edit_start
-			blog_edit_preview
-			blog_edit_before_submit
-			blog_edit_delete
+/blog/blog/report.php
+	blog_report_start
+	blog_report_confirm
 
-		report
-			blog_report_start
-			blog_report_confirm
+/blog/blog/undelete.php
+	blog_undelete_start
+	blog_undelete_confirm
 
-		undelete
-			blog_undelete_start
-			blog_undelete_confirm
+/blog/data/blog_data.php
+	blog_data_start
+	blog_data_sql
+	blog_data_while
+	blog_info_start
+	blog_info_sql
+	blog_handle_data_start
+	blog_handle_data_end
 
-	data/
-		blog_data
-			blog_data_start
-			blog_data_sql
-			blog_data_while
-			blog_info_start
-			blog_info_sql
-			blog_handle_data_start
-			blog_handle_data_end
+/blog/data/constants.php
 
-		reply_data
-			reply_data_start
-			reply_data_sql
-			reply_data_while
-			reply_handle_data_start
-			reply_handle_data_end
+/blog/data/handle_data.php
+	function_generate_menu
+	function_handle_subscription
+	function_handle_subscription_end
+	function_inform_approve_report
+	function_resync_blog
 
-		user_data
-			user_data_start
-			user_data_sql
-			user_data_while
-			user_handle_data
-			user_handle_data_cp
+/blog/data/initial_data.php
+	blog_start
+	initial_output
 
-		handle_data
-			function_generate_menu
-			function_handle_subscription
-			function_handle_subscription_end
-			function_inform_approve_report
-			function_resync_blog
+/blog/data/reply_data.php
+	reply_data_start
+	reply_data_sql
+	reply_data_while
+	reply_handle_data_start
+	reply_handle_data_end
 
-	reply/
-		add
-			reply_add_start
-			reply_add_preview
-			reply_add_after_preview
-			reply_add_sql
-			reply_add_after_sql
+/blog/data/user_data.php
+	user_data_start
+	user_data_sql
+	user_data_sql
+	user_data_while
+	user_handle_data
+	user_handle_data_cp
 
-		approve
-			reply_approve
-			reply_approve_confirm
+/blog/dev.php
 
-		delete
-			reply_delete
-			reply_delete_confirm
+/blog/functions.php
+	function_generate_blog_urls
+	handle_user_blog_permissions
+	function_handle_blog_cache
+	function_handle_blog_cache_mode
+	function_get_subscription_info
 
-		edit
-			reply_edit_start
-			reply_edit_preview
-			reply_edit_before_submit
-			reply_edit_delete
+/blog/header.php
+	blog_header
 
-		report
-			reply_report_start
-			reply_report_confirm
+/blog/install.php
 
-		undelete
-			reply_undelete_start
-			reply_undelete_confirm
+/blog/permissions.php
+	permissions_start
+	permissions_end
 
-	view/
-		blog
-			view_blog_start
-			view_blog_after_blogrow
-			view_blog_end
+/blog/plugins/plugins.php
 
-		main
-			view_main_start
-			view_main_end
-			view_main_feed_end
-
-		user
-			view_user_start
-			view_user_end
-			view_user_feed_end
-
-	functions
-		function_generate_blog_urls
-		handle_user_blog_permissions
-		function_handle_blog_cache
-		function_handle_blog_cache_mode
-		function_get_subscription_info
-
-	header
-		blog_header
-
-	permissions
-		permissions_start
-		permissions_end
-
+/blog/post_options.php
 	post_options
-		post_options
-		post_options_set_status
-		post_options_set_in_template
+	post_options_set_status
+	post_options_set_in_template
 
-	subscribe
-		subscribe_start
-		subscribe_blog_confirm
-		subscribe_blog_confirm_end
-		subscribe_blog
-		subscribe_user_confirm
-		subscribe_user_confirm_end
-		subscribe_user
-		subscription_add
+/blog/reply/add.php
+	reply_add_start
+	reply_add_preview
+	reply_add_after_preview
+	reply_add_sql
+	reply_add_after_sql
 
-	unsubscribe
-		unsubscribe_blog_start
-		unsubscribe_blog_confirm
-		unsubscribe_blog
-		unsubscribe_user_confirm
-		unsubscribe_user
+/blog/reply/approve.php
+	reply_approve
+	reply_approve_confirm
 
-includes/
-	acp/
-		acp_blogs
-			acp_main_start
-			acp_main_settings
+/blog/reply/delete.php
+	reply_delete
+	reply_delete_confirm
 
-	ucp/
-		ucp_blog
-			blog_ucp_start
-			blog_ucp_permissions
-			blog_ucp_mode
+/blog/reply/edit.php
+	reply_edit_start
+	reply_edit_preview
+	reply_edit_after_preview
+	reply_edit_sql
+	reply_edit_after_sql
+	reply_edit_delete
+
+/blog/reply/report.php
+	reply_report
+	reply_report_confirm
+
+/blog/reply/undelete.php
+	reply_undelete
+	reply_undelete_confirm
+
+/blog/resync.php
+
+/blog/seo.php
+
+/blog/sql_functions.php
+
+/blog/subscribe.php
+	subscribe_start
+	subscribe_blog_confirm
+	subscribe_blog_confirm_end
+	subscribe_blog
+	subscribe_user_confirm
+	subscribe_user_confirm_end
+	subscribe_user
+	subscription_add
+
+/blog/unsubscribe.php
+	unsubscribe_start
+	unsubscribe_blog_confirm
+	unsubscribe_blog
+	unsubscribe_user_confirm
+	unsubscribe_user
+
+/blog/update.php
+
+/blog/upgrade.php
+
+/blog/view/blog.php
+	view_blog_start
+	view_blog_after_blogrow
+	view_blog_reply_while
+	view_blog_end
+
+/blog/view/main.php
+	view_main_start
+	view_main_end
+	view_main_feed_end
+
+/blog/view/mcp.php
+
+/blog/view/seo.php
+
+/blog/view/user.php
+	view_user_start
+	view_user_end
+	view_user_feed_end
+
+/includes/acp/acp_blogs.php
+	acp_main_start
+	acp_main_settings
+
+/includes/acp/acp_blog_plugins.php
+
+/includes/acp/info/acp_blogs.php
+
+/includes/acp/info/acp_blog_plugins.php
+
+/includes/ucp/info/ucp_blog.php
+
+/includes/ucp/ucp_blog.php
+	blog_ucp_start
+	blog_ucp_permissions
+	blog_ucp_mode
+
+/language/en/acp/permissions_blog.php
+
+/language/en/mods/blog/blog.php
+
+/blog.php
+	blog_page_switch
+	blog_end
+
