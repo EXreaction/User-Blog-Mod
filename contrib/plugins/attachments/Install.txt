@@ -166,7 +166,7 @@ includes/acp/acp_attachments.php
 
 CHMOD files/blog_mod 777.
 
-Install the plugin in the User Blog Plugins ACP.
+Go to the Blog Plugins menu in the ACP and install the plugin.
 
 Set the user/group permissions.
 

@@ -49,6 +49,12 @@
 root/* to /
 
 #
+#-----[ DIY ]---------------------------------------------
+#
+
+Go to the Blog Plugins menu in the ACP and install the plugin.
+
+#
 #-----[ SAVE/CLOSE ALL FILES ]-----------------------------
 #
 # EoM

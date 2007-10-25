@@ -7,47 +7,19 @@
 *
 */
 
-/**
-* Define some constants
-*/
-if (!isset($table_prefix))
-{
-	include($phpbb_root_path . 'config.' . $phpEx);
-	unset($dbpasswd);
-	unset($dbuser);
-	unset($dbname);
-}
-
 define('BLOGS_ATTACHMENT_TABLE',	$table_prefix . 'blogs_attachment');
 
-if (file_exists($user->lang_path . "mods/blog/plugins/{$name}.$phpEx"))
-{
-	$user->add_lang('mods/blog/plugins/' . $name);
-}
+$user->add_lang('mods/blog/plugins/' . $name);
 
-if (isset($user->lang['BLOG_ATTACHMENT_TITLE']))
-{
-	$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ATTACHMENT_TITLE'];
-	$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ATTACHMENT_DESCRIPTION'];
-}
-else
-{
-	$this->available_plugins[$name]['plugin_title'] = 'Attachments';
-	$this->available_plugins[$name]['plugin_description'] = 'Adds Attachments to User Blogs';
-}
+$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ATTACHMENT_TITLE'];
+$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ATTACHMENT_DESCRIPTION'];
 
-
-// setup some basic information about the plugin
 $this->available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
 $this->available_plugins[$name]['plugin_version'] = '0.7.3';
 
-// Only do this if the plugin is enabled (set in the load_plugins function right before this file is loaded)
 if ($plugin_enabled)
 {
-	/**
-	* Setup the To Do list and add it to the plugin's to-do list
-	*/
-	$attach_to_do = array(
+	$to_do = array(
 		'blog_page_switch'			=> array('attach_blog_page_switch'),
 
 		'blog_add_start'			=> array('attach_blog_add_start'),
@@ -84,7 +56,7 @@ if ($plugin_enabled)
 		'acp_main_settings'			=> array('attach_acp_main_settings'),
 	);
 
-	foreach($attach_to_do as $do => $what)
+	foreach($to_do as $do => $what)
 	{
 		if (!array_key_exists($do, $this->to_do))
 		{
@@ -96,15 +68,9 @@ if ($plugin_enabled)
 		}
 	}
 
-	/**
-	* Include the necessary files
-	*/
 	include($blog_plugins_path . 'attachments/functions.' . $phpEx);
 	include($blog_plugins_path . 'attachments/attachment_class.' . $phpEx);
 
-	/**
-	* Setup the $blog_attachment class
-	*/
 	global $blog_attachment;
 	$blog_attachment = new blog_attachment();
 }
