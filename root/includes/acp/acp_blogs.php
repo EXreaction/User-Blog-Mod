@@ -174,7 +174,15 @@ class acp_blogs
 
 				if (strpos($line, 'user_blog_version'))
 				{
-					$file_version = substr($line, (strpos($line, "'") + 1), -3);
+					// If we are using the Windows line ending, we need to remove 1 more character...
+					if (strpos($line, "\r\n"))
+					{
+						$file_version = substr($line, (strpos($line, "'") + 1), -4);
+					}
+					else
+					{
+						$file_version = substr($line, (strpos($line, "'") + 1), -3);
+					}
 					break;
 				}
 			}
