@@ -58,7 +58,6 @@ $limit = intval(request_var('limit', ($blog_id || $reply_id) ? ($print) ? 99999 
 $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
-$user_founder = ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm']) ? true : false;
 
 // setting some variables for sorting
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
@@ -111,7 +110,7 @@ if ($blog_id != 0)
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];
 	get_zebra_info(array($user->data['user_id'], $user_id));
-	get_user_settings($user_id);
+	get_user_settings(array($user_id, $user->data['user_id']));
 
 	if (!handle_user_blog_permissions($blog_id))
 	{
@@ -137,12 +136,16 @@ if ($user_id != 0 && $blog_id == 0)
 	$subscribed = get_subscription_info(false, $user_id);
 	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
 
-	get_user_settings($user_id);
+	get_user_settings(array($user_id, $user->data['user_id']));
 	get_zebra_info(array($user->data['user_id'], $user_id));
 	if (!handle_user_blog_permissions(false, $user_id))
 	{
 		trigger_error('NO_PERMISSIONS_READ');
 	}
+}
+else
+{
+	get_user_settings($user->data['user_id']);
 }
 
 // get the user data for what we have and update the edit and delete info
@@ -168,10 +171,10 @@ $feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') 
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
 // The blog title/description
-if ($user_settings)
+if (isset($user_settings[$user_id]))
 {
-	$blog_title = censor_text($user_settings['title']);
-	$blog_description = generate_text_for_display($user_settings['description'], $user_settings['description_bbcode_uid'], $user_settings['description_bbcode_bitfield'], 7);
+	$blog_title = censor_text($user_settings[$user_id]['title']);
+	$blog_description = generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7);
 }
 else
 {
@@ -187,7 +190,7 @@ $initial_data = array(
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
 	'U_BLOG'				=> ($print) ? generate_board_url() . "/blog.{$phpEx}?b=$blog_id" : $blog_urls['self'],
-	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport') || $user_founder) ? append_sid("{$phpbb_root_path}blog.$phpEx", 'page=mcp') : '',
+	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}blog.$phpEx", 'page=mcp') : '',
  	'U_REPLY_BLOG'			=> ($blog_id != 0 && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
 
 	'S_POST_ACTION'			=> $blog_urls['self'],

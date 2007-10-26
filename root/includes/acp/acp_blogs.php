@@ -45,7 +45,6 @@ class acp_blogs
 			'user_blog_enable_plugins'			=> array('lang' => 'ENABLE_USER_BLOG_PLUGINS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_subscription_enabled'	=> array('lang'	=> 'ENABLE_SUBSCRIPTIONS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_zebra'			=> array('lang' => 'BLOG_ENABLE_ZEBRA',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
-			'user_blog_founder_all_perm'		=> array('lang'	=> 'FOUNDER_ALL_PERMISSION',		'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 			'user_blog_force_prosilver'			=> array('lang' => 'BLOG_FORCE_PROSILVER',			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 			'user_blog_seo'						=> array('lang' => 'BLOG_ENABLE_SEO',				'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 
@@ -197,7 +196,7 @@ class acp_blogs
 			$version .= sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br/>';
 		}
 
-		$version .= sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=31&t=200">', '</a>');
+		$version .= sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&t=433">', '</a>');
 		return $version;
 	}
 }

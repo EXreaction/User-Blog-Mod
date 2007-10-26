@@ -22,7 +22,7 @@ if ($reply_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_reply']);
+	blog_meta_refresh(0, $blog_urls['view_reply'], true);
 }
 
 // Add the language Variables for posting
@@ -92,4 +92,5 @@ else
 
 	trigger_error($message);
 }
+blog_meta_refresh(0, $blog_urls['view_reply'], true);
 ?>

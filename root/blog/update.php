@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['main']);
+	blog_meta_refresh(0, $blog_urls['main'], true);
 }
 
 // Generate the breadcrumbs
@@ -271,6 +271,38 @@ if (confirm_box(true))
 				CHANGE perm_foe perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';";
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " CHANGE perm_guest perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
 				CHANGE perm_foe perm_foe TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';";
+		case '0.3.21' : // Changing the version number scheme
+			$sql_array[] = 'ALTER TABLE ' . BLOGS_USERS_TABLE . " ADD instant_redirect TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
+			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_founder_all_perm\'';
+
+			// Insert the new UCP Module
+			$sql = 'SELECT module_id, right_id FROM ' . MODULES_TABLE . '
+				WHERE module_class = \'ucp\'
+				AND module_langname = \'BLOG\'';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			$sql = 'UPDATE ' . MODULES_TABLE . ' SET right_id = right_id + 2
+				WHERE module_class = \'ucp\'
+				AND module_langname = \'BLOG\'';
+			$db->sql_query($sql);
+
+			$sql_ary = array(
+				'module_enabled'	=> 1,
+				'module_display'	=> 1,
+				'module_basename'	=> 'blog',
+				'module_class'		=> 'ucp',
+				'parent_id'			=> $row['module_id'],
+				'left_id'			=> $row['right_id'],
+				'right_id'			=> $row['right_id'] + 1,
+				'module_langname'	=> 'UCP_BLOG_SETTINGS',
+				'module_mode'		=> 'ucp_blog_settings',
+				'module_auth'		=> 'acl_u_blogpost',
+			);
+
+			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
 	}
 
 	if (count($sql_array))
@@ -298,7 +330,5 @@ else
 {
 	confirm_box(false, 'UPDATE_INSTRUCTIONS');
 }
-
-// they pressed No, so redirect them
-redirect($blog_urls['main']);
+blog_meta_refresh(0, $blog_urls['main'], true);
 ?>

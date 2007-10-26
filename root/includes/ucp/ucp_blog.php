@@ -22,7 +22,7 @@ class ucp_blog
 	function main($id, $mode)
 	{
 		global $cache, $template, $user, $db, $config, $phpEx, $phpbb_root_path;
-		global $blog_plugins, $blog_plugins_path;
+		global $blog_plugins, $blog_plugins_path, $user_settings;
 
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$preview = (isset($_POST['preview'])) ? true : false;
@@ -39,8 +39,26 @@ class ucp_blog
 
 		$blog_plugins->plugin_do('blog_ucp_start');
 
+		get_user_settings($user->data['user_id']);
+
 		switch ($mode)
 		{
+			case 'ucp_blog_settings' :
+				if ($submit)
+				{
+					$sql_ary = array(
+						'instant_redirect'	=> request_var('instant_redirect', 0),
+					);
+
+					update_user_blog_settings($user->data['user_id'], $sql_ary);
+				}
+				else
+				{
+					$template->assign_vars(array(
+						'S_BLOG_INSTANT_REDIRECT' => (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['instant_redirect'] : 0,
+					));
+				}
+			break;
 			case 'ucp_blog_permissions' :
 				if ($submit)
 				{
@@ -55,22 +73,16 @@ class ucp_blog
 				}
 				else
 				{
-					global $user_settings;
-					get_user_settings($user->data['user_id']);
-
-					$template->assign_vars(array(
-						'SET_PERMISSIONS'				=> true,
-					));
 					$permission_settings = array(
 						array(
 							'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
 							'NAME'			=> 'guest_permissions',
-							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_guest'] : 1,
+							'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_guest'] : 1,
 						),
 						array(
 							'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
 							'NAME'			=> 'registered_permissions',
-							'DEFAULT'		=> ($user_settings) ? $user_settings['perm_registered'] : 2,
+							'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_registered'] : 2,
 						),
 					);
 
@@ -79,12 +91,12 @@ class ucp_blog
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
 								'NAME'			=> 'foe_permissions',
-								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_foe'] : 0,
+								'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_foe'] : 0,
 							);
 						$permission_settings[] = array(
 								'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
 								'NAME'			=> 'friend_permissions',
-								'DEFAULT'		=> ($user_settings) ? $user_settings['perm_friend'] : 2,
+								'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_friend'] : 2,
 							);
 					}
 
@@ -101,9 +113,6 @@ class ucp_blog
 				include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 				include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 				include($phpbb_root_path . 'blog/post_options.' . $phpEx);
-
-				global $user_settings;
-				get_user_settings($user->data['user_id']);
 
 				$user->add_lang('posting');
 
@@ -124,11 +133,11 @@ class ucp_blog
 				}
 				else
 				{
-					if ($user_settings)
+					if (isset($user_settings[$user->data['user_id']]))
 					{
-						$blog_title = $user_settings['title'];
-						$blog_description = $user_settings['description'];
-						decode_message($blog_description, $user_settings['description_bbcode_uid']);
+						$blog_title = $user_settings[$user->data['user_id']]['title'];
+						$blog_description = $user_settings[$user->data['user_id']]['description'];
+						decode_message($blog_description, $user_settings[$user->data['user_id']]['description_bbcode_uid']);
 					}
 					else
 					{

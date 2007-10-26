@@ -23,7 +23,7 @@ if ($reply_id == 0)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
+if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -124,7 +124,7 @@ if (!$submit || sizeof($error))
 
 		'S_DELETE_ALLOWED'			=> $can_delete,
 		'S_EDIT_REASON'				=> true,
-		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? true : false,
+		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_blogreplylockedit')) && $user->data['user_id'] != $reply_user_id) ? true : false,
 	));
 
 	// Tell the template parser what template file to use
@@ -142,7 +142,7 @@ else // user submitted and there are no errors
 			'reply_subject'		=> $reply_subject,
 			'reply_text'		=> $message_parser->message,
 			'reply_checksum'	=> md5($message_parser->message),
-			'reply_approved' 	=> ($reply_data->reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0 : 1,
+			'reply_approved' 	=> ($reply_data->reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0 : 1,
 			'enable_bbcode' 	=> $post_options->enable_bbcode,
 			'enable_smilies'	=> $post_options->enable_smilies,
 			'enable_magic_url'	=> $post_options->enable_magic_url,
@@ -152,7 +152,7 @@ else // user submitted and there are no errors
 			'reply_edit_reason'	=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
 			'reply_edit_user'	=> $user->data['user_id'],
 			'reply_edit_count'	=> $reply_data->reply[$reply_id]['reply_edit_count'] + 1,
-			'reply_edit_locked'	=> (($auth->acl_get('m_blogreplylockedit') || $user_founder) && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
+			'reply_edit_locked'	=> ($auth->acl_get('m_blogreplylockedit') && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
 		);
 
 		// add the delete section to the array if it was deleted, if it was already deleted ignore
@@ -192,7 +192,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message = (!$auth->acl_get('u_blogreplynoapprove') && !$user_founder) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
+		$message = (!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 
 		// redirect

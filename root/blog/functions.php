@@ -146,7 +146,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $phpbb_root_path, $phpEx, $config, $user;
 		global $blog_id, $reply_id, $user_id, $start;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+		global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
 
 		$self_data = array();
 		foreach ($_GET as $name => $var)
@@ -186,11 +186,11 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function update_user_blog_settings($user_id, $data)
 	{
-		global $db;
+		global $db, $user_settings;
 
-		$user_settings = get_user_settings($user_id, true);
+		get_user_settings($user_id);
 
-		if (!$user_settings)
+		if (!isset($user_settings[$user_id]))
 		{
 			$sql_array = array(
 				'user_id'							=> $user_id,
@@ -202,6 +202,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				'description'						=> (isset($data['description'])) ? $data['description'] : '',
 				'description_bbcode_bitfield'		=> (isset($data['description_bbcode_bitfield'])) ? $data['description_bbcode_bitfield'] : '',
 				'description_bbcode_uid'			=> (isset($data['description_bbcode_uid'])) ? $data['description_bbcode_uid'] : '',
+				'instant_redirect'					=> (isset($data['instant_redirect'])) ? $data['instant_redirect'] : 0,
 			);
 
 			$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
@@ -216,9 +217,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		if (array_key_exists('perm_guest', $data) || array_key_exists('perm_registered', $data) || array_key_exists('perm_foe', $data) || array_key_exists('perm_friend', $data))
 		{
 			$sql_array = array(
-				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 2,
+				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 1,
 				'perm_registered'					=> (isset($data['perm_registered'])) ? $data['perm_registered'] : 2,
-				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 2,
+				'perm_foe'							=> (isset($data['perm_foe'])) ? $data['perm_foe'] : 0,
 				'perm_friend'						=> (isset($data['perm_friend'])) ? $data['perm_friend'] : 2,
 			);
 
@@ -236,7 +237,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $template, $user;
 		global $page, $username, $blog_id, $reply_id;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls;
+		global $blog_data, $reply_data, $user_data, $blog_urls;
 
 		$template->assign_block_vars('navlinks', array(
 			'FORUM_NAME'		=> $user->lang['USER_BLOGS'],
@@ -374,7 +375,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false)
 	{
 		global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
-		global $reverse_zebra_list, $blog_user_permissions;
+		global $reverse_zebra_list, $user_settings;
 
 		// check if the User Blog Mod is enabled, and if the user is anonymous
 		if (!$config['user_blog_enable'] || $user_id == ANONYMOUS)
@@ -387,13 +388,13 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$user->add_lang('mods/blog');
 		}
 
-		if (isset($blog_user_permissions[$user_id]))
+		if (isset($user_settings[$user_id]))
 		{
 			$no_perm = false;
 
 			if ($user->data['user_id'] == ANONYMOUS)
 			{
-				if ($blog_user_permissions[$user_id]['perm_guest'] == 0)
+				if ($user_settings[$user_id]['perm_guest'] == 0)
 				{
 					$no_perm = true;
 				}
@@ -404,21 +405,21 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				{
 					if (isset($reverse_zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $reverse_zebra_list[$user->data['user_id']]['foe']))
 					{
-						if ($blog_user_permissions[$user_id]['perm_foe'] == 0)
+						if ($user_settings[$user_id]['perm_foe'] == 0)
 						{
 							$no_perm = true;
 						}
 					}
 					else if (isset($reverse_zebra_list[$user->data['user_id']]['friend']) && in_array($user_id, $reverse_zebra_list[$user->data['user_id']]['friend']))
 					{
-						if ($blog_user_permissions[$user_id]['perm_friend'] == 0)
+						if ($user_settings[$user_id]['perm_friend'] == 0)
 						{
 							$no_perm = true;
 						}
 					}
 					else
 					{
-						if ($blog_user_permissions[$user_id]['perm_registered'] == 0)
+						if ($user_settings[$user_id]['perm_registered'] == 0)
 						{
 							$no_perm = true;
 						}
@@ -426,7 +427,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				}
 				else
 				{
-					if ($blog_user_permissions[$user_id]['perm_registered'] == 0)
+					if ($user_settings[$user_id]['perm_registered'] == 0)
 					{
 						$no_perm = true;
 					}
@@ -480,67 +481,52 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 	/**
 	* Gets user settings
+	*
+	* @param int $user_ids array of user_ids to get the settings for
 	*/
-	function get_user_settings($user_id, $return = false)
+	function get_user_settings($user_ids)
 	{
 		global $cache, $db, $user_settings;
 
-		if ($user_id == ANONYMOUS)
+		if (!is_array($user_settings))
 		{
-			return;
+			$user_settings = array();
 		}
-
-		$cache_data = $cache->get('_blog_settings_' . intval($user_id));
-		if ($cache_data === false)
-		{
-			$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
-			$result = $db->sql_query($sql);
-			$cache_data = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-
-			$cache->put('_blog_settings_' . intval($user_id), $cache_data);
-		}
-
-		if (!$return)
-		{
-			$user_settings = $cache_data;
-		}
-		else
-		{
-			return $cache_data;
-		}
-	}
-
-	/**
-	* Gets multiple user permissions and returns them
-	*/
-	function get_user_permissions($user_ids)
-	{
-		global $db, $blog_user_permissions;
 
 		if (!is_array($user_ids))
 		{
 			$user_ids = array($user_ids);
 		}
 
-		if (!count($user_ids))
+		$to_query = array();
+		foreach ($user_ids as $id)
 		{
-			return;
+			if (!array_key_exists($id, $user_settings))
+			{
+				$cache_data = $cache->get('_blog_settings_' . intval($id));
+				if ($cache_data === false)
+				{
+					$to_query[] = (int) $id;
+				}
+				else
+				{
+					$user_settings[$id] = $cache_data;
+				}
+			}
 		}
 
-		if (!$blog_user_permissions)
+		if (count($to_query))
 		{
-			$blog_user_permissions = array();
-		}
+			$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$cache->put('_blog_settings_' . $row['user_id'], $row);
 
-		$sql = 'SELECT user_id, perm_guest, perm_registered, perm_foe, perm_friend FROM ' . BLOGS_USERS_TABLE . '
-			WHERE ' . $db->sql_in_set('user_id', $user_ids);
-		$result = $db->sql_query($sql);
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$blog_user_permissions[$row['user_id']] = $row;
+				$user_settings[$row['user_id']] = $row;
+			}
+			$db->sql_freeresult($result);
 		}
-		$db->sql_freeresult($result);
 	}
 
 	/**
@@ -551,11 +537,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		global $auth, $cache, $config, $db, $user;
 		global $blog_data, $zebra_list, $blog_plugins, $user_settings;
 
-		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || (!$user_settings && $user_id !== false) || $auth->acl_gets('a_', 'm_'))
-		{
-			return true;
-		}
-
 		if ($blog_id !== false)
 		{
 			$var = $blog_data->blog[$blog_id];
@@ -563,7 +544,12 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		}
 		else if ($user_id !== false)
 		{
-			$var = $user_settings;
+			$var = (isset($user_settings[$user_id])) ? $user_settings[$user_id] : '';
+		}
+
+		if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || !isset($user_settings[$user_id]) || $auth->acl_gets('a_', 'm_'))
+		{
+			return true;
 		}
 
 		if ($user->data['user_id'] == ANONYMOUS)
@@ -670,13 +656,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function handle_blog_cache($mode, $user_id = 0)
 	{
-		global $cache, $auth, $user, $db, $blog_plugins, $user_founder;
+		global $cache, $auth, $user, $db, $blog_plugins;
 
 		$blog_plugins->plugin_do('function_handle_blog_cache');
 
-		if (strpos($mode, 'blog'))
+		if ($mode == 'blog' || strpos($mode, 'blog'))
 		{
 			$cache->destroy('sql', BLOGS_TABLE);
+
 			if ($user_id === false)
 			{
 				$sql = 'SELECT user_id FROM ' . USERS_TABLE;
@@ -684,12 +671,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$cache->destroy('_blog_archive' . $row['user_id']);
+					$cache->destroy('_blog_settings_' . $row['user_id']);
 					$cache->destroy('_blog_subscription' . $row['user_id']);
 				}
 			}
 			else
 			{
 				$cache->destroy("_blog_archive{$user_id}");
+				$cache->destroy('_blog_settings_' . $user_id);
 				$cache->destroy("_blog_subscription{$user_id}");
 			}
 		}
@@ -697,7 +686,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		switch ($mode)
 		{
 			case 'new_blog' :
-				if ($auth->acl_get('u_blognoapprove') || $user_founder)
+				if ($auth->acl_get('u_blognoapprove'))
 				{
 					$cache->destroy('all_blog_ids');
 				}
@@ -889,9 +878,15 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* Blog Meta Refresh (the normal one does not work with the SEO Url's
 	*/
-	function blog_meta_refresh($time, $url)
+	function blog_meta_refresh($time, $url, $instant = false)
 	{
-		global $config, $template;
+		global $config, $template, $user, $user_settings;
+
+		if ($instant || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
+		{
+			$time = 0;
+			header('Location: ' . $url);
+		}
 
 		if ($config['user_blog_seo'])
 		{

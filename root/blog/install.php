@@ -126,6 +126,7 @@ if (confirm_box(true))
 					description MEDIUMTEXT character set utf8 collate utf8_unicode_ci NOT NULL,
 					description_bbcode_bitfield varchar(255) NOT NULL default '',
 					description_bbcode_uid varchar(8) NOT NULL default '',
+					instant_redirect TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
 					PRIMARY KEY ( user_id )
 				) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
 			}
@@ -224,6 +225,7 @@ if (confirm_box(true))
 					description MEDIUMTEXT NOT NULL,
 					description_bbcode_bitfield varchar(255) NOT NULL default '',
 					description_bbcode_uid varchar(8) NOT NULL default '',
+					instant_redirect TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
 					PRIMARY KEY ( user_id )
 				);";
 			}
@@ -239,63 +241,6 @@ if (confirm_box(true))
 	{
 		$db->sql_query($sql);
 	}
-
-	//Setup $auth_admin class so we can add permission options
-	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
-	$auth_admin = new auth_admin();
-
-	//Lets add the required new permissions
-	$blog_permissions = array(
-		'local'      => array(),
-		'global'   => array(
-			'u_blogview',
-			'u_blogpost',
-			'u_blogedit',
-			'u_blogdelete',
-			'u_blognoapprove',
-			'u_blogreport',
-			'u_blogreply',
-			'u_blogreplyedit',
-			'u_blogreplydelete',
-			'u_blogreplynoapprove',
-			'u_blogbbcode',
-			'u_blogsmilies',
-			'u_blogimg',
-			'u_blogurl',
-			'u_blogflash',
-			'u_blogmoderate',
-			'm_blogapprove',
-			'm_blogedit',
-			'm_bloglockedit',
-			'm_blogdelete',
-			'm_blogreport',
-			'm_blogreplyapprove',
-			'm_blogreplyedit',
-			'm_blogreplylockedit',
-			'm_blogreplydelete',
-			'm_blogreplyreport',
-			'a_blogmanage',
-			'a_blogdelete',
-			'a_blogreplydelete',
-			)
-	);
-	$auth_admin->acl_add_option($blog_permissions);
-
-	// Add config options
-	set_config('user_blog_enable', 1, 0);
-	set_config('user_blog_custom_profile_enable', 0, 0);
-	set_config('user_blog_text_limit', '50', 0);
-	set_config('user_blog_user_text_limit', '500', 0);
-	set_config('user_blog_inform', '2', 0);
-	set_config('user_blog_always_show_blog_url', 0, 0);
-	set_config('user_blog_founder_all_perm', 1, 0);
-	set_config('user_blog_force_prosilver', 0, 0);
-	set_config('user_blog_subscription_enabled', 1, 0);
-	set_config('user_blog_enable_zebra', 1, 0);
-	set_config('user_blog_enable_feeds', 1, 0);
-	set_config('user_blog_enable_plugins', 1);
-	set_config('user_blog_seo', false);
-	set_config('user_blog_guest_captcha', true);
 
 	//insert the ACP modules
 	$sql = 'SELECT * FROM ' . MODULES_TABLE . " WHERE module_langname = 'ACP_CAT_DOT_MODS'";
@@ -376,7 +321,7 @@ if (confirm_box(true))
 		'module_class'		=> 'ucp',
 		'parent_id'			=> 0,
 		'left_id'			=> $row['top'] + 1,
-		'right_id'			=> $row['top'] + 6,
+		'right_id'			=> $row['top'] + 8,
 		'module_langname'	=> 'BLOG',
 		'module_mode'		=> '',
 		'module_auth'		=> '',
@@ -394,8 +339,8 @@ if (confirm_box(true))
 		'parent_id'			=> $parent_id,
 		'left_id'			=> $row['top'] + 2,
 		'right_id'			=> $row['top'] + 3,
-		'module_langname'	=> 'UCP_BLOG_PERMISSIONS',
-		'module_mode'		=> 'ucp_blog_permissions',
+		'module_langname'	=> 'UCP_BLOG_SETTINGS',
+		'module_mode'		=> 'ucp_blog_settings',
 		'module_auth'		=> 'acl_u_blogpost',
 	);
 
@@ -418,6 +363,77 @@ if (confirm_box(true))
 	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 	$db->sql_query($sql);
 
+	$sql_ary = array(
+		'module_enabled'	=> 1,
+		'module_display'	=> 1,
+		'module_basename'	=> 'blog',
+		'module_class'		=> 'ucp',
+		'parent_id'			=> $parent_id,
+		'left_id'			=> $row['top'] + 6,
+		'right_id'			=> $row['top'] + 7,
+		'module_langname'	=> 'UCP_BLOG_PERMISSIONS',
+		'module_mode'		=> 'ucp_blog_permissions',
+		'module_auth'		=> 'acl_u_blogpost',
+	);
+
+	$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+	$db->sql_query($sql);
+
+	//Setup $auth_admin class so we can add permission options
+	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+	$auth_admin = new auth_admin();
+
+	//Lets add the required new permissions
+	$blog_permissions = array(
+		'local'      => array(),
+		'global'   => array(
+			'u_blogview',
+			'u_blogpost',
+			'u_blogedit',
+			'u_blogdelete',
+			'u_blognoapprove',
+			'u_blogreport',
+			'u_blogreply',
+			'u_blogreplyedit',
+			'u_blogreplydelete',
+			'u_blogreplynoapprove',
+			'u_blogbbcode',
+			'u_blogsmilies',
+			'u_blogimg',
+			'u_blogurl',
+			'u_blogflash',
+			'u_blogmoderate',
+			'm_blogapprove',
+			'm_blogedit',
+			'm_bloglockedit',
+			'm_blogdelete',
+			'm_blogreport',
+			'm_blogreplyapprove',
+			'm_blogreplyedit',
+			'm_blogreplylockedit',
+			'm_blogreplydelete',
+			'm_blogreplyreport',
+			'a_blogmanage',
+			'a_blogdelete',
+			'a_blogreplydelete',
+			)
+	);
+	$auth_admin->acl_add_option($blog_permissions);
+
+	// Add config options
+	set_config('user_blog_enable', 1, 0);
+	set_config('user_blog_custom_profile_enable', 0, 0);
+	set_config('user_blog_text_limit', '50', 0);
+	set_config('user_blog_user_text_limit', '500', 0);
+	set_config('user_blog_inform', '2', 0);
+	set_config('user_blog_always_show_blog_url', 0, 0);
+	set_config('user_blog_force_prosilver', 0, 0);
+	set_config('user_blog_subscription_enabled', 1, 0);
+	set_config('user_blog_enable_zebra', 1, 0);
+	set_config('user_blog_enable_feeds', 1, 0);
+	set_config('user_blog_enable_plugins', 1);
+	set_config('user_blog_seo', false);
+	set_config('user_blog_guest_captcha', true);
 	set_config('user_blog_version', $user_blog_version, 0);
 
 	$cache->purge();

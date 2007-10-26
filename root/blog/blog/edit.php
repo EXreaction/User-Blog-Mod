@@ -23,7 +23,7 @@ if ($blog_id == 0)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($blog_data->blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit') && !$user_founder)
+if ($blog_data->blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
 {
 	trigger_error('BLOG_EDIT_LOCKED');
 }
@@ -123,7 +123,7 @@ if (!$submit || sizeof($error))
 
 		'S_DELETE_ALLOWED'			=> $can_delete,
 		'S_EDIT_REASON'				=> true,
-		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_bloglockedit') || $user_founder) && $user->data['user_id'] != $blog_data->blog[$blog_id]['user_id']) ? true : false,
+		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_bloglockedit')) && $user->data['user_id'] != $blog_data->blog[$blog_id]['user_id']) ? true : false,
 	));
 
 	// Tell the template parser what template file to use
@@ -141,7 +141,7 @@ else // user submitted and there are no errors
 			'blog_subject'		=> $blog_subject,
 			'blog_text'			=> $message_parser->message,
 			'blog_checksum'		=> md5($message_parser->message),
-			'blog_approved' 	=> ($blog_data->blog[$blog_id]['blog_approved'] == 0) ? ($auth->acl_get('u_blognoapprove') || $user_founder) ? 1 : 0 : 1,
+			'blog_approved' 	=> ($blog_data->blog[$blog_id]['blog_approved'] == 0) ? ($auth->acl_get('u_blognoapprove')) ? 1 : 0 : 1,
 			'enable_bbcode' 	=> $post_options->enable_bbcode,
 			'enable_smilies'	=> $post_options->enable_smilies,
 			'enable_magic_url'	=> $post_options->enable_magic_url,
@@ -151,7 +151,7 @@ else // user submitted and there are no errors
 			'blog_edit_reason'	=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
 			'blog_edit_user'	=> $user->data['user_id'],
 			'blog_edit_count'	=> $blog_data->blog[$blog_id]['blog_edit_count'] + 1,
-			'blog_edit_locked'	=> (($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) || $user_founder) ? request_var('lock_post', false) : false,
+			'blog_edit_locked'	=> ($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) ? request_var('lock_post', false) : false,
 		);
 
 		$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
@@ -195,7 +195,7 @@ else // user submitted and there are no errors
 	{
 		handle_blog_cache('approve_blog', $user_id);
 
-		$message = (!$auth->acl_get('u_blognoapprove') && !$user_founder) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
+		$message = (!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
 		if ($user->data['user_id'] == $user_id)
 		{

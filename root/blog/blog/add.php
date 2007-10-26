@@ -117,7 +117,7 @@ else // user submitted and there are no errors
 		'blog_subject'				=> $blog_subject,
 		'blog_text'					=> $message_parser->message,
 		'blog_checksum'				=> md5($message_parser->message),
-		'blog_approved' 			=> ($auth->acl_get('u_blognoapprove') || $user_founder) ? 1 : 0,
+		'blog_approved' 			=> ($auth->acl_get('u_blognoapprove')) ? 1 : 0,
 		'enable_bbcode' 			=> $post_options->enable_bbcode,
 		'enable_smilies'			=> $post_options->enable_smilies,
 		'enable_magic_url'			=> $post_options->enable_magic_url,
@@ -142,7 +142,7 @@ else // user submitted and there are no errors
 
 	handle_blog_cache('new_blog', $user->data['user_id']);
 
-	if ($auth->acl_get('u_blognoapprove') || $user_founder)
+	if ($auth->acl_get('u_blognoapprove'))
 	{
 		handle_subscription('new_blog', censor_text($blog_subject));
 
@@ -155,7 +155,7 @@ else // user submitted and there are no errors
 		inform_approve_report('blog_approve', $blog_id);
 	}
 
-	$message = (!$auth->acl_get('u_blognoapprove') && !$user_founder) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = (!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
 
 	$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');

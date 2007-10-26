@@ -22,7 +22,7 @@ if ($reply_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_reply']);
+	blog_meta_refresh(0, $blog_urls['view_reply'], true);
 }
 
 // Add the language Variables for the MCP
@@ -37,7 +37,7 @@ generate_blog_breadcrumbs($user->lang['REPORT_REPLY']);
 $blog_plugins->plugin_do('reply_report');
 
 // To close the reports
-if ($reply_data->reply[$reply_id]['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder))
+if ($reply_data->reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogreplyreport'))
 {
 	if (confirm_box(true))
 	{
@@ -107,4 +107,5 @@ else
 		confirm_box(false, 'REPLY_REPORT');
 	}
 }
+blog_meta_refresh(0, $blog_urls['view_reply'], true);
 ?>

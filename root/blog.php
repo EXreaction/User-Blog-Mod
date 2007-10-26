@@ -13,7 +13,6 @@
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Create a new dev function for automatically recording plugin hooks.
 *
 * Polls
 *
@@ -26,31 +25,17 @@
 * OTHER -------------------------------------------------------------------------------------------
 *
 * UCP
-*	Option to auto-redirect after post
 *	custom CSS coding allowed?
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
-* add in a section for gallery display - make gallery.php hold the main code for it so it can be replaced with the core code later by the user (by just uploading 1 file to install the add on).  All the other code needs to be in place and call the gallery.php file to check.
-* Integrate with search - make as an add-on - to enable have one of the instructions for the add-on to be editing a config file in the includes/blog directory
-*
-* new table to record blog reads (maybe add option to record reads by anonymous users  via IP address as well?)
-*	new blogs/replies needing approval notice by Blog MCP link (use the record blog reads for this)
-*
-* Make My Blogs link check to see if the user has any blogs posted already (this requires a lot more work permissions side than you'd think).  Make sure to check for the same kind of thing in permissions for the view user page.
+* add in a section for gallery display - plugin
+* Integrate with search - plugin
 *
 * Finish upgrade page
-*	+ Automatically put friends/foes in blocked/allow list from The Blog Mod?
-*/
-
-/*
-* Translators:
-* To potential translators - ask EXreaction on http://www.lithiumstudios.org about translations if you would like to translate this mod for other languages.
-* Spanish - ecwpa
-*
 */
 
 // The Version # - later move this to initial_data.php
-$user_blog_version = '0.3.21';
+$user_blog_version = '0.3.22';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

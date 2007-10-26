@@ -15,9 +15,6 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-'CLICK_UPDATE' => 'Click %shere%s to update the database for the User Blog Mod',
-'CLICK_CHECK_NEW_VERSION' => 'Click %shere%s to check for an updated version of the User Blog Mod',
-'CLICK_INSTALL_BLOG'	=> 'Click %shere%s to install the User Blog Mod',
 	'ACP_BLOGS'								=> 'User Blog Mod',
 	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
 	'ACP_BLOG_PLUGINS_EXPLAIN'				=> 'Here you can enable/disable/install/uninstall plugins for the User Blog Mod.',
@@ -61,6 +58,8 @@ $lang = array_merge($lang, array(
 	'BLOG_INFO'								=> 'About the Blog',
 	'BLOG_INFORM'							=> 'Users to inform of reports or posts needing approval via PM',
 	'BLOG_INFORM_EXPLAIN'					=> 'Enter the user_id\'s of the users you want to receive a Private Message when a blog or reply is reported, or a blog or reply is newly posted and needs approval.  Separate multiple users by a comma, do not add spaces.',
+	'BLOG_INSTANT_REDIRECT'					=> 'Instant Redirect',
+	'BLOG_INSTANT_REDIRECT_EXPLAIN'			=> 'This will set the User Blog Mod to instantly redirect to the next page instead of displaying the Information page.',
 	'BLOG_IS_DELETED'						=> 'This blog was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
 	'BLOG_MCP'								=> 'Blog Moderator CP',
 	'BLOG_NEED_APPROVE'						=> 'A moderator or administrator must approve your blogs before they are public.',
@@ -87,7 +86,10 @@ $lang = array_merge($lang, array(
 	'BLOG_VIEW'								=> 'This blog has been viewed <b>1</b> time',
 	'BLOG_VIEWS'							=> 'This blog has been viewed <b>%s</b> times',
 
+	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
 	'CLICK_HERE_SHOW_POST'					=> 'Click here to show the post.',
+	'CLICK_INSTALL_BLOG'					=> 'Click %shere%s to install the User Blog Mod',
+	'CLICK_UPDATE'							=> 'Click %shere%s to update the database for the User Blog Mod',
 	'CONTINUED'								=> 'Continued',
 	'COPYRIGHT'								=> 'Copyright',
 
@@ -123,7 +125,6 @@ $lang = array_merge($lang, array(
 	'FILES_CANT_WRITE'						=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
 	'FILE_VERSION'							=> 'Files Version',
 	'FOE_PERMISSIONS'						=> 'Foe Permissions',
-	'FOUNDER_ALL_PERMISSION'				=> 'Give Board Founders all permissions for this mod',
 	'FRIEND_PERMISSIONS'					=> 'Friend Permissions',
 
 	'GUEST_PERMISSIONS'						=> 'Guest Permissions',
@@ -140,7 +141,7 @@ $lang = array_merge($lang, array(
 	'LOG_CONFIG_BLOG'						=> '<strong>Altered Blog Settings</strong>',
 
 	'MUST_BE_FOUNDER'						=> 'You must be a board founder to access this page.',
-	'MY_BLOGS'								=> 'My Blogs',
+	'MY_BLOGS'								=> 'My Blog',
 
 	'NOT_ALLOWED_IN_BLOG'					=> 'Not allowed in User Blogs',
 	'NOT_SUBSCRIBED_BLOG'					=> 'You are not subscribed to this blog.',
@@ -229,6 +230,8 @@ $lang = array_merge($lang, array(
 
 	'UCP_BLOG_PERMISSIONS'					=> 'Blog Permissions',
 	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br/>Note that any administrative permissions override any permissions set here.',
+	'UCP_BLOG_SETTINGS'						=> 'Blog Settings',
+	'UCP_BLOG_SETTINGS_EXPLAIN'				=> '',
 	'UCP_BLOG_TITLE_DESCRIPTION'			=> 'Blog Title and Description',
 	'UCP_BLOG_TITLE_DESCRIPTION_EXPLAIN'	=> 'Here you can set the title and description for your blog.',
 	'UNDELETE_BLOG'							=> 'Un-Delete Blog',

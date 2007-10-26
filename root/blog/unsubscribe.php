@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 if (!$config['user_blog_subscription_enabled'])
 {
-	redirect($blog_urls['main']);
+	blog_meta_refresh(0, $blog_urls['main'], true);
 }
 
 $subscribe_mode = request_var('post', '', true);
@@ -125,4 +125,5 @@ else
 {
 	trigger_error($user->lang['BLOG_USER_NOT_PROVIDED']);
 }
+blog_meta_refresh(0, $blog_urls['main'], true);
 ?>

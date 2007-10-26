@@ -26,7 +26,7 @@ if (!defined('IN_PHPBB'))
 function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = false)
 {
 	global $phpbb_root_path, $phpEx, $user;
-	global $blog_data, $reply_data, $user_data, $user_founder;
+	global $blog_data, $reply_data, $user_data;
 
 	$bbcode_bitfield = $text_only_message = $text = '';
 
@@ -84,7 +84,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 			include("{$phpbb_root_path}includes/message_parser.$phpEx");
 		}
 
-		// Now lets get the URL's back and nl2br
+		// Now lets get the bbcode back
 		$message_parser = new parse_message();
 		$message_parser->message = $text;
 		$message_parser->parse($data['enable_bbcode'], $data['enable_magic_url'], $data['enable_smilies']);
@@ -127,7 +127,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 function update_edit_delete($mode = 'all')
 {
 	global $auth, $user, $phpbb_root_path, $phpEx;
-	global $blog_data, $reply_data, $user_data, $user_founder;
+	global $blog_data, $reply_data, $user_data;
 
 	if (!isset($user->lang['EDITED_TIME_TOTAL']))
 	{
@@ -340,7 +340,7 @@ function feed_output($blog_ids, $feed_type)
 function generate_menu($user_id)
 {
 	global $db, $template, $phpbb_root_path, $phpEx, $user, $cache;
-	global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+	global $blog_data, $reply_data, $user_data, $blog_urls;
 
 // output the data for the left author info menu
 	$template->assign_vars($user_data->handle_user_data($user_id));
@@ -432,7 +432,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 {
 	global $db, $user, $phpbb_root_path, $phpEx, $config;
 	global $user_id, $blog_id, $reply_id;
-	global $blog_data, $reply_data, $user_data, $user_founder, $blog_urls, $blog_plugins;
+	global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
 
 	// if $uid, $bid, or $rid are not set, use the globals
 	$uid = ($uid != 0) ? $uid : $user_id;

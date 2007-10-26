@@ -19,8 +19,9 @@ class ucp_blog_info
 			'title'		=> 'BLOG',
 			'version'	=> '1.0.0',
 			'modes'		=> array(
-				'ucp_blog_permissions'			=> array('title' => 'UCP_BLOG_PERMISSIONS', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),
+				'ucp_blog_settings'				=> array('title' => 'UCP_BLOG_SETTINGS', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),
 				'ucp_blog_title_description'	=> array('title' => 'UCP_BLOG_TITLE_DESCRIPTION', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),
+				'ucp_blog_permissions'			=> array('title' => 'UCP_BLOG_PERMISSIONS', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),
 			),
 		);
 	}

@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.21
+## MOD Version: 0.3.22
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -27,7 +27,7 @@
 ##
 ##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
 ##
-##	Only MySQL is supported at this time.  If you have a different DB please wait for a future release.
+##	Only MySQL/MySQLi is supported at this time.  If you have a different DB please wait for a future release.
 ##
 ##	An upgrade script to upgrade from the blog mod 0.2.4b has been included.  However it is for testing purposes ONLY.
 ##		To access it you need to go to blog.php?page=upgrade
@@ -61,12 +61,7 @@
 ## 2007-9-30 Alpha 15 Released
 ## 2007-10-09 Alpha 16 Released
 ## 2007-10-15 Alpha 17 Released
-## 2007-10-17
-##		Alpha 18 Released
-##			+ Optimizations (uses about 1.3MB less memory), file layout changes
-##			+ To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-17 Alpha 18 Released
 ## 2007-10-21
 ##		Alpha 19 Released
 ##			+ New UCP Panel & more!
@@ -88,6 +83,12 @@
 ##		Alpha 21 Released
 ##			+ Some updates to the user permissions, the upgrade script, and a few other misc things...
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-26
+##		Alpha 22 Released
+##			+ Added instant redirect option for users.  Fixing bugs in upgrade script.
+##			+ To update, copy the new files over, update the code in viewtopic.php, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
@@ -228,7 +229,7 @@ viewtopic.php
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
 $user->add_lang('mods/blog/blog');
 get_zebra_info($user->data['user_id'], true);
-get_user_permissions($id_cache);
+get_user_settings($id_cache);
 // End Add User Blog Mod --------------------
 
 #

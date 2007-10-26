@@ -22,7 +22,7 @@ if ($blog_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_blog']);
+	blog_meta_refresh(0, $blog_urls['view_blog'], true);
 }
 
 // if someone is trying to un-delete a blog and the blog is not deleted
@@ -73,7 +73,5 @@ else
 {
 	confirm_box(false, 'UNDELETE_BLOG');
 }
-
-// they pressed No, so redirect them
-redirect($blog_urls['view_blog']);
+blog_meta_refresh(0, $blog_urls['view_blog'], true);
 ?>

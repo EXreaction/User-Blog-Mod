@@ -42,13 +42,13 @@ class post_options
 	 */
 	function post_options()
 	{
-		global $auth, $user_founder, $blog_plugins;
+		global $auth, $blog_plugins;
 
-		$this->auth_bbcode = ($auth->acl_get('u_blogbbcode') || $user_founder) ? true : false;
-		$this->auth_smilies = ($auth->acl_get('u_blogsmilies') || $user_founder) ? true : false;
-		$this->auth_img = ($auth->acl_get('u_blogimg') || $user_founder) ? true : false;
-		$this->auth_url = ($auth->acl_get('u_blogurl') || $user_founder) ? true : false;
-		$this->auth_flash = ($auth->acl_get('u_blogflash') || $user_founder) ? true : false;
+		$this->auth_bbcode = ($auth->acl_get('u_blogbbcode')) ? true : false;
+		$this->auth_smilies = ($auth->acl_get('u_blogsmilies')) ? true : false;
+		$this->auth_img = ($auth->acl_get('u_blogimg')) ? true : false;
+		$this->auth_url = ($auth->acl_get('u_blogurl')) ? true : false;
+		$this->auth_flash = ($auth->acl_get('u_blogflash')) ? true : false;
 
 		$blog_plugins->plugin_do('post_options');
 	}
@@ -58,13 +58,13 @@ class post_options
 	 */
 	function set_status($bbcode, $smilies, $url)
 	{
-		global $config, $auth, $user_founder, $blog_plugins;
+		global $config, $auth, $blog_plugins;
 
-		$this->bbcode_status = (($config['allow_bbcode'] && $this->auth_bbcode) || $user_founder) ? true : false;
-		$this->smilies_status = (($config['allow_smilies'] && $this->auth_smilies) || $user_founder) ? true : false;
-		$this->img_status = (($this->auth_img && $this->bbcode_status) || $user_founder) ? true : false;
-		$this->url_status = (($config['allow_post_links'] && $this->auth_url && $this->bbcode_status) || $user_founder) ? true : false;
-		$this->flash_status = (($this->auth_flash && $this->bbcode_status) || $user_founder) ? true : false;
+		$this->bbcode_status = ($config['allow_bbcode'] && $this->auth_bbcode) ? true : false;
+		$this->smilies_status = ($config['allow_smilies'] && $this->auth_smilies) ? true : false;
+		$this->img_status = ($this->auth_img && $this->bbcode_status) ? true : false;
+		$this->url_status = ($config['allow_post_links'] && $this->auth_url && $this->bbcode_status) ? true : false;
+		$this->flash_status = ($this->auth_flash && $this->bbcode_status) ? true : false;
 
 		$this->enable_bbcode = ($this->bbcode_status && $bbcode) ? true : false;
 		$this->enable_smilies = ($this->smilies_status && $smilies) ? true : false;

@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['main']);
+	blog_meta_refresh(0, $blog_urls['main'], true);
 }
 
 /*
@@ -54,6 +54,11 @@ $convert_friends_foes = false;
 // if this is set to true we do not insert any data into the database nor truncate the tables, we just test extracting the data and parsing everything.
 $test = true;
 // ----------------------- END Quick Settings ---------------------------------
+
+if (!class_exists('parse_message'))
+{
+	include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+}
 
 $old_db = new $sql_db();
 if (!@$old_db->sql_connect($dbhost, $dbuser, $dbpassword, $dbname, false, true))
@@ -274,7 +279,7 @@ if ($convert_friends_foes)
 			$user_id = $bb3_users[$bb2_users[$row['owner_id']]];
 		}
 
-		if (array_key_exists($bb2_users[$row['friendd_id']], $bb3_users))
+		if (array_key_exists($bb2_users[$row['friend_id']], $bb3_users))
 		{
 			$zebra_id = $bb3_users[$bb2_users[$row['friend_id']]];
 		}

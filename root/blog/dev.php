@@ -31,8 +31,138 @@ switch ($mode)
 		// to input the file name use HTTP Get vars.  For example, to organize language/en/common.php you type in en/common.  Do not include language/ or .php
 		organize_lang();
 		break;
+	case 'get_hooks' :
+		get_hooks();
+		break;
 	default :
 		trigger_error('NO_MODE');
+}
+
+/**
+* Gets the available hooks and lists them in a text file.
+*
+* You must put all of the files from the root/ folder in the mod package into a folder named blog_hooks in the root phpBB3 directory.
+* The hook list will be outputted to a file named blog_hooks.txt in the phpBB3 root directory.
+*/
+function get_hooks()
+{
+	global $phpbb_root_path;
+
+	$hook_list = '';
+	$file_list = $dir_list = array();
+
+	if ($handle = opendir($phpbb_root_path . 'blog_hooks'))
+	{
+	    while (false !== ($file = readdir($handle)))
+		{
+			if (strpos($file, '.'))
+			{
+				$file_list[] = $file;
+			}
+			else
+			{
+				$dir_list[] = $file;
+			}
+	    }
+	    closedir($handle);
+	}
+
+	// Looks a little strange, but it is being done this way so folders get listed first, then files (otherwise it just lists everything alphabetical file)
+	if (count($dir_list))
+	{
+		foreach ($dir_list as $file)
+		{
+			get_hooks_recusive($hook_list, $file, $phpbb_root_path . 'blog_hooks', $phpbb_root_path . 'blog_hooks');
+		}
+	}
+
+	if (count($file_list))
+	{
+		foreach ($file_list as $file)
+		{
+			get_hooks_recusive($hook_list, $file, $phpbb_root_path . 'blog_hooks', $phpbb_root_path . 'blog_hooks');
+		}
+	}
+
+	if ($fp = @fopen($phpbb_root_path . 'blog_hooks.txt', 'wb'))
+	{
+		@flock($fp, LOCK_EX);
+		fwrite($fp, $hook_list);
+		@flock($fp, LOCK_UN);
+		fclose($fp);
+	}
+}
+
+/**
+* Helper for get_hooks()
+*/
+function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
+{
+	global $phpEx;
+
+	if ($file == '.' || $file == '..')
+	{
+		return;
+	}
+
+	$file_list = $dir_list = array();
+
+	if (is_dir($dir . '/' . $file))
+	{
+		if ($handle = opendir($dir . '/' . $file))
+		{
+		    while (false !== ($file1 = readdir($handle)))
+			{
+				if (strpos($file, '.'))
+				{
+					$file_list[] = $file1;
+				}
+				else
+				{
+					$dir_list[] = $file1;
+				}
+		    }
+
+		    closedir($handle);
+		}
+
+		if (count($dir_list))
+		{
+			foreach ($dir_list as $file1)
+			{
+				get_hooks_recusive($hook_list, $file1, $dir . '/' . $file, $original_dir);
+			}
+		}
+
+		if (count($file_list))
+		{
+			foreach ($file_list as $file1)
+			{
+				get_hooks_recusive($hook_list, $file1, $dir . '/' . $file, $original_dir);
+			}
+		}
+	}
+	else if (strpos($file, $phpEx)) // Skip non .php files
+	{
+		$handle = @fopen($dir . '/' . $file, "r");
+		if ($handle)
+		{
+			$hook_list .= substr($dir, strpos($dir, $original_dir) + strlen($original_dir)) . '/' . $file . "\n";
+			while (!feof($handle))
+			{
+				$line = fgets($handle, 4096);
+
+				if (strpos($line, 'blog_plugins->plugin_do'))
+				{
+					$start_pos = strpos($line, "('") + 2;
+					$hook_list .= "\t" . substr($line, $start_pos, strpos($line, "'", $start_pos) - $start_pos) . "\n";
+				}
+			}
+			fclose($handle);
+			$hook_list .= "\n";
+		}
+	}
+
 }
 
 /**

@@ -37,7 +37,7 @@ class user_data
 	function get_user_data($id, $user_queue = false, $username = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp;
-		global $blog_data, $reply_data, $user_founder, $blog_plugins;
+		global $blog_data, $reply_data, $blog_plugins;
 
 		// if we are using the user_queue, set $user_id as that for consistency
 		if ($user_queue)
@@ -229,7 +229,7 @@ class user_data
 	function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
-		global $blog_data, $reply_data, $user_founder, $zebra_list, $blog_plugins;
+		global $blog_data, $reply_data, $zebra_list, $blog_plugins;
 
 		if ($output_custom == false)
 		{
@@ -253,7 +253,7 @@ class user_data
 				'L_USER_FOE'		=> sprintf($user->lang['POST_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 
 				'U_AIM'				=> $this->user[$user_id]['aim_url'],
-				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete') || $user_founder) ? '<a href="' . blog_url($user_id, false, false, array('mode' => 'deleted')) . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',
+				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete')) ? '<a href="' . blog_url($user_id, false, false, array('mode' => 'deleted')) . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',
 				'U_EMAIL'			=> $this->user[$user_id]['email_url'],
 				'U_ICQ'				=> $this->user[$user_id]['icq_url'],
 				'U_JABBER'			=> $this->user[$user_id]['jabber_url'],

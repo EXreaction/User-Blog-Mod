@@ -35,7 +35,7 @@ class blog_data
 	function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $cache;
-		global $blog_data, $reply_data, $user_data, $user_founder, $blog_plugins;
+		global $blog_data, $reply_data, $user_data, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_data_start', $selection_data);
 
@@ -162,7 +162,7 @@ class blog_data
 				$sql = fix_where_sql($sql);
 				break;
 			case 'reported' : // select reported blogs
-				if (!$auth->acl_get('m_blogreport') && !$user_founder)
+				if (!$auth->acl_get('m_blogreport'))
 				{
 					return false;
 				}
@@ -174,7 +174,7 @@ class blog_data
 								$limit_sql;
 				break;
 			case 'disapproved' : // select disapproved blogs
-				if (!$auth->acl_get('m_blogapprove') && !$user_founder)
+				if (!$auth->acl_get('m_blogapprove'))
 				{
 					return false;
 				}
@@ -244,7 +244,7 @@ class blog_data
 	function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $cache, $user, $auth;
-		global $reply_data, $user_data, $user_founder, $blog_plugins;
+		global $reply_data, $user_data, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_info_start', $selection_data);
 
@@ -321,7 +321,7 @@ class blog_data
 				return $random_ids;
 			break;
 			case 'user_count' : // this only counts the total number of blogs a single user has and returns the count
-				if ($auth->acl_gets('m_blogapprove', 'm_blogdelete', 'a_blogdelete') || $user_founder || $sort_days_sql != '')
+				if ($auth->acl_gets('m_blogapprove', 'm_blogdelete', 'a_blogdelete') || $sort_days_sql != '')
 				{
 					$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_TABLE . '
 						WHERE user_id = \'' . $id . '\'' .
@@ -441,7 +441,7 @@ class blog_data
 	function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $reply_data, $user_data, $user_founder, $blog_plugins;
+		global $reply_data, $user_data, $blog_plugins;
 
 		$blog = &$this->blog[$id];
 		$user_id = $blog['user_id'];
@@ -499,12 +499,12 @@ class blog_data
 			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
 			'U_REPORT'			=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
 			'U_VIEW'			=> blog_url($user_id, $id),
-			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
+			'U_WARN'			=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
 			'S_DELETED'			=> ($blog['blog_deleted']) ? true : false,
-			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport') || $user_founder)) ? true : false,
+			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
 			'S_SHORTENED'		=> $shortened,
-			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove') || $user_founder)) ? true : false,
+			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove'))) ? true : false,
 		);
 
 		$blog_plugins->plugin_do_arg_ref('blog_handle_data_end', $blog_row);

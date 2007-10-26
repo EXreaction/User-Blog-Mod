@@ -19,6 +19,12 @@ if ($blog_id == 0)
 	trigger_error('NO_BLOG');
 }
 
+// Was Cancel pressed? If so then redirect to the appropriate page
+if ($cancel)
+{
+	blog_meta_refresh(0, $blog_urls['view_blog'], true);
+}
+
 // add the mcp language file
 $user->add_lang('mcp');
 
@@ -31,7 +37,7 @@ generate_blog_breadcrumbs($user->lang['REPORT_BLOG']);
 $blog_plugins->plugin_do('blog_report_start');
 
 // To close the reports
-if ($blog_data->blog[$blog_id]['blog_reported'] && ($auth->acl_get('m_blogreport') || $user_founder))
+if ($blog_data->blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'))
 {
 	if (confirm_box(true))
 	{
@@ -77,4 +83,5 @@ else
 		confirm_box(false, 'BLOG_REPORT');
 	}
 }
+blog_meta_refresh(0, $blog_urls['view_blog'], true);
 ?>

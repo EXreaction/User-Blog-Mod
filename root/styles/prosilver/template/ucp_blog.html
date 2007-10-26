@@ -7,10 +7,19 @@
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
 	
-	<p>{L_TITLE_EXPLAIN}</p>
+	<!-- IF L_TITLE_EXPLAIN --><p>{L_TITLE_EXPLAIN}</p><!-- ENDIF -->
 
 	<fieldset>
 		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+		<!-- IF MODE == 'ucp_blog_settings' -->
+		<dl>
+			<dt><label for="instant_redirect1">{L_BLOG_INSTANT_REDIRECT}:</label><br /><span>{L_BLOG_INSTANT_REDIRECT_EXPLAIN}</span></dt>
+			<dd>
+				<label for="instant_redirect1"><input type="radio" name="instant_redirect" id="instant_redirect1" value="1"<!-- IF S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> {L_YES}</label> 
+				<label for="instant_redirect0"><input type="radio" name="instant_redirect" id="instant_redirect0" value="0"<!-- IF not S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<!-- ENDIF -->
 		<!-- IF MODE == 'ucp_blog_permissions' -->
 			<!-- BEGIN permissions -->
 			<dl>

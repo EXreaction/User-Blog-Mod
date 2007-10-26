@@ -148,7 +148,7 @@ else // user submitted and there are no errors
 		'reply_subject'			=> $reply_subject,
 		'reply_text'			=> $message_parser->message,
 		'reply_checksum'		=> md5($message_parser->message),
-		'reply_approved' 		=> ($auth->acl_get('u_blogreplynoapprove') || $user_founder) ? 1 : 0,
+		'reply_approved' 		=> ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0,
 		'enable_bbcode' 		=> $post_options->enable_bbcode,
 		'enable_smilies'		=> $post_options->enable_smilies,
 		'enable_magic_url'		=> $post_options->enable_magic_url,
@@ -173,7 +173,7 @@ else // user submitted and there are no errors
 	generate_blog_urls();
 
 	// update the reply count for the blog
-	if ($auth->acl_get('u_blogreplynoapprove') || $user_founder)
+	if ($auth->acl_get('u_blogreplynoapprove'))
 	{
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
@@ -188,7 +188,7 @@ else // user submitted and there are no errors
 		inform_approve_report('reply_approve', $reply_id);
 	}
 
-	$message = (!$auth->acl_get('u_blogreplynoapprove') && !$user_founder) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = (!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 	if ($user_id == $user->data['user_id'])
@@ -201,7 +201,6 @@ else // user submitted and there are no errors
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
-	// redirect
 	blog_meta_refresh(3, $blog_urls['view_reply']);
 
 	trigger_error($message);

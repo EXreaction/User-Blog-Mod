@@ -35,7 +35,7 @@ class reply_data
 	function get_reply_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth;
-		global $blog_data, $user_data, $user_founder, $blog_plugins;
+		global $blog_data, $user_data, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('reply_data_start', $selection_data);
 
@@ -48,8 +48,8 @@ class reply_data
 
 		// Setup some variables...
 		$reply_ids = array();
-		$view_unapproved_sql = ($auth->acl_get('m_blogreplyapprove') || $user_founder) ? '' : ' AND reply_approved = \'1\'';
-		$view_deleted_sql = ($auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $user_founder) ? '' : ' AND reply_deleted = \'0\'';
+		$view_unapproved_sql = ($auth->acl_get('m_blogreplyapprove')) ? '' : ' AND reply_approved = \'1\'';
+		$view_deleted_sql = ($auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')) ? '' : ' AND reply_deleted = \'0\'';
 		$sort_days_sql = ($sort_days != 0) ? ' AND reply_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
 		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
 		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
@@ -101,7 +101,7 @@ class reply_data
 										$limit_sql;
 				break;
 			case 'reported' : // select reported replies
-				if (!$auth->acl_get('m_blogreplyreport') && !$user_founder)
+				if (!$auth->acl_get('m_blogreplyreport'))
 				{
 					return false;
 				}
@@ -114,7 +114,7 @@ class reply_data
 									$limit_sql;
 				break;
 			case 'disapproved' : // select disapproved replies
-				if (!$auth->acl_get('m_blogreplyapprove') && !$user_founder)
+				if (!$auth->acl_get('m_blogreplyapprove'))
 				{
 					return false;
 				}
@@ -132,7 +132,7 @@ class reply_data
 					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
 				}
 
-				if ($sort_days_sql == '' && (($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')) || $user_founder))
+				if ($sort_days_sql == '' && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
 				{
 					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
 				}
@@ -230,7 +230,7 @@ class reply_data
 	function handle_reply_data($id)
 	{
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_data, $user_data, $user_founder, $blog_plugins;
+		global $blog_data, $user_data, $blog_plugins;
 
 		$reply = &$this->reply[$id];
 		$blog_id = $reply['blog_id'];
@@ -269,12 +269,12 @@ class reply_data
 			'U_EDIT'			=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
 			'U_DELETE'			=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
 			'U_REPORT'			=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'report')) : '',
-			'U_WARN'			=> (($auth->acl_get('m_warn') || $user_founder) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
+			'U_WARN'			=> (($auth->acl_get('m_warn')) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
 			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'approve')) : '',
 
 			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
 			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,
-			'S_REPORTED'		=> ($reply['reply_reported'] && ($auth->acl_get('m_blogreplyreport') || $user_founder)) ? true : false,
+			'S_REPORTED'		=> ($reply['reply_reported'] && $auth->acl_get('m_blogreplyreport')) ? true : false,
 		);
 
 		$blog_plugins->plugin_do_arg_ref('reply_handle_data_end', $replyrow);

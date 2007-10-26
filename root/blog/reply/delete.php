@@ -22,14 +22,14 @@ if ($reply_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_reply']);
+	blog_meta_refresh(0, $blog_urls['view_reply'], true);
 }
 
 // Add the language Variables for posting
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit') && !$user_founder)
+if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -47,7 +47,7 @@ if (confirm_box(true))
 	$blog_plugins->plugin_do('reply_delete_confirm');
 
 	// if it has already been soft deleted
-	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
+	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
 	{
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = \'' . $reply_id . '\'';
 		$db->sql_query($sql);
@@ -98,7 +98,7 @@ if (confirm_box(true))
 else
 {
 	// if it has already been soft deleted
-	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && ($auth->acl_get('a_blogreplydelete') || $user_founder))
+	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_REPLY');
 	}
@@ -109,5 +109,5 @@ else
 }
 
 // they pressed No, so redirect them
-redirect($blog_urls['view_reply']);
+blog_meta_refresh(0, $blog_urls['view_reply'], true);
 ?>

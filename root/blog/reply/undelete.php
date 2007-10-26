@@ -22,7 +22,7 @@ if ($reply_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_reply']);
+	blog_meta_refresh(0, $blog_urls['view_reply'], true);
 }
 
 // Add the language Variables for posting
@@ -74,6 +74,5 @@ else
 	confirm_box(false, 'UNDELETE_REPLY');
 }
 
-// they pressed No, so redirect them
-redirect($blog_urls['view_reply']);
+blog_meta_refresh(0, $blog_urls['view_reply'], true);
 ?>

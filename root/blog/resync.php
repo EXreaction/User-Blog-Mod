@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['main']);
+	blog_meta_refresh(0, $blog_urls['main'], true);
 }
 
 
@@ -39,7 +39,5 @@ else
 {
 	confirm_box(false, 'RESYNC_BLOG');
 }
-
-// they pressed No, so redirect them
-redirect($blog_urls['view_main']);
+blog_meta_refresh(0, $blog_urls['main'], true);
 ?>

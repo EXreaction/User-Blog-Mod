@@ -22,11 +22,11 @@ if ($blog_id == 0)
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	redirect($blog_urls['view_blog']);
+	blog_meta_refresh(0, $blog_urls['view_blog'], true);
 }
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($blog_data->blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit') && !$user_founder)
+if ($blog_data->blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
 {
 	trigger_error('BLOG_EDIT_LOCKED');
 }
@@ -37,7 +37,7 @@ page_header($user->lang['DELETE_BLOG']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['DELETE_BLOG']);
 
-if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogdelete') && !$user_founder)
+if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogdelete'))
 {
 	trigger_error('BLOG_ALREADY_DELETED');
 }
@@ -49,7 +49,7 @@ if (confirm_box(true))
 	$blog_plugins->plugin_do('blog_delete_confirm');
 
 	// if it has already been soft deleted, and we want to hard delete it
-	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && ($auth->acl_get('a_blogdelete') || $user_founder))
+	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
 	{
 		// delete the blog
 		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
@@ -98,7 +98,5 @@ else
 		confirm_box(false, 'DELETE_BLOG');
 	}
 }
-
-// they pressed No, so redirect them
-redirect($blog_urls['view_user']);
+blog_meta_refresh(0, $blog_urls['view_blog'], true);
 ?>

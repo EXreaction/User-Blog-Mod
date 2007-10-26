@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 if (!$config['user_blog_subscription_enabled'])
 {
-	redirect($blog_urls['main']);
+	blog_meta_refresh(0, $blog_urls['main'], true);
 }
 
 $subscribe_mode = request_var('post', '', true);
@@ -50,7 +50,7 @@ if ($blog_id != 0)
 
 		if (!isset($mode_id))
 		{
-			redirect($blog_urls['view_blog']);
+			blog_meta_refresh(0, $blog_urls['view_blog'], true);
 		}
 		else
 		{
@@ -112,7 +112,7 @@ else if ($user_id != 0)
 
 		if (!isset($mode_id))
 		{
-			redirect($blog_urls['view_user']);
+			blog_meta_refresh(0, $blog_urls['view_user'], true);
 		}
 		else
 		{
