@@ -17,6 +17,9 @@ switch ($this->plugins[$which]['plugin_version'])
 {
 	case '0.7.0' :
 	case '0.7.1' :
+	case '0.7.2' :
+	case '0.7.3' :
+	case '0.7.4' :
 	break;
 }
 ?>

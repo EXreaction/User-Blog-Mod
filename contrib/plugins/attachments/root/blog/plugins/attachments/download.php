@@ -38,7 +38,7 @@ if (!$attachment)
 	trigger_error('ERROR_NO_ATTACHMENT');
 }
 
-if (!$config['user_blog_enable_attachments'] && !$user_founder)
+if (!$config['user_blog_enable_attachments'])
 {
 	trigger_error('ATTACHMENT_FUNCTIONALITY_DISABLED');
 }
@@ -47,13 +47,13 @@ $row = array();
 
 if ($attachment['is_orphan'])
 {
-	if ($attachment['poster_id'] != $user->data['user_id'] && !$user_founder)
+	if ($attachment['poster_id'] != $user->data['user_id'])
 	{
 		trigger_error('ERROR_NO_ATTACHMENT');
 	}
 }
 
-if (!$user_founder && !$auth->acl_get('u_download'))
+if (!$auth->acl_get('u_download'))
 {
 	trigger_error('SORRY_AUTH_VIEW_ATTACH');
 }

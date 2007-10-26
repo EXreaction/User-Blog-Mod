@@ -10,7 +10,7 @@
 function attach_blog_page_switch(&$arg)
 {
 	global $auth, $config, $db, $page, $phpbb_root_path, $phpEx, $user;
-	global $user_founder, $blog_attachment, $blog_plugins;
+	global $blog_attachment, $blog_plugins;
 
 	if ($page == 'download')
 	{
@@ -66,7 +66,6 @@ function attach_blog_add_after_preview($args = false)
 {
 	global $blog_attachment;
 	global $auth, $config, $phpbb_root_path, $phpEx, $template;
-	global $user_founder;
 
 	$attachment_data = $blog_attachment->attachment_data;
 	$filename_data = $blog_attachment->filename_data;
@@ -74,7 +73,7 @@ function attach_blog_add_after_preview($args = false)
 
 	posting_gen_inline_attachments($attachment_data);
 
-	if (($auth->acl_get('u_blogattach') || $user_founder) && $config['allow_attachments'] && $form_enctype)
+	if (($auth->acl_get('u_blogattach')) && $config['allow_attachments'] && $form_enctype)
 	{
 		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
 
@@ -109,9 +108,9 @@ function attach_blog_delete_confirm($args = false)
 {
 	global $blog_attachment;
 	global $auth, $phpbb_root_path;
-	global $blog_data, $user_founder, $blog_id;
+	global $blog_data, $blog_id;
 
-	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && ($auth->acl_get('a_blogdelete') || $user_founder))
+	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
 	{
 		$blog_attachment->get_attachment_data($blog_id);
 		if (count($blog_data->blog[$blog_id]['attachment_data']))

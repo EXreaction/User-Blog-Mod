@@ -29,9 +29,9 @@ class blog_attachment
 	*/
 	function update_attachment_data($blog_id, $reply_id = 0)
 	{
-		global $auth, $config, $db, $user_founder;
+		global $auth, $config, $db;
 
-		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		if (!$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
@@ -58,9 +58,9 @@ class blog_attachment
 	*/
 	function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
-		global $auth, $template, $config, $phpbb_root_path, $phpEx, $user, $user_founder;
+		global $auth, $template, $config, $phpbb_root_path, $phpEx, $user;
 
-		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		if (!$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
@@ -210,9 +210,8 @@ class blog_attachment
 	function parse_attachments($form_name, $submit, $preview, $refresh)
 	{
 		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser;
-		global $user_founder;
 
-		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		if (!$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
@@ -244,7 +243,7 @@ class blog_attachment
 
 		if ($submit && $upload_file)
 		{
-			if ($num_attachments < $config['user_blog_max_attachments'] || $auth->acl_get('u_blognolimitattach') || $user_founder)
+			if ($num_attachments < $config['user_blog_max_attachments'] || $auth->acl_get('u_blognolimitattach'))
 			{
 				$filedata = $this->upload_attachment($form_name, false, '');
 				$error = $filedata['error'];
@@ -362,7 +361,7 @@ class blog_attachment
 			}
 			else if (($add_file || $preview) && $upload_file)
 			{
-				if ($num_attachments < $config['user_blog_max_attachments'] || $auth->acl_get('u_blognolimitattach') || $user_founder)
+				if ($num_attachments < $config['user_blog_max_attachments'] || $auth->acl_get('u_blognolimitattach'))
 				{
 					$filedata = $this->upload_attachment($form_name, false, '');
 					$error = array_merge($error, $filedata['error']);
@@ -417,9 +416,8 @@ class blog_attachment
 	function get_submitted_attachment_data($check_user_id = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth;
-		global $user_founder;
 
-		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		if (!$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
@@ -512,9 +510,8 @@ class blog_attachment
 	function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
 	{
 		global $auth, $user, $config, $db, $cache, $phpbb_root_path, $phpEx;
-		global $user_founder;
 
-		if (!$auth->acl_get('u_blogattach') && !$user_founder)
+		if (!$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
@@ -572,13 +569,13 @@ class blog_attachment
 		$filedata['thumbnail'] = ($cat_id == ATTACHMENT_CATEGORY_IMAGE && $config['img_create_thumbnail']) ? 1 : 0;
 
 		// Check Image Size, if it is an image
-		if (!$user_founder && !$auth->acl_get('u_blognolimitattach') && $cat_id == ATTACHMENT_CATEGORY_IMAGE)
+		if (!$auth->acl_get('u_blognolimitattach') && $cat_id == ATTACHMENT_CATEGORY_IMAGE)
 		{
 			$file->upload->set_allowed_dimensions(0, 0, $config['img_max_width'], $config['img_max_height']);
 		}
 
 		// Admins and mods are allowed to exceed the allowed filesize
-		if (!$user_founder && !$auth->acl_get('u_blognolimitattach'))
+		if (!$auth->acl_get('u_blognolimitattach'))
 		{
 			if (!empty($extensions[$file->get('extension')]['max_filesize']))
 			{
@@ -735,9 +732,8 @@ class blog_attachment
 		}
 
 		global $template, $cache, $user, $config, $phpbb_root_path, $phpEx, $auth;
-		global $user_founder;
 
-		if (!$auth->acl_get('u_download') && !$user_founder)
+		if (!$auth->acl_get('u_download'))
 		{
 			return;
 		}
