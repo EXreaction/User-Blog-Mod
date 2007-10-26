@@ -340,7 +340,7 @@ function feed_output($blog_ids, $feed_type)
 function generate_menu($user_id)
 {
 	global $db, $template, $phpbb_root_path, $phpEx, $user, $cache;
-	global $blog_data, $reply_data, $user_data, $blog_urls;
+	global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
 
 // output the data for the left author info menu
 	$template->assign_vars($user_data->handle_user_data($user_id));
