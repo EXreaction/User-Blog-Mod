@@ -11,8 +11,10 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* Change blog list for user to just not show any blogs if they do not have permissions (so when the person views the user's blog page it looks like there are no blogs made by the user)
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
+* Allow separate permissions per blog (put in a new tabbed section at the bottom)?
 *
 * Polls
 *
