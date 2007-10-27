@@ -15,12 +15,12 @@ if (!defined('IN_PHPBB'))
 
 if (isset($config['user_blog_version']))
 {
-	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
+	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
 if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_PLUGINS_TABLE') || !defined('BLOGS_USERS_TABLE'))
 {
-	trigger_error('INSTALL_IN_FILES_FIRST');
+	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
 }
 
 if (confirm_box(true))
@@ -438,7 +438,7 @@ if (confirm_box(true))
 
 	$cache->purge();
 
-	trigger_error(sprintf($user->lang['INSTALL_BLOG_DB_SUCCESS'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
+	trigger_error(sprintf($user->lang['INSTALL_BLOG_DB_SUCCESS'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 else
 {

@@ -46,7 +46,7 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-if ($config['user_blog_force_prosilver'])
+if (isset($config['user_blog_force_prosilver']) && $config['user_blog_force_prosilver'])
 {
 	$user->setup('mods/blog/blog', 1);
 }
@@ -59,6 +59,10 @@ else
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && isset($_GET['page']) && $_GET['page'] != 'install')
 {
 	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
+}
+else if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && isset($_GET['page']) && $_GET['page'] == 'install')
+{
+	include($phpbb_root_path . 'blog/install.' . $phpEx);
 }
 if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
 {

@@ -33,12 +33,6 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 
 	$blog_plugins->plugin_do('permissions_start');
 
-	// lets automatically give founders ALL permissions if the config settings are set that way
-	if ($user->data['user_type'] == USER_FOUNDER && $config['user_blog_founder_all_perm'])
-	{
-		return true;
-	}
-
 	switch ($page)
 	{
 		case 'blog' :
