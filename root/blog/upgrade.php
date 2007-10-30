@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	blog_meta_refresh(0, $blog_urls['main'], true);
+	blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 }
 
 /*
@@ -35,6 +35,7 @@ if ($cancel)
 */
 
 // Generate the breadcrumbs
+generate_blog_urls();
 generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG']);
 
 // Comment out the following like to test the upgrade

@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // Was Cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	blog_meta_refresh(0, $blog_urls['main'], true);
+	blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 }
 
 
@@ -31,7 +31,7 @@ if (confirm_box(true))
 	resync_blog('all');
 
 	$message = $user->lang['RESYNC_BLOG_SUCESS'] . '<br/><br/>';
-	$message .= sprintf($user->lang['RETURN_MAIN'], '<a href="' . $blog_urls['main'] . '">', '</a>');
+	$message .= sprintf($user->lang['RETURN_MAIN'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
 
 	trigger_error($message);
 }
@@ -39,5 +39,5 @@ else
 {
 	confirm_box(false, 'RESYNC_BLOG');
 }
-blog_meta_refresh(0, $blog_urls['main'], true);
+blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 ?>

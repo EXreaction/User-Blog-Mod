@@ -187,7 +187,7 @@ function find_max_length($lang, &$max_length, $start = 0)
 }
 
 /**
-* For outputting the lines for the oganize_lang function
+* For outputting the lines for the organize_lang function
 */
 function lang_lines($lang, $max_length, &$output, $start = 0)
 {

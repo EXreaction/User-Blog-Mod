@@ -129,6 +129,7 @@ $lang = array_merge($lang, array(
 
 	'GUEST_PERMISSIONS'						=> 'Guest Permissions',
 
+	'INSTALL'							=> 'Install',
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 	'INSTALL_BLOG_DB'						=> 'Install User Blog Mod',
 	'INSTALL_BLOG_DB_CONFIRM'				=> 'Are you ready to install the database section of this mod?',

@@ -11,7 +11,7 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Change blog list for user to just not show any blogs if they do not have permissions (so when the person views the user's blog page it looks like there are no blogs made by the user)
+* Search module
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Allow separate permissions per blog (put in a new tabbed section at the bottom)?
@@ -31,13 +31,15 @@
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
 * add in a section for gallery display - plugin
-* Integrate with search - plugin
+* Integrate with phpbb search - plugin
 *
 * Finish upgrade page
 */
 
+define('IN_BLOG', true);
+
 // The Version # - later move this to initial_data.php
-$user_blog_version = '0.3.22';
+$user_blog_version = '0.3.23';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -57,55 +59,65 @@ else
 	$user->setup('mods/blog/blog');
 }
 
+// Do some stuff that is always required
+$page = (!isset($page)) ? request_var('page', '') : $page;
+$mode = (!isset($mode)) ? request_var('mode', '') : $mode;
+
+// include some files
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+
+include($phpbb_root_path . 'blog/functions.' . $phpEx);
+include($phpbb_root_path . 'blog/permissions.' . $phpEx);
+include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
+include($phpbb_root_path . 'blog/data/handle_data.' . $phpEx);
+
+// set some initial variables that we will use
+$blog_data = new blog_data();
+$reply_data = new reply_data();
+$user_data = new user_data();
+$error = $blog_urls = $zebra_list = $user_settings = array();
+$s_hidden_fields = $subscribed_title = '';
+$subscribed = false;
+
+// Start loading the plugins
+include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+$blog_plugins = new blog_plugins();
+$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
+$blog_plugins->load_plugins();
+$blog_plugins->plugin_do('blog_start');
+
 // check if the User Blog Mod is installed/enabled
-if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && isset($_GET['page']) && $_GET['page'] != 'install')
+if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
 {
 	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
 }
-else if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && isset($_GET['page']) && $_GET['page'] == 'install')
-{
-	include($phpbb_root_path . 'blog/install.' . $phpEx);
-}
-if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
+else if (isset($config['user_blog_enable']) && !$config['user_blog_enable'])
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
 
-// checked for later in the header.php file
-define('IN_BLOG', true);
-
-// We will set all of the initial data by including this file
-include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-
-// check the permissions and see if the user can access this page
-check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-
 $default = false;
-
 switch ($page)
 {
-	case 'blog' :
-		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'blog/post_options.' . $phpEx);
-
-		$message_parser = new parse_message();
-
-		switch ($mode)
-		{
-			case 'add' :
-			case 'edit' :
-			case 'delete' :
-			case 'undelete' :
-			case 'report' :
-			case 'approve' :
-				include($phpbb_root_path . "blog/blog/{$mode}.$phpEx");
-				break;
-			default :
-				$default = true;
-		}
+	case 'subscribe' : // subscribe to users/blogs
+	case 'unsubscribe' : // unsubscribe from users/blogs
+		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+	// no break
+	case 'install' : // to install the User Blog Mod
+	case 'update' : // for updating from previous versions of the User Blog Mod
+	case 'upgrade' : // for upgrading from other blog modifications
+	case 'dev' : // used for developmental purposes
+	case 'resync' : // to resync the blog data
+		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;
+	case 'blog' :
 	case 'reply' :
+		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		include($phpbb_root_path . 'blog/post_options.' . $phpEx);
@@ -115,12 +127,16 @@ switch ($page)
 		switch ($mode)
 		{
 			case 'add' :
+				if ($page == 'blog')
+				{
+					$user_id = $user->data['user_id'];
+				}
 			case 'edit' :
 			case 'delete' :
 			case 'undelete' :
 			case 'report' :
 			case 'approve' :
-				include($phpbb_root_path . "blog/reply/{$mode}.$phpEx");
+				include($phpbb_root_path . "blog/{$page}/{$mode}.$phpEx");
 				break;
 			case 'quote' :
 				include($phpbb_root_path . "blog/reply/add.$phpEx");
@@ -130,16 +146,10 @@ switch ($page)
 		}
 		break;
 	case 'mcp' : // moderator control panel
+		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+
 		include($phpbb_root_path . 'blog/view/mcp.' . $phpEx);
-		break;
-	case 'subscribe' : // subscribe to users/blogs
-	case 'unsubscribe' : // unsubscribe from users/blogs
-	case 'install' : // to install the User Blog Mod
-	case 'update' : // for updating from previous versions of the User Blog Mod
-	case 'upgrade' : // for upgrading from other blog modifications
-	case 'dev' : // used for developmental purposes
-	case 'resync' : // to resync the blog data
-		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;
 	default :
 		$default = true;
@@ -153,6 +163,19 @@ if ($default)
 
 if ($default)
 {
+	if ($page != '')
+	{
+		$user_id = $user_data->get_user_data(false, false, $page);
+
+		if ($user_id === false)
+		{
+			unset($user_id);
+		}
+	}
+
+	include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+	check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+
 	if ($blog_id != 0 || $reply_id != 0)
 	{
 		include($phpbb_root_path . 'blog/view/blog.' . $phpEx);

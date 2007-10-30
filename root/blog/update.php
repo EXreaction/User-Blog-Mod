@@ -13,13 +13,8 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Was Cancel pressed? If so then redirect to the appropriate page
-if ($cancel)
-{
-	blog_meta_refresh(0, $blog_urls['main'], true);
-}
-
 // Generate the breadcrumbs
+generate_blog_urls();
 generate_blog_breadcrumbs($user->lang['UPDATE_BLOG']);
 
 if (!isset($config['user_blog_version']))
@@ -34,7 +29,7 @@ if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_
 
 if ($user_blog_version == $config['user_blog_version'])
 {
-	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . $blog_urls['main'] . '">', '</a>'));
+	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
 if (strpos($user_blog_version, 'dev'))
@@ -67,12 +62,6 @@ if (confirm_box(true))
 				user_id mediumint(8) UNSIGNED DEFAULT \'0\' NOT NULL,
 				PRIMARY KEY (sub_user_id)
 			)';
-
-			/* The blog_rating section is not a planned feature ATM, but may be added later on (this was commented out for Alpha 11)
-			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . '
-				ADD blog_rating MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\',
-				ADD blog_num_ratings MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT \'0\'';
-			*/
 
 			$blog_permissions = array(
 				'local'      => array(),
@@ -303,6 +292,7 @@ if (confirm_box(true))
 
 			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
+		case '0.3.22' :
 	}
 
 	if (count($sql_array))
@@ -322,7 +312,7 @@ if (confirm_box(true))
 	// clear the cache
 	$cache->purge();
 
-	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], $user_blog_version, '<a href="' . $blog_urls['main'] . '">', '</a>');
+	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], $user_blog_version, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
 
 	trigger_error($message);
 }
@@ -330,5 +320,5 @@ else
 {
 	confirm_box(false, 'UPDATE_INSTRUCTIONS');
 }
-blog_meta_refresh(0, $blog_urls['main'], true);
+blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 ?>

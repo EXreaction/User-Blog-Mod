@@ -13,30 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// include the files for this mod
-include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-
-include($phpbb_root_path . 'blog/functions.' . $phpEx);
-include($phpbb_root_path . 'blog/permissions.' . $phpEx);
-include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/handle_data.' . $phpEx);
-include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
-
-// set some initial variables that we will use
-$blog_data = new blog_data();
-$reply_data = new reply_data();
-$user_data = new user_data();
-$blog_plugins = new blog_plugins();
-$error = $blog_urls = $zebra_list = $user_settings = array();
-$s_hidden_fields = $subscribed_title = '';
-$subscribed = false;
-
-$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-$blog_plugins->load_plugins();
-$blog_plugins->plugin_do('blog_start');
-
 // get some initial data
 $submit = (isset($_POST['post'])) ? true : false;
 $preview = (isset($_POST['preview'])) ? true : false;
@@ -45,10 +21,7 @@ $refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($
 $cancel = (isset($_POST['cancel'])) ? true : false;
 
 // get some more initial data
-$page = request_var('page', '');
-$mode = request_var('mode', '');
-$user_id = ($page == 'blog' && $mode == 'add') ? $user->data['user_id'] : intval(request_var('u', 0));
-$username = request_var('un', '');
+$user_id = (!isset($user_id)) ? intval(request_var('u', 0)) : $user_id;
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
 $feed = request_var('feed', '');
@@ -121,12 +94,7 @@ if ($blog_id != 0)
 	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
 }
 
-// if they sent the username instead of the user_id, get the user_id from that username
-if ($username != '' && $user_id == 0)
-{
-	$user_id = $user_data->get_user_data(false, false, $username);
-}
-else if ($user_id != 0)
+if ($user_id != 0)
 {
 	array_push($user_data->user_queue, $user_id);
 }
@@ -138,10 +106,6 @@ if ($user_id != 0 && $blog_id == 0)
 
 	get_user_settings(array($user_id, $user->data['user_id']));
 	get_zebra_info(array($user->data['user_id'], $user_id));
-	if (!handle_user_blog_permissions(false, $user_id))
-	{
-		trigger_error('NO_PERMISSIONS_READ');
-	}
 }
 else
 {

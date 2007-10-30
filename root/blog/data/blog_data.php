@@ -51,6 +51,7 @@ class blog_data
 		$blog_ids = array(); // this is what get's returned
 		$view_unapproved_sql = (check_blog_permissions('blog', 'approve', true)) ? '' : ' AND ( blog_approved = \'1\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		$sort_days_sql = ($sort_days != 0) ? ' AND blog_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
+		$user_permission_sql = build_permission_sql($user->data['user_id']);
 		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
 		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
 
@@ -65,12 +66,6 @@ class blog_data
 		else
 		{
 			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR blog_deleted = \'' . $user->data['user_id'] . '\' )';
-		}
-
-		// build the user_permission_sql
-		if ($mode == 'random' || $mode == 'recent' || $mode == 'popular')
-		{
-			$user_permission_sql = build_permission_sql($user->data['user_id']);
 		}
 
 		// make sure $id is an array for consistency
@@ -88,8 +83,9 @@ class blog_data
 								 $view_deleted_sql .
 									$view_unapproved_sql .
 										$sort_days_sql .
-											$order_by_sql .
-												$limit_sql;
+											$user_permission_sql .
+												$order_by_sql .
+													$limit_sql;
 				break;
 			case 'user_deleted' : // select all the deleted blogs by user(s)
 				$order_by_sql = ($order_by_sql != ' ORDER BY blog_id DESC') ? $order_by_sql : ' ORDER BY blog_deleted_time DESC';
@@ -98,8 +94,9 @@ class blog_data
 								AND blog_deleted != \'0\'' .
 									$view_unapproved_sql .
 										$sort_days_sql .
-											$order_by_sql .
-												$limit_sql;
+											$user_permission_sql .
+												$order_by_sql .
+													$limit_sql;
 				break;
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
 				$blogs_to_query = array();
@@ -128,7 +125,8 @@ class blog_data
 							$view_deleted_sql .
 								$view_unapproved_sql .
 									$sort_days_sql .
-										$order_by_sql;
+										$user_permission_sql .
+											$order_by_sql;
 				break;
 			case 'recent' : // select recent blogs
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE .
@@ -260,6 +258,7 @@ class blog_data
 		$blog_ids = array(); // this is what get's returned
 		$view_unapproved_sql = (check_blog_permissions('blog', 'approve', true)) ? '' : ' AND ( blog_approved = \'1\' OR user_id = \'' . $user->data['user_id'] . '\' )';
 		$sort_days_sql = ($sort_days != 0) ? ' AND blog_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
+		$user_permission_sql = build_permission_sql($user->data['user_id']);
 		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
 		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
 		$custom_sql = '';
@@ -321,24 +320,20 @@ class blog_data
 				return $random_ids;
 			break;
 			case 'user_count' : // this only counts the total number of blogs a single user has and returns the count
-				if ($auth->acl_gets('m_blogapprove', 'm_blogdelete', 'a_blogdelete') || $sort_days_sql != '')
-				{
-					$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_TABLE . '
-						WHERE user_id = \'' . $id . '\'' .
-							$view_deleted_sql .
-								$view_unapproved_sql .
-									$sort_days_sql .
+				$user_permission_sql = build_permission_sql($user->data['user_id']);
+
+				$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_TABLE . '
+					WHERE user_id = \'' . $id . '\'' .
+						$view_deleted_sql .
+							$view_unapproved_sql .
+								$sort_days_sql .
+									$user_permission_sql .
 										$custom_sql .
 											$limit_sql;
-					$result = $db->sql_query($sql);
-					$total = $db->sql_fetchrow($result);
-					$db->sql_freeresult($result);
-					return $total['total'];
-				}
-				else
-				{
-					return $user_data->user[$id]['blog_count'];
-				}
+				$result = $db->sql_query($sql);
+				$total = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+				return $total['total'];
 			break;
 			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
 				$user_permission_sql = build_permission_sql($user->data['user_id']);

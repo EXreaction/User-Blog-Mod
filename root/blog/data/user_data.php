@@ -206,7 +206,7 @@ class user_data
 			}
 			else
 			{
-				trigger_error('NO_USER');
+				return false;
 			}
 		}
 	}

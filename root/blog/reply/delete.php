@@ -55,18 +55,6 @@ if (confirm_box(true))
 		// update the real reply count for the blog
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
-
-		// delete the attachments
-		$blog_attachment->get_attachment_data($blog_id, $reply_id);
-		if (count($reply_data->reply[$reply_id]['attachment_data']))
-		{
-			foreach ($reply_data->reply[$reply_id]['attachment_data'] as $null => $data)
-			{
-				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
-				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
-				$db->sql_query($sql);
-			}
-		}
 	}
 	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 	{

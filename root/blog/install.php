@@ -13,6 +13,10 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Generate the breadcrumbs
+generate_blog_urls();
+generate_blog_breadcrumbs($user->lang['INSTALL']);
+
 if (isset($config['user_blog_version']))
 {
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));

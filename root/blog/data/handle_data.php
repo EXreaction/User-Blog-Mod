@@ -352,14 +352,16 @@ function generate_menu($user_id)
 
 	$archive_rows = array();
 
-	// attempt to get the data from the cache
-	$cache_data = $cache->get("_blog_archive{$user_id}");
+	// attempt to get the data from the cache (disabling the caching of this for now, because of user permissions)
+	$cache_data = false;//$cache->get("_blog_archive{$user_id}");
 
 	if ($cache_data === false)
 	{
+		$user_permission_sql = build_permission_sql($user->data['user_id']);
 		$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
 					WHERE user_id = \'' . $user_id . '\'
-						AND blog_deleted = \'0\'
+						AND blog_deleted = \'0\'' .
+							$user_permission_sql . '
 							ORDER BY blog_id DESC';
 		$result = $db->sql_query($sql);
 
@@ -394,7 +396,7 @@ function generate_menu($user_id)
 		$db->sql_freeresult($result);
 
 		// cache the result
-		$cache->put("_blog_archive{$user_id}", $archive_rows);
+		//$cache->put("_blog_archive{$user_id}", $archive_rows);
 		$cache_data = $archive_rows;
 	}
 

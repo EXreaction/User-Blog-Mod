@@ -27,86 +27,105 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array())
 	{
-		global $config, $phpbb_root_path, $phpEx, $user;
+		global $config, $phpbb_root_path, $phpEx, $user, $_SID;
 		global $blog_data, $user_data;
 
 		// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
 		static $start_url = ''; // Sadly, setting it directly to generate_board_url() . '/' throws us an error. :(
 		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
+		$session_id = $_SID;
+		$extras = '';
 
 		if ($config['user_blog_seo'])
 		{
-			if ($user_id != false && !empty($user_data))
+			if (!isset($url_data['page']))
 			{
-				if (!array_key_exists($user_id, $user_data->user))
+				if ($user_id == $user->data['user_id'])
 				{
-					$user_data->get_user_data($user_id);
+					$url_data['page'] = utf8_clean_string($user->data['username']);
 				}
-				$username = utf8_clean_string($user_data->user[$user_id]['username']);
-			}
-			else if ($user_id != false && isset($extra_data['username']))
-			{
-				$username = utf8_clean_string($extra_data['username']);
-			}
-			else if ($user_id == $user->data['user_id'])
-			{
-				$username = utf8_clean_string($user->data['username']);
-			}
-			else
-			{
-				$username = 'user';
+				else if ($user_id != false && isset($extra_data['username']))
+				{
+					$url_data['page'] = utf8_clean_string($extra_data['username']);
+				}
+				else if ($user_id != false && !empty($user_data))
+				{
+					if (!array_key_exists($user_id, $user_data->user))
+					{
+						$user_data->get_user_data($user_id);
+					}
+					$url_data['page'] = utf8_clean_string($user_data->user[$user_id]['username']);
+				}
 			}
 
-			$start = ((isset($url_data['start'])) ? '_s-' . $url_data['start'] : '');
+			if ($reply_id)
+			{
+				$url_data['r'] = $reply_id;
+				if (!isset($url_data['mode']))
+				{
+					if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))
+					{
+						$url_data['mode'] = utf8_clean_string($reply_data->reply[$reply_id]['reply_subject']);
+					}
+					else if (array_key_exists('reply_subject', $extra_data))
+					{
+						$url_data['mode'] = utf8_clean_string($extra_data['reply_subject']);
+					}
+				}
+			}
+			else if ($blog_id)
+			{
+				$url_data['b'] = $blog_id;
+				if (!isset($url_data['mode']))
+				{
+					if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
+					{
+						$url_data['mode'] = utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']);
+					}
+					else if (array_key_exists('blog_subject', $extra_data))
+					{
+						$url_data['mode'] = utf8_clean_string($extra_data['blog_subject']);
+					}
+				}
+			}
+
+			if (isset($url_data['anchor']))
+			{
+				$anchor = $url_data['anchor'];
+			}
+
+			if (count($url_data))
+			{
+				foreach ($url_data as $name => $value)
+				{
+					if ($name == 'page' || $name == 'mode' || $name == 'anchor')
+					{
+						continue;
+					}
+					$extras .= "_{$name}-{$value}";
+				}
+			}
+
+			// Add the Session ID if required
+			if ($session_id)
+			{
+				$extras .= "_sid-{$session_id}";
+			}
 
 			if (isset($url_data['page']))
 			{
 				if (isset($url_data['mode']))
 				{
-					$return = "blog/{$url_data['page']}/m-{$url_data['mode']}" . (($blog_id) ? "_b-$blog_id" : '') . (($reply_id) ? "_r-$reply_id" : '') . '.html';
+					$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html";
 				}
 				else
 				{
-					$return = "blog/{$url_data['page']}/index.html";
-				}
-			}
-			else if (isset($url_data['mode']))
-			{
-				$return = "blog/{$username}/{$url_data['mode']}{$start}.html";
-			}
-			else if ($reply_id !== false)
-			{
-				$return = "blog/{$username}/r-" . $reply_id . $start . '.html' . '#r' . $reply_id;
-			}
-			else if ($blog_id !== false)
-			{
-				if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
-				{
-					$return = "blog/{$username}/" . utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']) . '_b-' . $blog_id . $start . '.html';
-				}
-				else if (array_key_exists('blog_subject', $extra_data))
-				{
-					$return = "blog/{$username}/" . utf8_clean_string($extra_data['blog_subject']) . '_b-' . $blog_id . $start . '.html';
-				}
-				else
-				{
-					$return = "blog/{$username}/b-" . $blog_id . $start . '.html';
-				}
-			}
-			else if ($user_id !== false)
-			{
-				if ($start != '')
-				{
-					$return = "blog/{$username}/u-" . $user_id . $start . '.html';
-				}
-				else
-				{
-					$return = "blog/{$username}/index.html";
+					$return = "blog/{$url_data['page']}/index{$extras}.html";
 				}
 			}
 			else
 			{
-				$return = "blog/index.html";
+				$return = "blog/index{$extras}.html";
 			}
 
 			if (isset($return))
@@ -115,7 +134,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			}
 		}
 
-		$extras = '';
 		if (count($url_data))
 		{
 			foreach ($url_data as $name => $var)
@@ -148,11 +166,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		global $blog_id, $reply_id, $user_id, $start;
 		global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
 
-		$self_data = array();
-		foreach ($_GET as $name => $var)
-		{
-			$self_data[$name] = $var;
-		}
+		$self_data = $_GET;
 
 		$blog_urls = array(
 			'main'				=> blog_url(false),
