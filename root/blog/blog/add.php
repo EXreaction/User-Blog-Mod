@@ -93,6 +93,9 @@ if (!$submit || sizeof($error))
 	// Build custom bbcodes array
 	display_custom_bbcodes();
 
+	// Build permissions box
+	permission_settings_builder();
+
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
@@ -100,17 +103,28 @@ if (!$submit || sizeof($error))
 		'SUBJECT'					=> $blog_subject,
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+
+		'S_SHOW_PERMISSIONS_BOX'	=> true,
 	));
 
 	// Tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'posting_body.html'
+		'body' => 'blog/blog_posting_layout.html'
 	));
 }
 else // user submitted and there are no errors
 {
+	$perm_ary = array(
+		'perm_guest'		=> request_var('perm_guest', 1),
+		'perm_registered'	=> request_var('perm_registered', 2),
+		'perm_foe'			=> request_var('perm_foe', 0),
+		'perm_friend'		=> request_var('perm_friend', 2),
+	);
+
+	$blog_plugins->plugin_do_arg_ref('blog_add_permissions', $perm_ary);
+
 	// insert array
-	$sql_data = array(
+	$sql_data = array_merge(array(
 		'user_id' 					=> $user->data['user_id'],
 		'user_ip'					=> $user->data['user_ip'],
 		'blog_time'					=> time(),
@@ -124,14 +138,14 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'			=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'				=> $message_parser->bbcode_uid,
 		'blog_edit_reason'			=> '',
-	);
+	), $perm_ary);
 
 	$blog_plugins->plugin_do_arg_ref('blog_add_sql', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);
 
-	unset($message_parser);
+	unset($message_parser, $perm_ary, $sql_data);
 
 	$blog_id = $db->sql_nextid();
 

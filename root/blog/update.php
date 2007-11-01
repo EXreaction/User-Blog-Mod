@@ -293,6 +293,7 @@ if (confirm_box(true))
 			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
 		case '0.3.22' :
+		case '0.3.23' :
 	}
 
 	if (count($sql_array))

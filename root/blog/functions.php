@@ -23,6 +23,57 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	include($phpbb_root_path . 'blog/sql_functions.' . $phpEx);
 
 	/**
+	* Builds permission settings
+	*
+	* @param bool $send_to_template - Automatically put the data in the template, otherwise it returns it.
+	*/
+	function permission_settings_builder($send_to_template = true)
+	{
+		global $blog_plugins, $config, $template, $user, $user_settings;
+
+		$permission_settings = array(
+			array(
+				'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
+				'NAME'			=> 'perm_guest',
+				'DEFAULT'		=> ((request_var('perm_guest', -1) != -1) ? request_var('perm_guest', -1) : ((isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_guest'] : 1)),
+			),
+			array(
+				'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
+				'NAME'			=> 'perm_registered',
+				'DEFAULT'		=> ((request_var('perm_registered', -1) != -1) ? request_var('perm_registered', -1) : ((isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_registered'] : 2)),
+			),
+		);
+
+		if ($config['user_blog_enable_zebra'])
+		{
+			$permission_settings[] = array(
+					'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
+					'NAME'			=> 'perm_foe',
+					'DEFAULT'		=> ((request_var('perm_foe', -1) != -1) ? request_var('perm_foe', -1) : ((isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_foe'] : 0)),
+				);
+			$permission_settings[] = array(
+					'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
+					'NAME'			=> 'perm_friend',
+					'DEFAULT'		=> ((request_var('perm_friend', -1) != -1) ? request_var('perm_friend', -1) : ((isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_friend'] : 2)),
+				);
+		}
+
+		$blog_plugins->plugin_do_arg_ref('function_permission_settings_builder', $permission_settings);
+
+		if ($send_to_template)
+		{
+			foreach ($permission_settings as $row)
+			{
+				$template->assign_block_vars('permissions', $row);
+			}
+		}
+		else
+		{
+			return $permission_settings;
+		}
+	}
+
+	/**
 	* URL handler
 	*/
 	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array())
@@ -198,7 +249,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* Updates user settings
 	*/
-	function update_user_blog_settings($user_id, $data)
+	function update_user_blog_settings($user_id, $data, $resync = false)
 	{
 		global $db, $user_settings;
 
@@ -228,7 +279,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$db->sql_query($sql);
 		}
 
-		if (array_key_exists('perm_guest', $data) || array_key_exists('perm_registered', $data) || array_key_exists('perm_foe', $data) || array_key_exists('perm_friend', $data))
+		if ($resync && (array_key_exists('perm_guest', $data) || array_key_exists('perm_registered', $data) || array_key_exists('perm_foe', $data) || array_key_exists('perm_friend', $data)))
 		{
 			$sql_array = array(
 				'perm_guest'						=> (isset($data['perm_guest'])) ? $data['perm_guest'] : 1,

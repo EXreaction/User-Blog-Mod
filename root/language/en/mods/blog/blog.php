@@ -129,7 +129,7 @@ $lang = array_merge($lang, array(
 
 	'GUEST_PERMISSIONS'						=> 'Guest Permissions',
 
-	'INSTALL'							=> 'Install',
+	'INSTALL'								=> 'Install',
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 	'INSTALL_BLOG_DB'						=> 'Install User Blog Mod',
 	'INSTALL_BLOG_DB_CONFIRM'				=> 'Are you ready to install the database section of this mod?',
@@ -157,12 +157,14 @@ $lang = array_merge($lang, array(
 	'NO_PERMISSIONS'						=> 'Can not read or reply to your blogs.',
 	'NO_PERMISSIONS_READ'					=> 'Sorry, but you are not allowed to read this blog.',
 	'NO_PERMISSIONS_REPLY'					=> 'Sorry, but you are not allowed to reply to this blog.',
+	'NO_PERMISSIONS_SINGLE'					=> 'Can not read or reply to this blog.',
 	'NO_REPLIES'							=> 'There are no replies',
 	'NO_REPLY'								=> 'The requested reply does not exist.',
 	'NO_UNINSTALLED_PLUGINS'				=> 'No Uninstalled Plugins',
 
 	'PERMANENTLY_DELETE_BLOG_CONFIRM'		=> 'Are you sure you want to permanently delete this blog?  This can not be un-done.',
 	'PERMANENTLY_DELETE_REPLY_CONFIRM'		=> 'Are you sure you want to permanently delete this reply?  This can not be un-done.',
+	'PERMISSIONS'							=> 'Permissions',
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',
 	'PLUGINS_NAME'							=> 'Plugin Name',
 	'PLUGIN_ACTIVATE'						=> 'Activate',
@@ -197,6 +199,7 @@ $lang = array_merge($lang, array(
 	'REPLY_NEED_APPROVE'					=> 'A moderator or administrator must approve your replies before they are public.',
 	'REPLY_NOT_DELETED'						=> 'This reply is not deleted.  Why are you trying to un-delete it?',
 	'REPLY_PERMISSIONS'						=> 'Can read and reply to your blogs.',
+	'REPLY_PERMISSIONS_SINGLE'				=> 'Can read and reply to this blog.',
 	'REPLY_REPORTED'						=> 'Reply has been reported, click to close the report',
 	'REPLY_REPORT_CONFIRM'					=> 'Are you sure you want to report this reply?',
 	'REPLY_REPORT_PM'						=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just reported <a href="%2$s">this reply</a>.<br/>Please take the time to read over the reply and decide what needs to be done.',
@@ -212,6 +215,8 @@ $lang = array_merge($lang, array(
 	'RESYNC_BLOG'							=> 'Synchronise Blog',
 	'RESYNC_BLOG_CONFIRM'					=> 'Are you sure you want to synchronise all of the blog data?  This may take a while.',
 	'RESYNC_BLOG_SUCCESS'					=> 'Blog data has been successfully synchronised.',
+	'RESYNC_PERMISSIONS'					=> 'Resync Permissions',
+	'RESYNC_PERMISSIONS_EXPLAIN'			=> 'Check this if you want to resync all blogs to have the permissions set above.',
 	'RETURN_BLOG_MAIN'						=> '%sReturn to %s\'s main blog page%s',
 	'RETURN_BLOG_MAIN_OWN'					=> '%sReturn to your main blog page%s',
 	'RETURN_MAIN'							=> 'Click %shere%s to return to the main User Blog page',
@@ -230,7 +235,7 @@ $lang = array_merge($lang, array(
 	'SUCCESSFULLY_UPDATED'					=> 'User blog mod has been updated to %1$s.<br/><br/>Click %2$shere%3$s to return to the main blog page.',
 
 	'UCP_BLOG_PERMISSIONS'					=> 'Blog Permissions',
-	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br/>Note that any administrative permissions override any permissions set here.',
+	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br/>Note that the global board permissions override all permissions set here.',
 	'UCP_BLOG_SETTINGS'						=> 'Blog Settings',
 	'UCP_BLOG_SETTINGS_EXPLAIN'				=> '',
 	'UCP_BLOG_TITLE_DESCRIPTION'			=> 'Blog Title and Description',
@@ -265,6 +270,7 @@ $lang = array_merge($lang, array(
 	'VIEW_BLOGS'							=> 'View Blogs',
 	'VIEW_DELETED_BLOGS'					=> 'View Deleted Blogs',
 	'VIEW_PERMISSIONS'						=> 'Can read your blogs.',
+	'VIEW_PERMISSIONS_SINGLE'				=> 'Can read this blog.',
 	'VIEW_REPLY'							=> 'View Reply',
 ));
 

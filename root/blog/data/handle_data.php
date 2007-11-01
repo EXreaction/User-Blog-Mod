@@ -328,7 +328,7 @@ function feed_output($blog_ids, $feed_type)
 
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'blog_feed.xml'
+		'body' => 'blog/blog_feed.xml'
 	));
 }
 
@@ -738,7 +738,7 @@ function inform_approve_report($mode, $id)
 
 	$pm_data = array(
 		'from_user_id'		=> 2,
-		'from_username'		=> $user_data->user[2]['username'],
+		'from_username'		=> $user->lang['ADMINISTRATOR'],
 		'address_list'		=> array('u' => $address_list),
 		'icon_id'			=> 10,
 		'from_user_ip'		=> '0.0.0.0',

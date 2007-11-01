@@ -107,7 +107,7 @@ if (!$feed)
 
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'view_blog.html'
+		'body' => 'blog/view_blog.html'
 	));
 }
 else // if $feed

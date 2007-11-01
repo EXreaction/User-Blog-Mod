@@ -116,7 +116,7 @@ if ($feed == false || $all)
 
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'view_blog_main.html'
+		'body' => 'blog/view_blog_main.html'
 	));
 }
 else

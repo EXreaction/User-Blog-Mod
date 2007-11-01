@@ -11,10 +11,9 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Search module
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Allow separate permissions per blog (put in a new tabbed section at the bottom)?
+* Search module
 *
 * Polls
 *
@@ -178,7 +177,7 @@ if ($default)
 
 	if ($blog_id != 0 || $reply_id != 0)
 	{
-		include($phpbb_root_path . 'blog/view/blog.' . $phpEx);
+		include($phpbb_root_path . 'blog/view/single.' . $phpEx);
 	}
 	else if ($user_id != 0)
 	{

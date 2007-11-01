@@ -53,11 +53,6 @@ if (!$submit && !$preview && !$refresh)
 }
 else
 {
-	// so we can check if they did edit any text when they hit submit
-	$original_subject = $blog_data->blog[$blog_id]['blog_subject'];
-	$original_text = $blog_data->blog[$blog_id]['blog_text'];
-	decode_message($original_text, $blog_data->blog[$blog_id]['bbcode_uid']);
-
 	$blog_subject = utf8_normalize_nfc(request_var('subject', '', true));
 	$blog_text = utf8_normalize_nfc(request_var('message', '', true));
 
@@ -111,6 +106,9 @@ if (!$submit || sizeof($error))
 	// Build custom bbcodes array
 	display_custom_bbcodes();
 
+	// Build permissions box
+	permission_settings_builder();
+
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
@@ -121,6 +119,7 @@ if (!$submit || sizeof($error))
 		'L_DELETE_POST_WARN'		=> $user->lang['DELETE_BLOG_WARN'],
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 
+		'S_SHOW_PERMISSIONS_BOX'	=> true,
 		'S_DELETE_ALLOWED'			=> $can_delete,
 		'S_EDIT_REASON'				=> true,
 		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_bloglockedit')) && $user->data['user_id'] != $blog_data->blog[$blog_id]['user_id']) ? true : false,
@@ -128,50 +127,56 @@ if (!$submit || sizeof($error))
 
 	// Tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'posting_body.html'
+		'body' => 'blog/blog_posting_layout.html'
 	));
 }
 else // user submitted and there are no errors
 {
-	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ($original_subject != $blog_subject || $original_text != $blog_text || (request_var('edit_reason', '', true) != ''))
+	$perm_ary = array(
+		'perm_guest'		=> request_var('perm_guest', 1),
+		'perm_registered'	=> request_var('perm_registered', 2),
+		'perm_foe'			=> request_var('perm_foe', 0),
+		'perm_friend'		=> request_var('perm_friend', 2),
+	);
+
+	$blog_plugins->plugin_do_arg_ref('blog_edit_permissions', $perm_ary);
+
+	// insert array
+	$sql_data = array_merge(array(
+		'user_ip'			=> ($user->data['user_id'] == $user_id) ? $user->data['user_ip'] : $blog_data->blog[$blog_id]['user_ip'],
+		'blog_subject'		=> $blog_subject,
+		'blog_text'			=> $message_parser->message,
+		'blog_checksum'		=> md5($message_parser->message),
+		'blog_approved' 	=> ($blog_data->blog[$blog_id]['blog_approved'] == 0) ? ($auth->acl_get('u_blognoapprove')) ? 1 : 0 : 1,
+		'enable_bbcode' 	=> $post_options->enable_bbcode,
+		'enable_smilies'	=> $post_options->enable_smilies,
+		'enable_magic_url'	=> $post_options->enable_magic_url,
+		'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
+		'bbcode_uid'		=> $message_parser->bbcode_uid,
+		'blog_edit_time'	=> time(),
+		'blog_edit_reason'	=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
+		'blog_edit_user'	=> $user->data['user_id'],
+		'blog_edit_count'	=> $blog_data->blog[$blog_id]['blog_edit_count'] + 1,
+		'blog_edit_locked'	=> ($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) ? request_var('lock_post', false) : false,
+	), $perm_ary);
+
+	$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
+
+	// add the delete section to the array if it was deleted, if it was already deleted ignore
+	if ( (!$blog_data->blog[$blog_id]['blog_deleted']) && (isset($_POST['delete'])) && $can_delete)
 	{
-		$sql_data = array(
-			'user_ip'			=> ($user->data['user_id'] == $user_id) ? $user->data['user_ip'] : $blog_data->blog[$blog_id]['user_ip'],
-			'blog_subject'		=> $blog_subject,
-			'blog_text'			=> $message_parser->message,
-			'blog_checksum'		=> md5($message_parser->message),
-			'blog_approved' 	=> ($blog_data->blog[$blog_id]['blog_approved'] == 0) ? ($auth->acl_get('u_blognoapprove')) ? 1 : 0 : 1,
-			'enable_bbcode' 	=> $post_options->enable_bbcode,
-			'enable_smilies'	=> $post_options->enable_smilies,
-			'enable_magic_url'	=> $post_options->enable_magic_url,
-			'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
-			'bbcode_uid'		=> $message_parser->bbcode_uid,
-			'blog_edit_time'	=> time(),
-			'blog_edit_reason'	=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
-			'blog_edit_user'	=> $user->data['user_id'],
-			'blog_edit_count'	=> $blog_data->blog[$blog_id]['blog_edit_count'] + 1,
-			'blog_edit_locked'	=> ($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) ? request_var('lock_post', false) : false,
-		);
-
-		$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
-
-		// add the delete section to the array if it was deleted, if it was already deleted ignore
-		if ( (!$blog_data->blog[$blog_id]['blog_deleted']) && (isset($_POST['delete'])) && $can_delete)
-		{
-			$sql_data['blog_deleted'] = $user->data['user_id'];
-			$sql_data['blog_deleted_time'] = time();
-		}
-
-		$sql = 'UPDATE ' . BLOGS_TABLE . '
-			SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
-			WHERE blog_id = \'' . $blog_id . '\'';
-		$db->sql_query($sql);
+		$sql_data['blog_deleted'] = $user->data['user_id'];
+		$sql_data['blog_deleted_time'] = time();
 	}
+
+	$sql = 'UPDATE ' . BLOGS_TABLE . '
+		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
+		WHERE blog_id = \'' . $blog_id . '\'';
+	$db->sql_query($sql);
 
 	$blog_plugins->plugin_do_arg('blog_edit_after_sql', $blog_id);
 
-	unset($message_parser);
+	unset($message_parser, $perm_ary, $sql_data);
 
 	if ( (isset($_POST['delete'])) && $can_delete )
 	{

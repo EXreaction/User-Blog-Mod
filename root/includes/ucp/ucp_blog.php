@@ -24,8 +24,8 @@ class ucp_blog
 		global $cache, $template, $user, $db, $config, $phpEx, $phpbb_root_path;
 		global $blog_plugins, $blog_plugins_path, $user_settings;
 
-		$submit = (isset($_POST['submit'])) ? true : false;
 		$preview = (isset($_POST['preview'])) ? true : false;
+		$submit = (isset($_POST['submit'])) ? true : false;
 		$error = array();
 
 		define('IN_BLOG', true); // So the header does not try to reload these files
@@ -63,49 +63,19 @@ class ucp_blog
 				if ($submit)
 				{
 					$sql_ary = array(
-						'perm_guest'		=> request_var('guest_permissions', 1),
-						'perm_registered'	=> request_var('registered_permissions', 2),
-						'perm_foe'			=> request_var('foe_permissions', 0),
-						'perm_friend'		=> request_var('friend_permissions', 2),
+						'perm_guest'		=> request_var('perm_guest', 1),
+						'perm_registered'	=> request_var('perm_registered', 2),
+						'perm_foe'			=> request_var('perm_foe', 0),
+						'perm_friend'		=> request_var('perm_friend', 2),
 					);
 
-					update_user_blog_settings($user->data['user_id'], $sql_ary);
+					$blog_plugins->plugin_do_arg_ref('blog_ucp_permissions', $sql_ary);
+
+					update_user_blog_settings($user->data['user_id'], $sql_ary, ((isset($_POST['resync'])) ? true : false));
 				}
 				else
 				{
-					$permission_settings = array(
-						array(
-							'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
-							'NAME'			=> 'guest_permissions',
-							'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_guest'] : 1,
-						),
-						array(
-							'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
-							'NAME'			=> 'registered_permissions',
-							'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_registered'] : 2,
-						),
-					);
-
-					if ($config['user_blog_enable_zebra'])
-					{
-						$permission_settings[] = array(
-								'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
-								'NAME'			=> 'foe_permissions',
-								'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_foe'] : 0,
-							);
-						$permission_settings[] = array(
-								'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
-								'NAME'			=> 'friend_permissions',
-								'DEFAULT'		=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['perm_friend'] : 2,
-							);
-					}
-
-					$blog_plugins->plugin_do_arg_ref('blog_ucp_permissions', $permission_settings);
-
-					foreach ($permission_settings as $row)
-					{
-						$template->assign_block_vars('permissions', $row);
-					}
+					permission_settings_builder();
 				}
 			break;
 			case 'ucp_blog_title_description' :
@@ -212,7 +182,7 @@ class ucp_blog
 			'MODE'					=> $mode,
 		));
 
-		$this->tpl_name = 'ucp_blog';
+		$this->tpl_name = 'blog/ucp_blog';
 		$this->page_title = strtoupper($mode);
 	}
 }

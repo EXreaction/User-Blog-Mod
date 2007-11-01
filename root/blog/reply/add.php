@@ -134,7 +134,7 @@ if ( (!$submit) || (sizeof($error)) )
 
 	// Tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'posting_body.html'
+		'body' => 'blog/blog_posting_layout.html'
 	));
 }
 else // user submitted and there are no errors

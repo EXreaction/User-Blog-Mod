@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.23
+## MOD Version: 0.3.24
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -63,13 +63,7 @@
 ## 2007-10-15 Alpha 17 Released
 ## 2007-10-17 Alpha 18 Released
 ## 2007-10-21 Alpha 19 Released
-## 2007-10-22
-##		Alpha 20 Released
-##			+ Fixes for the user permissions (it wasn't complete for A19)
-##			+ To update, copy the new files over, make the changes to viewtopic.php, then run the update script by going to blog.php?page=update.
-##				- You can also remove the file edit for includes/ucp/ucp_zebra.php that was put in for A19 (if you want, you can just leave the file edit that was put in, it doesn't matter).
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-22 Alpha 20 Released
 ## 2007-10-22
 ##		Alpha 20a Released
 ##			+ Fixing the install/update scripts.
@@ -89,6 +83,12 @@
 ## 2007-10-30
 ##		Alpha 23 Released
 ##			+ Bug fixes mainly
+##			+ To update, copy the new files over, update the code in .htaccess, then run the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-01
+##		Alpha 24 Released
+##			+ Added option to change permissions per blog.
 ##			+ To update, copy the new files over, update the code in .htaccess, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
@@ -123,8 +123,10 @@ Deny from All
 
 RewriteEngine on
 
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/seo.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/seo.php?page=$1
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
+Rewriterule ^blog/$						./blog/blog.php
 
 #
 #-----[ OPEN ]----------------------

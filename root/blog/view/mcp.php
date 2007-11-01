@@ -84,6 +84,6 @@ if ($disapproved_reply_ids !== false)
 
 // tell the template parser what template file to use
 $template->set_filenames(array(
-	'body' => 'mcp_blog.html'
+	'body' => 'blog/mcp_blog.html'
 ));
 ?>
