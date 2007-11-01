@@ -2,6 +2,7 @@
 	blog_add_start
 	blog_add_preview
 	blog_add_after_preview
+	blog_add_permissions
 	blog_add_sql
 	blog_add_after_sql
 
@@ -17,6 +18,7 @@
 	blog_edit_start
 	blog_edit_preview
 	blog_edit_after_preview
+	blog_edit_permissions
 	blog_edit_sql
 	blog_edit_after_sql
 	blog_edit_delete
@@ -28,6 +30,8 @@
 /blog/blog/undelete.php
 	blog_undelete_start
 	blog_undelete_confirm
+
+/blog/blog.php
 
 /blog/data/blog_data.php
 	blog_data_start
@@ -48,7 +52,6 @@
 	function_resync_blog
 
 /blog/data/initial_data.php
-	blog_start
 	initial_output
 
 /blog/data/reply_data.php
@@ -66,9 +69,8 @@
 	user_handle_data
 	user_handle_data_cp
 
-/blog/dev.php
-
 /blog/functions.php
+	function_permission_settings_builder
 	function_generate_blog_urls
 	handle_user_blog_permissions
 	function_handle_blog_cache
@@ -124,8 +126,6 @@
 
 /blog/resync.php
 
-/blog/seo.php
-
 /blog/sql_functions.php
 
 /blog/subscribe.php
@@ -150,10 +150,6 @@
 /blog/upgrade.php
 
 /blog/view/blog.php
-	view_blog_start
-	view_blog_after_blogrow
-	view_blog_reply_while
-	view_blog_end
 
 /blog/view/main.php
 	view_main_start
@@ -162,7 +158,11 @@
 
 /blog/view/mcp.php
 
-/blog/view/seo.php
+/blog/view/single.php
+	view_blog_start
+	view_blog_after_blogrow
+	view_blog_reply_while
+	view_blog_end
 
 /blog/view/user.php
 	view_user_start
@@ -191,6 +191,7 @@
 /language/en/mods/blog/blog.php
 
 /blog.php
+	blog_start
 	blog_page_switch
 	blog_end
 

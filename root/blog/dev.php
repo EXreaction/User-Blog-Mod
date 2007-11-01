@@ -142,7 +142,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 			}
 		}
 	}
-	else if (strpos($file, $phpEx)) // Skip non .php files
+	else if (strpos($file, $phpEx) && $file != "dev.$phpEx") // Skip non .php files
 	{
 		$handle = @fopen($dir . '/' . $file, "r");
 		if ($handle)
