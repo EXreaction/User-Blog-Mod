@@ -13,6 +13,8 @@
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
+* ACP option to enable/disable user permissions
+*
 * Search module
 *
 * Polls
@@ -37,8 +39,8 @@
 
 define('IN_BLOG', true);
 
-// The Version # - later move this to initial_data.php
-$user_blog_version = '0.3.24';
+// The Version #
+$user_blog_version = '0.3.25';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -49,22 +51,23 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-if (isset($config['user_blog_force_prosilver']) && $config['user_blog_force_prosilver'])
+if (isset($config['user_blog_force_style']) && $config['user_blog_force_style'] != 0)
 {
-	$user->setup('mods/blog/blog', 1);
+	$user->setup('mods/blog/blog', $config['user_blog_force_style']);
 }
 else
 {
 	$user->setup('mods/blog/blog');
 }
 
-// Do some stuff that is always required
+// Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
+$blog_id = intval(request_var('b', 0));
+$reply_id = intval(request_var('r', 0));
 
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
 include($phpbb_root_path . 'blog/permissions.' . $phpEx);
 include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
@@ -103,13 +106,13 @@ switch ($page)
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 	// no break
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for developmental purposes
 	case 'resync' : // to resync the blog data
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;
 	case 'blog' :
@@ -162,6 +165,7 @@ if ($default)
 
 if ($default)
 {
+	// With SEO urls, we make it so that the page could be the username of the user we want to view...
 	if ($page != '')
 	{
 		$user_id = $user_data->get_user_data(false, false, $page);

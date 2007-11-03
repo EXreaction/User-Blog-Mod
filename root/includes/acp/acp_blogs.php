@@ -45,10 +45,10 @@ class acp_blogs
 			'user_blog_enable_plugins'			=> array('lang' => 'ENABLE_USER_BLOG_PLUGINS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_subscription_enabled'	=> array('lang'	=> 'ENABLE_SUBSCRIPTIONS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_zebra'			=> array('lang' => 'BLOG_ENABLE_ZEBRA',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
-			'user_blog_force_prosilver'			=> array('lang' => 'BLOG_FORCE_PROSILVER',			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 			'user_blog_seo'						=> array('lang' => 'BLOG_ENABLE_SEO',				'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 
 			'legend2'							=> 'BLOG_POST_VIEW_SETTINGS',
+			'user_blog_force_style'				=> array('lang' => 'BLOG_FORCE_STYLE',				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_guest_captcha'			=> array('lang' => 'BLOG_GUEST_CAPTCHA',			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 			'user_blog_custom_profile_enable'	=> array('lang' => 'ENABLE_BLOG_CUSTOM_PROFILES',	'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 //			'user_blog_enable_feeds'			=> array('lang' => 'BLOG_ENABLE_FEEDS',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
@@ -59,14 +59,6 @@ class acp_blogs
 		);
 
 		$blog_plugins->plugin_do_arg('acp_main_settings', $settings);
-
-		// check to see if prosilver is installed and style_id 1.  If it isn't we won't display the user_blog_force_prosilver option.
-		$sql = 'SELECT style_name FROM ' . STYLES_TABLE . '
-			WHERE style_id = \'1\'';
-		$result = $db->sql_query($sql);
-		$style_1 = $db->sql_fetchrow($result);
-		$prosilver_1 = ($style_1['style_name'] == 'prosilver') ? true : false;
-		$db->sql_freeresult($result);
 
 		$this->new_config = $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
@@ -90,14 +82,9 @@ class acp_blogs
 
 			'U_ACTION'			=> $this->u_action,
 		));
+
 		foreach ($settings as $config_key => $vars)
 		{
-			if ($config_key == 'user_blog_force_prosilver' && !$prosilver_1)
-			{
-				set_config($config_key, 0);
-				continue;
-			}
-
 			if ($submit)
 			{
 				if (!isset($cfg_array[$config_key]) || strpos($config_key, 'legend') !== false)
@@ -106,6 +93,20 @@ class acp_blogs
 				}
 
 				$this->new_config[$config_key] = $config_value = $cfg_array[$config_key];
+
+				// Make sure the style_id they selected for the force style exists
+				if ($config_key == 'user_blog_force_style' && $config_value != 0)
+				{
+					$sql = 'SELECT style_name FROM ' . STYLES_TABLE . '
+						WHERE style_id = \'' . intval($config_value) . '\'';
+					$result = $db->sql_query($sql);
+					$exists = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+					if (!$exists)
+					{
+						continue;
+					}
+				}
 
 				set_config($config_key, $config_value);
 			}

@@ -153,6 +153,10 @@ while ($row = $old_db->sql_fetchrow($result))
 		'blog_deleted'			=> ($row['entry_deleted']) ? $row['entry_poster_id'] : 0,
 		'blog_read_count'		=> $row['entry_views'],
 		'blog_edit_reason'		=> '',
+		'perm_guest'			=> (($row['entry_access'] == 0) ? 1 : 0),
+		'perm_registered'		=> (($row['entry_access'] == 0 || $row['entry_access'] == 1) ? 2 : 0),
+		'perm_foe'				=> 0,
+		'perm_friend'			=> (($row['entry_access'] == 0 || $row['entry_access'] == 1 || $row['entry_access'] == 2) ? 2 : 0),
 	);
 
 	$sql2 = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);

@@ -294,6 +294,16 @@ if (confirm_box(true))
 			$db->sql_query($sql);
 		case '0.3.22' :
 		case '0.3.23' :
+		case '0.3.24' :
+			if ($config['user_blog_force_prosilver'])
+			{
+				set_config('user_blog_force_style', 1);
+			}
+			else
+			{
+				set_config('user_blog_force_style', 0);
+			}
+			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
 	}
 
 	if (count($sql_array))
@@ -314,12 +324,12 @@ if (confirm_box(true))
 	$cache->purge();
 
 	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], $user_blog_version, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
-
 	trigger_error($message);
 }
 else
 {
 	confirm_box(false, 'UPDATE_INSTRUCTIONS');
 }
+
 blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 ?>
