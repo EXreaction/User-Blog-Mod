@@ -88,7 +88,7 @@
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
-## 2007-11-
+## 2007-11-04
 ##		Alpha 26 Released
 ##			+ Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.

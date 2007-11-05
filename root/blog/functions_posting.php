@@ -22,8 +22,11 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 
 	$panels = array(
 		'options-panel'		=> $user->lang['OPTIONS'],
-		'permissions-panel'	=> $user->lang['PERMISSIONS'],
 	);
+	if ($page == 'blog')
+	{
+		$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+	}
 	$above_subject = $above_message = $above_submit = $panel_data = '';
 
 	$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
@@ -42,8 +45,11 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 	// Build custom bbcodes array
 	display_custom_bbcodes();
 
-	// Build permissions box
-	permission_settings_builder();
+	if ($page == 'blog')
+	{
+		// Build permissions box
+		permission_settings_builder(true, $mode);
+	}
 
 	$template->assign_vars(array(
 		'EXTRA_ABOVE_SUBJECT'		=> $above_subject,
