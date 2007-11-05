@@ -328,8 +328,7 @@ class blog_data
 							$view_unapproved_sql .
 								$sort_days_sql .
 									$user_permission_sql .
-										$custom_sql .
-											$limit_sql;
+										$custom_sql;
 				$result = $db->sql_query($sql);
 				$total = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
@@ -494,6 +493,7 @@ class blog_data
 			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
 			'U_REPORT'			=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
 			'U_VIEW'			=> blog_url($user_id, $id),
+			'U_VIEW_PERMANENT'	=> blog_url($user_id, $id, false, array(), array(), true),
 			'U_WARN'			=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
 			'S_DELETED'			=> ($blog['blog_deleted']) ? true : false,

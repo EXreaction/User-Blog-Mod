@@ -63,12 +63,15 @@ else
 	$blog_subject = $blog_text = '';
 }
 
+$temp = array('subject' => $blog_subject, 'text' => $blog_text);
+$blog_plugins->plugin_do_arg_ref('blog_add_after_setup', $temp);
+$blog_subject = $temp['subject'];
+$blog_text = $temp['text'];
+unset($temp);
+
 // if they did not submit or they have an error
 if (!$submit || sizeof($error))
 {
-	// setup the captcha
-	handle_captcha('build');
-
 	// if they are trying to preview the message and do not have an error
 	if ($preview && !sizeof($error))
 	{
@@ -87,14 +90,8 @@ if (!$submit || sizeof($error))
 
 	$blog_plugins->plugin_do('blog_add_after_preview');
 
-	// Generate smiley listing
-	generate_smilies('inline', false);
-
-	// Build custom bbcodes array
-	display_custom_bbcodes();
-
-	// Build permissions box
-	permission_settings_builder();
+	// handles the basic data we need to output for posting
+	handle_basic_posting_data();
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
@@ -103,8 +100,6 @@ if (!$submit || sizeof($error))
 		'SUBJECT'					=> $blog_subject,
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-
-		'S_SHOW_PERMISSIONS_BOX'	=> true,
 	));
 
 	// Tell the template parser what template file to use

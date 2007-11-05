@@ -264,6 +264,7 @@ class reply_data
 			'DELETED_MESSAGE'	=> $reply['deleted_message'],
 
 			'U_VIEW'			=> blog_url($user_id, $blog_id, $id),
+			'U_VIEW_PERMANENT'	=> blog_url($user_id, $blog_id, $id, array(), array(), true),
 
 			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
 			'U_EDIT'			=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'edit')) : '',

@@ -67,9 +67,6 @@ if ($submit || $preview || $refresh)
 }
 else
 {
-	// setup the captcha
-	handle_captcha('build');
-
 	$reply_subject = '';
 	$reply_text = '';
 
@@ -95,6 +92,12 @@ else
 	}
 }
 
+$temp = array('subject' => $reply_subject, 'text' => $reply_text);
+$blog_plugins->plugin_do_arg_ref('reply_add_after_setup', $temp);
+$reply_subject = $temp['subject'];
+$reply_text = $temp['text'];
+unset($temp);
+
 // if they did not submit or they have an error
 if ( (!$submit) || (sizeof($error)) )
 {
@@ -116,11 +119,8 @@ if ( (!$submit) || (sizeof($error)) )
 
 	$blog_plugins->plugin_do('reply_add_after_preview');
 
-	// Generate smiley listing
-	generate_smilies('inline', false);
-
-	// Build custom bbcodes array
-	display_custom_bbcodes();
+	// handles the basic data we need to output for posting
+	handle_basic_posting_data('reply');
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(

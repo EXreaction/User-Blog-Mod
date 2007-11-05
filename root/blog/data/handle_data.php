@@ -339,84 +339,20 @@ function feed_output($blog_ids, $feed_type)
 */
 function generate_menu($user_id)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $user, $cache;
-	global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
+	global $db, $template;
+	global $user_data, $blog_plugins;
 
-// output the data for the left author info menu
 	$template->assign_vars($user_data->handle_user_data($user_id));
 	$user_data->handle_user_data($user_id, 'custom_fields');
 
-// archive menu
-	// Last Month's ID(set to 0 now, will be updated in the loop)
-	$last_mon = 0;
+	$extra = '';
 
-	$archive_rows = array();
+	$temp = compact('user_id', 'extra');
+	$blog_plugins->plugin_do_arg_ref('function_generate_menu', $temp);
 
-	// attempt to get the data from the cache (disabling the caching of this for now, because of user permissions)
-	$cache_data = false;//$cache->get("_blog_archive{$user_id}");
-
-	if ($cache_data === false)
-	{
-		$user_permission_sql = build_permission_sql($user->data['user_id']);
-		$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
-					WHERE user_id = \'' . $user_id . '\'
-						AND blog_deleted = \'0\'' .
-							$user_permission_sql . '
-							ORDER BY blog_id DESC';
-		$result = $db->sql_query($sql);
-
-		while($row = $db->sql_fetchrow($result))
-		{
-			$date = getdate($row['blog_time']);
-
-			// If we are starting a new month
-			if ($date['mon'] != $last_mon)
-			{
-				$archive_row = array(
-					'MONTH'			=> $date['month'],
-					'YEAR'			=> $date['year'],
-
-					'monthrow'		=> array(),
-				);
-
-				$archive_rows[] = $archive_row;
-			}
-
-			$archive_row_month = array(
-				'TITLE'			=> censor_text($row['blog_subject']),
-				'U_VIEW'		=> blog_url($user_id, $row['blog_id'], false, array(), array('blog_subject' => $row['blog_subject'])),
-				'DATE'			=> $user->format_date($row['blog_time']),
-			);
-
-			$archive_rows[count($archive_rows) - 1]['monthrow'][] = $archive_row_month;
-
-			// set the last month variable as the current month
-			$last_mon = $date['mon'];
-		}
-		$db->sql_freeresult($result);
-
-		// cache the result
-		//$cache->put("_blog_archive{$user_id}", $archive_rows);
-		$cache_data = $archive_rows;
-	}
-
-	if (count($cache_data))
-	{
-		foreach($cache_data as $row)
-		{
-			$template->assign_block_vars('archiverow', $row);
-		}
-	}
-
-	// output some data
 	$template->assign_vars(array(
-		// are there any archives?
-		'S_ARCHIVES'	=> (count($cache_data)) ? true : false,
+		'USER_MENU_EXTRA'	=> $temp['extra'],
 	));
-
-	$blog_plugins->plugin_do('function_generate_menu');
-
-	unset($cache_data);
 }
 
 /**
@@ -588,171 +524,6 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	}
 
 	$blog_plugins->plugin_do('function_handle_subscription_end');
-}
-
-/**
-* handle_captcha
-*
-* @param string $mode The mode, build or check, to either build the captcha/confirm box, or to check if the user entered the correct confirm_code
-*
-* @return Returns
-*	- True if the captcha code is correct and $mode is check or they do not need to view the captcha (permissions) 
-*	- False if the captcha code is incorrect, or not given and $mode is check
-*/
-function handle_captcha($mode)
-{
-	global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields;
-
-	if ($user->data['user_id'] != ANONYMOUS || !$config['user_blog_guest_captcha'])
-	{
-		return true;
-	}
-
-	if ($mode == 'check')
-	{
-		$confirm_id = request_var('confirm_id', '');
-		$confirm_code = request_var('confirm_code', '');
-
-		if ($confirm_id == '' || $confirm_code == '')
-		{
-			return false;
-		}
-
-		$sql = 'SELECT code
-			FROM ' . CONFIRM_TABLE . "
-			WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($user->session_id) . "'
-				AND confirm_type = " . CONFIRM_POST;
-		$result = $db->sql_query($sql);
-		$confirm_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-
-		if (empty($confirm_row['code']) || strcasecmp($confirm_row['code'], $confirm_code) !== 0)
-		{
-			return false;
-		}
-
-		// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code if 
-		if (strpos($s_hidden_fields, 'confirm_id') === false)
-		{
-			$s_hidden_fields .= build_hidden_fields(array('confirm_id' => $confirm_id, 'confirm_code' => $confirm_code));
-		}
-
-		return true;
-	}
-	else if ($mode == 'build' && !handle_captcha('check'))
-	{
-		// Show confirm image
-		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
-			WHERE session_id = '" . $db->sql_escape($user->session_id) . "'
-				AND confirm_type = " . CONFIRM_POST;
-		$db->sql_query($sql);
-
-		// Generate code
-		$code = gen_rand_string(mt_rand(5, 8));
-		$confirm_id = md5(unique_id($user->ip));
-		$seed = hexdec(substr(unique_id(), 4, 10));
-
-		// compute $seed % 0x7fffffff
-		$seed -= 0x7fffffff* floor($seed / 0x7fffffff);
-
-		$sql = 'INSERT INTO ' . CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
-			'confirm_id'	=> (string) $confirm_id,
-			'session_id'	=> (string) $user->session_id,
-			'confirm_type'	=> (int) CONFIRM_POST,
-			'code'			=> (string) $code,
-			'seed'			=> (int) $seed)
-		);
-		$db->sql_query($sql);
-
-		$template->assign_vars(array(
-			'S_CONFIRM_CODE'			=> true,
-			'CONFIRM_ID'				=> $confirm_id,
-			'CONFIRM_IMAGE'				=> '<img src="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=confirm&amp;id=' . $confirm_id . '&amp;type=' . CONFIRM_POST) . '" alt="" title="" />',
-			'L_POST_CONFIRM_EXPLAIN'	=> sprintf($user->lang['POST_CONFIRM_EXPLAIN'], '<a href="mailto:' . htmlspecialchars($config['board_contact']) . '">', '</a>'),
-		));
-	}
-}
-
-/**
-* Informs users when a blog or reply was reported or needs approval
-*
-* Informs users in the $config['user_blog_inform'] variable (in the variable should be user_id's seperated by commas if there is more than one)
-*
-* @param string $mode The mode - blog_report, reply_report, blog_approve, reply_approve
-*/
-function inform_approve_report($mode, $id)
-{
-	global $phpbb_root_path, $phpEx, $config, $user;
-	global $user_data, $blog_plugins;
-	
-	if ($config['user_blog_inform'] == '')
-	{
-		return;
-	}
-
-	switch ($mode)
-	{
-		case 'blog_report' :
-			$message = sprintf($user->lang['BLOG_REPORT_PM'], $user->data['username'], blog_url($user->data['user_id'], $id));
-			$subject = $user->lang['BLOG_REPORT_PM_SUBJECT'];
-			break;
-		case 'reply_report' :
-			$message = sprintf($user->lang['REPLY_REPORT_PM'], $user->data['username'], blog_url($user->data['user_id'], false, $id));
-			$subject = $user->lang['REPLY_REPORT_PM_SUBJECT'];
-			break;
-		case 'blog_approve' :
-			$message = sprintf($user->lang['BLOG_APPROVE_PM'], $user->data['username'], blog_url($user->data['user_id'], $id));
-			$subject = $user->lang['BLOG_APPROVE_PM_SUBJECT'];
-			break;
-		case 'reply_approve' :
-			$message = sprintf($user->lang['REPLY_APPROVE_PM'], $user->data['username'], blog_url($user->data['user_id'], false, $id));
-			$subject = $user->lang['REPLY_APPROVE_PM_SUBJECT'];
-			break;
-		default:
-			$blog_plugins->plugin_do_arg('function_inform_approve_report', $mode);
-	}
-
-	$to = explode(",", $config['user_blog_inform']);
-
-	if (!function_exists('submit_pm'))
-	{
-		// include the private messages functions page
-		include("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
-	}
-
-	if (!class_exists('parse_message'))
-	{
-		include("{$phpbb_root_path}includes/message_parser.$phpEx");
-	}
-
-	$message_parser = new parse_message();
-	$message_parser->message = $message;
-	$message_parser->parse(true, true, true, true, true, true, true);
-
-	// setup out to address list
-	foreach ($to as $id)
-	{
-		$address_list[$id] = 'to';
-	}
-
-	$pm_data = array(
-		'from_user_id'		=> 2,
-		'from_username'		=> $user->lang['ADMINISTRATOR'],
-		'address_list'		=> array('u' => $address_list),
-		'icon_id'			=> 10,
-		'from_user_ip'		=> '0.0.0.0',
-		'enable_bbcode'		=> true,
-		'enable_smilies'	=> true,
-		'enable_urls'		=> true,
-		'enable_sig'		=> false,
-		'message'			=> $message_parser->message,
-		'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
-		'bbcode_uid'		=> $message_parser->bbcode_uid,
-	);
-
-	submit_pm('post', $subject, $pm_data, false);
-	unset($message_parser, $address_list, $to, $pm_data);
 }
 
 /**

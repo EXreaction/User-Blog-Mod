@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.25
+## MOD Version: 0.3.26
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -63,12 +63,7 @@
 ## 2007-10-21 Alpha 19 Released
 ## 2007-10-22 Alpha 20 Released
 ## 2007-10-22 Alpha 20a Released
-## 2007-10-24
-##		Alpha 21 Released
-##			+ Some updates to the user permissions, the upgrade script, and a few other misc things...
-##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-24 Alpha 21 Released
 ## 2007-10-26
 ##		Alpha 22 Released
 ##			+ Added instant redirect option for users.  Fixing bugs in upgrade script.
@@ -88,8 +83,14 @@
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ## 2007-11-03
-##		Alpha 24 Released
+##		Alpha 25 Released
 ##			+ Now we should support all DB types (at least the ones that are natively supported by phpBB3).
+##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-
+##		Alpha 26 Released
+##			+ Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.

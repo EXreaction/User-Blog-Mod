@@ -304,6 +304,7 @@ if (confirm_box(true))
 				set_config('user_blog_force_style', 0);
 			}
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
+		case '0.3.25' :
 	}
 
 	if (count($sql_array))

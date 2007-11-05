@@ -22,7 +22,12 @@ class blog_plugins
 	var $available_plugins = array();
 	var $to_do = array();
 
-	function load_plugins()
+	/**
+	* Load the required plugins
+	*
+	* @param bool $load_all - set to yes to load all plugins (including uninstalled).  This should only be used when displaying a list of available plugins (it is more intensive on the server and makes the page take longer to load).
+	*/
+	function load_plugins($load_all = false)
 	{
 		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
 
@@ -55,26 +60,42 @@ class blog_plugins
 		}
 		unset($cache_data);
 
-		$dh = @opendir($blog_plugins_path . 'info/');
-
-		if ($dh)
+		if ($load_all)
 		{
-			while (($file = readdir($dh)) !== false)
+			$dh = @opendir($blog_plugins_path . 'info/');
+
+			if ($dh)
 			{
-				if (strpos($file, 'info_') === 0 && substr($file, -(strlen($phpEx) + 1)) === '.' . $phpEx)
+				while (($file = readdir($dh)) !== false)
 				{
-					$name = substr($file, 5, -(strlen($phpEx) + 1));
+					if (strpos($file, 'info_') === 0 && substr($file, -(strlen($phpEx) + 1)) === '.' . $phpEx)
+					{
+						$name = substr($file, 5, -(strlen($phpEx) + 1));
 
-					$this->available_plugins[$name] = array();
+						$this->available_plugins[$name] = array();
 
-					// this will be checked in each plugin file
-					$plugin_enabled = (array_key_exists($name, $this->plugins) && $this->plugins[$name]['plugin_enabled']) ? true : false;
+						// this will be checked in each plugin file
+						$plugin_enabled = (array_key_exists($name, $this->plugins) && $this->plugins[$name]['plugin_enabled']) ? true : false;
 
-					include($blog_plugins_path . 'info/' . substr($file, 0, -(strlen($phpEx) + 1)) . '.' . $phpEx);
+						include($blog_plugins_path . 'info/' . substr($file, 0, -(strlen($phpEx) + 1)) . '.' . $phpEx);
+					}
+				}
+
+				closedir($dh);
+			}
+		}
+		else
+		{
+			foreach ($this->plugins as $row)
+			{
+				$plugin_enabled = $row['plugin_enabled']; // this is checked in the plugin file
+				$name = $row['plugin_name']; // this is also checked in the plugin file
+
+				if ($plugin_enabled && file_exists($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx))
+				{
+					include($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx);
 				}
 			}
-
-			closedir($dh);
 		}
 
 		return true;
@@ -140,8 +161,6 @@ class blog_plugins
 
 		$sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 		$db->sql_query($sql);
-		unset($sql_data);
-
 		$this->plugins[$which] = $sql_data;
 
 		$cache->purge();

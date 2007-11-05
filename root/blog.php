@@ -11,6 +11,7 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* Change some sql queries to arrays and use build_query
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * ACP option to enable/disable user permissions
@@ -40,7 +41,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.25';
+$user_blog_version = '0.3.26';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -122,7 +123,7 @@ switch ($page)
 
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'blog/post_options.' . $phpEx);
+		include($phpbb_root_path . 'blog/functions_posting.' . $phpEx);
 
 		$message_parser = new parse_message();
 

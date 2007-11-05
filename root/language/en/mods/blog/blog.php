@@ -165,6 +165,7 @@ $lang = array_merge($lang, array(
 
 	'PERMANENTLY_DELETE_BLOG_CONFIRM'		=> 'Are you sure you want to permanently delete this blog?  This can not be un-done.',
 	'PERMANENTLY_DELETE_REPLY_CONFIRM'		=> 'Are you sure you want to permanently delete this reply?  This can not be un-done.',
+	'PERMANENT_LINK'						=> 'Permanent Link',
 	'PERMISSIONS'							=> 'Permissions',
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',
 	'PLUGINS_NAME'							=> 'Plugin Name',

@@ -20,7 +20,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 	// Include the constants.php and sql_functions.php files
 	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
-	include($phpbb_root_path . 'blog/sql_functions.' . $phpEx);
+	include($phpbb_root_path . 'blog/functions_sql.' . $phpEx);
 
 	/**
 	* Builds permission settings
@@ -76,28 +76,32 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* URL handler
 	*/
-	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array())
+	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
 	{
 		global $config, $phpbb_root_path, $phpEx, $user, $_SID;
-		global $blog_data, $user_data;
+		global $blog_data, $reply_data, $user_data;
 
 		// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
-		static $start_url = ''; // Sadly, setting it directly to generate_board_url() . '/' throws us an error. :(
+		static $start_url = '';
 		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
-		$session_id = $_SID;
-		$extras = '';
+		$extras = $anchor = '';
 
-		if ($config['user_blog_seo'])
+		if ($config['user_blog_seo'] && !$force_no_seo)
 		{
+			// We will be replacing spaces and dashes in the url with an underscore.  Just so things don't get screwed up if the user has something like " start-10" in the title. :P
+			$match = array(' ', '-');
+			$replace = array('_', '_');
+			$replace_page = true; // match everything except the page if this is set to false
+
 			if (!isset($url_data['page']))
 			{
 				if ($user_id == $user->data['user_id'])
 				{
-					$url_data['page'] = utf8_clean_string($user->data['username']);
+					$url_data['page'] = $user->data['username'];
 				}
 				else if ($user_id != false && isset($extra_data['username']))
 				{
-					$url_data['page'] = utf8_clean_string($extra_data['username']);
+					$url_data['page'] = $extra_data['username'];
 				}
 				else if ($user_id != false && !empty($user_data))
 				{
@@ -105,13 +109,17 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 					{
 						$user_data->get_user_data($user_id);
 					}
-					$url_data['page'] = utf8_clean_string($user_data->user[$user_id]['username']);
+					$url_data['page'] = $user_data->user[$user_id]['username'];
 				}
+
+				// Do not do the str_replace for the username!  It would break it! :P
+				$replace_page = false;
 			}
 
 			if ($reply_id)
 			{
 				$url_data['r'] = $reply_id;
+				$url_data['anchor'] = 'r' . $reply_id;
 				if (!isset($url_data['mode']))
 				{
 					if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))
@@ -142,7 +150,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 			if (isset($url_data['anchor']))
 			{
-				$anchor = $url_data['anchor'];
+				$anchor = '#' . $url_data['anchor'];
 			}
 
 			if (count($url_data))
@@ -153,30 +161,36 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 					{
 						continue;
 					}
-					$extras .= "_{$name}-{$value}";
+					$extras .= '_' . str_replace($match, $replace, $name) . '-' . str_replace($match, $replace, $value);
 				}
 			}
 
 			// Add the Session ID if required
-			if ($session_id)
+			if ($_SID)
 			{
-				$extras .= "_sid-{$session_id}";
+				$extras .= "_sid-{$_SID}";
 			}
 
 			if (isset($url_data['page']))
 			{
+				if ($replace_page)
+				{
+					$url_data['page'] = str_replace($match, $replace, $url_data['page']);
+				}
+
 				if (isset($url_data['mode']))
 				{
-					$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html";
+					$url_data['mode'] = str_replace($match, $replace, $url_data['mode']);
+					$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
 				}
 				else
 				{
-					$return = "blog/{$url_data['page']}/index{$extras}.html";
+					$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
 				}
 			}
 			else
 			{
-				$return = "blog/index{$extras}.html";
+				$return = "blog/index{$extras}.html{$anchor}";
 			}
 
 			if (isset($return))
@@ -197,13 +211,12 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 				$extras .= '&amp;' . $name . '=' . $var;
 			}
-
-			$extras = substr($extras, 5);
 		}
 
 		$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
 		$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
 		$extras .= (($reply_id) ? '&amp;r=' . $reply_id . '#r' . $reply_id: '');
+		$extras = substr($extras, 5);
 		$url = $phpbb_root_path . 'blog.' . $phpEx;
 		return append_sid($url, $extras);
 	}
@@ -946,6 +959,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	function blog_meta_refresh($time, $url, $instant = false)
 	{
 		global $config, $template, $user, $user_settings;
+
+		// replace &amp; with & so that the header() function works correctly if we use it.  Otherwise & will be replaced with &amp;
+		$url = str_replace('&amp;', '&', $url);
 
 		if ($instant || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
 		{

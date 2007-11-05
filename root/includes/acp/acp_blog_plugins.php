@@ -26,7 +26,7 @@ class acp_blog_plugins
 
 		$blog_plugins = new blog_plugins();
 		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-		if ($blog_plugins->load_plugins() === false)
+		if ($blog_plugins->load_plugins(true) === false)
 		{
 			trigger_error('PLUGINS_DISABLED');
 		}

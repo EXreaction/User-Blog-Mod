@@ -76,6 +76,12 @@ else
 	}
 }
 
+$temp = array('subject' => $blog_subject, 'text' => $blog_text);
+$blog_plugins->plugin_do_arg_ref('blog_edit_after_setup', $temp);
+$blog_subject = $temp['subject'];
+$blog_text = $temp['text'];
+unset($temp);
+
 // Set the options up in the template
 $post_options->set_in_template();
 
@@ -100,14 +106,8 @@ if (!$submit || sizeof($error))
 
 	$blog_plugins->plugin_do('blog_edit_after_preview');
 
-	// Generate smiley listing
-	generate_smilies('inline', false);
-
-	// Build custom bbcodes array
-	display_custom_bbcodes();
-
-	// Build permissions box
-	permission_settings_builder();
+	// handles the basic data we need to output for posting
+	handle_basic_posting_data('blog', 'edit');
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(

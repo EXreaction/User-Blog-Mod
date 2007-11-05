@@ -43,7 +43,7 @@ if ($config['user_blog_enable'])
 		if (check_blog_permissions('blog', 'add', true))// || ($user->data['blog_count'] > 0 && check_blog_permissions('', '', true)))
 		{
 			$template->assign_block_vars('blog_links', array(
-				'URL'		=> blog_url($user->data['user_id'], false, false, array(), array('username' => $user->data['username'])),
+				'URL'		=> blog_url($user->data['user_id']),
 				'CLASS'		=> 'icon-ucp',
 				'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_message.gif" alt="' . $user->lang['MY_BLOGS'] . '" />',
 				'TEXT'		=> $user->lang['MY_BLOGS'],

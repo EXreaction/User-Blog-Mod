@@ -7,6 +7,21 @@
 *
 */
 
+function attach_function_handle_basic_posting_data(&$arg)
+{
+	global $user, $template;
+
+	$arg['panels']['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
+
+	$template->set_filenames(array(
+		'attach_panel'			=> 'blog/plugins/attachments/attach_panel.html',
+		'attach_above_submit'	=> 'blog/plugins/attachments/attach_above_submit.html',
+	));
+
+	$arg['panel_data'] .= $template->assign_display('attach_panel');
+	$arg['above_submit'] .= $template->assign_display('attach_above_submit');
+}
+
 function attach_blog_page_switch(&$arg)
 {
 	global $auth, $config, $db, $page, $phpbb_root_path, $phpEx, $user;
@@ -19,7 +34,7 @@ function attach_blog_page_switch(&$arg)
 	}
 }
 
-function attach_blog_add_start($arg = false)
+function attach_blog_add_after_setup(&$arg)
 {
 	global $blog_attachment;
 	global $submit, $preview, $refresh, $error;
@@ -28,7 +43,7 @@ function attach_blog_add_start($arg = false)
 
 	if ($submit || $preview || $refresh)
 	{
-		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
+		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $arg);
 
 		if (sizeof($blog_attachment->warn_msg))
 		{
@@ -125,7 +140,7 @@ function attach_blog_delete_confirm($args = false)
 	}
 }
 
-function attach_blog_edit_start($args = false)
+function attach_blog_edit_after_setup(&$arg)
 {
 	global $blog_attachment;
 	global $submit, $preview, $refresh, $error;
@@ -140,7 +155,7 @@ function attach_blog_edit_start($args = false)
 	}
 	else
 	{
-		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
+		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $arg);
 
 		if (sizeof($blog_attachment->warn_msg))
 		{
@@ -157,68 +172,75 @@ function attach_blog_data_while(&$args)
 function attach_blog_handle_data_end(&$args)
 {
 	global $blog_attachment;
-	global $auth, $user;
+	global $auth, $user, $template;
 	global $blog_data;
 
 	$update_count = array();
 	$blog_attachment->parse_attachments_for_view($args['BLOG_MESSAGE'], $blog_data->blog[$args['BLOG_ID']]['attachment_data'], $update_count);
-	$args['S_DISPLAY_NOTICE'] = (!$auth->acl_get('u_download') && $blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data'])) ? true : false;
-	$args['S_HAS_ATTACHMENTS'] = ($blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data'])) ? true : false;
 
-	$output = '';
-
-	if ($blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data']) && $auth->acl_get('u_download'))
+	// Include the template file we need and set the handler name to attachment
+	if (!isset($template->filename['attachment']))
 	{
-		$output .= '<dl class="attachbox"><dt>' . $user->lang['ATTACHMENTS'] . '</dt>';
-			
-		foreach ($blog_data->blog[$args['BLOG_ID']]['attachment_data'] as $row)
-		{
-			$output .= '<dd>' . $row . '</dd>';
-		}
-
-		$output .= '</dl>';
+		$template->set_filenames(array(
+			'attachment'        => 'blog/plugins/attachments/attach_view_body.html')
+		);
 	}
 
-	if (!$auth->acl_get('u_download') && $blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data']))
+	// Now, send all data to the template parser as usual.  Make sure that if this data is sent more than once, you either unset it later, or always set it to overwrite any existing data.
+	$template->assign_vars(array(
+		'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data'])) ? true : false,
+		'S_HAS_ATTACHMENTS'		=> ($blog_data->blog[$args['BLOG_ID']]['blog_attachment'] && count($blog_data->blog[$args['BLOG_ID']]['attachment_data'])) ? true : false,
+	));
+
+	foreach ($blog_data->blog[$args['BLOG_ID']]['attachment_data'] as $row)
 	{
-		$output .= '<div class="rules">' . $user->lang['DOWNLOAD_NOTICE'] . '</div>';
+		$template->assign_block_vars('attachment', array(
+			'DISPLAY_ATTACHMENT'	=> $row,
+		));
 	}
 
-	$args['BLOG_EXTRA'] .= $output;
+	// Now we are adding the output from parsing the attachment handler to a variable which will be outputted later
+	$args['BLOG_EXTRA'] .= $template->assign_display('attachment');
+
+	// Now we need to unset the attachment data from the template data (otherwise the attachments from post 1 will show on post 2, 3, etc).
+	unset($template->_tpldata['attachment']);
 }
 
 function attach_reply_handle_data_end(&$args)
 {
 	global $blog_attachment;
-	global $auth, $user;
+	global $auth, $user, $template;
 	global $reply_data;
 
 	$update_count = array();
 	$blog_attachment->parse_attachments_for_view($args['REPLY_MESSAGE'], $reply_data->reply[$args['ID']]['attachment_data'], $update_count);
 
-	$args['S_DISPLAY_NOTICE'] = (!$auth->acl_get('u_download') && $reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data'])) ? true : false;
-	$args['S_HAS_ATTACHMENTS'] = ($reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data'])) ? true : false;
-
-	$output = '';
-
-	if ($reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data']) && $auth->acl_get('u_download'))
+	// Include the template file we need and set the handler name to attachment
+	if (!isset($template->filename['attachment']))
 	{
-		$output .= '<dl class="attachbox"><dt>' . $user->lang['ATTACHMENTS'] . '</dt>';
-			
-		foreach ($reply_data->reply[$args['ID']]['attachment_data'] as $row)
-		{
-			$output .= '<dd>' . $row . '</dd>';
-		}
-
-		$output .= '</dl>';
+		$template->set_filenames(array(
+			'attachment'        => 'blog/plugins/attachments/attach_view_body.html')
+		);
 	}
 
-	if (!$auth->acl_get('u_download') && $reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data']))
+	// Now, send all data to the template parser as usual.  Make sure that if this data is sent more than once, you either unset it later, or always set it to overwrite any existing data.
+	$template->assign_vars(array(
+		'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data'])) ? true : false,
+		'S_HAS_ATTACHMENTS'		=> ($reply_data->reply[$args['ID']]['reply_attachment'] && count($reply_data->reply[$args['ID']]['attachment_data'])) ? true : false,
+	));
+
+	foreach ($reply_data->reply[$args['ID']]['attachment_data'] as $row)
 	{
-		$output .= '<div class="rules">' . $user->lang['DOWNLOAD_NOTICE'] . '</div>';
+		$template->assign_block_vars('attachment', array(
+			'DISPLAY_ATTACHMENT'	=> $row,
+		));
 	}
 
-	$args['REPLY_EXTRA'] .= $output;
+	// Now we are adding the output from parsing the attachment handler to a variable which will be outputted later
+	$args['REPLY_EXTRA'] .= $template->assign_display('attachment');
+
+	// Now we need to unset the attachment data from the template data (otherwise the attachments from post 1 will show on post 2, 3, etc).
+	unset($template->_tpldata['attachment']);
 }
 
 function attach_reply_add_sql(&$args)
@@ -235,7 +257,7 @@ function attach_reply_add_after_sql(&$args)
 	$blog_attachment->update_attachment_data(0, $args);
 }
 
-function attach_reply_edit_start($args = false)
+function attach_reply_edit_after_setup(&$arg)
 {
 	global $blog_attachment;
 	global $submit, $preview, $refresh, $error;
@@ -250,7 +272,7 @@ function attach_reply_edit_start($args = false)
 	}
 	else
 	{
-		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh);
+		$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $arg);
 
 		if (sizeof($blog_attachment->warn_msg))
 		{

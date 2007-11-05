@@ -58,12 +58,7 @@ class blog_attachment
 	*/
 	function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
-		global $auth, $template, $config, $phpbb_root_path, $phpEx, $user;
-
-		if (!$auth->acl_get('u_blogattach'))
-		{
-			return;
-		}
+		global $template, $config, $phpbb_root_path, $phpEx, $user;
 
 		$template->assign_vars(array(
 			'S_SHOW_ATTACH_BOX'	=> true)
@@ -75,8 +70,7 @@ class blog_attachment
 				'S_HAS_ATTACHMENTS'	=> true)
 			);
 
-			// We display the posted attachments within the desired order.
-			($config['display_order']) ? krsort($attachment_data) : ksort($attachment_data);
+			ksort($attachment_data);
 
 			foreach ($attachment_data as $count => $attach_row)
 			{
@@ -88,17 +82,11 @@ class blog_attachment
 					$hidden .= '<input type="hidden" name="attachment_data[' . $count . '][' . $key . ']" value="' . $value . '" />';
 				}
 
-				if ($config['user_blog_seo'])
-				{
-					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . intval($attach_row['attach_id'])));
-				}
-				else
-				{
-					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => intval($attach_row['attach_id'])));
-				}
+				$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => intval($attach_row['attach_id'])));
 
 				$template->assign_block_vars('attach_row', array(
 					'FILENAME'			=> basename($attach_row['real_filename']),
+					'A_FILENAME'		=> addslashes(basename($attach_row['real_filename'])),
 					'FILE_COMMENT'		=> $attach_row['attach_comment'],
 					'ATTACH_ID'			=> $attach_row['attach_id'],
 					'S_IS_ORPHAN'		=> $attach_row['is_orphan'],
@@ -111,7 +99,6 @@ class blog_attachment
 		}
 
 		$template->assign_vars(array(
-			'FILE_COMMENT'	=> $filename_data['filecomment'], 
 			'FILESIZE'		=> $config['max_filesize'])
 		);
 
@@ -150,7 +137,8 @@ class blog_attachment
 
 		$sql = 'SELECT * FROM ' . BLOGS_ATTACHMENT_TABLE . '
 			WHERE ' . $db->sql_in_set('blog_id', $blog_ids) .
-				$reply_sql;
+				$reply_sql . '
+					ORDER BY attach_id DESC';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -207,7 +195,7 @@ class blog_attachment
 	/**
 	* Parse Attachments
 	*/
-	function parse_attachments($form_name, $submit, $preview, $refresh)
+	function parse_attachments($form_name, $submit, $preview, $refresh, &$arg)
 	{
 		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser;
 
@@ -274,7 +262,7 @@ class blog_attachment
 					);
 
 					$this->attachment_data = array_merge(array(0 => $new_entry), $this->attachment_data);
-					$message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "'[attachment='.(\\1 + 1).']\\2[/attachment]'", $this->message);
+					$message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "'[attachment='.(\\1 + 1).']\\2[/attachment]'", $message_parser->message);
 
 					$this->filename_data['filecomment'] = '';
 
@@ -302,9 +290,10 @@ class blog_attachment
 			{
 				include_once($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 
-				$index = (int) key($_POST['delete_file']);
+				$index = array_keys(request_var('delete_file', array(0 => 0)));
+				$index = (!empty($index)) ? $index[0] : false;
 
-				if (!empty($this->attachment_data[$index]))
+				if ($index !== false && !empty($this->attachment_data[$index]))
 				{
 					// delete selected attachment
 					if ($this->attachment_data[$index]['is_orphan'])
@@ -353,6 +342,7 @@ class blog_attachment
 					}
 
 					unset($this->attachment_data[$index]);
+					$arg['text'] = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "(\\1 == \$index) ? '' : ((\\1 > \$index) ? '[attachment=' . (\\1 - 1) . ']\\2[/attachment]' : '\\0')", $arg['text']);
 					$message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "(\\1 == \$index) ? '' : ((\\1 > \$index) ? '[attachment=' . (\\1 - 1) . ']\\2[/attachment]' : '\\0')", $message_parser->message);
 
 					// Reindex Array
@@ -382,7 +372,6 @@ class blog_attachment
 						);
 
 						$db->sql_query('INSERT INTO ' . BLOGS_ATTACHMENT_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
-						unset($sql_ary);
 
 						$new_entry = array(
 							'attach_id'		=> $db->sql_nextid(),
@@ -392,7 +381,8 @@ class blog_attachment
 						);
 
 						$this->attachment_data = array_merge(array(0 => $new_entry), $this->attachment_data);
-						$message_parser->message = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "'[attachment='.(\\1 + 1).']\\2[/attachment]'", $message_parser->message);
+						$arg['text'] = preg_replace('#\[attachment=([0-9]+)\](.*?)\[\/attachment\]#e', "'[attachment='.(\\1 + 1).']\\2[/attachment]'", $arg['text']);
+						$message_parser->message = preg_replace('#\[attachment=([0-9]+):' . $message_parser->bbcode_uid . '\](.*?)\[\/attachment:' . $message_parser->bbcode_uid . '\]#e', "'[attachment='.(\\1 + 1).':{$message_parser->bbcode_uid}]\\2[/attachment:{$message_parser->bbcode_uid}]'", $message_parser->message);
 						$this->filename_data['filecomment'] = '';
 					}
 				}
@@ -496,7 +486,6 @@ class blog_attachment
 
 		if (sizeof($orphan))
 		{
-		print_r($orphan);
 			trigger_error('NO_ACCESS_ATTACHMENT', E_USER_ERROR);
 		}
 
@@ -793,17 +782,8 @@ class blog_attachment
 			unset($new_attachment_data);
 		}
 
-		// Sort correctly
-		if ($config['display_order'])
-		{
-			// Ascending sort
-			krsort($attachments);
-		}
-		else
-		{
-			// Descending sort
-			ksort($attachments);
-		}
+		ksort($attachments);
+
 
 		foreach ($attachments as $attachment)
 		{
@@ -910,28 +890,15 @@ class blog_attachment
 					$display_cat = ATTACHMENT_CATEGORY_NONE;
 				}
 
-				if ($config['user_blog_seo'])
-				{
-					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
-				}
-				else
-				{
-					$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
-				}
+				$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
 
 				switch ($display_cat)
 				{
 					// Images
 					case ATTACHMENT_CATEGORY_IMAGE:
 						$l_downloaded_viewed = 'VIEWED_COUNT';
-						if ($config['user_blog_seo'])
-						{
-							$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download_id-' . $attachment['attach_id']));
-						}
-						else
-						{
-							$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
-						}
+
+						$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
 
 						$block_array += array(
 							'S_IMAGE'		=> true,
@@ -944,14 +911,8 @@ class blog_attachment
 					// Images, but display Thumbnail
 					case ATTACHMENT_CATEGORY_THUMB:
 						$l_downloaded_viewed = 'VIEWED_COUNT';
-						if ($config['user_blog_seo'])
-						{
-							$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail_id-' . $attachment['attach_id']));
-						}
-						else
-						{
-							$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail', 'id' => $attachment['attach_id']));
-						}
+
+						$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail', 'id' => $attachment['attach_id']));
 
 						$block_array += array(
 							'S_THUMBNAIL'		=> true,

@@ -4,7 +4,7 @@
 
 <form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);"{S_FORM_ENCTYPE}>
 
-<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
+	<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
 
 	<div class="panel" id="postingbox">
 		<div class="inner"><span class="corners-top"><span></span></span>
@@ -20,6 +20,8 @@
 				<dd><label for="delete"><input type="checkbox" name="delete" id="delete" /> {L_DELETE_POST_WARN}</label></dd>
 			</dl>
 			<!-- ENDIF -->
+
+			{EXTRA_ABOVE_SUBJECT}
 
 			<!-- IF S_POST_ACTION -->
 			<dl style="clear: left;">
@@ -60,6 +62,8 @@
 				<!-- ENDIF -->
 			</div>
 
+			{EXTRA_ABOVE_MESSAGE}
+
 			<div id="message-box">
 				<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
 			</div>
@@ -67,33 +71,7 @@
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
 
-	<!-- IF S_HAS_ATTACHMENTS -->
-		<div class="panel bg2">
-			<div class="inner"><span class="corners-top"><span></span></span>
-			<h3>{L_POSTED_ATTACHMENTS}</h3>
-
-			<fieldset class="fields2">
-
-			<!-- BEGIN attach_row -->
-			<dl>
-
-				<dt><label for="comment_list[{attach_row.ASSOC_INDEX}]">{L_FILE_COMMENT}:</label></dt>
-				<dd><textarea name="comment_list[{attach_row.ASSOC_INDEX}]" id="comment_list[{attach_row.ASSOC_INDEX}]" rows="1" cols="35" class="inputbox">{attach_row.FILE_COMMENT}</textarea></dd>
-				<dd><a href="{attach_row.U_VIEW_ATTACHMENT}" class="{S_CONTENT_FLOW_END}">{attach_row.FILENAME}</a></dd>
-				<dd style="margin-top: 5px;">
-					<!-- IF S_INLINE_ATTACHMENT_OPTIONS --><input type="button" value="{L_PLACE_INLINE}" onclick="attach_inline({attach_row.ASSOC_INDEX}, '{attach_row.A_FILENAME}');" class="button2" />&nbsp; <!-- ENDIF -->
-					<input type="submit" name="delete_file[{attach_row.ASSOC_INDEX}]" value="{L_DELETE_FILE}" class="button2" />
-				</dd>
-			</dl>
-			{attach_row.S_HIDDEN}
-				<!-- IF not attach_row.S_LAST_ROW --><hr class="dashed" /><!-- ENDIF -->
-			<!-- END attach_row -->
-
-			</fieldset>
-
-			<span class="corners-bottom"><span></span></span></div>
-		</div>
-	<!-- ENDIF -->
+	{EXTRA_ABOVE_SUBMIT}
 
 	<div class="panel bg2">
 		<div class="inner"><span class="corners-top"><span></span></span>
@@ -110,10 +88,9 @@
 
 	<div id="tabs">
 		<ul>
-			<li id="options-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('options-panel'); return false;"><span>{L_OPTIONS}</span></a></li>
-			<!-- IF S_SHOW_PERMISSIONS_BOX --><li id="permissions-panel-tab"><a href="#tabs" onclick="subPanels('permissions-panel'); return false;"><span>{L_PERMISSIONS}</span></a></li><!-- ENDIF -->
-			<!-- IF S_SHOW_ATTACH_BOX --><li id="attach-panel-tab"><a href="#tabs" onclick="subPanels('attach-panel'); return false;"><span>{L_ADD_ATTACHMENT}</span></a></li><!-- ENDIF -->
-			<!-- IF S_SHOW_POLL_BOX || S_POLL_DELETE --><li id="poll-panel-tab"><a href="#tabs" onclick="subPanels('poll-panel'); return false;"><span>{L_ADD_POLL}</span></a></li><!-- ENDIF -->
+			<!-- BEGIN panel_list -->
+				<li id="{panel_list.NAME}-tab" <!-- IF panel_list.S_ROW_COUNT == 0 -->class="activetab"<!-- ENDIF -->><a href="#tabs" onclick="subPanels('{panel_list.NAME}'); return false;"><span>{panel_list.TITLE}</span></a></li>
+			<!-- END panel_list -->
 		</ul>
 	</div>
 
@@ -171,16 +148,14 @@
 	</fieldset>
 	<!-- ENDIF -->
 
-	<!-- IF S_SHOW_ATTACH_BOX --><!-- INCLUDE posting_attach_body.html --><!-- ENDIF -->
-
-	<!-- IF S_SHOW_POLL_BOX or S_POLL_DELETE --><!-- INCLUDE posting_poll_body.html --><!-- ENDIF -->
+	{EXTRA_PANELS}
 
 	{S_FORM_TOKEN}
 </form>
 
 <script type="text/javascript">
 // <![CDATA[
-	var panels = new Array('options-panel', 'permissions-panel', 'attach-panel', 'poll-panel');
+	var panels = new Array({JS_PANELS_LIST});
 
 	subPanels(show_panel);
 // ]]>
