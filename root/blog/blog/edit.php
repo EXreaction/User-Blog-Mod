@@ -160,14 +160,19 @@ else // user submitted and there are no errors
 		'blog_edit_locked'	=> ($auth->acl_get('m_bloglockedit') && ($user->data['user_id'] != $blog_data->blog[$blog_id]['user_id'])) ? request_var('lock_post', false) : false,
 	), $perm_ary);
 
-	$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
-
 	// add the delete section to the array if it was deleted, if it was already deleted ignore
 	if ( (!$blog_data->blog[$blog_id]['blog_deleted']) && (isset($_POST['delete'])) && $can_delete)
 	{
 		$sql_data['blog_deleted'] = $user->data['user_id'];
 		$sql_data['blog_deleted_time'] = time();
+		$blog_search->index_remove($blog_id);
 	}
+	else
+	{
+		$blog_search->index('edit', $blog_id, 0, $message_parser->message, $blog_subject, $user_id);
+	}
+
+	$blog_plugins->plugin_do_arg_ref('blog_edit_sql', $sql_data);
 
 	$sql = 'UPDATE ' . BLOGS_TABLE . '
 		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '

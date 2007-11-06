@@ -48,7 +48,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
-			'U_VIEW'			=> reapply_sid((strpos($blog_urls['self'], '?')) ? reapply_sid($blog_urls['self'] . '&amp;mode=random') : reapply_sid($blog_urls['self'] . '?mode=random')),
+			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'random')),
 			'TITLE'				=> $user->lang['RANDOM_BLOGS'],
 		));
 
@@ -71,7 +71,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
-			'U_VIEW'			=> reapply_sid((strpos($blog_urls['self'], '?')) ? reapply_sid($blog_urls['self'] . '&amp;mode=recent') : reapply_sid($blog_urls['self'] . '?mode=recent')),
+			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'recent')),
 			'TITLE'				=> $user->lang['RECENT_BLOGS'],
 		));
 
@@ -94,7 +94,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
-			'U_VIEW'			=> reapply_sid((strpos($blog_urls['self'], '?')) ? reapply_sid($blog_urls['self'] . '&amp;mode=popular') : reapply_sid($blog_urls['self'] . '?mode=popular')),
+			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'popular')),
 			'TITLE'				=> $user->lang['POPULAR_BLOGS'],
 		));
 

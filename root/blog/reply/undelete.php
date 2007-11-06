@@ -46,6 +46,8 @@ if (confirm_box(true))
 {
 	$blog_plugins->plugin_do('reply_undelete_confirm');
 
+	$blog_search->index('add', $blog_id, $reply_id, $reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['reply_subject'], $reply_data->reply[$reply_id]['user_id']);
+
 	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'0\', reply_deleted_time = \'0\' WHERE reply_id = \'' . $reply_id . '\'';
 	$db->sql_query($sql);
 

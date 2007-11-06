@@ -58,6 +58,8 @@ if (confirm_box(true))
 	}
 	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
 	{
+		$blog_search->index_remove($blog_id, $reply_id);
+
 		// soft delete the reply
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'' . $user->data['user_id'] . ' \', reply_deleted_time = \'' . time() . '\' WHERE reply_id = \'' . $reply_id . '\'';
 		$db->sql_query($sql);

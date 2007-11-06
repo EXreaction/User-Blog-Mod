@@ -28,6 +28,7 @@ set_config('user_blog_enable_feeds', 1);
 set_config('user_blog_enable_plugins', 1);
 set_config('user_blog_seo', 0);
 set_config('user_blog_guest_captcha', 1);
-set_config('user_blog_version', $user_blog_version);
+set_config('user_blog_search', 1);
 
+set_config('user_blog_version', $user_blog_version);
 ?>

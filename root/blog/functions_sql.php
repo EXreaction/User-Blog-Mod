@@ -23,6 +23,11 @@ function build_permission_sql($user_id, $add_where = false)
 	global $auth, $config, $db;
 	global $reverse_zebra_list;
 
+	if (!$config['user_blog_user_permissions'])
+	{
+		return '';
+	}
+
 	static $sql = '';
 
 	// Moderators and administrators can see all.

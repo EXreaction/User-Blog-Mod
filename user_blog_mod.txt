@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.26
+## MOD Version: 0.3.27_dev
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -56,7 +56,7 @@
 ## 2007-08-26 Alpha 14 Released
 ## 2007-08-27 Alpha 14a Released
 ## 2007-09-10 Alpha 14b Released
-## 2007-9-30 Alpha 15 Released
+## 2007-09-30 Alpha 15 Released
 ## 2007-10-09 Alpha 16 Released
 ## 2007-10-15 Alpha 17 Released
 ## 2007-10-17 Alpha 18 Released
@@ -64,12 +64,7 @@
 ## 2007-10-22 Alpha 20 Released
 ## 2007-10-22 Alpha 20a Released
 ## 2007-10-24 Alpha 21 Released
-## 2007-10-26
-##		Alpha 22 Released
-##			+ Added instant redirect option for users.  Fixing bugs in upgrade script.
-##			+ To update, copy the new files over, update the code in viewtopic.php, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-10-26 Alpha 22 Released
 ## 2007-10-30
 ##		Alpha 23 Released
 ##			+ Bug fixes mainly
@@ -91,6 +86,12 @@
 ## 2007-11-04
 ##		Alpha 26 Released
 ##			+ Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)
+##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-
+##		Alpha 27 DEV
+##			+ New Blog Search System!
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.

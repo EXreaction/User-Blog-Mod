@@ -333,29 +333,6 @@ function feed_output($blog_ids, $feed_type)
 }
 
 /**
-* Generates the left side menu
-*
-* @param int $user_id The user_id of the user whom we are building the menu for
-*/
-function generate_menu($user_id)
-{
-	global $db, $template;
-	global $user_data, $blog_plugins;
-
-	$template->assign_vars($user_data->handle_user_data($user_id));
-	$user_data->handle_user_data($user_id, 'custom_fields');
-
-	$extra = '';
-
-	$temp = compact('user_id', 'extra');
-	$blog_plugins->plugin_do_arg_ref('function_generate_menu', $temp);
-
-	$template->assign_vars(array(
-		'USER_MENU_EXTRA'	=> $temp['extra'],
-	));
-}
-
-/**
 * handles sending subscription notices for blogs or replies
 *
 * Sends a PM or Email to each user in the subscription list, depending on what they want

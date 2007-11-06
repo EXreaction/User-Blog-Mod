@@ -139,15 +139,16 @@ else // user submitted and there are no errors
 
 	$sql = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);
-
-	unset($message_parser, $perm_ary, $sql_data);
-
 	$blog_id = $db->sql_nextid();
 
-	$blog_plugins->plugin_do_arg('blog_add_after_sql', $blog_id);
+	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
 
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();
+
+	$blog_plugins->plugin_do_arg('blog_add_after_sql', $blog_id);
+
+	unset($message_parser, $perm_ary, $sql_data);
 
 	handle_blog_cache('new_blog', $user->data['user_id']);
 

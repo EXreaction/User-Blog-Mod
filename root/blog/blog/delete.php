@@ -61,7 +61,9 @@ if (confirm_box(true))
 	}
 	else
 	{
-		// *delete* the blog
+		$blog_search->index_remove($blog_id);
+
+		// soft delete the blog
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = \'' . $user->data['user_id'] . ' \', blog_deleted_time = \'' . time() . '\' WHERE blog_id = \'' . $blog_id . '\'';
 		$db->sql_query($sql);
 

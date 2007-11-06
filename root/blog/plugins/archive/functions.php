@@ -11,6 +11,11 @@ function archive_function_generate_menu(&$arg)
 {
 	global $db, $user, $template, $phpbb_root_path;
 
+	if (!$arg['user_id'])
+	{
+		return;
+	}
+
 	$last_mon = 0;
 
 	$archive_rows = array();
@@ -67,7 +72,7 @@ function archive_function_generate_menu(&$arg)
 		'archive_body'		=> 'blog/plugins/archive/archive_body.html',
 	));
 
-	$arg['extra'] .= $template->assign_display('archive_body');
+	$arg['user_menu_extra'] .= $template->assign_display('archive_body');
 
 	unset($template->_tpldata['archiverow']);
 }

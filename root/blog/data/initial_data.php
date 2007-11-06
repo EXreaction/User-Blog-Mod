@@ -14,7 +14,7 @@ if (!defined('IN_PHPBB'))
 }
 
 // get some initial data
-$submit = (isset($_POST['post'])) ? true : false;
+$submit = (isset($_POST['post']) || isset($_POST['submit'])) ? true : false;
 $preview = (isset($_POST['preview'])) ? true : false;
 $print = (request_var('view', '') == 'print') ? true : false;
 $refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($_POST['cancel_unglobalise'])) ? true : false;
@@ -27,10 +27,22 @@ $reply_id = intval(request_var('r', 0));
 $feed = request_var('feed', '');
 $hilit_words = request_var('hilit', '', true);
 $start = intval(request_var('start', 0));
-$limit = intval(request_var('limit', ($blog_id || $reply_id) ? ($print) ? 99999 : 10 : 5 ));
 $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
+
+if ($page == 'search')
+{
+	$limit = intval(request_var('limit', 20));
+}
+else if ($blog_id || $reply_id)
+{
+	$limit = intval(request_var('limit', 10));
+}
+else
+{
+	$limit = intval(request_var('limit', 5));
+}
 
 // setting some variables for sorting
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
@@ -153,7 +165,7 @@ $initial_data = array(
 	'BLOG_DESCRIPTION'		=> $blog_description,
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
-	'U_BLOG'				=> ($print) ? generate_board_url() . "/blog.{$phpEx}?b=$blog_id" : $blog_urls['self'],
+	'U_BLOG'				=> $blog_urls['self_minus_print'],
 	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}blog.$phpEx", 'page=mcp') : '',
  	'U_REPLY_BLOG'			=> ($blog_id != 0 && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
 

@@ -11,12 +11,10 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Change some sql queries to arrays and use build_query
+* handle user data make parsed list
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* ACP option to enable/disable user permissions
-*
-* Search module
+* Search module - finish ACP
 *
 * Polls
 *
@@ -25,6 +23,9 @@
 * Resetup the MCP to actually be in the MCP
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
+*
+* triming the text still isn't working correctly :/
+* Change some sql queries to arrays and use build_query
 *
 * OTHER -------------------------------------------------------------------------------------------
 *
@@ -41,7 +42,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.26';
+$user_blog_version = '0.3.27_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -70,7 +71,6 @@ $reply_id = intval(request_var('r', 0));
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
-include($phpbb_root_path . 'blog/permissions.' . $phpEx);
 include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
 include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
 include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
@@ -106,6 +106,7 @@ switch ($page)
 {
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
+	case 'search' : // blogs search
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 	// no break
 	case 'install' : // to install the User Blog Mod
@@ -124,7 +125,9 @@ switch ($page)
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		include($phpbb_root_path . 'blog/functions_posting.' . $phpEx);
+		include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
 
+		$blog_search = new blog_fulltext_native();
 		$message_parser = new parse_message();
 
 		switch ($mode)

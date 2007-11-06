@@ -45,7 +45,9 @@ class acp_blogs
 			'user_blog_enable_plugins'			=> array('lang' => 'ENABLE_USER_BLOG_PLUGINS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_subscription_enabled'	=> array('lang'	=> 'ENABLE_SUBSCRIPTIONS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_zebra'			=> array('lang' => 'BLOG_ENABLE_ZEBRA',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
-			'user_blog_seo'						=> array('lang' => 'BLOG_ENABLE_SEO',				'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
+			'user_blog_seo'						=> array('lang' => 'BLOG_ENABLE_SEO',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
+			'user_blog_search'					=> array('lang' => 'BLOG_ENABLE_SEARCH',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
+			'user_blog_user_permissions'		=> array('lang' => 'BLOG_ENABLE_USER_PERMISSIONS',	'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 
 			'legend2'							=> 'BLOG_POST_VIEW_SETTINGS',
 			'user_blog_force_style'				=> array('lang' => 'BLOG_FORCE_STYLE',				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),

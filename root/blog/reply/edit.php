@@ -163,6 +163,11 @@ else // user submitted and there are no errors
 		{
 			$sql_data['reply_deleted'] = $user->data['user_id'];
 			$sql_data['reply_deleted_time'] = time();
+			$blog_search->index_remove($blog_id, $reply_id);
+		}
+		else
+		{
+			$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, $reply_data->reply[$reply_id]['user_id']);
 		}
 
 		$blog_plugins->plugin_do_arg_ref('reply_edit_sql', $sql_data);
@@ -177,7 +182,7 @@ else // user submitted and there are no errors
 
 	$blog_plugins->plugin_do_arg('reply_edit_after_sql', $reply_id);
 
-	unset($message_parser);
+	unset($message_parser, $sql_data, $blog_search);
 
 	// the confirm message & redirect
 	if (isset($_POST['delete']) && $can_delete)

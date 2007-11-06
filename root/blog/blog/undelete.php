@@ -43,6 +43,8 @@ if (confirm_box(true))
 {
 	$blog_plugins->plugin_do('blog_undelete_confirm');
 
+	$blog_search->index('add', $blog_id, 0, $blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['blog_subject'], $user_id);
+
 	// undelete the blog
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = \'0\', blog_deleted_time = \'0\' WHERE blog_id = \'' . $blog_id . '\'';
 	$db->sql_query($sql);

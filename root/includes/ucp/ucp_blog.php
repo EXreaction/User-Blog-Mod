@@ -60,22 +60,33 @@ class ucp_blog
 				}
 			break;
 			case 'ucp_blog_permissions' :
-				if ($submit)
+				if (!$config['user_blog_user_permissions'])
 				{
-					$sql_ary = array(
-						'perm_guest'		=> request_var('perm_guest', 1),
-						'perm_registered'	=> request_var('perm_registered', 2),
-						'perm_foe'			=> request_var('perm_foe', 0),
-						'perm_friend'		=> request_var('perm_friend', 2),
-					);
+					$error[] = $user->lang['USER_PERMISSIONS_DISABLED'];
 
-					$blog_plugins->plugin_do_arg_ref('blog_ucp_permissions', $sql_ary);
-
-					update_user_blog_settings($user->data['user_id'], $sql_ary, ((isset($_POST['resync'])) ? true : false));
+					$template->assign_vars(array(
+						'PERMISSIONS_DISABLED'	=> true,
+					));
 				}
 				else
 				{
-					permission_settings_builder();
+					if ($submit)
+					{
+						$sql_ary = array(
+							'perm_guest'		=> request_var('perm_guest', 1),
+							'perm_registered'	=> request_var('perm_registered', 2),
+							'perm_foe'			=> request_var('perm_foe', 0),
+							'perm_friend'		=> request_var('perm_friend', 2),
+						);
+
+						$blog_plugins->plugin_do_arg_ref('blog_ucp_permissions', $sql_ary);
+
+						update_user_blog_settings($user->data['user_id'], $sql_ary, ((isset($_POST['resync'])) ? true : false));
+					}
+					else
+					{
+						permission_settings_builder();
+					}
 				}
 			break;
 			case 'ucp_blog_title_description' :

@@ -305,6 +305,17 @@ if (confirm_box(true))
 			}
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
 		case '0.3.25' :
+		case '0.3.26' :
+			set_config('user_blog_search', 1);
+			set_config('user_blog_user_permissions', 1);
+
+			if (!class_exists('blog_fulltext_native'))
+			{
+				include($phpbb_root_path . "blog/search/fulltext_native.$phpEx");
+			}
+
+			$blog_search = new blog_fulltext_native();
+			$blog_search->reindex();
 	}
 
 	if (count($sql_array))

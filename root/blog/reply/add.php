@@ -161,16 +161,16 @@ else // user submitted and there are no errors
 
 	$sql = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);
-
-	// we no longer need the message parser
-	unset($message_parser);
-
 	$reply_id = $db->sql_nextid();
 
-	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
+	$blog_search->index('add', $blog_id, $reply_id, $message_parser->message, $reply_subject, $user->data['user_id']);
 
 	// update the URLS to include the new reply_id
 	generate_blog_urls();
+
+	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
+
+	unset($message_parser, $sql_data);
 
 	// update the reply count for the blog
 	if ($auth->acl_get('u_blogreplynoapprove'))
