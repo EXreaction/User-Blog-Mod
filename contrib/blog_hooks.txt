@@ -1,5 +1,6 @@
 /blog/blog/add.php
 	blog_add_start
+	blog_add_after_setup
 	blog_add_preview
 	blog_add_after_preview
 	blog_add_permissions
@@ -16,6 +17,7 @@
 
 /blog/blog/edit.php
 	blog_edit_start
+	blog_edit_after_setup
 	blog_edit_preview
 	blog_edit_after_preview
 	blog_edit_permissions
@@ -45,10 +47,8 @@
 /blog/data/constants.php
 
 /blog/data/handle_data.php
-	function_generate_menu
 	function_handle_subscription
 	function_handle_subscription_end
-	function_inform_approve_report
 	function_resync_blog
 
 /blog/data/initial_data.php
@@ -70,15 +70,37 @@
 	user_handle_data_cp
 
 /blog/functions.php
+	function_generate_menu
 	function_permission_settings_builder
 	function_generate_blog_urls
 	handle_user_blog_permissions
 	function_handle_blog_cache
 	function_handle_blog_cache_mode
 	function_get_subscription_info
+	permissions_start
+	permissions_end
+
+/blog/functions_posting.php
+	function_handle_basic_posting_data
+	function_inform_approve_report
+	post_options
+	post_options_set_status
+	post_options_set_in_template
+
+/blog/functions_sql.php
 
 /blog/header.php
 	blog_header
+
+/blog/install/config.php
+
+/blog/install/data.php
+
+/blog/install/modules.php
+
+/blog/install/permissions.php
+
+/blog/install/tables.php
 
 /blog/install.php
 
@@ -86,15 +108,21 @@
 	permissions_start
 	permissions_end
 
-/blog/plugins/plugins.php
+/blog/plugins/archive/functions.php
 
-/blog/post_options.php
-	post_options
-	post_options_set_status
-	post_options_set_in_template
+/blog/plugins/archive/install.php
+
+/blog/plugins/archive/uninstall.php
+
+/blog/plugins/archive/update.php
+
+/blog/plugins/info/info_archive.php
+
+/blog/plugins/plugins.php
 
 /blog/reply/add.php
 	reply_add_start
+	reply_add_after_setup
 	reply_add_preview
 	reply_add_after_preview
 	reply_add_sql
@@ -110,6 +138,7 @@
 
 /blog/reply/edit.php
 	reply_edit_start
+	reply_edit_after_setup
 	reply_edit_preview
 	reply_edit_after_preview
 	reply_edit_sql
@@ -126,7 +155,11 @@
 
 /blog/resync.php
 
-/blog/sql_functions.php
+/blog/search/fulltext_native.php
+
+/blog/search/search.php
+
+/blog/search.php
 
 /blog/subscribe.php
 	subscribe_start
@@ -185,10 +218,6 @@
 	blog_ucp_start
 	blog_ucp_permissions
 	blog_ucp_mode
-
-/language/en/acp/permissions_blog.php
-
-/language/en/mods/blog/blog.php
 
 /blog.php
 	blog_start
