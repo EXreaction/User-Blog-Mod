@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds attachments to the User Blog Mod
 ##
-## MOD Version: 0.7.5
+## MOD Version: 0.7.6
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -52,6 +52,10 @@
 ## 2007-11-04
 ##		0.7.5 Released
 ##			+ Fixing a bunch of bugs and some updates...
+##				- To upgrade just upload the new files.
+## 2007-11-06
+##		0.7.6 Released
+##			+ Changed something to be compatible with Alpha 27
 ##				- To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD

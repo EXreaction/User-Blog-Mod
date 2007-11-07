@@ -9,17 +9,26 @@
 
 function attach_function_handle_basic_posting_data(&$arg)
 {
-	global $user, $template;
+	global $auth, $blog_attachment, $config, $user, $template;
 
-	$arg['panels']['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
+	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
+	if (($auth->acl_get('u_blogattach')) && $config['allow_attachments'] && $form_enctype)
+	{
+		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
 
-	$template->set_filenames(array(
-		'attach_panel'			=> 'blog/plugins/attachments/attach_panel.html',
-		'attach_above_submit'	=> 'blog/plugins/attachments/attach_above_submit.html',
-	));
+		if (count($allowed_extensions['_allowed_']))
+		{
+			$arg['panels']['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
 
-	$arg['panel_data'] .= $template->assign_display('attach_panel');
-	$arg['above_submit'] .= $template->assign_display('attach_above_submit');
+			$template->set_filenames(array(
+				'attach_panel'			=> 'blog/plugins/attachments/attach_panel.html',
+				'attach_above_submit'	=> 'blog/plugins/attachments/attach_above_submit.html',
+			));
+
+			$arg['panel_data'] .= $template->assign_display('attach_panel');
+			$arg['above_submit'] .= $template->assign_display('attach_above_submit');
+		}
+	}
 }
 
 function attach_blog_page_switch(&$arg)
