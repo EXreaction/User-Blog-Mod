@@ -1247,6 +1247,45 @@ function get_schema_struct()
 		'PRIMARY_KEY'	=> 'user_id',
 	);
 
+	$schema_data['phpbb_blog_search_results'] = array(
+		'COLUMNS'		=> array(
+			'search_key'			=> array('VCHAR:32', ''),
+			'search_time'			=> array('TIMESTAMP', 0),
+			'search_keywords'		=> array('MTEXT_UNI', ''),
+			'search_authors'		=> array('MTEXT', ''),
+		),
+		'PRIMARY_KEY'	=> 'search_key',
+	);
+
+	$schema_data['phpbb_blog_search_wordlist'] = array(
+		'COLUMNS'		=> array(
+			'word_id'			=> array('UINT', NULL, 'auto_increment'),
+			'word_text'			=> array('VCHAR_UNI', ''),
+			'word_common'		=> array('BOOL', 0),
+			'word_count'		=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> 'word_id',
+		'KEYS'			=> array(
+			'wrd_txt'			=> array('UNIQUE', 'word_text'),
+			'wrd_cnt'			=> array('INDEX', 'word_count'),
+		),
+	);
+
+	$schema_data['phpbb_blog_search_wordmatch'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'			=> array('UINT', 0),
+			'reply_id'			=> array('UINT', 0),
+			'word_id'			=> array('UINT', 0),
+			'title_match'		=> array('BOOL', 0),
+		),
+		'KEYS'			=> array(
+			'unq_mtch'			=> array('UNIQUE', array('blog_id', 'reply_id', 'word_id', 'title_match')),
+			'word_id'			=> array('INDEX', 'word_id'),
+			'blog_id'			=> array('INDEX', 'blog_id'),
+			'reply_id'			=> array('INDEX', 'reply_id'),
+		),
+	);
+
 	return $schema_data;
 }
 

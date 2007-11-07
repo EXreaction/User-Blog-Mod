@@ -93,6 +93,7 @@
 ##		Alpha 27 DEV
 ##			+ New Blog Search System!
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
+##				- Please note that the automatic update script will take longer than usual because it needs to build a search index.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################

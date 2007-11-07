@@ -45,14 +45,10 @@ class reply_data
 		$order_by	= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'reply_id';	// the way we want to order the request in the SQL query
 		$order_dir	= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :	'DESC';		// the direction we want to order the request in the SQL query
 		$sort_days	= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] : 	0;			// the sort days selection
+		$custom_sql	= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 	'';			// add your own custom WHERE part to the query
 
 		// Setup some variables...
 		$reply_ids = array();
-		$view_unapproved_sql = ($auth->acl_get('m_blogreplyapprove')) ? '' : ' AND reply_approved = \'1\'';
-		$view_deleted_sql = ($auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')) ? '' : ' AND reply_deleted = \'0\'';
-		$sort_days_sql = ($sort_days != 0) ? ' AND reply_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
-		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
-		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
 
 		// make sure $id is an array for consistency
 		if (!is_array($id))
@@ -60,45 +56,40 @@ class reply_data
 			$id = array($id);
 		}
 
+		$sql_array = array(
+			'SELECT'	=> '*',
+			'FROM'		=> array(
+				BLOGS_REPLY_TABLE	=> array('r'),
+			),
+			'ORDER_BY'	=> $order_by . ' ' . $order_dir
+		);
+		$sql_where = array();
+
+		if (!$auth->acl_get('m_blogreplyapprove'))
+		{
+			$sql_where[] = 'reply_approved = \'1\'';
+		}
+		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
+		{
+			$sql_where[] = 'reply_deleted = \'0\'';
+		}
+		if ($sort_days != 0)
+		{
+			$sql_where[] = 'reply_time >= \'' . (time() - $sort_days * 86400) . '\'';
+		}
+		if ($custom_sql)
+		{
+			$sql_where[] = $custom_sql;
+		}
+
 		switch ($mode)
 		{
 			case 'blog' : // view all replys by a blog_id
-				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE ' . $db->sql_in_set('blog_id', $id) . 
-						$view_deleted_sql .
-							$view_unapproved_sql .
-								$sort_days_sql .
-									$order_by_sql .
-										$limit_sql;
+				$sql_where[] = $db->sql_in_set('blog_id', $id);
 				break;
 			case 'reply' : // select replies by reply_id(s)
-				$replies_to_query = array();
-
-				// check if the reply already exists
-				foreach ($id as $i)
-				{
-					if (!array_key_exists($i, $this->reply) && !in_array($i, $replies_to_query))
-					{
-						array_push($replies_to_query, $i);
-					}
-					else
-					{
-						array_push($reply_ids, $i);
-					}
-				}
-
-				if (count($replies_to_query) == 0)
-				{
-					return $reply_ids;
-				}
-
-				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE ' . $db->sql_in_set('reply_id', $replies_to_query) .
-						$view_deleted_sql .
-							$view_unapproved_sql .
-								$sort_days_sql .
-									$order_by_sql .
-										$limit_sql;
+				$sql_where[] = $db->sql_in_set('reply_id', $id);
+				$limit = 0;
 				break;
 			case 'reported' : // select reported replies
 				if (!$auth->acl_get('m_blogreplyreport'))
@@ -106,12 +97,7 @@ class reply_data
 					return false;
 				}
 
-				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE reply_reported = \'1\'' .
-						$view_deleted_sql .
-							$sort_days_sql .
-								$order_by_sql .
-									$limit_sql;
+				$sql_where[] = 'reply_reported = \'1\'';
 				break;
 			case 'disapproved' : // select disapproved replies
 				if (!$auth->acl_get('m_blogreplyapprove'))
@@ -119,12 +105,7 @@ class reply_data
 					return false;
 				}
 
-				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE reply_approved = \'0\'' .
-						$view_deleted_sql .
-							$sort_days_sql .
-								$order_by_sql .
-									$limit_sql;
+				$sql_where[] = 'reply_approved = \'0\'';
 				break;
 			case 'reply_count' : // for counting how many replies there are for a blog
 				if ($blog_data->blog[$id[0]]['blog_real_reply_count'] == 0 || $blog_data->blog[$id[0]]['blog_real_reply_count'] == $blog_data->blog[$id[0]]['blog_reply_count'])
@@ -132,17 +113,16 @@ class reply_data
 					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
 				}
 
-				if ($sort_days_sql == '' && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
+				if ($sort_days == 0 && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
 				{
 					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
 				}
-				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days_sql != '')
+				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0)
 				{
-					$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_REPLY_TABLE . '
-						WHERE blog_id = \'' . $id[0] . '\'' .
-							$view_deleted_sql .
-								$view_unapproved_sql .
-									$sort_days_sql;
+					$sql_array['SELECT'] = 'count(reply_id) AS total';
+					$sql_where[] = 'blog_id = \'' . $id[0] . '\'';
+					$sql_array['WHERE'] = implode(' AND ', $sql_where);
+					$sql = $db->sql_build_query('SELECT', $sql_array);
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
@@ -154,6 +134,7 @@ class reply_data
 				}
 				break;
 			case 'page' :
+			die('page');
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = \'' . $id[0] . '\'' .
@@ -177,9 +158,20 @@ class reply_data
 				return false;
 		}
 
-		$blog_plugins->plugin_do_arg_ref('reply_data_sql', $sql);
+		$temp = compact('sql_array', 'sql_where');
+		$blog_plugins->plugin_do_arg_ref('reply_data_sql', $temp);
+		extract($temp);
 
-		$result = $db->sql_query($sql);
+		$sql_array['WHERE'] = implode(' AND ', $sql_where);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		if ($limit)
+		{
+			$result = $db->sql_query_limit($sql, $limit, $start);
+		}
+		else
+		{
+			$result = $db->sql_query($sql);
+		}
 
 		while ($row = $db->sql_fetchrow($result))
 		{

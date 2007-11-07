@@ -19,7 +19,6 @@ if ($config['user_blog_enable'])
 
 		// include the functions & permissions file
 		include_once($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/permissions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();

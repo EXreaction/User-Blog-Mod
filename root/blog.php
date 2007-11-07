@@ -11,6 +11,7 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* take a look at the add blog links function
 * handle user data make parsed list
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
@@ -170,7 +171,7 @@ if ($default)
 if ($default)
 {
 	// With SEO urls, we make it so that the page could be the username of the user we want to view...
-	if ($page != '')
+	if ($page != '' && $page != 'index')
 	{
 		$user_id = $user_data->get_user_data(false, false, $page);
 

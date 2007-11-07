@@ -41,9 +41,12 @@ if (confirm_box(true))
 {
 	$sql_array = array();
 
-	//Setup $auth_admin class so we can add permission options
 	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+	include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
 	$auth_admin = new auth_admin();
+	$db_tool = new phpbb_db_tools($db);
+	$dbmd = get_available_dbms($dbms);
 
 	switch ($config['user_blog_version'])
 	{
@@ -306,6 +309,53 @@ if (confirm_box(true))
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
 		case '0.3.25' :
 		case '0.3.26' :
+			/*
+			* Add New Tables ----------------------------------------------------------------------------------
+			*/
+			switch ($dbms)
+			{
+				case 'mysql' :
+					if (version_compare($db->mysql_version, '4.1.3', '>='))
+					{
+						$dbms_schema = 'mysql_41_schema.sql';
+					}
+					else
+					{
+						$dbms_schema = 'mysql_40_schema.sql';
+					}
+				break;
+				case 'mysqli' :
+					$dbms_schema = 'mysql_41_schema.sql';
+				break;
+				default :
+					$dbms_schema = '' . $dbms . '_schema.sql';
+			}
+
+			if (!file_exists($phpbb_root_path . 'blog/update/0326/' . $dbms_schema))
+			{
+				trigger_error('SCHEMA_NOT_EXIST');
+			}
+
+			$remove_remarks = $dbmd[$dbms]['COMMENTS'];
+			$delimiter = $dbmd[$dbms]['DELIM'];
+
+			$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0326/' . $dbms_schema);
+
+			$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
+
+			$remove_remarks($sql_query);
+
+			$sql_query = split_sql_file($sql_query, $delimiter);
+
+			foreach ($sql_query as $sql)
+			{
+				if (!$db->sql_query($sql))
+				{
+					$error[] = $db->sql_error();
+				}
+			}
+			unset($sql_query);
+
 			set_config('user_blog_search', 1);
 			set_config('user_blog_user_permissions', 1);
 

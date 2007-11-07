@@ -42,30 +42,47 @@ class blog_data
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
 		$limit		= (isset($selection_data['limit'])) ? $selection_data['limit'] :			5;			// the limit on how many blogs we will select
-		$order_by	= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'blog_id';	// the way we want to order the request in the SQL query
+		$order_by	= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'default';	// the way we want to order the request in the SQL query
 		$order_dir	= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :	'DESC';		// the direction we want to order the request in the SQL query
 		$sort_days	= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] : 	0;			// the sort days selection
 		$deleted	= (isset($selection_data['deleted'])) ? $selection_data['deleted'] : 		false;		// to view only deleted blogs
+		$custom_sql	= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 	'';			// here you can add in a custom section to the WHERE part of the query
 
 		// Setup some variables...
 		$blog_ids = array(); // this is what get's returned
-		$view_unapproved_sql = (check_blog_permissions('blog', 'approve', true)) ? '' : ' AND ( blog_approved = \'1\' OR user_id = \'' . $user->data['user_id'] . '\' )';
-		$sort_days_sql = ($sort_days != 0) ? ' AND blog_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '';
-		$user_permission_sql = build_permission_sql($user->data['user_id']);
-		$order_by_sql = ' ORDER BY ' . $order_by . ' ' . $order_dir;
-		$limit_sql = ($limit > 0) ? ' LIMIT ' . $start . ', ' . $limit : '';
 
-		if (check_blog_permissions('blog', 'undelete', true) && $deleted)
+		$sql_array = array(
+			'SELECT'	=> '*',
+			'FROM'		=> array(
+				BLOGS_TABLE	=> array('b'),
+			),
+			'ORDER_BY'	=> (($order_by != 'default') ? $order_by : 'blog_id') . ' ' . $order_dir,
+		);
+		$sql_where = array();
+
+		if (!$auth->acl_get('m_blogapprove'))
 		{
-			$view_deleted_sql = ' AND blog_deleted != \'0\'';
+			$sql_where[] = 'blog_approved = \'1\'';
 		}
-		else if (check_blog_permissions('blog', 'undelete', true))
+		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{
-			$view_deleted_sql = '';
+			$sql_where[] = 'blog_deleted != \'0\'';
 		}
-		else
+		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$view_deleted_sql = ' AND ( blog_deleted = \'0\' OR blog_deleted = \'' . $user->data['user_id'] . '\' )';
+			$sql_where[] = '( blog_deleted = \'0\' OR blog_deleted = \'' . $user->data['user_id'] . '\' )';
+		}
+		if ($sort_days != 0)
+		{
+			$sql_where[] = 'blog_time >= \'' . (time() - $sort_days * 86400) . '\'';
+		}
+		if ($custom_sql)
+		{
+			$sql_where[] = $custom_sql;
+		}
+		if (build_permission_sql($user->data['user_id']))
+		{
+			$sql_where[] = substr(build_permission_sql($user->data['user_id']), 5);
 		}
 
 		// make sure $id is an array for consistency
@@ -78,64 +95,23 @@ class blog_data
 		switch ($mode)
 		{
 			case 'user' : // select all the blogs by user(s)
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-							WHERE ' . $db->sql_in_set('user_id', $id) .
-								 $view_deleted_sql .
-									$view_unapproved_sql .
-										$sort_days_sql .
-											$user_permission_sql .
-												$order_by_sql .
-													$limit_sql;
+				$sql_where[] =  $db->sql_in_set('user_id', $id);
 				break;
 			case 'user_deleted' : // select all the deleted blogs by user(s)
-				$order_by_sql = ($order_by_sql != ' ORDER BY blog_id DESC') ? $order_by_sql : ' ORDER BY blog_deleted_time DESC';
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-							WHERE ' . $db->sql_in_set('user_id', $id) . '
-								AND blog_deleted != \'0\'' .
-									$view_unapproved_sql .
-										$sort_days_sql .
-											$user_permission_sql .
-												$order_by_sql .
-													$limit_sql;
+				if ($order_by == 'default')
+				{
+					$sql_array['ORDER_BY'] = 'blog_deleted_time' . ' ' . $order_dir;
+				}
+				$sql_where[] =  $db->sql_in_set('user_id', $id);
+				$sql_where[] =  'blog_deleted != \'0\'';
 				break;
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
-				$blogs_to_query = array();
-
-				// check if the blog already exists
-				foreach ($id as $i)
-				{
-					if (!array_key_exists($i, $this->blog) && !in_array($i, $blogs_to_query))
-					{
-						array_push($blogs_to_query, $i);
-					}
-					else
-					{
-						// since the blog was already queried once lets put it on the list of blog_ids that we grabbed that we will return later
-						array_push($blog_ids, $i);
-					}
-				}
-
-				if (count($blogs_to_query) == 0)
-				{
-					return $blog_ids;
-				}
-
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-						WHERE ' . $db->sql_in_set('blog_id', $blogs_to_query) .
-							$view_deleted_sql .
-								$view_unapproved_sql .
-									$sort_days_sql .
-										$user_permission_sql .
-											$order_by_sql;
+				$sql_where[] =  $db->sql_in_set('blog_id', $id);
+				$limit = 0;
 				break;
 			case 'recent' : // select recent blogs
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE .
-					$view_deleted_sql .
-						$view_unapproved_sql .
-							$sort_days_sql .
-								$user_permission_sql .
-									' ORDER BY blog_time DESC' .
-										$limit_sql;
+					$sql_array['ORDER_BY'] = 'blog_time DESC';
 				$sql = fix_where_sql($sql);
 				break;
 			case 'random' : // select random blogs
@@ -150,14 +126,7 @@ class blog_data
 				return $random_ids;
 				break;
 			case 'popular' : // select popular blogs.
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE .
-					$view_deleted_sql .
-						$view_unapproved_sql .
-							$sort_days_sql .
-								$user_permission_sql .
-									' ORDER BY blog_reply_count DESC, blog_read_count DESC' .
-									$limit_sql;
-				$sql = fix_where_sql($sql);
+				$sql_array['ORDER_BY'] = 'blog_reply_count DESC, blog_read_count DESC';
 				break;
 			case 'reported' : // select reported blogs
 				if (!$auth->acl_get('m_blogreport'))
@@ -165,11 +134,7 @@ class blog_data
 					return false;
 				}
 
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-					WHERE blog_reported = \'1\'' .
-						$sort_days_sql .
-							$order_by_sql .
-								$limit_sql;
+				$sql_where[] =  'blog_reported = \'1\'';
 				break;
 			case 'disapproved' : // select disapproved blogs
 				if (!$auth->acl_get('m_blogapprove'))
@@ -177,19 +142,26 @@ class blog_data
 					return false;
 				}
 
-				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-					WHERE blog_approved = \'0\'' .
-						$sort_days_sql .
-							$order_by_sql .
-								$limit_sql;
+				$sql_where[] =  'blog_approved = \'0\'';
 				break;
 			default :
 				return false;
 		}
 
-		$blog_plugins->plugin_do_arg_ref('blog_data_sql', $sql);
+		$temp = compact('sql_array', 'sql_where');
+		$blog_plugins->plugin_do_arg_ref('blog_data_sql', $temp);
+		extract($temp);
 
-		$result = $db->sql_query($sql);
+		$sql_array['WHERE'] = implode(' AND ', $sql_where);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		if ($limit)
+		{
+			$result = $db->sql_query_limit($sql, $limit, $start);
+		}
+		else
+		{
+			$result = $db->sql_query($sql);
+		}
 
 		while ($row = $db->sql_fetchrow($result))
 		{

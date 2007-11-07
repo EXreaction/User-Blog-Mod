@@ -14,10 +14,24 @@ if (!defined('IN_PHPBB'))
 }
 
 // Generate the breadcrumbs
-generate_blog_breadcrumbs($user->lang['SEARCH_BLOGS']);
+generate_blog_breadcrumbs($user->lang['SEARCH_BLOGS'], blog_url(false, false, false, array('page' => 'search')));
 page_header($user->lang['SEARCH_BLOGS']);
 
 $user->add_lang('search');
+
+// Is user able to search? Has search been disabled?
+if (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$config['load_search'])
+{
+	$template->assign_var('S_NO_SEARCH', true);
+	trigger_error('NO_SEARCH');
+}
+
+// Check search load limit
+if ($user->load && $config['limit_search_load'] && ($user->load > doubleval($config['limit_search_load'])))
+{
+	$template->assign_var('S_NO_SEARCH', true);
+	trigger_error('NO_SEARCH_TIME');
+}
 
 $keywords = request_var('keywords', '', true);
 $author = request_var('author', '', true);
@@ -42,7 +56,7 @@ if ($keywords || $author)
 			$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
 		}
 	}
-	$highlight = urlencode($hilit_words);
+	$highlight = urlencode($highlight_words);
 
 	if ($author)
 	{
@@ -67,12 +81,13 @@ if ($keywords || $author)
 		}
 	}
 
-	$blog_data->get_blog_data('blog', $blog_ids, array('limit' => 0));
-	$reply_data->get_reply_data('reply', $reply_ids, array('limit' => 0));
+	$blog_data->get_blog_data('blog', $blog_ids);
+	$reply_data->get_reply_data('reply', $reply_ids);
 	$user_data->get_user_data(false, true);
 	update_edit_delete();
 
 	$i = 0;
+	$matches = (count($blog_ids) + count($reply_ids));
 	foreach ($ids as $id)
 	{
 		if ($i < $start)
@@ -87,7 +102,15 @@ if ($keywords || $author)
 
 		if ($id['reply_id'] == 0)
 		{
-			$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data($blog_data->blog[$id['blog_id']]['user_id']));
+			if (isset($blog_data->blog[$id['blog_id']]))
+			{
+				$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data($blog_data->blog[$id['blog_id']]['user_id']));
+			}
+			else
+			{
+				// they don't have permission to view this blog...
+				$matches--;
+			}
 		}
 		else 
 		{
@@ -97,7 +120,6 @@ if ($keywords || $author)
 		$i++;
 	}
 
-	$matches = (count($blog_ids) + count($reply_ids));
 	$pagination = generate_blog_pagination(blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf, 'start' => '*start*'), array(), true), $matches, $limit, $start, false);
 
 	$template->assign_vars(array(

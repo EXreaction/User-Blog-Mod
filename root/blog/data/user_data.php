@@ -45,6 +45,11 @@ class user_data
 			$id = $this->user_queue;
 		}
 
+		$blog_plugins->plugin_do('user_data_start');
+
+		// this holds the user_id's we will query
+		$users_to_query = array();
+
 		if (!$username)
 		{
 			// if the $user_id isn't an array, make it one for consistency
@@ -57,15 +62,7 @@ class user_data
 			{
 				return;
 			}
-		}
 
-		$blog_plugins->plugin_do('user_data_start');
-
-		// this holds the user_id's we will query
-		$users_to_query = array();
-
-		if (!$username)
-		{
 			foreach ($id as $i)
 			{
 				if ( (!array_key_exists($i, $this->user)) && (!in_array($i, $users_to_query)) )
@@ -132,7 +129,7 @@ class user_data
 			// format the color correctly
 			$row['user_colour'] = get_username_string('colour', $user_id, $row['username'], $row['user_colour']);
 
-			// Status
+			// Online/Offline Status
 			$row['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
 	
 			// Avatar
@@ -177,7 +174,6 @@ class user_data
 		// if we did use the user_queue, reset it
 		if ($user_queue)
 		{
-			unset($this->user_queue);
 			$this->user_queue = array();
 		}
 
