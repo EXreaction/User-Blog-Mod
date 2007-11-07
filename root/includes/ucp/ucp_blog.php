@@ -30,7 +30,6 @@ class ucp_blog
 
 		define('IN_BLOG', true); // So the header does not try to reload these files
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/permissions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();
