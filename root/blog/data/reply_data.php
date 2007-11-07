@@ -134,7 +134,6 @@ class reply_data
 				}
 				break;
 			case 'page' :
-			die('page');
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = \'' . $id[0] . '\'' .
