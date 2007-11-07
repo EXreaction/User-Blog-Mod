@@ -11,11 +11,9 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* take a look at the add blog links function
-* handle user data make parsed list
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Search module - finish ACP
+* Search - finish ACP
 *
 * Polls
 *
@@ -43,7 +41,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.27_dev';
+$user_blog_version = '0.3.27';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

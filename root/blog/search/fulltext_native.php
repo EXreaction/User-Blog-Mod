@@ -405,13 +405,10 @@ class blog_fulltext_native extends blog_search
 	* @param	string		$fields			contains either titleonly (topic titles should be searched), msgonly (only message bodies should be searched), blog (only subject and body of blogs should be searched) or all (all post bodies and subjects should be searched)
 	* @param	string		$terms			is either 'all' (use query as entered, words without prefix should default to "have to be in field") or 'any' (ignore search query parts and just return all posts that contain any of the specified words)
 	* @param	int			$blog_id			is set to 0 or a blog id, if it is not 0 then only posts in this blog should be searched
-	* @param	int			$start			indicates the first index of the page
-	* @param	int			$per_page			number of ids each page is supposed to contain
-	* @return	boolean|int						total number of results
 	*
 	* @access	public
 	*/
-	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0, $start = 0, $per_page = 10)
+	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0)
 	{
 		global $config, $db;
 

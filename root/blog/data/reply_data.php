@@ -231,26 +231,26 @@ class reply_data
 		$blog_plugins->plugin_do('reply_handle_data_start');
 
 		// censor the text of the subject
-		$reply['reply_subject'] = censor_text($reply['reply_subject']);
+		$reply_subject = censor_text($reply['reply_subject']);
 
 		// Parse BBCode and prepare the message for viewing
 		$bbcode_options = (($reply['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($reply['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($reply['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-		$reply['reply_text'] = generate_text_for_display($reply['reply_text'], $reply['bbcode_uid'], $reply['bbcode_bitfield'], $bbcode_options);
+		$reply_text = generate_text_for_display($reply['reply_text'], $reply['bbcode_uid'], $reply['bbcode_bitfield'], $bbcode_options);
 
 		// For Highlighting
 		if ($highlight_match)
 		{
-			$reply['reply_subject'] = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply['reply_subject']);
-			$reply['reply_text'] = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply['reply_text']);
+			$reply_subject = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply_subject);
+			$reply_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply_text);
 		}
 
 		$replyrow = array(
 			'ID'				=> $id,
-			'TITLE'				=> censor_text($reply['reply_subject']),
+			'TITLE'				=> $reply_subject,
 			'DATE'				=> $user->format_date($reply['reply_time']),
 			'REPLY_EXTRA'		=> '',
 
-			'REPLY_MESSAGE'		=> $reply['reply_text'],
+			'REPLY_MESSAGE'		=> $reply_text,
 
 			'EDITED_MESSAGE'	=> $reply['edited_message'],
 			'EDIT_REASON'		=> $reply['edit_reason'],

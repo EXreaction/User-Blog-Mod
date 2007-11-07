@@ -229,6 +229,9 @@ $lang = array_merge($lang, array(
 
 	'SCHEMA_NOT_EXIST'						=> 'The database install schema file is missing.  Please download a fresh copy of this mod and reupload all required files.  If that does not fix the problem, contact EXreaction.',
 	'SEARCH_BLOGS'							=> 'Search Blogs',
+	'SEARCH_BLOG_ONLY'						=> 'Search Blogs Only',
+	'SEARCH_BLOG_TITLE_ONLY'				=> 'Search Titles Only',
+	'SEARCH_TITLE_MSG'						=> 'Search Titles and Message',
 	'SUBSCRIBE'								=> 'Subscribe',
 	'SUBSCRIBE_BLOG'						=> 'Subscribe to this Blog',
 	'SUBSCRIBE_BLOG_CONFIRM'				=> 'How would you like to recieve notices when a new reply is added to this blog?',
@@ -281,6 +284,22 @@ $lang = array_merge($lang, array(
 	'VIEW_PERMISSIONS'						=> 'Can read your blogs.',
 	'VIEW_PERMISSIONS_SINGLE'				=> 'Can read this blog.',
 	'VIEW_REPLY'							=> 'View Reply',
+
+	'WELCOME_MESSAGE'						=> 'Here are the current Author\'s Notes:
+[code]##	This is Alpha quality software.  Do not install unless you are willing to lose any
+##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
+##		I will take no resposibility for any damage with the use of this mod in a live environment.
+##
+##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
+##
+##	An upgrade script to upgrade from the blog mod 0.2.4b has been included.  However it is for testing purposes ONLY.
+##		To access it you need to go to blog.php?page=upgrade
+##		If you can not figure out how to use it yourself do NOT ask for help.  It is ONLY for testing.
+##
+##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
+##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.[/code]
+This message will be changed before the final version.',
+	'WELCOME_SUBJECT'						=> 'Welcome to the User Blog Mod!',
 ));
 
 ?>

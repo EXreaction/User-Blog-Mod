@@ -8,7 +8,7 @@
 */
 
 // check if the User Blog Mod is enabled
-if ($config['user_blog_enable'])
+if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 {
 	global $blog_plugins, $blog_plugins_path;
 

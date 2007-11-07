@@ -35,14 +35,15 @@ if ($user->load && $config['limit_search_load'] && ($user->load > doubleval($con
 
 $keywords = request_var('keywords', '', true);
 $author = request_var('author', '', true);
+$terms = request_var('terms', 'all');
+$sf = request_var('sf', '');
+
+$search_url = blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf), array(), true);
 
 if ($keywords || $author)
 {
 	include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
 	$blog_search = new blog_fulltext_native();
-
-	$terms = request_var('terms', 'all');
-	$sf = request_var('sf', '');
 
 	$blog_ids = $reply_ids = array();
 
@@ -66,7 +67,7 @@ if ($keywords || $author)
 	else
 	{
 		$blog_search->split_keywords($keywords, $terms);
-		$ids = $blog_search->keyword_search();
+		$ids = $blog_search->keyword_search($sf, $terms);
 	}
 
 	foreach ($ids as $id)
@@ -81,8 +82,14 @@ if ($keywords || $author)
 		}
 	}
 
-	$blog_data->get_blog_data('blog', $blog_ids);
-	$reply_data->get_reply_data('reply', $reply_ids);
+	if (count($blog_ids))
+	{
+		$blog_data->get_blog_data('blog', $blog_ids);
+	}
+	if (count($reply_ids))
+	{
+		$reply_data->get_reply_data('reply', $reply_ids);
+	}
 	$user_data->get_user_data(false, true);
 	update_edit_delete();
 
@@ -127,7 +134,7 @@ if ($keywords || $author)
 		'PAGE_NUMBER' 		=> on_page($matches, $limit, $start),
 		'TOTAL_POSTS'		=> ($matches == 1) ? $user->lang['REPLY_COUNT'] : sprintf($user->lang['REPLIES_COUNT'], $matches),
 		'SEARCH_MATCHES'	=> ($matches == 1) ? sprintf($user->lang['FOUND_SEARCH_MATCH'], $matches) : sprintf($user->lang['FOUND_SEARCH_MATCHES'], $matches),
-		'U_SEARCH_WORDS'	=> blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords), array(), true),
+		'U_SEARCH_WORDS'	=> $search_url,
 		'SEARCH_WORDS'		=> (($author) ? $author : $keywords),
 	));
 

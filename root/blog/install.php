@@ -13,10 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Generate the breadcrumbs
-generate_blog_urls();
-generate_blog_breadcrumbs($user->lang['INSTALL']);
-
 if (isset($config['user_blog_version']))
 {
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
@@ -48,6 +44,7 @@ if (confirm_box(true))
 	include("{$phpbb_root_path}blog/install/modules.$phpEx");
 	include("{$phpbb_root_path}blog/install/permissions.$phpEx");
 	include("{$phpbb_root_path}blog/install/config.$phpEx");
+	include("{$phpbb_root_path}blog/install/data.$phpEx");
 
 	/*
 	* Purge the cache and tell the user that we are finished.

@@ -427,7 +427,7 @@ class blog_data
 		}
 
 		// censor the text of the subject
-		$blog['blog_subject'] = censor_text($blog['blog_subject']);
+		$blog_subject = censor_text($blog['blog_subject']);
 
 		if (!$shortened)
 		{
@@ -439,7 +439,7 @@ class blog_data
 		// For Highlighting
 		if ($highlight_match)
 		{
-			$blog['blog_subject'] = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog['blog_subject']);
+			$blog_subject = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog_subject);
 			$blog_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog_text);
 		}
 
@@ -455,7 +455,7 @@ class blog_data
 			'BLOG_EXTRA'		=> '',
 			'PUB_DATE'			=> date('r', $blog['blog_time']),
 			'REPLIES'			=> ($reply_count != 1) ? ($reply_count == 0) ? sprintf($user->lang['BLOG_REPLIES'], $reply_count, '', '') : sprintf($user->lang['BLOG_REPLIES'], $reply_count, '<a href="' . blog_url($user_id, $id) . '#replies">', '</a>') : sprintf($user->lang['BLOG_REPLY'], '<a href="' . blog_url($user_id, $id) . '#replies">', '</a>'),
-			'TITLE'				=> $blog['blog_subject'],
+			'TITLE'				=> $blog_subject,
 			'USER_FULL'			=> $user_data->user[$user_id]['username_full'],
 			'VIEWS'				=> ($blog['blog_read_count'] != 1) ? sprintf($user->lang['BLOG_VIEWS'], ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count']) : $user->lang['BLOG_VIEW'],
 

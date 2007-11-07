@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.27_dev
+## MOD Version: 0.3.27
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -89,8 +89,8 @@
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
-## 2007-11-
-##		Alpha 27 DEV
+## 2007-11-06
+##		Alpha 27 Released
 ##			+ New Blog Search System!
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Please note that the automatic update script will take longer than usual because it needs to build a search index.
