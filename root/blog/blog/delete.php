@@ -68,7 +68,7 @@ if (confirm_box(true))
 		$db->sql_query($sql);
 
 		// Update the blog_count for the user
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\'';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\' AND blog_count > 0';
 		$db->sql_query($sql);
 	}
 

@@ -420,25 +420,25 @@ legend { top: -1.2em; }
 	{S_FORM_TOKEN}
 	</form>
 <!-- ENDIF -->
-<!-- IF STAGE == 2 or STAGE == 3 or STAGE == 4 or STAGE == 5 or STAGE == 6 or STAGE == 7 -->
-<!-- IF ERROR -->
-	<h2>{L_ERROR}</h2>
-	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+<!-- IF STAGE != 0 and STAGE != 1 -->
+	<!-- IF ERROR -->
+		<h2>{L_ERROR}</h2>
+		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
 
-	<a href="{U_BACK}">{L_RETURN_LAST_STEP}</a>
-<!-- ELSE -->
-<div class="successbox">
-	<h3>{L_SUCCESS}</h3>
-	<p>{MESSAGE}</p>
-	<!-- IF STAGE != 7 -->
-		<!-- IF S_NEXT_PART -->
-			<a href="{U_ACTION}">{L_NEXT_PART}</a>
-		<!-- ELSE -->
-			<a href="{U_ACTION}">{L_NEXT_STEP}</a>
+		<a href="{U_BACK}">{L_RETURN_LAST_STEP}</a>
+	<!-- ELSE -->
+	<div class="successbox">
+		<h3>{L_SUCCESS}</h3>
+		<p>{MESSAGE}</p>
+		<!-- IF not S_LAST_STAGE -->
+			<!-- IF S_NEXT_PART -->
+				<a href="{U_ACTION}">{L_NEXT_PART}</a>
+			<!-- ELSE -->
+				<a href="{U_ACTION}">{L_NEXT_STEP}</a>
+			<!-- ENDIF -->
 		<!-- ENDIF -->
+	</div>
 	<!-- ENDIF -->
-</div>
-<!-- ENDIF -->
 <!-- ENDIF -->
 
 			</div>

@@ -66,6 +66,30 @@ class blog_upgrade
 	}
 
 	/**
+	* Cleans the blog tables
+	*/
+	function clean_tables()
+	{
+		global $db;
+
+		if ($this->selected_options['truncate'])
+		{
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_REPLY_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_SUBSCRIPTION_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDLIST_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDMATCH_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_RESULTS_TABLE;
+
+			foreach ($sql_array as $sql)
+			{
+				$db->sql_query($sql);
+			}
+			unset($sql_array);
+		}
+	}
+
+	/**
 	* Outputs the list of available upgrade options
 	*/
 	function output_available_list()
@@ -99,6 +123,7 @@ class blog_upgrade
 			'db_user'		=> array('lang' => 'DB_USERNAME',		'type' => 'text:25:100',		'explain' => false,		'default' => ''),
 			'db_password'	=> array('lang' => 'DB_PASSWORD',		'type' => 'password:25:100',	'explain' => false,		'default' => ''),
 			'db_prefix'		=> array('lang' => 'TABLE_PREFIX',		'type' => 'text:25:100',		'explain' => false,		'default' => $table_prefix),
+			'limit'			=> array('lang' => 'LIMIT',				'type' => 'text:25:100',		'explain' => true,		'default' => 250),
 			'legend1'		=> 'STAGE_ADVANCED',
 			'truncate'		=> array('lang' => 'TRUNCATE_TABLES',	'type' => 'radio:yes_no',		'explain' => true,		'default' => true),
 			'blogs'			=> array('lang' => 'UPGRADE_BLOGS',		'type' => 'radio:yes_no',		'explain' => false,		'default' => true),
@@ -203,6 +228,12 @@ class blog_upgrade
 
 		$this->selected_options = array_merge($default_options, $this->selected_options);
 
+		$this->selected_options['limit'] = intval($this->selected_options['limit']);
+		if ($this->selected_options['limit'] < 1)
+		{
+			$error[] = $user->lang['LIMIT_INCORRECT'];
+		}
+
 		connect_check_db(true, $error, array('DRIVER' => substr($sql_db, 5)), $this->selected_options['db_prefix'], $this->selected_options['db_host'],$this->selected_options['db_user'], $this->selected_options['db_password'], $this->selected_options['db_name'], $this->selected_options['db_port'], false, false);
 
 		if (count($error) == 1 && $error[0] == '')
@@ -240,38 +271,252 @@ class blog_upgrade
 	*
 	* @param string $name - The name of the upgrade script we want to show the custom upgrade options for
 	*/
-	function run_blog_upgrade($name)
+	function run_upgrade($name, $stage)
 	{
-		global $phpbb_root_path, $phpEx, $old_db, $db, $config, $user, $auth;
+		global $phpbb_root_path, $phpEx, $old_db, $db, $config, $user, $auth, $start, $cache;
 
 		if (!isset($this->available_upgrades[$name]))
 		{
 			trigger_error('NO_MODE');
 		}
 
-		if ($this->selected_options['blogs'])
+		include($phpbb_root_path . 'blog/upgrade/' . $name . '.' .  $phpEx);
+	}
+
+	/**
+	* Reindex the blogs/replies
+	*/
+	function reindex($mode)
+	{
+		global $db, $start, $stage, $user, $phpbb_root_path, $phpEx;
+
+		if (!class_exists('blog_fulltext_native'))
 		{
-			$run_blog_upgrade = true;
-			include($phpbb_root_path . 'blog/upgrade/' . $name . '.' .  $phpEx);
+			include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
+		}
+		$blog_search = new blog_fulltext_native();
+
+		if ($mode == 'delete')
+		{
+			$blog_search->delete_index();
+		}
+		else if ($mode == 'blog')
+		{
+			$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
+				ORDER BY blog_id DESC
+					LIMIT ' . $start . ', ' . $this->selected_options['limit'];
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$blog_search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
+			}
+
+			$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE;
+			$result = $db->sql_query($sql);
+			$cnt = $db->sql_fetchrow($result);
+
+			if ($cnt['cnt'] >= $start + $this->selected_options['limit'])
+			{
+				$start += $this->selected_options['limit'];
+				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $stage, ($start / $this->selected_options['limit']));
+			}
+		}
+		else if ($mode == 'reply')
+		{
+			$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
+				ORDER BY reply_id DESC
+					LIMIT ' . $start . ', ' . $this->selected_options['limit'];
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$blog_search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
+			}
+
+			$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE;
+			$result = $db->sql_query($sql);
+			$cnt = $db->sql_fetchrow($result);
+
+			if ($cnt['cnt'] >= $start + $this->selected_options['limit'])
+			{
+				$start += $this->selected_options['limit'];
+				global $part_message;
+				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $stage, ($start / $this->selected_options['limit']));
+			}
 		}
 	}
 
 	/**
-	* Run the requested upgrade script
-	*
-	* @param string $name - The name of the upgrade script we want to show the custom upgrade options for
+	* Resync the data
 	*/
-	function run_remaining_upgrade($name)
+	function resync()
 	{
-		global $phpbb_root_path, $phpEx, $old_db, $db, $config, $user, $auth;
+		global $db, $user;
 
-		if (!isset($this->available_upgrades[$name]))
+		$blog_data = array();
+		$limit = $this->selected_options['limit'];
+		if (isset($_GET['start']))
 		{
-			trigger_error('NO_MODE');
+			$start = explode(':', $_GET['start']);
+			if (count($start) == 2)
+			{
+				$section = array_shift($start);
+				$start = $start[0];
+			}
+			else
+			{
+				$start = $section = 0;
+			}
+		}
+		else
+		{
+			$section = $start = 0;
 		}
 
-		$run_remaining_upgrade = true;
-		include($phpbb_root_path . 'blog/upgrade/' . $name . '.' .  $phpEx);
+		// Start by selecting all blog data that we will use
+		$sql = 'SELECT blog_id, blog_reply_count, blog_real_reply_count FROM ' . BLOGS_TABLE . ' ORDER BY blog_id ASC';
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			$blog_data[$row['blog_id']] = $row;
+		}
+		$db->sql_freeresult($result);
+		$blog_count = count($blog_data);
+
+		$i=0;
+		switch ($section)
+		{
+			case 0 :
+				foreach($blog_data as $row)
+				{
+					if ($i < $start)
+					{
+						continue;
+					}
+
+					if ($i > ($start + $limit))
+					{
+						break;
+					}
+
+					// count all the replies (an SQL query seems the easiest way to do it)
+					$sql = 'SELECT count(reply_id) AS total 
+						FROM ' . BLOGS_REPLY_TABLE . ' 
+							WHERE blog_id = \'' . $row['blog_id'] . '\' 
+								AND reply_deleted = \'0\' 
+								AND reply_approved = \'1\'';
+					$result = $db->sql_query($sql);
+					$total = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+
+					if ($total['total'] != $row['blog_reply_count'])
+					{
+						// Update the reply count
+						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+						$db->sql_query($sql);
+					}
+				}
+
+				$start += $limit;
+				if ($start >= $blog_count)
+				{
+					$section++;
+					$start = 0;
+				}
+
+				global $part_message;
+				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
+			break;
+			case 1 :
+				foreach($blog_data as $row)
+				{
+					if ($i < $start)
+					{
+						continue;
+					}
+
+					if ($i > ($start + $limit))
+					{
+						break;
+					}
+
+					// count all the replies (an SQL query seems the easiest way to do it)
+					$sql = 'SELECT count(reply_id) AS total 
+						FROM ' . BLOGS_REPLY_TABLE . ' 
+							WHERE blog_id = \'' . $row['blog_id'] . '\'';
+					$result = $db->sql_query($sql);
+					$total = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+
+					if ($total['total'] != $row['blog_real_reply_count'])
+					{
+						// Update the reply count
+						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+						$db->sql_query($sql);
+					}
+				}
+
+				$start += $limit;
+				if ($start >= $blog_count)
+				{
+					$section++;
+					$start = 0;
+				}
+
+				global $part_message;
+				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
+			break;
+			case 2 :
+				// select the users data we will need
+				$sql = 'SELECT user_id, blog_count FROM ' . USERS_TABLE . ' ORDER BY user_id DESC';
+				$result = $db->sql_query($sql);
+				while($row = $db->sql_fetchrow($result))
+				{
+					if ($i < $start)
+					{
+						continue;
+					}
+
+					if ($i > ($start + $limit))
+					{
+						break;
+					}
+
+					// count all the replies (an SQL query seems the easiest way to do it)
+					$sql2 = 'SELECT count(blog_id) AS total 
+						FROM ' . BLOGS_TABLE . ' 
+							WHERE user_id = \'' . $row['user_id'] . '\' 
+								AND blog_deleted = \'0\' 
+								AND blog_approved = \'1\'';
+					$result2 = $db->sql_query($sql2);
+					$total = $db->sql_fetchrow($result2);
+					$db->sql_freeresult($result2);
+
+					if ($total['total'] != $row['blog_count'])
+					{
+						// Update the reply count
+						$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = \'' . $total['total'] . '\' WHERE user_id = \'' . $row['user_id'] . '\'';
+						$db->sql_query($sql);
+					}
+				}
+				$db->sql_freeresult($result);
+
+				$start += $limit;
+				if ($start >= $blog_count)
+				{
+					$section++;
+					$start = 0;
+				}
+				else
+				{
+					global $part_message;
+					$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
+				}
+			break;
+		}
+
+		$temp = $section . ':' . $start;
+		global $start;
+		$start = $temp;
 	}
 }
 ?>

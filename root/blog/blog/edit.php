@@ -187,6 +187,10 @@ else // user submitted and there are no errors
 	{
 		$blog_plugins->plugin_do('blog_edit_delete');
 
+		// Update the blog_count for the user
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\' AND blog_count > 0';
+		$db->sql_query($sql);
+
 		handle_blog_cache('delete_blog', $user_id);
 
 		$message = $user->lang['BLOG_DELETED'] . '<br/><br/>';

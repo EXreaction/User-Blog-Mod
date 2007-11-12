@@ -15,6 +15,7 @@ if (!defined('IN_PHPBB'))
 
 $user->add_lang('mods/blog/upgrade');
 $user->add_lang('install');
+$user->add_lang('posting');
 
 generate_blog_urls();
 generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
@@ -27,11 +28,29 @@ include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
 $blog_upgrade = new blog_upgrade();
 
 $stage = request_var('stage', 0);
-$stages = array($user->lang['UPGRADE_LIST'], $user->lang['OPTIONS'], $user->lang['CONFIRM'], $user->lang['CONVERT_BLOGS'], $user->lang['CONVERT_REMAINING'], $user->lang['REINDEX'], $user->lang['RESYNC'], $user->lang['FINAL']);
+$start = request_var('start', 0);
 $error = array();
 $message = '';
-$limit = 250;
 
+$stages = array($user->lang['UPGRADE_LIST']);
+if ($stage > 0)
+{
+	$stages = array($user->lang['UPGRADE_LIST'], $user->lang['OPTIONS'], $user->lang['CONFIRM'], $user->lang['CLEANUP'], $user->lang['CONVERT_BLOGS']);
+	$stages = array_merge($stages, $blog_upgrade->available_upgrades[$mode]['custom_stages']);
+	$stages = array_merge($stages, array($user->lang['REINDEX_BLOGS'], $user->lang['REINDEX_REPLIES'], $user->lang['RESYNC'], $user->lang['FINAL']));
+
+	if ($stage > 2)
+	{
+		$blog_upgrade->confirm_upgrade_options($mode, $error);
+		if (count($error))
+		{
+			$error = array();
+			$stage = 2;
+		}
+	}
+}
+
+$stage_cnt = count($stages);
 switch ($stage)
 {
 	case 0:
@@ -45,98 +64,65 @@ switch ($stage)
 		$message = $user->lang['BLOG_PRE_CONVERT_COMPLETE'];
 	break;
 	case 3:
-		$blog_upgrade->confirm_upgrade_options($mode, $error);
-		if (!count($error))
-		{
-			if ($blog_upgrade->selected_options['truncate'])
-			{
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_TABLE;
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_REPLY_TABLE;
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_SUBSCRIPTION_TABLE;
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDLIST_TABLE;
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDMATCH_TABLE;
-				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_RESULTS_TABLE;
-
-				foreach ($sql_array as $sql)
-				{
-					$db->sql_query($sql);
-				}
-				unset($sql_array);
-			}
-
-			$blog_upgrade->old_db_connect();
-			$blog_upgrade->run_blog_upgrade($mode);
-
-			if (isset($part_message))
-			{
-				meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
-				$message = $part_message;
-			}
-			else
-			{
-				$message = $user->lang['BLOG_CONVERT_COMPLETE'];
-			}
-		}
-		else
-		{
-			$stage == 2;
-		}
-	break;
+		$blog_upgrade->clean_tables();
+		$blog_upgrade->reindex('delete');
+		$message = $user->lang['BLOG_CLEANUP_CONVERT_COMPLETE'];
+		break;
 	case 4:
-		$blog_upgrade->confirm_upgrade_options($mode, $error);
-		if (!count($error))
-		{
-			$blog_upgrade->old_db_connect();
-			$blog_upgrade->run_remaining_upgrade($mode);
-
-			$cache->destroy('_blog_upgrade');
-			if (isset($part_message))
-			{
-				meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
-				$message = $part_message;
-			}
-			else
-			{
-				$message = $user->lang['REMAINING_CONVERT_COMPLETE'];
-			}
-		}
-		else
-		{
-			$stage == 2;
-		}
+		$blog_upgrade->old_db_connect();
+		$blog_upgrade->run_upgrade($mode, $stage);
+		$message = $user->lang['BLOG_CONVERT_COMPLETE'];
 	break;
-	case 5:
-		include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
-		$blog_search = new blog_fulltext_native();
-		$blog_search->reindex();
-		if (isset($part_message))
-		{
-			meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
-			$message = $part_message;
-		}
-		else
-		{
-			$message = $user->lang['INDEX_CONVERT_COMPLETE'];
-		}
+	case ($stage_cnt - 4):
+		$blog_upgrade->reindex('blog');
+		$message = $user->lang['INDEX_BLOG_CONVERT_COMPLETE'];
 	break;
-	case 6:
-		resync_blog('all');
-		$cache->purge();
+	case ($stage_cnt - 3):
+		$blog_upgrade->reindex('reply');
+		$message = $user->lang['INDEX_REPLY_CONVERT_COMPLETE'];
+	break;
+	case ($stage_cnt - 2):
+		$blog_upgrade->resync();
 		$message = $user->lang['RESYNC_CONVERT_COMPLETE'];
 	break;
-	case 7:
+	case ($stage_cnt - 1):
+		$cache->purge();
 		$message = $user->lang['CONVERT_COMPLETE'];
 	break;
 	default :
-		trigger_error('NO_STAGE');
+		if ($stage > 4 && $stage < ($stage_cnt - 3))
+		{
+			$blog_upgrade->confirm_upgrade_options($mode, $error);
+			if (!count($error))
+			{
+				$blog_upgrade->old_db_connect();
+				$blog_upgrade->run_upgrade($mode, $stage);
+			}
+			else
+			{
+				$stage == 2;
+			}
+		}
+		else
+		{
+			trigger_error('NO_STAGE');
+		}
+}
+
+if (isset($part_message))
+{
+	meta_refresh(1, append_sid("{$phpbb_root_path}blog.$phpEx", "page=upgrade&amp;stage={$stage}&amp;mode={$mode}&amp;start={$start}"));
+	$message = $part_message;
 }
 
 $template->assign_vars(array(
-	'STAGE'		=> $stage,
-	'U_ACTION'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"),
-	'U_BACK'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage - 1) . '&amp;mode=' . $mode),
-	'ERROR'		=> (count($error)) ? implode('<br/>', $error) : '',
-	'MESSAGE'	=> $message,
+	'STAGE'			=> $stage,
+	'S_LAST_STAGE'	=> ($stage == ($stage_cnt - 1)) ? true : false,
+	'S_NEXT_PART'	=> (isset($part_message)) ? true : false,
+	'U_ACTION'		=> (isset($part_message)) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=upgrade&amp;stage={$stage}&amp;mode={$mode}&amp;start={$start}") : append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}"),
+	'U_BACK'		=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage - 1) . '&amp;mode=' . $mode),
+	'ERROR'			=> (count($error)) ? implode('<br/>', $error) : '',
+	'MESSAGE'		=> $message,
 ));
 
 $i = 0;

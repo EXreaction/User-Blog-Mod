@@ -63,12 +63,7 @@
 ## 2007-10-26 Alpha 22 Released
 ## 2007-10-30 Alpha 23 Released
 ## 2007-11-01 Alpha 24 Released
-## 2007-11-03
-##		Alpha 25 Released
-##			+ Now we should support all DB types (at least the ones that are natively supported by phpBB3).
-##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-03 Alpha 25 Released
 ## 2007-11-04
 ##		Alpha 26 Released
 ##			+ Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)
@@ -93,6 +88,10 @@
 ##				- Please note that the automatic update script will take longer than usual because it needs to build a search index.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-12
+##		Alpha 28a Released
+##			+ Fixing the upgrade script and some other misc stuff.  Upgrades using the upgrade script will now be (mostly) supported.
+##			+ To update, copy the new files over.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
