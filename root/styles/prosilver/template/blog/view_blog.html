@@ -55,7 +55,7 @@
 
 	<table style="width: 100%">
 		<tr>
-			<td style="width:240px; padding: 2px 2px; vertical-align: top;">
+			<td style="width: 240px; padding: 2px 2px; vertical-align: top;">
 				<!-- INCLUDE blog/left_menu.html -->
 			</td>
 			<td style="vertical-align: top; padding: 2px 2px;">
@@ -127,7 +127,7 @@
 
 							<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
 								<p class="rules">
-									<!-- IF blogrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{blogrow.U_APPROVE}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
+									<!-- IF blogrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <!-- IF blogrow.U_APPROVE --><a href="{blogrow.U_APPROVE}"><!-- ENDIF --><strong>{L_BLOG_UNAPPROVED}</strong><!-- IF blogrow.U_APPROVE --></a><!-- ENDIF --><!-- ENDIF -->
 									<!-- IF blogrow.S_REPORTED -->{REPORTED_IMG} <a href="{blogrow.U_REPORT}"><strong>{L_BLOG_REPORTED}</strong></a><!-- ENDIF -->
 								</p>
 							<!-- ENDIF -->

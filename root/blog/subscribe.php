@@ -164,7 +164,7 @@ else
 
 // Tell the template parser what template file to use
 $template->set_filenames(array(
-	'body' => 'blog_subscribe.html'
+	'body' => 'blog/blog_subscribe.html'
 ));
 
 /**

@@ -70,61 +70,68 @@ if ($keywords || $author)
 		$ids = $blog_search->keyword_search($sf, $terms);
 	}
 
-	foreach ($ids as $id)
+	if ($ids !== false)
 	{
-		if ($id['reply_id'] == 0)
+		foreach ($ids as $id)
 		{
-			$blog_ids[] = $id['blog_id'];
-		}
-		else
-		{
-			$reply_ids[] = $id['reply_id'];
-		}
-	}
-
-	if (count($blog_ids))
-	{
-		$blog_data->get_blog_data('blog', $blog_ids);
-	}
-	if (count($reply_ids))
-	{
-		$reply_data->get_reply_data('reply', $reply_ids);
-	}
-	$user_data->get_user_data(false, true);
-	update_edit_delete();
-
-	$i = 0;
-	$matches = (count($blog_ids) + count($reply_ids));
-	foreach ($ids as $id)
-	{
-		if ($i < $start)
-		{
-			$i++;
-			continue;
-		}
-		else if ($i >= ($start + $limit))
-		{
-			break;
-		}
-
-		if ($id['reply_id'] == 0)
-		{
-			if (isset($blog_data->blog[$id['blog_id']]))
+			if ($id['reply_id'] == 0)
 			{
-				$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data($blog_data->blog[$id['blog_id']]['user_id']));
+				$blog_ids[] = $id['blog_id'];
 			}
 			else
 			{
-				// they don't have permission to view this blog...
-				$matches--;
+				$reply_ids[] = $id['reply_id'];
 			}
 		}
-		else 
-		{
-			$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data($reply_data->reply[$id['reply_id']]['user_id']));
-		}
 
-		$i++;
+		if (count($blog_ids))
+		{
+			$blog_data->get_blog_data('blog', $blog_ids);
+		}
+		if (count($reply_ids))
+		{
+			$reply_data->get_reply_data('reply', $reply_ids);
+		}
+		$user_data->get_user_data(false, true);
+		update_edit_delete();
+
+		$i = 0;
+		foreach ($ids as $id)
+		{
+			if ($i < $start)
+			{
+				$i++;
+				continue;
+			}
+			else if ($i >= ($start + $limit))
+			{
+				break;
+			}
+
+			if ($id['reply_id'] == 0)
+			{
+				if (isset($blog_data->blog[$id['blog_id']]))
+				{
+					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data($blog_data->blog[$id['blog_id']]['user_id']));
+				}
+				else
+				{
+					// they don't have permission to view this blog...
+					$matches--;
+				}
+			}
+			else 
+			{
+				$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data($reply_data->reply[$id['reply_id']]['user_id']));
+			}
+
+			$i++;
+		}
+		$matches = (count($blog_ids) + count($reply_ids));
+	}
+	else
+	{
+		$matches = 0;
 	}
 
 	$pagination = generate_blog_pagination(blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf, 'start' => '*start*'), array(), true), $matches, $limit, $start, false);

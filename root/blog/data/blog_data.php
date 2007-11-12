@@ -62,7 +62,7 @@ class blog_data
 
 		if (!$auth->acl_get('m_blogapprove'))
 		{
-			$sql_where[] = 'blog_approved = \'1\'';
+			$sql_where[] = '(blog_approved = \'1\' OR user_id = \'' . $user->data['user_id'] . '\')';;
 		}
 		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{

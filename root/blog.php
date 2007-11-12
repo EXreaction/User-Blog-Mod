@@ -14,6 +14,8 @@
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Search - finish ACP
+* Memorable entry (like a sticky)
+* Information section - MCP
 *
 * Polls
 *
@@ -41,7 +43,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.27';
+$user_blog_version = '0.3.28';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

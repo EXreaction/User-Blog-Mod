@@ -18,7 +18,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		$user->add_lang('mods/blog/blog');
 
 		// include the functions & permissions file
-		include_once($phpbb_root_path . 'blog/functions.' . $phpEx);
+		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
 		$blog_plugins = new blog_plugins();

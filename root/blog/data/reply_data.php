@@ -137,8 +137,8 @@ class reply_data
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = \'' . $id[0] . '\'' .
-						$sort_days_sql .
-							$order_by_sql;
+						(($sort_days != 0) ? ' AND reply_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '') .
+							' ORDER BY ' . $order_by . ' ' . $order_dir;
 				$result = $db->sql_query($sql);
 				while ($row = $db->sql_fetchrow($result))
 				{

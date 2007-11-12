@@ -366,6 +366,7 @@ if (confirm_box(true))
 
 			$blog_search = new blog_fulltext_native();
 			$blog_search->reindex();
+		case '0.3.27' :
 	}
 
 	if (count($sql_array))

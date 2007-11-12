@@ -286,18 +286,16 @@ $lang = array_merge($lang, array(
 	'VIEW_REPLY'							=> 'View Reply',
 
 	'WELCOME_MESSAGE'						=> 'Here are the current Author\'s Notes:
-[code]##	This is Alpha quality software.  Do not install unless you are willing to lose any
+[code]## Author Notes:
+##	This is Alpha quality software.  Do not install unless you are willing to lose any
 ##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
 ##		I will take no resposibility for any damage with the use of this mod in a live environment.
 ##
 ##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
 ##
-##	An upgrade script to upgrade from the blog mod 0.2.4b has been included.  However it is for testing purposes ONLY.
-##		To access it you need to go to blog.php?page=upgrade
-##		If you can not figure out how to use it yourself do NOT ask for help.  It is ONLY for testing.
-##
 ##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
-##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.[/code]
+##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
+[/code]
 This message will be changed before the final version.',
 	'WELCOME_SUBJECT'						=> 'Welcome to the User Blog Mod!',
 ));

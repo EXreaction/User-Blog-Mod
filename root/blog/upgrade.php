@@ -13,302 +13,145 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Was Cancel pressed? If so then redirect to the appropriate page
-if ($cancel)
-{
-	blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
-}
+$user->add_lang('mods/blog/upgrade');
+$user->add_lang('install');
 
-/*
-* CURRENT UPGRADE INFORMATION
-*
-* Since this is still in early development this script is not going to have any GUI.
-*  Once the mod gets further I will come back to this page and add a GUI and some much nicer stuff for upgrades.
-*
-* THIS ONLY SUPPORTS UPGRADES FROM 1 PREVIOUS BLOG SYSTEM - the blog mod 0.2.4b
-*
-* To test it comment out the trigger_error below, and enter the DB information below that. 
-*
-* TO DO -
-*  Add upgrade/ directory with upgrade scripts in, so a user can just drop a new upgrade script in and it will be autodetected & selectable
-*  Add GUI for from blog selection & old DB info
-*/
-
-// Generate the breadcrumbs
 generate_blog_urls();
-generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG']);
+generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
+page_header($user->lang['UPGRADE_BLOG']);
 
-// Comment out the following like to test the upgrade
-trigger_error('This page is only FOR TESTING.  Under no circumstances should you use this for the actual upgrade.<br/>There is absolutely no support for upgrades at this time.  If you are a tester who is willing to test the upgrade on a dev server please follow the instructions in blog/upgrade.php.');
+include($phpbb_root_path . 'blog/upgrade/upgrade.' . $phpEx);
+include($phpbb_root_path . 'blog/upgrade/functions.' .$phpEx);
+include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+$blog_upgrade = new blog_upgrade();
 
-// ----------------------- START Quick Settings ---------------------------------
-// Enter in your old DB information to test the upgrade
-$dbhost			= 'localhost';
-$dbuser			= 'root';
-$dbpassword		= '';
-$dbname			= 'phpbb3_blog';
-$dbtableprefix	= 'phpbb_';
+$stage = request_var('stage', 0);
+$stages = array($user->lang['UPGRADE_LIST'], $user->lang['OPTIONS'], $user->lang['CONFIRM'], $user->lang['CONVERT_BLOGS'], $user->lang['CONVERT_REMAINING'], $user->lang['REINDEX'], $user->lang['RESYNC'], $user->lang['FINAL']);
+$error = array();
+$message = '';
+$limit = 250;
 
-// Do you want to conver the friends/foes?
-$convert_friends_foes = false;
-
-// if this is set to true we do not insert any data into the database nor truncate the tables, we just test extracting the data and parsing everything.
-$test = true;
-// ----------------------- END Quick Settings ---------------------------------
-
-if (!class_exists('parse_message'))
+switch ($stage)
 {
-	include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-}
-
-$old_db = new $sql_db();
-if (!@$old_db->sql_connect($dbhost, $dbuser, $dbpassword, $dbname, false, true))
-{
-	trigger_error('Could not connect to Database.');
-}
-unset($dbpassword);
-
-$sql_array = array();
-
-$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_TABLE;
-$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_REPLY_TABLE;
-$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_SUBSCRIPTION_TABLE;
-
-foreach ($sql_array as $sql)
-{
-	echo 'Current Query: ' . $sql . '<br/>';
-	flush();
-	if (!$test)
-	{
-		$db->sql_query($sql);
-	}
-}
-unset($sql_array);
-
-$bb2_users = $bb3_users = array();
-$sql = 'SELECT user_id, username FROM ' . $dbtableprefix . 'users';
-echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-flush();
-$result = $old_db->sql_query($sql);
-while($row = $old_db->sql_fetchrow($result))
-{
-	$bb2_users[$row['user_id']] = $row['username'];
-}
-$old_db->sql_freeresult($result);
-
-$sql = 'SELECT user_id, username FROM ' . USERS_TABLE;
-echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-flush();
-$result = $db->sql_query($sql);
-while($row = $db->sql_fetchrow($result))
-{
-	$bb3_users[$row['username']] = $row['user_id'];
-}
-$db->sql_freeresult($result);
-
-$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_entries';
-echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-flush();
-$result = $old_db->sql_query($sql);
-while ($row = $old_db->sql_fetchrow($result))
-{
-	echo 'On row ' . $row['entry_id'] . '<br/>';
-	flush();
-
-	$text = utf8_normalize_nfc($row['entry_text']);
-	decode_message($text, $row['bbcode_uid']);
-	$message_parser = new parse_message();
-	$message_parser->message = $text;
-	$message_parser->parse($row['enable_bbcode'], 1, $row['enable_smilies']);
-
-	if ($row['entry_poster_id'] == -1)
-	{
-		$user_id = 1;
-	}
-	else
-	{
-		if (array_key_exists($bb2_users[$row['entry_poster_id']], $bb3_users))
+	case 0:
+		$blog_upgrade->output_available_list();
+	break;
+	case 1:
+		$blog_upgrade->output_upgrade_options($mode);
+	break;
+	case 2:
+		$blog_upgrade->confirm_upgrade_options($mode, $error);
+		$message = $user->lang['BLOG_PRE_CONVERT_COMPLETE'];
+	break;
+	case 3:
+		$blog_upgrade->confirm_upgrade_options($mode, $error);
+		if (!count($error))
 		{
-			$user_id = $bb3_users[$bb2_users[$row['entry_poster_id']]];
+			if ($blog_upgrade->selected_options['truncate'])
+			{
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_TABLE;
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_REPLY_TABLE;
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_SUBSCRIPTION_TABLE;
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDLIST_TABLE;
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDMATCH_TABLE;
+				$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_RESULTS_TABLE;
+
+				foreach ($sql_array as $sql)
+				{
+					$db->sql_query($sql);
+				}
+				unset($sql_array);
+			}
+
+			$blog_upgrade->old_db_connect();
+			$blog_upgrade->run_blog_upgrade($mode);
+
+			if (isset($part_message))
+			{
+				meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
+				$message = $part_message;
+			}
+			else
+			{
+				$message = $user->lang['BLOG_CONVERT_COMPLETE'];
+			}
 		}
 		else
 		{
-			$user_id = 1;
+			$stage == 2;
 		}
-	}
-
-	$sql_array = array(
-		'blog_id'				=> $row['entry_id'],
-		'user_id'				=> $user_id,
-		'user_ip'				=> '0.0.0.0',
-		'blog_subject'			=> utf8_normalize_nfc($row['entry_subject']),
-		'blog_text'				=> $message_parser->message,
-		'blog_checksum'			=> md5($message_parser->message),
-		'blog_time'				=> $row['entry_time'],
-		'enable_bbcode'			=> $row['enable_bbcode'],
-		'enable_smilies'		=> $row['enable_smilies'],
-		'enable_magic_url'		=> 1,
-		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-		'bbcode_uid'			=> $message_parser->bbcode_uid,
-		'blog_deleted'			=> ($row['entry_deleted']) ? $row['entry_poster_id'] : 0,
-		'blog_read_count'		=> $row['entry_views'],
-		'blog_edit_reason'		=> '',
-		'perm_guest'			=> (($row['entry_access'] == 0) ? 1 : 0),
-		'perm_registered'		=> (($row['entry_access'] == 0 || $row['entry_access'] == 1) ? 2 : 0),
-		'perm_foe'				=> 0,
-		'perm_friend'			=> (($row['entry_access'] == 0 || $row['entry_access'] == 1 || $row['entry_access'] == 2) ? 2 : 0),
-	);
-
-	$sql2 = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
-	echo 'Current Query: ' . $sql2 . '<br/>';
-	flush();
-
-	if (!$test)
-	{
-		$db->sql_query($sql2);
-	}
-
-	unset($text);
-	unset($message_parser);
-	unset($sql_array);
-
-	echo '<br/>';
-}
-
-$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_replies';
-echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-flush();
-$result = $old_db->sql_query($sql);
-while ($row = $old_db->sql_fetchrow($result))
-{
-	echo 'On row ' . $row['entry_id'] . '<br/>';
-	flush();
-
-	$text = utf8_normalize_nfc($row['reply_text']);
-	decode_message($text, $row['bbcode_uid']);
-	$message_parser = new parse_message();
-	$message_parser->message = $text;
-	$message_parser->parse($row['enable_bbcode'], 1, $row['enable_smilies']);
-
-	if ($row['poster_id'] == -1)
-	{
-		$user_id = 1;
-	}
-	else
-	{
-		if (array_key_exists($bb2_users[$row['poster_id']], $bb3_users))
+	break;
+	case 4:
+		$blog_upgrade->confirm_upgrade_options($mode, $error);
+		if (!count($error))
 		{
-			$user_id = $bb3_users[$bb2_users[$row['poster_id']]];
+			$blog_upgrade->old_db_connect();
+			$blog_upgrade->run_remaining_upgrade($mode);
+
+			$cache->destroy('_blog_upgrade');
+			if (isset($part_message))
+			{
+				meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
+				$message = $part_message;
+			}
+			else
+			{
+				$message = $user->lang['REMAINING_CONVERT_COMPLETE'];
+			}
 		}
 		else
 		{
-			$user_id = 1;
+			$stage == 2;
 		}
-	}
-
-	$sql_array = array(
-		'reply_id'				=> $row['reply_id'],
-		'blog_id'				=> $row['entry_id'],
-		'user_id'				=> $user_id,
-		'user_ip'				=> '0.0.0.0',
-		'reply_subject'			=> utf8_normalize_nfc($row['post_subject']),
-		'reply_text'			=> $message_parser->message,
-		'reply_checksum'		=> md5($message_parser->message),
-		'reply_time'			=> $row['post_time'],
-		'enable_bbcode'			=> $row['enable_bbcode'],
-		'enable_smilies'		=> $row['enable_smilies'],
-		'enable_magic_url'		=> 1,
-		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-		'bbcode_uid'			=> $message_parser->bbcode_uid,
-		'reply_edit_reason'		=> '',
-	);
-
-	$sql2 = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
-	echo 'Current Query: ' . $sql2 . '<br/>';
-	flush();
-
-	if (!$test)
-	{
-		$db->sql_query($sql2);
-	}
-
-	unset($text);
-	unset($message_parser);
-	unset($sql_array);
-
-	echo '<br/>';
+	break;
+	case 5:
+		include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
+		$blog_search = new blog_fulltext_native();
+		$blog_search->reindex();
+		if (isset($part_message))
+		{
+			meta_refresh(2, append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"));
+			$message = $part_message;
+		}
+		else
+		{
+			$message = $user->lang['INDEX_CONVERT_COMPLETE'];
+		}
+	break;
+	case 6:
+		resync_blog('all');
+		$cache->purge();
+		$message = $user->lang['RESYNC_CONVERT_COMPLETE'];
+	break;
+	case 7:
+		$message = $user->lang['CONVERT_COMPLETE'];
+	break;
+	default :
+		trigger_error('NO_STAGE');
 }
 
-if ($convert_friends_foes)
+$template->assign_vars(array(
+	'STAGE'		=> $stage,
+	'U_ACTION'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage + 1) . "&amp;mode={$mode}&amp;start={$start}"),
+	'U_BACK'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade&amp;stage=' . ($stage - 1) . '&amp;mode=' . $mode),
+	'ERROR'		=> (count($error)) ? implode('<br/>', $error) : '',
+	'MESSAGE'	=> $message,
+));
+
+$i = 0;
+foreach($stages as $st)
 {
-	$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_blocked';
-	echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-	flush();
-	$result = $old_db->sql_query($sql);
-	while ($row = $old_db->sql_fetchrow($result))
-	{
-		if (array_key_exists($bb2_users[$row['owner_id']], $bb3_users))
-		{
-			$user_id = $bb3_users[$bb2_users[$row['owner_id']]];
-		}
+	$template->assign_block_vars('l_block1', array(
+		'S_SELECTED'		=> ($i == $stage) ? true : false,
+		'U_TITLE'			=> ($i <= $stage) ? append_sid("{$phpbb_root_path}blog.$phpEx", "page=upgrade&amp;stage={$i}&amp;mode={$mode}") : '#',
+		'L_TITLE'			=> $st,
+	));
 
-		if (array_key_exists($bb2_users[$row['blocked_id']], $bb3_users))
-		{
-			$zebra_id = $bb3_users[$bb2_users[$row['blocked_id']]];
-		}
-
-		if (isset($user_id) && isset($zebra_id))
-		{
-			$sql_ary = array(
-				'user_id'	=> $user_id,
-				'zebra_id'	=> $zebra_id,
-				'friend'	=> 0,
-				'foe'		=> 1,
-			);
-
-			$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-		}
-
-		unset($user_id, $zebra_id);
-	}
-
-	$sql = 'SELECT * FROM ' . $dbtableprefix . 'weblog_friends';
-	echo '<br/>Current Query: ' . $sql . '<br/><br/>';
-	flush();
-	$result = $old_db->sql_query($sql);
-	while ($row = $old_db->sql_fetchrow($result))
-	{
-		if (array_key_exists($bb2_users[$row['owner_id']], $bb3_users))
-		{
-			$user_id = $bb3_users[$bb2_users[$row['owner_id']]];
-		}
-
-		if (array_key_exists($bb2_users[$row['friend_id']], $bb3_users))
-		{
-			$zebra_id = $bb3_users[$bb2_users[$row['friend_id']]];
-		}
-
-		if (isset($user_id) && isset($zebra_id))
-		{
-			$sql_ary = array(
-				'user_id'	=> $user_id,
-				'zebra_id'	=> $zebra_id,
-				'friend'	=> 1,
-				'foe'		=> 0,
-			);
-
-			$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-		}
-
-		unset($user_id, $zebra_id);
-	}
+	$i++;
 }
 
-echo 'Resyncing the User Blog Mod, this may take a while.<br/><br/>';
-flush();
-resync_blog('all');
-
-echo 'Done with the upgrade!';
+$template->set_filenames(array(
+	'body' => 'blog/upgrade.html'
+));
 ?>

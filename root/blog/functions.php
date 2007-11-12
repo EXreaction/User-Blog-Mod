@@ -153,7 +153,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			// We will be replacing spaces and dashes in the url with an underscore.  Just so things don't get screwed up if the user has something like " start-10" in the title. :P
 			$match = array(' ', '-');
-			$replace = array('_', '_');
+			$title_match ='/(&amp;|&lt;|&gt;|&quot;|[^a-zA-Z0-9\s_])/'; // Replace HTML Entities, and non alphanumeric/space/underscore characters
 			$replace_page = true; // match everything except the page if this is set to false
 
 			if (!isset($url_data['page']))
@@ -187,11 +187,11 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				{
 					if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))
 					{
-						$url_data['mode'] = utf8_clean_string($reply_data->reply[$reply_id]['reply_subject']);
+						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $reply_data->reply[$reply_id]['reply_subject']));
 					}
 					else if (array_key_exists('reply_subject', $extra_data))
 					{
-						$url_data['mode'] = utf8_clean_string($extra_data['reply_subject']);
+						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['reply_subject']));
 					}
 				}
 			}
@@ -202,11 +202,11 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				{
 					if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
 					{
-						$url_data['mode'] = utf8_clean_string($blog_data->blog[$blog_id]['blog_subject']);
+						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $blog_data->blog[$blog_id]['blog_subject']));
 					}
 					else if (array_key_exists('blog_subject', $extra_data))
 					{
-						$url_data['mode'] = utf8_clean_string($extra_data['blog_subject']);
+						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['blog_subject']));
 					}
 				}
 			}
@@ -224,7 +224,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 					{
 						continue;
 					}
-					$extras .= '_' . str_replace($match, $replace, $name) . '-' . str_replace($match, $replace, $value);
+					$extras .= '_' . str_replace($match, '_', $name) . '-' . str_replace($match, '_', $value);
 				}
 			}
 
@@ -238,12 +238,12 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			{
 				if ($replace_page)
 				{
-					$url_data['page'] = str_replace($match, $replace, $url_data['page']);
+					$url_data['page'] = str_replace($match, '_', $url_data['page']);
 				}
 
 				if (isset($url_data['mode']))
 				{
-					$url_data['mode'] = str_replace($match, $replace, $url_data['mode']);
+					$url_data['mode'] = str_replace($match, '_', $url_data['mode']);
 					$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
 				}
 				else
