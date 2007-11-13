@@ -64,12 +64,7 @@
 ## 2007-10-30 Alpha 23 Released
 ## 2007-11-01 Alpha 24 Released
 ## 2007-11-03 Alpha 25 Released
-## 2007-11-04
-##		Alpha 26 Released
-##			+ Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)
-##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-04 Alpha 26 Released
 ## 2007-11-06
 ##		Alpha 27 Released
 ##			+ New Blog Search System!
@@ -91,6 +86,10 @@
 ## 2007-11-12
 ##		Alpha 28a Released
 ##			+ Fixing the upgrade script and some other misc stuff.  Upgrades using the upgrade script will now be (mostly) supported.
+##			+ To update, copy the new files over.
+## 2007-11-13
+##		Alpha 28b Released
+##			+ Some more changes to the Upgrade script.
 ##			+ To update, copy the new files over.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
