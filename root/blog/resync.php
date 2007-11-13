@@ -13,13 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Was Cancel pressed? If so then redirect to the appropriate page
-if ($cancel)
-{
-	blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
-}
-
-
 // Setup the page header and sent the title of the page that will go into the browser header
 page_header($user->lang['RESYNC_BLOG']);
 

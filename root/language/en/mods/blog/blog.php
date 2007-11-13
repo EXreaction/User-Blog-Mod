@@ -221,6 +221,7 @@ $lang = array_merge($lang, array(
 	'RESYNC_BLOG'							=> 'Synchronise Blog',
 	'RESYNC_BLOG_CONFIRM'					=> 'Are you sure you want to synchronise all of the blog data?  This may take a while.',
 	'RESYNC_BLOG_SUCCESS'					=> 'Blog data has been successfully synchronised.',
+	'RESYNC_BLOG_SUCESS'					=> 'The blog has been successfully resyncronised.',
 	'RESYNC_PERMISSIONS'					=> 'Resync Permissions',
 	'RESYNC_PERMISSIONS_EXPLAIN'			=> 'Check this if you want to resync all blogs to have the permissions set above.',
 	'RETURN_BLOG_MAIN'						=> '%sReturn to %s\'s main blog page%s',

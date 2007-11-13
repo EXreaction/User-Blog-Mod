@@ -271,24 +271,29 @@ class blog_upgrade
 	*
 	* @param string $name - The name of the upgrade script we want to show the custom upgrade options for
 	*/
-	function run_upgrade($name, $stage)
+	function run_upgrade($name)
 	{
-		global $phpbb_root_path, $phpEx, $old_db, $db, $config, $user, $auth, $start, $cache;
+		global $phpbb_root_path, $phpEx, $old_db, $db, $config, $user, $auth, $cache;
+		global $part, $part_cnt, $section, $section_cnt;
 
 		if (!isset($this->available_upgrades[$name]))
 		{
 			trigger_error('NO_MODE');
 		}
 
+		$run_upgrade = true; // checked in the file
 		include($phpbb_root_path . 'blog/upgrade/' . $name . '.' .  $phpEx);
 	}
 
 	/**
 	* Reindex the blogs/replies
 	*/
-	function reindex($mode)
+	function reindex($mode = '')
 	{
-		global $db, $start, $stage, $user, $phpbb_root_path, $phpEx;
+		global $db, $user, $phpbb_root_path, $phpEx;
+		global $part, $part_cnt, $section, $section_cnt;
+
+		$section_cnt = 1;
 
 		if (!class_exists('blog_fulltext_native'))
 		{
@@ -300,47 +305,59 @@ class blog_upgrade
 		{
 			$blog_search->delete_index();
 		}
-		else if ($mode == 'blog')
+		else
 		{
-			$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-				ORDER BY blog_id DESC
-					LIMIT ' . $start . ', ' . $this->selected_options['limit'];
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
+			if ($section == 0)
 			{
-				$blog_search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
+				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
+					ORDER BY blog_id DESC
+						LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$blog_search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
+				}
+
+				$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE;
+				$result = $db->sql_query($sql);
+				$cnt = $db->sql_fetchrow($result);
+
+				if ($cnt['cnt'] >= (($part + 1) * $this->selected_options['limit']))
+				{
+					$part++;
+					$part_cnt = ceil($cnt['cnt'] / $this->selected_options['limit']);
+				}
+				else
+				{
+					$part = 0;
+					$section++;
+				}
 			}
-
-			$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE;
-			$result = $db->sql_query($sql);
-			$cnt = $db->sql_fetchrow($result);
-
-			if ($cnt['cnt'] >= $start + $this->selected_options['limit'])
+			else
 			{
-				$start += $this->selected_options['limit'];
-				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $stage, ($start / $this->selected_options['limit']));
-			}
-		}
-		else if ($mode == 'reply')
-		{
-			$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-				ORDER BY reply_id DESC
-					LIMIT ' . $start . ', ' . $this->selected_options['limit'];
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$blog_search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
-			}
+				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
+					ORDER BY reply_id DESC
+						LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$blog_search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
+				}
 
-			$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE;
-			$result = $db->sql_query($sql);
-			$cnt = $db->sql_fetchrow($result);
+				$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE;
+				$result = $db->sql_query($sql);
+				$cnt = $db->sql_fetchrow($result);
 
-			if ($cnt['cnt'] >= $start + $this->selected_options['limit'])
-			{
-				$start += $this->selected_options['limit'];
-				global $part_message;
-				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $stage, ($start / $this->selected_options['limit']));
+				if ($cnt['cnt'] >= (($part + 1) * $this->selected_options['limit']))
+				{
+					$part++;
+					$part_cnt = ceil($cnt['cnt'] / $this->selected_options['limit']);
+				}
+				else
+				{
+					$part = 0;
+					$section++;
+				}
 			}
 		}
 	}
@@ -351,26 +368,12 @@ class blog_upgrade
 	function resync()
 	{
 		global $db, $user;
+		global $part, $part_cnt, $section, $section_cnt;
 
 		$blog_data = array();
+		$start = ($part * $this->selected_options['limit']);
 		$limit = $this->selected_options['limit'];
-		if (isset($_GET['start']))
-		{
-			$start = explode(':', $_GET['start']);
-			if (count($start) == 2)
-			{
-				$section = array_shift($start);
-				$start = $start[0];
-			}
-			else
-			{
-				$start = $section = 0;
-			}
-		}
-		else
-		{
-			$section = $start = 0;
-		}
+		$section_cnt = 3;
 
 		// Start by selecting all blog data that we will use
 		$sql = 'SELECT blog_id, blog_reply_count, blog_real_reply_count FROM ' . BLOGS_TABLE . ' ORDER BY blog_id ASC';
@@ -415,16 +418,6 @@ class blog_upgrade
 						$db->sql_query($sql);
 					}
 				}
-
-				$start += $limit;
-				if ($start >= $blog_count)
-				{
-					$section++;
-					$start = 0;
-				}
-
-				global $part_message;
-				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
 			break;
 			case 1 :
 				foreach($blog_data as $row)
@@ -454,16 +447,6 @@ class blog_upgrade
 						$db->sql_query($sql);
 					}
 				}
-
-				$start += $limit;
-				if ($start >= $blog_count)
-				{
-					$section++;
-					$start = 0;
-				}
-
-				global $part_message;
-				$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
 			break;
 			case 2 :
 				// select the users data we will need
@@ -499,24 +482,19 @@ class blog_upgrade
 					}
 				}
 				$db->sql_freeresult($result);
-
-				$start += $limit;
-				if ($start >= $blog_count)
-				{
-					$section++;
-					$start = 0;
-				}
-				else
-				{
-					global $part_message;
-					$part_message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, ($start / $limit));
-				}
 			break;
 		}
 
-		$temp = $section . ':' . $start;
-		global $start;
-		$start = $temp;
+		if ($blog_count >= (($part + 1) * $this->selected_options['limit']))
+		{
+			$part++;
+			$part_cnt = ceil($blog_count / $this->selected_options['limit']);
+		}
+		else
+		{
+			$part = 0;
+			$section++;
+		}
 	}
 }
 ?>

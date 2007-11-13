@@ -47,8 +47,8 @@ class user_data
 
 		$blog_plugins->plugin_do('user_data_start');
 
-		// this holds the user_id's we will query
-		$users_to_query = array();
+		// this holds the user_id's we will query, always grab the anonymous user
+		$users_to_query = array(1);
 
 		if (!$username)
 		{
@@ -67,7 +67,7 @@ class user_data
 			{
 				if ( (!array_key_exists($i, $this->user)) && (!in_array($i, $users_to_query)) )
 				{
-					array_push($users_to_query, $i);
+					$users_to_query[] = $i;
 				}
 			}
 
@@ -203,6 +203,17 @@ class user_data
 			else
 			{
 				return false;
+			}
+		}
+		else
+		{
+			// replace any non-existing users with the anonymous user.
+			foreach ($id as $i)
+			{
+				if (!array_key_exists($i, $this->user))
+				{
+					$this->user[$i] = $this->user[1];
+				}
 			}
 		}
 	}

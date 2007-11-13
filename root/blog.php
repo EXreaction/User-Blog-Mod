@@ -11,6 +11,7 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* Search list - display newest first?
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Search - finish ACP
@@ -108,13 +109,13 @@ switch ($page)
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search
+	case 'resync' : // to resync the blog data
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 	// no break
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for developmental purposes
-	case 'resync' : // to resync the blog data
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;

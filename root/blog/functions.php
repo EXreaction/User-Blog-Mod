@@ -168,7 +168,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				}
 				else if ($user_id != false && !empty($user_data))
 				{
-					if (!array_key_exists($user_id, $user_data->user))
+					if (!isset($user_data->user[$user_id]))
 					{
 						$user_data->get_user_data($user_id);
 					}
