@@ -102,6 +102,8 @@ CREATE TABLE phpbb_blogs_reply (
 )
 /
 
+CREATE INDEX phpbb_blogs_reply_blog_id ON phpbb_blogs_reply (blog_id)
+/
 CREATE INDEX phpbb_blogs_reply_user_id ON phpbb_blogs_reply (user_id)
 /
 CREATE INDEX phpbb_blogs_reply_user_ip ON phpbb_blogs_reply (user_ip)

@@ -66,8 +66,8 @@ if ($keywords || $author)
 	}
 	else
 	{
-		$blog_search->split_keywords($keywords, $terms);
-		$ids = $blog_search->keyword_search($sf, $terms);
+		$blog_search->split_keywords($keywords, $terms, false, $start, $limit);
+		$ids = $blog_search->keyword_search($sf, $terms, 0, $start, $limit);
 	}
 
 	if ($ids !== false)
@@ -152,7 +152,7 @@ if ($keywords || $author)
 else
 {
 	$template->assign_vars(array(
-		'U_BLOG_SEARCH'	=> blog_url(false, false, false, array('page' => 'search')),
+		'U_BLOG_SEARCH'	=> blog_url(false, false, false, array('page' => 'search'), array(), true),
 	));
 
 	$template->set_filenames(array(

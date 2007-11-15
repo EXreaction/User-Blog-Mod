@@ -32,11 +32,6 @@ if ($user_blog_version == $config['user_blog_version'])
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
-if (strpos($user_blog_version, 'dev'))
-{
-	trigger_error('Automatic Updating is disabled for Dev versions.');
-}
-
 if (confirm_box(true))
 {
 	$sql_array = array();
@@ -86,17 +81,7 @@ if (confirm_box(true))
 			set_config('user_blog_always_show_blog_url', 0, 0);
 		case 'A10' :
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . ' DROP blog_rating, DROP blog_num_ratings';
-
-			$blog_permissions = array(
-				'local'      => array(),
-				'global'   => array(
-					'u_blognocaptcha')
-			);
-			$auth_admin->acl_add_option($blog_permissions);
-
-			set_config('user_blog_founder_all_perm', 1, 0);
 		case 'A11' :
-			set_config('user_blog_force_prosilver', 0, 0);
 			set_config('user_blog_subscription_enabled', 1, 0);
 
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_SUBSCRIPTION_TABLE . ' DROP PRIMARY KEY ,
@@ -105,44 +90,6 @@ if (confirm_box(true))
 		case 'A12' :
 			set_config('user_blog_enable_zebra', 1, 0);
 			set_config('user_blog_enable_feeds', 1, 0);
-			set_config('user_blog_max_attachments', 3, 0);
-			set_config('user_blog_enable_attachments', 1, 0);
-
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-				attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-				physical_filename varchar(255) DEFAULT '' NOT NULL,
-				real_filename varchar(255) DEFAULT '' NOT NULL,
-				download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				attach_comment text NOT NULL,
-				extension varchar(100) DEFAULT '' NOT NULL,
-				mimetype varchar(100) DEFAULT '' NOT NULL,
-				filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-				filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-				PRIMARY KEY (attach_id),
-				KEY filetime (filetime),
-				KEY blog_id (blog_id),
-				KEY reply_id (reply_id),
-				KEY poster_id (poster_id),
-				KEY is_orphan (is_orphan)
-			);";
-
-			$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
-			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " ADD blog_attachment TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
-			$sql_array[] = 'ALTER TABLE ' . BLOGS_REPLY_TABLE . " ADD reply_attachment TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
-
-			$blog_permissions = array(
-				'local'      => array(),
-				'global'   => array(
-					'u_blogattach',
-					'u_blognolimitattach',
-					)
-			);
-			$auth_admin->acl_add_option($blog_permissions);
 		case 'A13' :
 		case 'A14' :
 			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_PLUGINS_TABLE . " (
@@ -185,62 +132,6 @@ if (confirm_box(true))
 				description_bbcode_uid varchar(8) NOT NULL default '',
 				PRIMARY KEY ( user_id )
 			);";
-
-			/**
-			* Insert UCP Modules
-			*/
-			$sql = 'SELECT MAX(right_id) AS top FROM ' . MODULES_TABLE . ' WHERE module_class = \'ucp\'';
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> '',
-				'module_class'		=> 'ucp',
-				'parent_id'			=> 0,
-				'left_id'			=> $row['top'] + 1,
-				'right_id'			=> $row['top'] + 6,
-				'module_langname'	=> 'BLOG',
-				'module_mode'		=> '',
-				'module_auth'		=> '',
-			);
-
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-			$parent_id = $db->sql_nextid();
-
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'ucp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 2,
-				'right_id'			=> $row['top'] + 3,
-				'module_langname'	=> 'UCP_BLOG_PERMISSIONS',
-				'module_mode'		=> 'ucp_blog_permissions',
-				'module_auth'		=> 'acl_u_blogpost',
-			);
-
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'ucp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 4,
-				'right_id'			=> $row['top'] + 5,
-				'module_langname'	=> 'UCP_BLOG_TITLE_DESCRIPTION',
-				'module_mode'		=> 'ucp_blog_title_description',
-				'module_auth'		=> 'acl_u_blogpost',
-			);
-
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
 		case 'A19' :
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " ADD perm_guest TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
 				ADD perm_registered TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '2',
@@ -266,35 +157,6 @@ if (confirm_box(true))
 		case '0.3.21' : // Changing the version number scheme
 			$sql_array[] = 'ALTER TABLE ' . BLOGS_USERS_TABLE . " ADD instant_redirect TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_founder_all_perm\'';
-
-			// Insert the new UCP Module
-			$sql = 'SELECT module_id, right_id FROM ' . MODULES_TABLE . '
-				WHERE module_class = \'ucp\'
-				AND module_langname = \'BLOG\'';
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-
-			$sql = 'UPDATE ' . MODULES_TABLE . ' SET right_id = right_id + 2
-				WHERE module_class = \'ucp\'
-				AND module_langname = \'BLOG\'';
-			$db->sql_query($sql);
-
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'ucp',
-				'parent_id'			=> $row['module_id'],
-				'left_id'			=> $row['right_id'],
-				'right_id'			=> $row['right_id'] + 1,
-				'module_langname'	=> 'UCP_BLOG_SETTINGS',
-				'module_mode'		=> 'ucp_blog_settings',
-				'module_auth'		=> 'acl_u_blogpost',
-			);
-
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
 		case '0.3.22' :
 		case '0.3.23' :
 		case '0.3.24' :
@@ -367,6 +229,7 @@ if (confirm_box(true))
 			$blog_search = new blog_fulltext_native();
 			$blog_search->reindex();
 		case '0.3.27' :
+		case '0.3.28' :
 	}
 
 	if (count($sql_array))

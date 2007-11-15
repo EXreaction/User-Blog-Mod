@@ -148,8 +148,13 @@ class blog_plugins
 			trigger_error('PLUGIN_ALREADY_INSTALLED');
 		}
 
+		include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+		include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
 		include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
 		$auth_admin = new auth_admin();
+		$db_tool = new phpbb_db_tools($db);
+		$dbmd = get_available_dbms($dbms);
+		define('PLUGIN_INSTALL', true);
 
 		include($blog_plugins_path . $which . '/install.' . $phpEx);
 
@@ -173,6 +178,14 @@ class blog_plugins
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
 		}
+
+		include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+		include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+		include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+		$auth_admin = new auth_admin();
+		$db_tool = new phpbb_db_tools($db);
+		$dbmd = get_available_dbms($dbms);
+		define('PLUGIN_UNINSTALL', true);
 
 		include($blog_plugins_path . $which . '/uninstall.' . $phpEx);
 
@@ -215,6 +228,14 @@ class blog_plugins
 
 		if ($newer_files)
 		{
+			include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
+			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+			include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+			$auth_admin = new auth_admin();
+			$db_tool = new phpbb_db_tools($db);
+			$dbmd = get_available_dbms($dbms);
+			define('PLUGIN_UPDATE', true);
+
 			include($blog_plugins_path . $which . '/update.' . $phpEx);
 
 			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . $this->available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';

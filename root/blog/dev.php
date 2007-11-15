@@ -1128,7 +1128,35 @@ function build_install()
 function get_schema_struct()
 {
 	$schema_data = array();
-
+/*
+	$schema_data['phpbb_blogs_attachment'] = array(
+		'COLUMNS'		=> array(
+			'attach_id'				=> array('UINT', NULL, 'auto_increment'),
+			'blog_id'				=> array('UINT', 0),
+			'reply_id'				=> array('UINT', 0),
+			'poster_id'				=> array('UINT', 0),
+			'is_orphan'				=> array('BOOL', 1),
+			'is_orphan'				=> array('BOOL', 1),
+			'physical_filename'		=> array('VCHAR', ''),
+			'real_filename'			=> array('VCHAR', ''),
+			'download_count'		=> array('UINT', 0),
+			'attach_comment'		=> array('TEXT_UNI', ''),
+			'extension'				=> array('VCHAR:100', ''),
+			'mimetype'				=> array('VCHAR:100', ''),
+			'filesize'				=> array('UINT:20', 0),
+			'filetime'				=> array('TIMESTAMP', 0),
+			'thumbnail'				=> array('BOOL', 0),
+		),
+		'PRIMARY_KEY'	=> 'attach_id',
+		'KEYS'			=> array(
+			'blog_id'				=> array('INDEX', 'blog_id'),
+			'reply_id'				=> array('INDEX', 'reply_id'),
+			'filetime'				=> array('INDEX', 'filetime'),
+			'poster_id'				=> array('INDEX', 'poster_id'),
+			'is_orphan'				=> array('INDEX', 'is_orphan'),
+		),
+	);
+*/
 	$schema_data['phpbb_blogs'] = array(
 		'COLUMNS'		=> array(
 			'blog_id'				=> array('UINT', NULL, 'auto_increment'),
@@ -1200,6 +1228,7 @@ function get_schema_struct()
 		),
 		'PRIMARY_KEY'	=> 'reply_id',
 		'KEYS'			=> array(
+			'blog_id'				=> array('INDEX', 'blog_id'),
 			'user_id'				=> array('INDEX', 'user_id'),
 			'user_ip'				=> array('INDEX', 'user_ip'),
 			'reply_approved'		=> array('INDEX', 'reply_approved'),

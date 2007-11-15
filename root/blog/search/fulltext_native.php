@@ -65,14 +65,16 @@ class blog_fulltext_native extends blog_search
 
 		$this->delete_index();
 
-		$sql = 'SELECT * FROM ' . BLOGS_TABLE;
+		$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
+			WHERE blog_deleted = \'0\'';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$this->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
 		}
 
-		$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE;
+		$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
+			WHERE reply_deleted = \'0\'';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -408,7 +410,7 @@ class blog_fulltext_native extends blog_search
 	*
 	* @access	public
 	*/
-	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0)
+	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0, $start = 0, $limit = 20)
 	{
 		global $config, $db, $user;
 
@@ -445,6 +447,7 @@ class blog_fulltext_native extends blog_search
 			),
 			'LEFT_JOIN'	=> array(),
 			'GROUP_BY'	=> 'm0.blog_id',
+			'LIMIT'		=> $start . ', ' . $limit,
 		);
 		$sql_where = array();
 
@@ -597,7 +600,7 @@ class blog_fulltext_native extends blog_search
 	*
 	* @access	public
 	*/
-	function author_search($author_ary, $blog_id = 0, $firstpost_only = false)
+	function author_search($author_ary, $blog_id = 0, $firstpost_only = false, $start = 0, $limit = 20)
 	{
 		global $config, $db;
 

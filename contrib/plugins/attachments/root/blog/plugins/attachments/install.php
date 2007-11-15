@@ -8,7 +8,7 @@
 */
 
 // If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB') || !defined('PLUGIN_INSTALL'))
 {
 	exit;
 }
@@ -22,75 +22,57 @@ if (!@is_writable($phpbb_root_path . 'files/blog_mod/'))
 	}
 }
 
-$sql_array = array();
+// Add New Tables
 switch ($dbms)
 {
 	case 'mysql' :
-	case 'mysqli' :
-		if ($dbms == 'mysqli' || version_compare($db->mysql_version, '4.1.3', '>='))
+		if (version_compare($db->mysql_version, '4.1.3', '>='))
 		{
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-				attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-				physical_filename varchar(255) DEFAULT '' NOT NULL,
-				real_filename varchar(255) DEFAULT '' NOT NULL,
-				download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				attach_comment text NOT NULL,
-				extension varchar(100) DEFAULT '' NOT NULL,
-				mimetype varchar(100) DEFAULT '' NOT NULL,
-				filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-				filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-				PRIMARY KEY (attach_id),
-				KEY filetime (filetime),
-				KEY blog_id (blog_id),
-				KEY reply_id (reply_id),
-				KEY poster_id (poster_id),
-				KEY is_orphan (is_orphan)
-			) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
+			$dbms_schema = 'attach_schemas/mysql_41_schema.sql';
 		}
 		else
 		{
-			$sql_array[] = 'CREATE TABLE IF NOT EXISTS ' . BLOGS_ATTACHMENT_TABLE . " (
-				attach_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-				blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				poster_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				is_orphan tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-				physical_filename varchar(255) DEFAULT '' NOT NULL,
-				real_filename varchar(255) DEFAULT '' NOT NULL,
-				download_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-				attach_comment text NOT NULL,
-				extension varchar(100) DEFAULT '' NOT NULL,
-				mimetype varchar(100) DEFAULT '' NOT NULL,
-				filesize int(20) UNSIGNED DEFAULT '0' NOT NULL,
-				filetime int(11) UNSIGNED DEFAULT '0' NOT NULL,
-				thumbnail tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-				PRIMARY KEY (attach_id),
-				KEY filetime (filetime),
-				KEY blog_id (blog_id),
-				KEY reply_id (reply_id),
-				KEY poster_id (poster_id),
-				KEY is_orphan (is_orphan)
-			);";
+			$dbms_schema = 'attach_schemas/mysql_40_schema.sql';
 		}
-
-		$sql_array[] = 'ALTER TABLE ' . BLOGS_TABLE . " ADD blog_attachment tinyint(1) unsigned NOT NULL default '0'";
-		$sql_array[] = 'ALTER TABLE ' . BLOGS_REPLY_TABLE . " ADD reply_attachment tinyint(1) unsigned NOT NULL default '0'";
-		$sql_array[] = 'ALTER TABLE ' . EXTENSION_GROUPS_TABLE . " ADD allow_in_blog TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
+	break;
+	case 'mysqli' :
+		$dbms_schema = 'attach_schemas/mysql_41_schema.sql';
 	break;
 	default :
-		trigger_error('Only MySQL is supported at this time.  Please wait for a future release for this to be compatible with your DB.');
+		$dbms_schema = 'attach_schemas/' . $dbms . '_schema.sql';
 }
 
-foreach ($sql_array as $sql)
+if (!file_exists($phpbb_root_path . 'blog/install/' . $dbms_schema))
 {
-	$db->sql_query($sql);
+	trigger_error('SCHEMA_NOT_EXIST');
 }
 
+$remove_remarks = $dbmd[$dbms]['COMMENTS'];
+$delimiter = $dbmd[$dbms]['DELIM'];
+
+$sql_query = @file_get_contents($phpbb_root_path . 'blog/install/' . $dbms_schema);
+
+$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
+
+$remove_remarks($sql_query);
+
+$sql_query = split_sql_file($sql_query, $delimiter);
+
+foreach ($sql_query as $sql)
+{
+	if (!$db->sql_query($sql))
+	{
+		$error[] = $db->sql_error();
+	}
+}
+unset($sql_query);
+
+// Alter Existing Tables
+$db_tool->sql_column_add(BLOGS_TABLE, 'blog_attachment', array('BOOL', 0));
+$db_tool->sql_column_add(BLOGS_REPLY_TABLE, 'reply_attachment', array('BOOL', 0));
+$db_tool->sql_column_add(EXTENSION_GROUPS_TABLE, 'allow_in_blog', array('BOOL', 0));
+
+// Add new permissions
 $blog_permissions = array(
 	'local'      => array(),
 	'global'   => array(
@@ -100,5 +82,6 @@ $blog_permissions = array(
 );
 $auth_admin->acl_add_option($blog_permissions);
 
-set_config('user_blog_max_attachments', 3, 0);
+// Add new config settings
+set_config('user_blog_max_attachments', 3);
 ?>

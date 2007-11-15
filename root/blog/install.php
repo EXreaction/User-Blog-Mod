@@ -35,9 +35,7 @@ if (confirm_box(true))
 	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$db_tool = new phpbb_db_tools($db);
-
 	$dbmd = get_available_dbms($dbms);
-
 	define('IN_BLOG_INSTALL', true);
 
 	include("{$phpbb_root_path}blog/install/tables.$phpEx");

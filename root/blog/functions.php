@@ -248,7 +248,14 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				}
 				else
 				{
-					$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
+					if ($extras != '')
+					{
+						$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
+					}
+					else
+					{
+						$return = "blog/{$url_data['page']}/";
+					}
 				}
 			}
 			else

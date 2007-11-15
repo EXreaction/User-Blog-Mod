@@ -36,15 +36,15 @@
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
 * add in a section for gallery display - plugin
+* integrate with Handymans Cash Mod - plugin
 * Integrate with phpbb search - plugin
 *
-* Finish upgrade page
 */
 
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.28';
+$user_blog_version = '0.3.29_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -70,6 +70,16 @@ $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
 
+// check if the User Blog Mod is installed/enabled
+if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
+{
+	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
+}
+else if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
+{
+	trigger_error('USER_BLOG_MOD_DISABLED');
+}
+
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
@@ -92,16 +102,6 @@ $blog_plugins = new blog_plugins();
 $blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 $blog_plugins->load_plugins();
 $blog_plugins->plugin_do('blog_start');
-
-// check if the User Blog Mod is installed/enabled
-if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
-{
-	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
-}
-else if (isset($config['user_blog_enable']) && !$config['user_blog_enable'])
-{
-	trigger_error('USER_BLOG_MOD_DISABLED');
-}
 
 $default = false;
 switch ($page)

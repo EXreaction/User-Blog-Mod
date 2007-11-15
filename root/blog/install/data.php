@@ -25,6 +25,45 @@ $sql_ary = array(
 $sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 $db->sql_query($sql);
 
+// Add default permissions for Roles
+$role_data = array(
+	'ROLE_ADMIN_FULL'		=> array('a_blogmanage', 'a_blogdelete', 'a_blogreplydelete'),
+	'ROLE_MOD_FULL'			=> array('m_blogapprove', 'm_blogedit', 'm_bloglockedit', 'm_blogdelete', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyedit', 'm_blogreplylockedit', 'm_blogreplydelete', 'm_blogreplyreport'),
+	'ROLE_MOD_STANDARD'		=> array('m_blogapprove', 'm_blogedit', 'm_bloglockedit', 'm_blogdelete', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyedit', 'm_blogreplylockedit', 'm_blogreplydelete', 'm_blogreplyreport'),
+	'ROLE_MOD_QUEUE'		=> array('m_blogapprove', 'm_blogedit', 'm_bloglockedit', 'm_blogreplyapprove', 'm_blogreplyedit', 'm_blogreplylockedit'),
+	'ROLE_MOD_SIMPLE'		=> array('m_blogedit', 'm_bloglockedit', 'm_blogdelete', 'm_blogreplyedit', 'm_blogreplylockedit', 'm_blogreplydelete'),
+	'ROLE_USER_FULL'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogflash', 'u_blogmoderate'),
+	'ROLE_USER_STANDARD'	=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogmoderate'),
+	'ROLE_USER_LIMITED'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
+	'ROLE_USER_NOPM'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
+	'ROLE_USER_NOAVATAR'	=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
+);
+
+foreach ($role_data as $role => $options)
+{
+	$sql = 'SELECT role_id FROM ' . ACL_ROLES_TABLE . " WHERE role_name = '{$role}'";
+	$db->sql_query($sql);
+	$role_id = $db->sql_fetchfield('role_id');
+
+	if ($role_id)
+	{
+		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . ' WHERE ' . $db->sql_in_set('auth_option', $options);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$sql_ary = array(
+				'role_id'			=> $role_id,
+				'auth_option_id'	=> $row['auth_option_id'],
+				'auth_setting'		=> 1,
+			);
+			$sql = 'INSERT IGNORE INTO ' . ACL_ROLES_DATA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+		}
+	}
+
+	$role_id = false;
+}
+
 // Add the first blog
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);

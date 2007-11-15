@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds attachments to the User Blog Mod
 ##
-## MOD Version: 0.7.6
+## MOD Version: 0.7.7
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~3 Minutes
@@ -22,8 +22,6 @@
 ##		I will take no resposibility for any damage with the use of this mod in a live environment.
 ##
 ##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
-##
-##	Only MySQL is supported at this time.  If you have a different DB please wait for a future release.
 ##
 ##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
 ##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
@@ -56,6 +54,10 @@
 ## 2007-11-06
 ##		0.7.6 Released
 ##			+ Changed something to be compatible with Alpha 27
+##				- To upgrade just upload the new files.
+## 2007-11-15
+##		0.7.7 Released
+##			+ Now supports all DB systems
 ##				- To upgrade just upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD

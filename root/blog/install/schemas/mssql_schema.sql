@@ -108,6 +108,9 @@ ALTER TABLE [phpbb_blogs_reply] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
+CREATE  INDEX [blog_id] ON [phpbb_blogs_reply]([blog_id]) ON [PRIMARY]
+GO
+
 CREATE  INDEX [user_id] ON [phpbb_blogs_reply]([user_id]) ON [PRIMARY]
 GO
 

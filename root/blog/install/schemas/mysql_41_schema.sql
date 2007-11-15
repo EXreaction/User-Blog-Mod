@@ -67,6 +67,7 @@ CREATE TABLE phpbb_blogs_reply (
 	reply_deleted mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	reply_deleted_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (reply_id),
+	KEY blog_id (blog_id),
 	KEY user_id (user_id),
 	KEY user_ip (user_ip),
 	KEY reply_approved (reply_approved),
