@@ -12,6 +12,7 @@
 ## Files To Edit:	.htaccess
 ##					adm/index.php
 ##					includes/functions.php
+##					language/en/mcp.php
 ##					styles/prosilver/templates/overall_header.html
 ##					ucp.php
 ##					viewtopic.php
@@ -87,7 +88,7 @@
 ## 2007-11-17
 ##		Alpha 29 Released
 ##			+ Some misc updates.  The Blog MCP has now been moved into the MCP.
-##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
+##			+ To update, make the changes to language/en/mcp.php, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
@@ -167,6 +168,28 @@ includes/functions.php
 	// Start Add User Blog Mod ------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+language/en/mcp.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+'MCP_LOGS'
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+	'MCP_BLOG'						=> 'Blog',
+	'MCP_BLOG_REPORTED_BLOGS'		=> 'Reported Blogs',
+	'MCP_BLOG_REPORTED_REPLIES'		=> 'Reported Replies',
+	'MCP_BLOG_DISAPPROVED_BLOGS'	=> 'Unapproved Blogs',
+	'MCP_BLOG_DISAPPROVED_REPLIES'	=> 'Unaproved Replies',
 
 #
 #-----[ OPEN ]---------------------------------------------
