@@ -22,8 +22,6 @@
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
-* Resetup the MCP to actually be in the MCP
-*
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
 * triming the text still isn't working correctly :/
@@ -44,7 +42,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.29_dev';
+$user_blog_version = '0.3.29';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -152,12 +150,6 @@ switch ($page)
 			default :
 				$default = true;
 		}
-		break;
-	case 'mcp' : // moderator control panel
-		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-
-		include($phpbb_root_path . 'blog/view/mcp.' . $phpEx);
 		break;
 	default :
 		$default = true;

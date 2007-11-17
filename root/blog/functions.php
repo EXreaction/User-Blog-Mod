@@ -178,6 +178,12 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				// Do not do the str_replace for the username!  It would break it! :P
 				$replace_page = false;
 			}
+			else
+			{
+				$url_data['u'] = ($user_id) ? $user_id : '*skip*';
+				$url_data['b'] = ($blog_id) ? $blog_id : '*skip*';
+				$url_data['r'] = ($reply_id) ? $reply_id : '*skip*';
+			}
 
 			if ($reply_id)
 			{
@@ -306,8 +312,8 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			'main'				=> blog_url(false),
 			'self'				=> blog_url($user_id, $blog_id, $reply_id, $self_data),
 			'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
-			'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
-			'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != $user_id && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
+			'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
+			'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
 
 			'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add')),
 			'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')) : '',
@@ -1034,19 +1040,16 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $config, $template, $user, $user_settings;
 
-		// replace &amp; with & so that the header() function works correctly if we use it.  Otherwise & will be replaced with &amp;
-		$url = str_replace('&amp;', '&', $url);
-
 		if ($instant || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
 		{
 			$time = 0;
-			header('Location: ' . $url);
+			header('Location: ' . str_replace('&amp;', '&', $url));
 		}
 
 		if ($config['user_blog_seo'])
 		{
 			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . str_replace('&', '&amp;', $url) . '" />')
+				'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />')
 			);
 		}
 		else

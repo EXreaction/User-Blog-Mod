@@ -84,9 +84,9 @@
 ##		Alpha 28b Released
 ##			+ Some more changes to the Upgrade script.
 ##			+ To update, copy the new files over.
-## 2007-11-
+## 2007-11-17
 ##		Alpha 29 Released
-##			+ Some misc updates.
+##			+ Some misc updates.  The Blog MCP has now been moved into the MCP.
 ##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.

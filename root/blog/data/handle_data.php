@@ -388,7 +388,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		}
 		$db->sql_freeresult($result);
 
-		$message = sprintf($user->lang['BLOG_SUBSCRIPTION_NOTICE'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "b=$bid"), true), $user->data['username'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "page=unsubscribe&amp;b=$bid"), true));
+		$message = sprintf($user->lang['BLOG_SUBSCRIPTION_NOTICE'], blog_url($uid, $bid), $user->data['username'], blog_url($uid, $bid, false, array('page' => 'unsubscribe')));
 	}
 	else if ($mode == 'new_blog' && $uid != 0)
 	{
@@ -411,7 +411,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		}
 		$db->sql_freeresult($result);
 
-		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "b=$bid"), true), redirect(append_sid("{$phpbb_root_path}blogs.$phpEx", "page=unsubscribe&amp;u=$uid"), true));
+		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], blog_url($uid, $bid), blog_url($uid, false, false, array('page' => 'unsubscribe')));
 	}
 
 	$user_data->get_user_data('2');
