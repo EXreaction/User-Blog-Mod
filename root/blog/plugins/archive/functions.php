@@ -36,7 +36,7 @@ function archive_function_generate_menu(&$arg)
 		if ($date['mon'] != $last_mon)
 		{
 			$archive_row = array(
-				'MONTH'			=> $date['month'],
+				'MONTH'			=> $user->lang['datetime'][$date['month']], // make sure to use the correct language
 				'YEAR'			=> $date['year'],
 
 				'monthrow'		=> array(),

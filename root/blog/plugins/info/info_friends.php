@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package phpBB3 User Blog Archives
+* @package phpBB3 User Blog Friends
 * @copyright (c) 2007 EXreaction, Lithium Studios
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -9,16 +9,16 @@
 
 $user->add_lang('mods/blog/plugins/' . $name);
 
-$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ARCHIVE_TITLE'];
-$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ARCHIVE_DESCRIPTION'];
+$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_FRIENDS_TITLE'];
+$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_FRIENDS_DESCRIPTION'];
 
 $this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.1';
+$this->available_plugins[$name]['plugin_version'] = '0.7.0';
 
 if ($plugin_enabled)
 {
 	$to_do = array(
-		'function_generate_menu'	=> array('archive_function_generate_menu'),
+		'function_generate_menu'	=> array('friends_function_generate_menu'),
 	);
 
 	foreach($to_do as $do => $what)
