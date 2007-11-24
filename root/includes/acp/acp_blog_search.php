@@ -249,15 +249,19 @@ class acp_blog_search
 					else if ($section == 1)
 					{
 						$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-							ORDER BY blog_id DESC
-								LIMIT ' . ($part * $limit) . ', ' . $limit;
+							WHERE blog_deleted = \'0\'
+							AND blog_approved = \'1\'
+								ORDER BY blog_id DESC
+									LIMIT ' . ($part * $limit) . ', ' . $limit;
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
 						{
 							$this->search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
 						}
 
-						$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE;
+						$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE . '
+							WHERE blog_deleted = \'0\'
+							AND blog_approved = \'1\'';
 						$result = $db->sql_query($sql);
 						$cnt = $db->sql_fetchrow($result);
 
@@ -275,15 +279,19 @@ class acp_blog_search
 					else
 					{
 						$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-							ORDER BY reply_id DESC
-								LIMIT ' . ($part * $limit) . ', ' . $limit;
+							WHERE reply_deleted = \'0\'
+							AND reply_approved = \'1\'
+								ORDER BY reply_id DESC
+									LIMIT ' . ($part * $limit) . ', ' . $limit;
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
 						{
 							$this->search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
 						}
 
-						$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE;
+						$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE . '
+							WHERE reply_deleted = \'0\'
+							AND reply_approved = \'1\'';
 						$result = $db->sql_query($sql);
 						$cnt = $db->sql_fetchrow($result);
 
