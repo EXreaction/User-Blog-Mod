@@ -7,6 +7,11 @@
  *
  */
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 // Create the lang array if it does not already exist
 if (empty($lang) || !is_array($lang))
 {
@@ -18,6 +23,7 @@ $lang = array_merge($lang, array(
 	'ACP_BLOGS'								=> 'User Blog Mod',
 	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
 	'ACP_BLOG_PLUGINS_EXPLAIN'				=> 'Here you can enable/disable/install/uninstall plugins for the User Blog Mod.',
+	'ACP_BLOG_SEARCH'						=> 'Blog Search',
 	'ADD_BLOG'								=> 'Add a new blog',
 	'ALLOWED_IN_BLOG'						=> 'Allowed in User Blogs',
 	'ALLOW_IN_BLOG'							=> 'Allow in User Blogs',
@@ -78,6 +84,7 @@ $lang = array_merge($lang, array(
 	'BLOG_REPORT_CONFIRM'					=> 'Are you sure you want to report this blog?',
 	'BLOG_REPORT_PM'						=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just reported <a href="%2$s">this blog</a>.<br/>Please take the time to read over the blog and decide what needs to be done.',
 	'BLOG_REPORT_PM_SUBJECT'				=> 'Blog Reported!',
+	'BLOG_SEARCH_BACKEND_NOT_EXIST'			=> 'The Search backend was not found.  Please contact an administrator or moderator.',
 	'BLOG_SETTINGS'							=> 'User Blog Settings',
 	'BLOG_SETTINGS_EXPLAIN'					=> 'Here you can set the settings for the User Blog mod.',
 	'BLOG_SUBJECT'							=> 'Blog Subject',
@@ -89,11 +96,13 @@ $lang = array_merge($lang, array(
 	'BLOG_USER_NOT_PROVIDED'				=> 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
 	'BLOG_VIEW'								=> 'This blog has been viewed <b>1</b> time',
 	'BLOG_VIEWS'							=> 'This blog has been viewed <b>%s</b> times',
+	'BREAK_CONTINUE_NOTICE'					=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before before we are done.<br/>Click continue below if you are not automatically redirected to the next page.',
 
 	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
 	'CLICK_HERE_SHOW_POST'					=> 'Click here to show the post.',
 	'CLICK_INSTALL_BLOG'					=> 'Click %shere%s to install the User Blog Mod',
 	'CLICK_UPDATE'							=> 'Click %shere%s to update the database for the User Blog Mod',
+	'CONTINUE'								=> 'Continue',
 	'CONTINUED'								=> 'Continued',
 	'COPYRIGHT'								=> 'Copyright',
 

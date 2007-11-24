@@ -29,7 +29,7 @@ $sql_ary = array(
 	'module_class'		=> 'acp',
 	'parent_id'			=> $row['module_id'],
 	'left_id'			=> $row['right_id'],
-	'right_id'			=> $row['right_id'] + 5,
+	'right_id'			=> $row['right_id'] + 7,
 	'module_langname'	=> 'ACP_BLOGS',
 	'module_mode'		=> 'default',
 	'module_auth'		=> 'acl_a_blogmanage',
@@ -74,6 +74,22 @@ $sql_ary = array(
 	'left_id'			=> $row['right_id'] + 3,
 	'right_id'			=> $row['right_id'] + 4,
 	'module_langname'	=> 'ACP_BLOG_PLUGINS',
+	'module_mode'		=> 'default',
+	'module_auth'		=> 'acl_a_blogmanage',
+);
+
+$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+$db->sql_query($sql);
+
+$sql_ary = array(
+	'module_enabled'	=> 1,
+	'module_display'	=> 1,
+	'module_basename'	=> 'blog_search',
+	'module_class'		=> 'acp',
+	'parent_id'			=> $module_id,
+	'left_id'			=> $row['right_id'] + 5,
+	'right_id'			=> $row['right_id'] + 6,
+	'module_langname'	=> 'ACP_BLOG_SEARCH',
 	'module_mode'		=> 'default',
 	'module_auth'		=> 'acl_a_blogmanage',
 );

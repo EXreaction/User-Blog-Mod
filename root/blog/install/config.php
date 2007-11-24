@@ -30,6 +30,7 @@ set_config('user_blog_seo', 0);
 set_config('user_blog_guest_captcha', 1);
 set_config('user_blog_user_permissions', 1);
 set_config('user_blog_search', 1);
+set_config('user_blog_search_type', 'fulltext_native');
 
 set_config('user_blog_version', $user_blog_version);
 ?>

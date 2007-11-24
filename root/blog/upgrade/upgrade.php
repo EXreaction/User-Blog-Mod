@@ -295,11 +295,7 @@ class blog_upgrade
 
 		$section_cnt = 1;
 
-		if (!class_exists('blog_fulltext_native'))
-		{
-			include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
-		}
-		$blog_search = new blog_fulltext_native();
+		$blog_search = setup_blog_search();
 
 		if ($mode == 'delete')
 		{

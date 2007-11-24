@@ -23,6 +23,25 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	include($phpbb_root_path . 'blog/functions_sql.' . $phpEx);
 
 	/**
+	* Setup the blog search system
+	*/
+	function setup_blog_search()
+	{
+		global $config, $user, $phpbb_root_path, $phpEx;
+
+		if (file_exists($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx))
+		{
+			include($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx);
+			$class = 'blog_' . $config['user_blog_search_type'];
+			return new $class();
+		}
+		else
+		{
+			trigger_error('BLOG_SEARCH_BACKEND_NOT_EXIST');
+		}
+	}
+
+	/**
 	* Generates the left side menu
 	*
 	* @param int $user_id If we are building it for a certain user, send the uid here

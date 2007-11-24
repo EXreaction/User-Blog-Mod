@@ -66,10 +66,9 @@ foreach ($role_data as $role => $options)
 
 // Add the first blog
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
 
 $message_parser = new parse_message();
-$blog_search = new blog_fulltext_native();
+$blog_search = setup_blog_search();
 
 $message_parser->message = $user->lang['WELCOME_MESSAGE'];
 $message_parser->parse(true, true, true);

@@ -47,7 +47,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		$original_text = $data['reply_text'];
 	}
 
-	$text = $original_text;
+	$text = html_entity_decode($original_text);
 
 	decode_message($text, $data['bbcode_uid']);
 

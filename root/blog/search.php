@@ -42,8 +42,7 @@ $search_url = blog_url(false, false, false, array('page' => 'search', 'author' =
 
 if ($keywords || $author)
 {
-	include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
-	$blog_search = new blog_fulltext_native();
+	$blog_search = setup_blog_search();
 
 	$blog_ids = $reply_ids = array();
 
@@ -84,6 +83,68 @@ if ($keywords || $author)
 			}
 		}
 
+		$temp = array();
+		if (count($blog_ids))
+		{
+			$sql = 'SELECT blog_id, blog_time FROM ' . BLOGS_TABLE . '
+				WHERE ' . $db->sql_in_set('blog_id', $blog_ids);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				if (!isset($temp[$row['blog_time']]))
+				{
+					$temp[$row['blog_time']] = array();
+				}
+				$temp[$row['blog_time']][$row['blog_id']] = 'b';
+			}
+		}
+
+		if (count($reply_ids))
+		{
+			$sql = 'SELECT reply_id, reply_time FROM ' . BLOGS_REPLY_TABLE . '
+				WHERE ' . $db->sql_in_set('reply_id', $reply_ids);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				if (!isset($temp[$row['reply_time']]))
+				{
+					$temp[$row['reply_time']] = array();
+				}
+				$temp[$row['reply_time']][$row['reply_id']] = 'r';
+			}
+		}
+		krsort($temp);
+
+		$i = 0;
+		$blog_ids = $reply_ids = $ids = array();
+		foreach ($temp as $time => $data)
+		{
+			if ($i < $start)
+			{
+				$i++;
+				continue;
+			}
+			if ($i > ($start + $limit))
+			{
+				break;
+			}
+
+			foreach ($data as $id => $type)
+			{
+				if ($type == 'b')
+				{
+					$blog_ids[] = $id;
+					$ids[] = array('blog_id' => $id);
+				}
+				else
+				{
+					$reply_ids[] = $id;
+					$ids[] = array('reply_id' => $id);
+				}
+				$i++;
+			}
+		}
+
 		if (count($blog_ids))
 		{
 			$blog_data->get_blog_data('blog', $blog_ids);
@@ -95,20 +156,10 @@ if ($keywords || $author)
 		$user_data->get_user_data(false, true);
 		update_edit_delete();
 
-		$i = 0;
+		$matches = (count($ids));
 		foreach ($ids as $id)
 		{
-			if ($i < $start)
-			{
-				$i++;
-				continue;
-			}
-			else if ($i >= ($start + $limit))
-			{
-				break;
-			}
-
-			if ($id['reply_id'] == 0)
+			if (isset($id['blog_id']))
 			{
 				if (isset($blog_data->blog[$id['blog_id']]))
 				{
@@ -124,10 +175,7 @@ if ($keywords || $author)
 			{
 				$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data($reply_data->reply[$id['reply_id']]['user_id']));
 			}
-
-			$i++;
 		}
-		$matches = (count($blog_ids) + count($reply_ids));
 	}
 	else
 	{

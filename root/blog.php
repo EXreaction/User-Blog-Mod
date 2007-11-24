@@ -11,10 +11,8 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Search list - display newest first?
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Search - finish ACP
 * Memorable entry (like a sticky)
 * Information section - MCP
 *
@@ -24,7 +22,6 @@
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
-* triming the text still isn't working correctly :/
 * Change some sql queries to arrays and use build_query
 *
 * OTHER -------------------------------------------------------------------------------------------
@@ -42,7 +39,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.29';
+$user_blog_version = '0.3.30';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -125,9 +122,8 @@ switch ($page)
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		include($phpbb_root_path . 'blog/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'blog/search/fulltext_native.' . $phpEx);
 
-		$blog_search = new blog_fulltext_native();
+		$blog_search = setup_blog_search();
 		$message_parser = new parse_message();
 
 		switch ($mode)

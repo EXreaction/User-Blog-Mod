@@ -305,6 +305,8 @@ if (confirm_box(true))
 			);
 			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
+		case '0.3.29' :
+			set_config('user_blog_search_type', 'fulltext_native');
 	}
 
 	if (count($sql_array))

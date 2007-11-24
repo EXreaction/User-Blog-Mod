@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.29
+## MOD Version: 0.3.30
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -67,10 +67,7 @@
 ## 2007-11-03 Alpha 25 Released
 ## 2007-11-04 Alpha 26 Released
 ## 2007-11-06 Alpha 27 Released
-## 2007-11-07
-##		Alpha 27a Released
-##			+ Forgot to delete a line in ucp_blog.php
-##			+ To update, copy the new includes/ucp/ucp_blog.php file over.
+## 2007-11-07 Alpha 27a Released
 ## 2007-11-11
 ##		Alpha 28 Released
 ##			+ Some bug fixes and the new upgrade script.
@@ -89,6 +86,12 @@
 ##		Alpha 29 Released
 ##			+ Some misc updates.  The Blog MCP has now been moved into the MCP.
 ##			+ To update, make the changes to language/en/mcp.php, copy the new files over, then run the update script by going to blog.php?page=update.
+##				- Also make sure to check for new permissions/settings.
+##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-24
+##		Alpha 30 Released
+##			+ Updates to the search system and some other stuff.  New plugin available named Friends for listing a users' friends on their blog page.
+##			+ To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ##############################################################
