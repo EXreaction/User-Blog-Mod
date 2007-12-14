@@ -14,9 +14,6 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 
 	if (!defined('IN_BLOG'))
 	{
-		// Add some language variables
-		$user->add_lang('mods/blog/blog');
-
 		// include the functions & permissions file
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
@@ -24,6 +21,11 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		$blog_plugins = new blog_plugins();
 		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 		$blog_plugins->load_plugins();
+	}
+
+	if (!isset($user->lang['USER_BLOGS']))
+	{
+		$user->add_lang('mods/blog/common');
 	}
 
 	$blog_plugins->plugin_do('blog_header');
@@ -44,8 +46,8 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			$template->assign_block_vars('blog_links', array(
 				'URL'		=> blog_url($user->data['user_id']),
 				'CLASS'		=> 'icon-ucp',
-				'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_message.gif" alt="' . $user->lang['MY_BLOGS'] . '" />',
-				'TEXT'		=> $user->lang['MY_BLOGS'],
+				'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_message.gif" alt="' . $user->lang['MY_BLOG'] . '" />',
+				'TEXT'		=> $user->lang['MY_BLOG'],
 			));
 		}
 	}

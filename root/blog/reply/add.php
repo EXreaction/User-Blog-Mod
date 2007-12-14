@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // get some data on the blog and user
 if ($blog_id == 0)
 {
-	trigger_error('NO_BLOG');
+	trigger_error('BLOG_NOT_EXIST');
 }
 
 // Add the language Variables for posting

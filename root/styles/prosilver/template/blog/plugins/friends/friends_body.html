@@ -164,14 +164,15 @@ function previous_list(field)
 		<div class="inner">
 			<span class="corners-top"><span></span></span>
 			<dl>
-				<dt class="archives_title">{L_FRIENDS}</dt>
+				<dt class="menu_title">{L_FRIENDS}</dt>
 				<dd>
 					<ul class="topiclist">
 						<li>
 							<strong style="color:green">{L_FRIENDS_ONLINE}</strong><br />
 							<!-- BEGIN menu_friends_online -->
 								<div id="online_friends_{menu_friends_online.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_online.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
-									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Online" /> {menu_friends_online.USERNAME_FULL}<br />
+									<span style="float: right;"><a href="{menu_friends_online.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Online" /> {menu_friends_online.USERNAME_FULL}
 								</div>
 							<!-- BEGINELSE -->
 								{L_NO_FRIENDS_ONLINE}<br />
@@ -190,7 +191,8 @@ function previous_list(field)
 							<strong style="color:red">{L_FRIENDS_OFFLINE}</strong><br />
 							<!-- BEGIN menu_friends_offline -->
 								<div id="offline_friends_{menu_friends_offline.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_offline.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
-									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Offline" /> {menu_friends_offline.USERNAME_FULL}<br />
+									<span style="float: right;"><a href="{menu_friends_offline.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Offline" /> {menu_friends_offline.USERNAME_FULL}
 								</div>
 							<!-- BEGINELSE -->
 								{L_NO_FRIENDS_OFFLINE}

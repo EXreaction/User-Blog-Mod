@@ -26,8 +26,7 @@ class mcp_blog
 		global $config, $phpbb_root_path, $phpEx, $action;
 		global $blog_data, $reply_data, $user_data, $blog_plugins, $blog_urls;
 
-		$user->add_lang('mods/blog/blog');
-		$user->add_lang('mods/blog/mcp');
+		$user->add_lang('mods/blog/common');
 
 		// include some files
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);

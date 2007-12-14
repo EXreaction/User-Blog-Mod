@@ -155,7 +155,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 			{
 				$line = fgets($handle, 4096);
 
-				if (strpos($line, 'blog_plugins->plugin_do'))
+				if (strpos($line, '$blog_plugins->plugin_do') !== false)
 				{
 					$start_pos = strpos($line, "('") + 2;
 					$hook_list .= "\t" . substr($line, $start_pos, strpos($line, "'", $start_pos) - $start_pos) . "\n";
@@ -308,7 +308,7 @@ function organize_lang()
 
 		if (!$stopped)
 		{
-			trigger_error('Only UNIX Line endings are supported.');
+			trigger_error('Please make sure you are using UNIX line endings.');
 		}
 	}
 
@@ -1162,7 +1162,7 @@ function get_schema_struct()
 			'blog_id'				=> array('UINT', NULL, 'auto_increment'),
 			'user_id'				=> array('UINT', 0),
 			'user_ip'				=> array('VCHAR:40', ''),
-			'blog_subject'			=> array('XSTEXT_UNI', '', 'true_sort'),
+			'blog_subject'			=> array('STEXT_UNI', '', 'true_sort'),
 			'blog_text'				=> array('MTEXT_UNI', ''),
 			'blog_checksum'			=> array('VCHAR:32', ''),
 			'blog_time'				=> array('TIMESTAMP', 0),
@@ -1207,7 +1207,7 @@ function get_schema_struct()
 			'blog_id'				=> array('UINT', 0),
 			'user_id'				=> array('UINT', 0),
 			'user_ip'				=> array('VCHAR:40', ''),
-			'reply_subject'			=> array('XSTEXT_UNI', '', 'true_sort'),
+			'reply_subject'			=> array('STEXT_UNI', '', 'true_sort'),
 			'reply_text'			=> array('MTEXT_UNI', ''),
 			'reply_checksum'		=> array('VCHAR:32', ''),
 			'reply_time'			=> array('TIMESTAMP', 0),
@@ -1249,7 +1249,7 @@ function get_schema_struct()
 	$schema_data['phpbb_blogs_plugins'] = array(
 		'COLUMNS'		=> array(
 			'plugin_id'				=> array('UINT', NULL, 'auto_increment'),
-			'plugin_name'			=> array('XSTEXT_UNI', '', 'true_sort'),
+			'plugin_name'			=> array('STEXT_UNI', '', 'true_sort'),
 			'plugin_enabled'		=> array('BOOL', 0),
 			'plugin_version'		=> array('XSTEXT_UNI', '', 'true_sort'),
 		),
@@ -1267,7 +1267,7 @@ function get_schema_struct()
 			'perm_registered'		=> array('TINT:1', 2),
 			'perm_foe'				=> array('TINT:1', 0),
 			'perm_friend'			=> array('TINT:1', 2),
-			'title'					=> array('XSTEXT_UNI', '', 'true_sort'),
+			'title'					=> array('STEXT_UNI', '', 'true_sort'),
 			'description'			=> array('MTEXT_UNI', ''),
 			'description_bbcode_bitfield'	=> array('VCHAR:255', ''),
 			'description_bbcode_uid'		=> array('VCHAR:8', ''),
@@ -1276,6 +1276,7 @@ function get_schema_struct()
 		'PRIMARY_KEY'	=> 'user_id',
 	);
 
+	/*
 	$schema_data['phpbb_blog_search_results'] = array(
 		'COLUMNS'		=> array(
 			'search_key'			=> array('VCHAR:32', ''),
@@ -1285,6 +1286,7 @@ function get_schema_struct()
 		),
 		'PRIMARY_KEY'	=> 'search_key',
 	);
+	*/
 
 	$schema_data['phpbb_blog_search_wordlist'] = array(
 		'COLUMNS'		=> array(

@@ -76,6 +76,7 @@ function friends_function_generate_menu(&$arg)
 			'USER_ID'		=> $row['user_id'],
 
 			'U_PROFILE'		=> get_username_string('profile', $row['user_id'], $row['username'], $row['user_colour']),
+			'U_VIEW_BLOG'		=> blog_url($row['user_id']),
 			'USER_COLOUR'	=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 			'USERNAME'		=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 			'USERNAME_FULL'	=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),

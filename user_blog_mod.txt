@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.30
+## MOD Version: 0.3.31
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -12,8 +12,8 @@
 ## Files To Edit:	.htaccess
 ##					adm/index.php
 ##					includes/functions.php
-##					language/en/mcp.php
 ##					styles/prosilver/templates/overall_header.html
+##					mcp.php
 ##					ucp.php
 ##					viewtopic.php
 ##
@@ -68,12 +68,7 @@
 ## 2007-11-04 Alpha 26 Released
 ## 2007-11-06 Alpha 27 Released
 ## 2007-11-07 Alpha 27a Released
-## 2007-11-11
-##		Alpha 28 Released
-##			+ Some bug fixes and the new upgrade script.
-##			+ To update, copy the new files over, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-11 Alpha 28 Released
 ## 2007-11-12
 ##		Alpha 28a Released
 ##			+ Fixing the upgrade script and some other misc stuff.  Upgrades using the upgrade script will now be (mostly) supported.
@@ -94,6 +89,10 @@
 ##			+ To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
+## 2007-12-14
+##		Alpha 31 Released
+##			+ Lots of updates and bug fixes.
+##			+ To update, re-edit adm/index.php, and ucp.php to have the right code, and do the edit in mcp.php.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -148,7 +147,7 @@ $user->setup('acp/common');
 #
 
 // Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/blog');
+$user->add_lang('mods/blog/acp');
 // End Add User Blog Mod --------------------
 
 #
@@ -176,23 +175,21 @@ includes/functions.php
 #-----[ OPEN ]---------------------------------------------
 #
 
-language/en/mcp.php
+mcp.php
 
 #
 #-----[ FIND ]---------------------------------------------
 #
 
-'MCP_LOGS'
+$user->setup('mcp');
 
 #
-#-----[ BEFORE, ADD ]--------------------------------------
+#-----[ AFTER, ADD ]---------------------------------------
 #
 
-	'MCP_BLOG'						=> 'Blog',
-	'MCP_BLOG_REPORTED_BLOGS'		=> 'Reported Blogs',
-	'MCP_BLOG_REPORTED_REPLIES'		=> 'Reported Replies',
-	'MCP_BLOG_DISAPPROVED_BLOGS'	=> 'Unapproved Blogs',
-	'MCP_BLOG_DISAPPROVED_REPLIES'	=> 'Unaproved Replies',
+// Start Add User Blog Mod ------------------
+$user->add_lang('mods/blog/mcp');
+// End Add User Blog Mod --------------------
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -211,7 +208,7 @@ $user->setup('ucp');
 #
 
 // Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/blog');
+$user->add_lang('mods/blog/ucp');
 // End Add User Blog Mod --------------------
 
 #
@@ -230,7 +227,7 @@ viewtopic.php
 #-----[ AFTER, ADD ]---------------------------------------
 # Note: Add this line AFTER the above find's entire line (do not add it in the line, but on a new line below).
 
-				'blog_count'	=> $row['blog_count'],
+				'blog_count'	=> ((isset($row['blog_count'])) ? $row['blog_count'] : 0),
 
 #
 #-----[ FIND ]---------------------------------------------

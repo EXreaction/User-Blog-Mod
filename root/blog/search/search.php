@@ -161,6 +161,9 @@ class blog_search
 	{
 		global $cache, $config, $db, $user;
 
+		// Not using this ATM.
+		return;
+
 		$length = min(sizeof($id_ary), $config['search_block_size']);
 
 		// nothing to cache so exit
@@ -269,6 +272,9 @@ class blog_search
 	function destroy_cache($words, $authors = false)
 	{
 		global $db, $cache, $config;
+
+		// Not using this function ATM.
+		return;
 
 		// clear all searches that searched for the specified words
 		if (sizeof($words))

@@ -90,7 +90,7 @@ if ($blog_id != 0)
 {
 	if ($blog_data->get_blog_data('blog', $blog_id) === false)
 	{
-		trigger_error('NO_BLOG');
+		trigger_error('BLOG_NOT_EXIST');
 	}
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];

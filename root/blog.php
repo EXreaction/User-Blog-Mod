@@ -11,6 +11,11 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* force style for UCP/MCP
+* reorganize plugins list
+* auto-subscriptions
+* option to cut off text at space or endline
+* admin edit blog title and description
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Memorable entry (like a sticky)
@@ -39,7 +44,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.30';
+$user_blog_version = '0.3.31';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -52,12 +57,15 @@ $user->session_begin();
 $auth->acl($user->data);
 if (isset($config['user_blog_force_style']) && $config['user_blog_force_style'] != 0)
 {
-	$user->setup('mods/blog/blog', $config['user_blog_force_style']);
+	$user->setup('mods/blog/common', $config['user_blog_force_style']);
 }
 else
 {
-	$user->setup('mods/blog/blog');
+	$user->setup('mods/blog/common');
 }
+
+// Sometime in the future this will need to be broken down to a more page specific level
+$user->add_lang('mods/blog/blog');
 
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;

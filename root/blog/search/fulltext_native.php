@@ -987,13 +987,13 @@ class blog_fulltext_native extends blog_search
 			case 'firebird':
 				$db->sql_query('DELETE FROM ' . BLOG_SEARCH_WORDLIST_TABLE);
 				$db->sql_query('DELETE FROM ' . BLOG_SEARCH_WORDMATCH_TABLE);
-				$db->sql_query('DELETE FROM ' . BLOG_SEARCH_RESULTS_TABLE);
+				//$db->sql_query('DELETE FROM ' . BLOG_SEARCH_RESULTS_TABLE);
 			break;
 
 			default:
 				$db->sql_query('TRUNCATE TABLE ' . BLOG_SEARCH_WORDLIST_TABLE);
 				$db->sql_query('TRUNCATE TABLE ' . BLOG_SEARCH_WORDMATCH_TABLE);
-				$db->sql_query('TRUNCATE TABLE ' . BLOG_SEARCH_RESULTS_TABLE);
+				//$db->sql_query('TRUNCATE TABLE ' . BLOG_SEARCH_RESULTS_TABLE);
 			break;
 		}
 	}

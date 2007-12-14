@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
-	trigger_error('NO_BLOG');
+	trigger_error('BLOG_NOT_EXIST');
 }
 
 // Was Cancel pressed? If so then redirect to the appropriate page

@@ -112,16 +112,6 @@ CREATE TABLE phpbb_blogs_users (
 );
 
 
-# Table: 'phpbb_blog_search_results'
-CREATE TABLE phpbb_blog_search_results (
-	search_key varchar(32) NOT NULL DEFAULT '',
-	search_time INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	search_keywords mediumtext(16777215) NOT NULL DEFAULT '',
-	search_authors mediumtext(16777215) NOT NULL DEFAULT '',
-	PRIMARY KEY (search_key)
-);
-
-
 # Table: 'phpbb_blog_search_wordlist'
 CREATE TABLE phpbb_blog_search_wordlist (
 	word_id INTEGER PRIMARY KEY NOT NULL ,

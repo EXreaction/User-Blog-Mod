@@ -5,7 +5,7 @@ CREATE TABLE phpbb_blogs (
 	blog_id mediumint(8) UNSIGNED NOT NULL auto_increment,
 	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	user_ip varchar(40) DEFAULT '' NOT NULL,
-	blog_subject varchar(100) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
+	blog_subject varchar(255) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
 	blog_text mediumtext NOT NULL,
 	blog_checksum varchar(32) DEFAULT '' NOT NULL,
 	blog_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE phpbb_blogs_reply (
 	blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	user_ip varchar(40) DEFAULT '' NOT NULL,
-	reply_subject varchar(100) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
+	reply_subject varchar(255) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
 	reply_text mediumtext NOT NULL,
 	reply_checksum varchar(32) DEFAULT '' NOT NULL,
 	reply_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE phpbb_blogs_subscription (
 # Table: 'phpbb_blogs_plugins'
 CREATE TABLE phpbb_blogs_plugins (
 	plugin_id mediumint(8) UNSIGNED NOT NULL auto_increment,
-	plugin_name varchar(100) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
+	plugin_name varchar(255) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
 	plugin_enabled tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	plugin_version varchar(100) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
 	PRIMARY KEY (plugin_id),
@@ -104,22 +104,12 @@ CREATE TABLE phpbb_blogs_users (
 	perm_registered tinyint(1) DEFAULT '2' NOT NULL,
 	perm_foe tinyint(1) DEFAULT '0' NOT NULL,
 	perm_friend tinyint(1) DEFAULT '2' NOT NULL,
-	title varchar(100) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
+	title varchar(255) DEFAULT '' NOT NULL COLLATE utf8_unicode_ci,
 	description mediumtext NOT NULL,
 	description_bbcode_bitfield varchar(255) DEFAULT '' NOT NULL,
 	description_bbcode_uid varchar(8) DEFAULT '' NOT NULL,
 	instant_redirect tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
 	PRIMARY KEY (user_id)
-) CHARACTER SET `utf8` COLLATE `utf8_bin`;
-
-
-# Table: 'phpbb_blog_search_results'
-CREATE TABLE phpbb_blog_search_results (
-	search_key varchar(32) DEFAULT '' NOT NULL,
-	search_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
-	search_keywords mediumtext NOT NULL,
-	search_authors mediumtext NOT NULL,
-	PRIMARY KEY (search_key)
 ) CHARACTER SET `utf8` COLLATE `utf8_bin`;
 
 

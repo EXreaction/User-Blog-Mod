@@ -62,7 +62,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$user_data->handle_user_data($user_id, 'custom_fields');
 
 			$template->assign_vars(array(
-				'S_USER_MENU'		=> true,
+				'S_USER_BLOG_MENU'	=> true,
 				'USER_MENU_EXTRA'	=> $user_menu_extra,
 			));
 		}
@@ -168,7 +168,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
 		$extras = $anchor = '';
 
-		if ($config['user_blog_seo'] && !$force_no_seo)
+		if (isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
 		{
 			// We will be replacing spaces and dashes in the url with an underscore.  Just so things don't get screwed up if the user has something like " start-10" in the title. :P
 			$match = array(' ', '-');
@@ -458,7 +458,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		global $config, $user, $db;
 		global $zebra_list, $reverse_zebra_list;
 
-		if (!$config['user_blog_enable_zebra'])
+		if (!isset($config['user_blog_enable_zebra']) || !$config['user_blog_enable_zebra'])
 		{
 			return;
 		}
@@ -548,7 +548,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
 		global $reverse_zebra_list, $user_settings;
 
-		if (!$config['user_blog_enable'] || $user_id == ANONYMOUS)
+		if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'] || $user_id == ANONYMOUS)
 		{
 			return;
 		}
@@ -658,7 +658,12 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function get_user_settings($user_ids)
 	{
-		global $cache, $db, $user_settings;
+		global $cache, $config, $db, $user_settings;
+
+		if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
+		{
+			return;
+		}
 
 		if (!is_array($user_settings))
 		{

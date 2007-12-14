@@ -12,7 +12,7 @@ CREATE TABLE [phpbb_blogs] (
 	[blog_id] [int] IDENTITY (1, 1) NOT NULL ,
 	[user_id] [int] DEFAULT (0) NOT NULL ,
 	[user_ip] [varchar] (40) DEFAULT ('') NOT NULL ,
-	[blog_subject] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[blog_subject] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[blog_text] [text] DEFAULT ('') NOT NULL ,
 	[blog_checksum] [varchar] (32) DEFAULT ('') NOT NULL ,
 	[blog_time] [int] DEFAULT (0) NOT NULL ,
@@ -80,7 +80,7 @@ CREATE TABLE [phpbb_blogs_reply] (
 	[blog_id] [int] DEFAULT (0) NOT NULL ,
 	[user_id] [int] DEFAULT (0) NOT NULL ,
 	[user_ip] [varchar] (40) DEFAULT ('') NOT NULL ,
-	[reply_subject] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[reply_subject] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[reply_text] [text] DEFAULT ('') NOT NULL ,
 	[reply_checksum] [varchar] (32) DEFAULT ('') NOT NULL ,
 	[reply_time] [int] DEFAULT (0) NOT NULL ,
@@ -148,7 +148,7 @@ GO
 */
 CREATE TABLE [phpbb_blogs_plugins] (
 	[plugin_id] [int] IDENTITY (1, 1) NOT NULL ,
-	[plugin_name] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[plugin_name] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[plugin_enabled] [int] DEFAULT (0) NOT NULL ,
 	[plugin_version] [varchar] (100) DEFAULT ('') NOT NULL 
 ) ON [PRIMARY]
@@ -177,7 +177,7 @@ CREATE TABLE [phpbb_blogs_users] (
 	[perm_registered] [int] DEFAULT (2) NOT NULL ,
 	[perm_foe] [int] DEFAULT (0) NOT NULL ,
 	[perm_friend] [int] DEFAULT (2) NOT NULL ,
-	[title] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[title] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[description] [text] DEFAULT ('') NOT NULL ,
 	[description_bbcode_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[description_bbcode_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
@@ -189,25 +189,6 @@ ALTER TABLE [phpbb_blogs_users] WITH NOCHECK ADD
 	CONSTRAINT [PK_phpbb_blogs_users] PRIMARY KEY  CLUSTERED 
 	(
 		[user_id]
-	)  ON [PRIMARY] 
-GO
-
-
-/*
-	Table: 'phpbb_blog_search_results'
-*/
-CREATE TABLE [phpbb_blog_search_results] (
-	[search_key] [varchar] (32) DEFAULT ('') NOT NULL ,
-	[search_time] [int] DEFAULT (0) NOT NULL ,
-	[search_keywords] [text] DEFAULT ('') NOT NULL ,
-	[search_authors] [text] DEFAULT ('') NOT NULL 
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-
-ALTER TABLE [phpbb_blog_search_results] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blog_search_results] PRIMARY KEY  CLUSTERED 
-	(
-		[search_key]
 	)  ON [PRIMARY] 
 GO
 

@@ -10,7 +10,7 @@ CREATE TABLE phpbb_blogs (
 	blog_id number(8) NOT NULL,
 	user_id number(8) DEFAULT '0' NOT NULL,
 	user_ip varchar2(40) DEFAULT '' ,
-	blog_subject varchar2(300) DEFAULT '' ,
+	blog_subject varchar2(765) DEFAULT '' ,
 	blog_text clob DEFAULT '' ,
 	blog_checksum varchar2(32) DEFAULT '' ,
 	blog_time number(11) DEFAULT '0' NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE phpbb_blogs_reply (
 	blog_id number(8) DEFAULT '0' NOT NULL,
 	user_id number(8) DEFAULT '0' NOT NULL,
 	user_ip varchar2(40) DEFAULT '' ,
-	reply_subject varchar2(300) DEFAULT '' ,
+	reply_subject varchar2(765) DEFAULT '' ,
 	reply_text clob DEFAULT '' ,
 	reply_checksum varchar2(32) DEFAULT '' ,
 	reply_time number(11) DEFAULT '0' NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE phpbb_blogs_subscription (
 */
 CREATE TABLE phpbb_blogs_plugins (
 	plugin_id number(8) NOT NULL,
-	plugin_name varchar2(300) DEFAULT '' ,
+	plugin_name varchar2(765) DEFAULT '' ,
 	plugin_enabled number(1) DEFAULT '0' NOT NULL,
 	plugin_version varchar2(300) DEFAULT '' ,
 	CONSTRAINT pk_phpbb_blogs_plugins PRIMARY KEY (plugin_id)
@@ -184,25 +184,12 @@ CREATE TABLE phpbb_blogs_users (
 	perm_registered number(1) DEFAULT '2' NOT NULL,
 	perm_foe number(1) DEFAULT '0' NOT NULL,
 	perm_friend number(1) DEFAULT '2' NOT NULL,
-	title varchar2(300) DEFAULT '' ,
+	title varchar2(765) DEFAULT '' ,
 	description clob DEFAULT '' ,
 	description_bbcode_bitfield varchar2(255) DEFAULT '' ,
 	description_bbcode_uid varchar2(8) DEFAULT '' ,
 	instant_redirect number(1) DEFAULT '1' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_users PRIMARY KEY (user_id)
-)
-/
-
-
-/*
-	Table: 'phpbb_blog_search_results'
-*/
-CREATE TABLE phpbb_blog_search_results (
-	search_key varchar2(32) DEFAULT '' ,
-	search_time number(11) DEFAULT '0' NOT NULL,
-	search_keywords clob DEFAULT '' ,
-	search_authors clob DEFAULT '' ,
-	CONSTRAINT pk_phpbb_blog_search_results PRIMARY KEY (search_key)
 )
 /
 

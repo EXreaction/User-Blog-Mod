@@ -14,7 +14,7 @@ CREATE TABLE phpbb_blogs (
 	blog_id INT4 DEFAULT nextval('phpbb_blogs_seq'),
 	user_id INT4 DEFAULT '0' NOT NULL CHECK (user_id >= 0),
 	user_ip varchar(40) DEFAULT '' NOT NULL,
-	blog_subject varchar(100) DEFAULT '' NOT NULL,
+	blog_subject varchar(255) DEFAULT '' NOT NULL,
 	blog_text TEXT DEFAULT '' NOT NULL,
 	blog_checksum varchar(32) DEFAULT '' NOT NULL,
 	blog_time INT4 DEFAULT '0' NOT NULL CHECK (blog_time >= 0),
@@ -61,7 +61,7 @@ CREATE TABLE phpbb_blogs_reply (
 	blog_id INT4 DEFAULT '0' NOT NULL CHECK (blog_id >= 0),
 	user_id INT4 DEFAULT '0' NOT NULL CHECK (user_id >= 0),
 	user_ip varchar(40) DEFAULT '' NOT NULL,
-	reply_subject varchar(100) DEFAULT '' NOT NULL,
+	reply_subject varchar(255) DEFAULT '' NOT NULL,
 	reply_text TEXT DEFAULT '' NOT NULL,
 	reply_checksum varchar(32) DEFAULT '' NOT NULL,
 	reply_time INT4 DEFAULT '0' NOT NULL CHECK (reply_time >= 0),
@@ -107,7 +107,7 @@ CREATE SEQUENCE phpbb_blogs_plugins_seq;
 
 CREATE TABLE phpbb_blogs_plugins (
 	plugin_id INT4 DEFAULT nextval('phpbb_blogs_plugins_seq'),
-	plugin_name varchar(100) DEFAULT '' NOT NULL,
+	plugin_name varchar(255) DEFAULT '' NOT NULL,
 	plugin_enabled INT2 DEFAULT '0' NOT NULL CHECK (plugin_enabled >= 0),
 	plugin_version varchar(100) DEFAULT '' NOT NULL,
 	PRIMARY KEY (plugin_id)
@@ -125,24 +125,12 @@ CREATE TABLE phpbb_blogs_users (
 	perm_registered INT2 DEFAULT '2' NOT NULL,
 	perm_foe INT2 DEFAULT '0' NOT NULL,
 	perm_friend INT2 DEFAULT '2' NOT NULL,
-	title varchar(100) DEFAULT '' NOT NULL,
+	title varchar(255) DEFAULT '' NOT NULL,
 	description TEXT DEFAULT '' NOT NULL,
 	description_bbcode_bitfield varchar(255) DEFAULT '' NOT NULL,
 	description_bbcode_uid varchar(8) DEFAULT '' NOT NULL,
 	instant_redirect INT2 DEFAULT '1' NOT NULL CHECK (instant_redirect >= 0),
 	PRIMARY KEY (user_id)
-);
-
-
-/*
-	Table: 'phpbb_blog_search_results'
-*/
-CREATE TABLE phpbb_blog_search_results (
-	search_key varchar(32) DEFAULT '' NOT NULL,
-	search_time INT4 DEFAULT '0' NOT NULL CHECK (search_time >= 0),
-	search_keywords TEXT DEFAULT '' NOT NULL,
-	search_authors TEXT DEFAULT '' NOT NULL,
-	PRIMARY KEY (search_key)
 );
 
 

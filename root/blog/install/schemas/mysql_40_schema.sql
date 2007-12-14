@@ -113,16 +113,6 @@ CREATE TABLE phpbb_blogs_users (
 );
 
 
-# Table: 'phpbb_blog_search_results'
-CREATE TABLE phpbb_blog_search_results (
-	search_key varbinary(32) DEFAULT '' NOT NULL,
-	search_time int(11) UNSIGNED DEFAULT '0' NOT NULL,
-	search_keywords mediumblob NOT NULL,
-	search_authors mediumblob NOT NULL,
-	PRIMARY KEY (search_key)
-);
-
-
 # Table: 'phpbb_blog_search_wordlist'
 CREATE TABLE phpbb_blog_search_wordlist (
 	word_id mediumint(8) UNSIGNED NOT NULL auto_increment,

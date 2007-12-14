@@ -1,3 +1,4 @@
+
 <?php
 /**
  *
@@ -32,10 +33,12 @@ if (confirm_box(true))
 
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
 	include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
-	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+	include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/eami.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$db_tool = new phpbb_db_tools($db);
 	$dbmd = get_available_dbms($dbms);
+	$eami = new eami();
 	define('IN_BLOG_INSTALL', true);
 
 	include("{$phpbb_root_path}blog/install/tables.$phpEx");

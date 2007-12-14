@@ -36,6 +36,6 @@ if (!defined('BLOGS_TABLE'))
 
 	define('BLOG_SEARCH_WORDLIST_TABLE',	$table_prefix . 'blog_search_wordlist');
 	define('BLOG_SEARCH_WORDMATCH_TABLE',	$table_prefix . 'blog_search_wordmatch');
-	define('BLOG_SEARCH_RESULTS_TABLE',		$table_prefix . 'blog_search_results');
+	//define('BLOG_SEARCH_RESULTS_TABLE',		$table_prefix . 'blog_search_results');
 }
 ?>

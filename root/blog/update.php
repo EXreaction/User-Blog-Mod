@@ -230,83 +230,13 @@ if (confirm_box(true))
 			$blog_search->reindex();
 		case '0.3.27' :
 		case '0.3.28' :
-			// MCP Modules ----------------------------------
-			$sql = 'SELECT MAX(right_id) AS top FROM ' . MODULES_TABLE . ' WHERE module_class = \'mcp\'';
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> '',
-				'module_class'		=> 'mcp',
-				'parent_id'			=> 0,
-				'left_id'			=> $row['top'] + 1,
-				'right_id'			=> $row['top'] + 10,
-				'module_langname'	=> 'BLOG',
-				'module_mode'		=> '',
-				'module_auth'		=> '',
-			);
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-			$parent_id = $db->sql_nextid();
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'mcp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 2,
-				'right_id'			=> $row['top'] + 3,
-				'module_langname'	=> 'MCP_BLOG_REPORTED_BLOGS',
-				'module_mode'		=> 'reported_blogs',
-				'module_auth'		=> 'acl_m_blogreport',
-			);
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'mcp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 4,
-				'right_id'			=> $row['top'] + 5,
-				'module_langname'	=> 'MCP_BLOG_REPORTED_REPLIES',
-				'module_mode'		=> 'reported_replies',
-				'module_auth'		=> 'acl_m_blogreplyreport',
-			);
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'mcp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 6,
-				'right_id'			=> $row['top'] + 7,
-				'module_langname'	=> 'MCP_BLOG_DISAPPROVED_BLOGS',
-				'module_mode'		=> 'disapproved_blogs',
-				'module_auth'		=> 'acl_m_blogapprove',
-			);
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-			$sql_ary = array(
-				'module_enabled'	=> 1,
-				'module_display'	=> 1,
-				'module_basename'	=> 'blog',
-				'module_class'		=> 'mcp',
-				'parent_id'			=> $parent_id,
-				'left_id'			=> $row['top'] + 8,
-				'right_id'			=> $row['top'] + 9,
-				'module_langname'	=> 'MCP_BLOG_DISAPPROVED_REPLIES',
-				'module_mode'		=> 'disapproved_replies',
-				'module_auth'		=> 'acl_m_blogreplyapprove',
-			);
-			$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
 		case '0.3.29' :
 			set_config('user_blog_search_type', 'fulltext_native');
+		case '0.3.30' :
+			$db_tool->sql_column_change(BLOGS_TABLE, 'blog_subject', array('STEXT_UNI', '', 'true_sort'));
+			$db_tool->sql_column_change(BLOGS_REPLY_TABLE, 'reply_subject', array('STEXT_UNI', '', 'true_sort'));
+			$db_tool->sql_column_change(BLOGS_PLUGINS_TABLE, 'plugin_name', array('STEXT_UNI', '', 'true_sort'));
+			$db_tool->sql_column_change(BLOGS_USERS_TABLE, 'title', array('STEXT_UNI', '', 'true_sort'));
 	}
 
 	if (count($sql_array))
