@@ -69,10 +69,7 @@
 ## 2007-11-06 Alpha 27 Released
 ## 2007-11-07 Alpha 27a Released
 ## 2007-11-11 Alpha 28 Released
-## 2007-11-12
-##		Alpha 28a Released
-##			+ Fixing the upgrade script and some other misc stuff.  Upgrades using the upgrade script will now be (mostly) supported.
-##			+ To update, copy the new files over.
+## 2007-11-12 Alpha 28a Released
 ## 2007-11-13
 ##		Alpha 28b Released
 ##			+ Some more changes to the Upgrade script.
@@ -92,8 +89,12 @@
 ## 2007-12-13
 ##		Alpha 31 Released
 ##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
-##			+ To update, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php, and run the update script
-##				-  by going to blog.php?page=update.
+##			+ To update, copy over the new files, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php,
+##				- and run the update script by going to blog.php?page=update.
+## 2007-12-14
+##		Alpha 31a Released
+##			+ Fixed a bug.
+##			+ To update, just copy over the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

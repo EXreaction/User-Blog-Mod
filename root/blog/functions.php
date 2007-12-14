@@ -555,7 +555,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 		if (!isset($user->lang['BLOG']))
 		{
-			$user->add_lang('mods/blog');
+			$user->add_lang('mods/blog/blog');
 		}
 
 		if (isset($user_settings[$user_id]))
