@@ -92,7 +92,8 @@
 ## 2007-12-13
 ##		Alpha 31 Released
 ##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
-##			+ To update, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, and do the edit in mcp.php.
+##			+ To update, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php, and run the update script
+##				-  by going to blog.php?page=update.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
