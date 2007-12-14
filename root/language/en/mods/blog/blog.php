@@ -53,6 +53,7 @@ $lang = array_merge($lang, array(
 	'BLOG_POST_VIEW_SETTINGS'			=> 'Blog posting/viewing settings',
 	'BLOG_REPLIES'						=> 'There are <b>%1$s</b> %2$sreplies%3$s to this blog',
 	'BLOG_REPLY'						=> 'There is <b>1</b> %sreply%s to this blog',
+	'BLOG_REPLY_COUNT'					=> 'Reply Count',
 	'BLOG_REPORTED'						=> 'Blog has been reported, click to close the report',
 	'BLOG_REPORTED_SHORT'				=> 'Blog has been reported',
 	'BLOG_REPORT_CONFIRM'				=> 'Are you sure you want to report this blog?',
@@ -74,7 +75,6 @@ $lang = array_merge($lang, array(
 	'CLICK_UPDATE'						=> 'Click %shere%s to update the database for the User Blog Mod',
 	'CONTINUE'							=> 'Continue',
 	'CONTINUED'							=> 'Continued',
-	'COPYRIGHT'							=> 'Copyright',
 
 	'DELETED_BLOGS'						=> 'Deleted Blogs',
 	'DELETED_MESSAGE'					=> 'These blogs have all been deleted.',
@@ -123,8 +123,6 @@ $lang = array_merge($lang, array(
 	'NO_PERMISSIONS_READ'				=> 'Sorry, but you are not allowed to read this blog.',
 	'NO_PERMISSIONS_REPLY'				=> 'Sorry, but you are not allowed to reply to this blog.',
 	'NO_PERMISSIONS_SINGLE'				=> 'Can not read or reply to this blog.',
-	'NO_REPLIES'						=> 'There are no replies',
-	'NO_REPLY'							=> 'The requested reply does not exist.',
 
 	'PERMANENTLY_DELETE_BLOG_CONFIRM'	=> 'Are you sure you want to permanently delete this blog?  This can not be un-done.',
 	'PERMANENTLY_DELETE_REPLY_CONFIRM'	=> 'Are you sure you want to permanently delete this reply?  This can not be un-done.',

@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 
 	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
 	'CONTINUE'								=> 'Continue',
+	'COPYRIGHT'								=> 'Copyright',
 
 	'DATABASE_VERSION'						=> 'Database Version',
 	'DEFAULT_TEXT_LIMIT'					=> 'Default text limit for main blog pages',
@@ -59,6 +60,12 @@ $lang = array_merge($lang, array(
 
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 
+	'MCP_BLOG'								=> 'Blog',
+	'MCP_BLOG_DISAPPROVED_BLOGS'			=> 'Unapproved Blogs',
+	'MCP_BLOG_DISAPPROVED_REPLIES'			=> 'Unaproved Replies',
+	'MCP_BLOG_REPORTED_BLOGS'				=> 'Reported Blogs',
+	'MCP_BLOG_REPORTED_REPLIES'				=> 'Reported Replies',
+
 	'NO_UNINSTALLED_PLUGINS'				=> 'No Uninstalled Plugins',
 
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',
@@ -74,6 +81,10 @@ $lang = array_merge($lang, array(
 	'PLUGIN_UNINSTALL_CONFIRM'				=> 'Are you sure you want to uninstall this plugin?<br/><strong>This will remove all added data by this mod from the database (so any saved data by it will be lost)!</strong><br/><br/>You must manually uninstall any file changes made by this plugin and delete the plugin files to completely remove this plugin.',
 	'PLUGIN_UPDATE'							=> 'Update DB',
 
+	'UCP_BLOG'								=> 'Blog',
+	'UCP_BLOG_PERMISSIONS'					=> 'Blog Permissions',
+	'UCP_BLOG_SETTINGS'						=> 'Blog Settings',
+	'UCP_BLOG_TITLE_DESCRIPTION'			=> 'Blog Title and Description',
 	'UNINSTALLED_PLUGINS'					=> 'Uninstalled Plugins',
 	'USER_TEXT_LIMIT'						=> 'Default text limit for user blog page',
 	'USER_TEXT_LIMIT_EXPLAIN'				=> 'Same as Default text limit, except this is for the limit on the View User page',

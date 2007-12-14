@@ -76,7 +76,21 @@ class eami
 		}
 
 		// The left and right ID for the new module
-		$left_id = (int) $this->{$class}[$parent_id]['right_id'];
+		if ($parent_id != 0)
+		{
+			$left_id = (int) $this->{$class}[$parent_id]['right_id'];
+		}
+		else
+		{
+			$left_id = 0;
+			foreach ($this->{$class} as $row)
+			{
+				if ($row['right_id'] >= $left_id)
+				{
+					$left_id = $row['right_id'] + 1;
+				}
+			}
+		}
 		$right_id = $left_id + 1;
 
 		// Build the module data array which will be inserted into the DB.

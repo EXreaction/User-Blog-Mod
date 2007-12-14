@@ -79,7 +79,7 @@ $sql_ary = array(
 	'module_basename'	=> 'blog',
 	'module_langname'	=> 'MCP_BLOG_DISAPPROVED_REPLIES',
 	'module_mode'		=> 'disapproved_replies',
-	'module_auth'		=> 'acl_m_blogreplyapproved',
+	'module_auth'		=> 'acl_m_blogreplyapprove',
 );
 $eami->add_module('mcp', 'MCP_BLOG', $sql_ary);
 

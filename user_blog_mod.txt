@@ -89,10 +89,10 @@
 ##			+ To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
-## 2007-12-14
+## 2007-12-13
 ##		Alpha 31 Released
-##			+ Lots of updates and bug fixes.
-##			+ To update, re-edit adm/index.php, and ucp.php to have the right code, and do the edit in mcp.php.
+##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
+##			+ To update, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, and do the edit in mcp.php.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -102,32 +102,6 @@
 # Copy everything from the root/ folder to your phpBB3 forums' root
 
 root/* to /
-
-#
-#-----[ OPEN ]----------------------
-#
-
-.htaccess
-
-#
-#-----[ FIND ]----------------------
-#
-
-<Files "common.php">
-Order Allow,Deny
-Deny from All
-</Files>
-
-#
-#-----[ AFTER, ADD ]----------------------
-# Note: Only add this if your server has mod_rewrite enabled, otherwise skip this step.
-
-RewriteEngine on
-
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php
 
 #
 #-----[ OPEN ]----------------------
@@ -170,6 +144,53 @@ includes/functions.php
 	// Start Add User Blog Mod ------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+# do this for all styles
+
+styles/prosilver/template/overall_header.html
+
+#
+#-----[ FIND ]---------------------------------------------
+# Note: This is not the whole line
+
+{U_FAQ}
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+				<!-- BEGIN blog_links -->
+					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
+				<!-- END blog_links -->
+
+
+#
+#-----[ OPEN ]----------------------
+#
+
+.htaccess
+
+#
+#-----[ FIND ]----------------------
+#
+
+<Files "common.php">
+Order Allow,Deny
+Deny from All
+</Files>
+
+#
+#-----[ AFTER, ADD ]----------------------
+# Note: Only add this if your server has mod_rewrite enabled, otherwise skip this step.
+
+RewriteEngine on
+
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
+Rewriterule ^blog/$						./blog/blog.php
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -260,26 +281,6 @@ get_user_settings($id_cache);
 	// Start Add User Blog Mod ------------------
 	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
 	// End Add User Blog Mod --------------------
-
-#
-#-----[ OPEN ]---------------------------------------------
-# do this for all styles
-
-styles/prosilver/template/overall_header.html
-
-#
-#-----[ FIND ]---------------------------------------------
-# Note: This is not the whole line
-
-{U_FAQ}
-
-#
-#-----[ BEFORE, ADD ]--------------------------------------
-#
-
-				<!-- BEGIN blog_links -->
-					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
-				<!-- END blog_links -->
 
 #
 #-----[ DIY ]---------------------------------------------
