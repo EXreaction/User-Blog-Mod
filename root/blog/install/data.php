@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package phpBB3 User Blog
- * @copyright (c) 2007 EXreaction, Lithium Studios
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- *
- */
+*
+* @package phpBB3 User Blog
+* @copyright (c) 2007 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+*
+*/
 
 if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 {
@@ -20,7 +20,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 $sql_ary = array(
 	'plugin_name'		=> 'archive',
 	'plugin_enabled'	=> 1,
-	'plugin_version'	=> '0.7.0',
+	'plugin_version'	=> '0.7.1',
 );
 $sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 $db->sql_query($sql);

@@ -171,7 +171,6 @@ styles/prosilver/template/overall_header.html
 					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
 				<!-- END blog_links -->
 
-
 #
 #-----[ OPEN ]----------------------
 #

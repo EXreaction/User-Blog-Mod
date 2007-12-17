@@ -12,13 +12,12 @@
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * force style for UCP/MCP
-* reorganize plugins list
 * auto-subscriptions
 * option to cut off text at space or endline
 * admin edit blog title and description
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Memorable entry (like a sticky)
+* Memorable entry (like a sticky)?
 * Information section - MCP
 *
 * Polls
@@ -27,9 +26,10 @@
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
-* Change some sql queries to arrays and use build_query
-*
 * OTHER -------------------------------------------------------------------------------------------
+* Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
+*  possibly use custom password to verify the script is being called from the board (perhaps the board owner's pw hash or a hash of it)
+* Left Menu Order
 *
 * UCP
 *	custom CSS coding allowed?

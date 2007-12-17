@@ -175,17 +175,20 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			$title_match ='/(&amp;|&lt;|&gt;|&quot;|[^a-zA-Z0-9\s_])/'; // Replace HTML Entities, and non alphanumeric/space/underscore characters
 			$replace_page = true; // match everything except the page if this is set to false
 
-			if (!isset($url_data['page']))
+			if (!isset($url_data['page']) && $user_id !== false)
 			{
+				// Do not do the str_replace for the username!  It would break it! :P
+				$replace_page = false;
+
 				if ($user_id == $user->data['user_id'])
 				{
 					$url_data['page'] = $user->data['username'];
 				}
-				else if ($user_id != false && isset($extra_data['username']))
+				else if (isset($extra_data['username']))
 				{
 					$url_data['page'] = $extra_data['username'];
 				}
-				else if ($user_id != false && !empty($user_data))
+				else if (!empty($user_data))
 				{
 					if (!isset($user_data->user[$user_id]))
 					{
@@ -193,9 +196,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 					}
 					$url_data['page'] = $user_data->user[$user_id]['username'];
 				}
-
-				// Do not do the str_replace for the username!  It would break it! :P
-				$replace_page = false;
 			}
 			else
 			{
@@ -207,7 +207,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 			if ($reply_id)
 			{
 				$url_data['r'] = $reply_id;
-				$url_data['anchor'] = 'r' . $reply_id;
+				$url_data['anchor'] = (isset($url_data['anchor'])) ? $url_data['anchor'] : 'r' . $reply_id;
 				if (!isset($url_data['mode']))
 				{
 					if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))

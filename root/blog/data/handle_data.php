@@ -367,10 +367,23 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	$send_via_pm = array();
 	$send_via_email = array();
 
+	// Fix the URL's...
+	if (isset($config['user_blog_seo']) && $config['user_blog_seo'])
+	{
+		$view_url = ($rid) ? blog_url($uid, $bid, $rid) : blog_url($uid, $bid);
+		$unsubscribe_url = ($rid) ? blog_url($uid, $bid, false, array('page' => 'unsubscribe')) : blog_url($uid, false, false, array('page' => 'unsubscribe'));
+	}
+	else
+	{
+		$view_url = redirect((($rid) ? blog_url($uid, $bid, $rid) : blog_url($uid, $bid)), true);
+		$unsubscribe_url = redirect((($rid) ? blog_url($uid, $bid, false, array('page' => 'unsubscribe')) : blog_url($uid, false, false, array('page' => 'unsubscribe'))), true);
+	}
+
 	if ($mode == 'new_reply' && $rid != 0)
 	{
 		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE blog_id = \'' . $bid . '\'';
+			WHERE blog_id = \'' . $bid . '\'
+			AND sub_user_id != \'' . $user->data['user_id'] . '\'';
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -388,12 +401,13 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		}
 		$db->sql_freeresult($result);
 
-		$message = sprintf($user->lang['BLOG_SUBSCRIPTION_NOTICE'], blog_url($uid, $bid), $user->data['username'], blog_url($uid, $bid, false, array('page' => 'unsubscribe')));
+		$message = sprintf($user->lang['BLOG_SUBSCRIPTION_NOTICE'], $view_url, $user->data['username'], $unsubscribe_url);
 	}
 	else if ($mode == 'new_blog' && $uid != 0)
 	{
 		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE user_id = \'' . $uid . '\'';
+			WHERE user_id = \'' . $uid . '\'
+			AND sub_user_id != \'' . $user->data['user_id'] . '\'';
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -411,7 +425,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		}
 		$db->sql_freeresult($result);
 
-		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], blog_url($uid, $bid), blog_url($uid, false, false, array('page' => 'unsubscribe')));
+		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], $view_url, $unsubscribe_url);
 	}
 
 	$user_data->get_user_data('2');
@@ -433,7 +447,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$message_parser = new parse_message();
 
 		$message_parser->message = $message;
-		$message_parser->parse(true, true, true, true, true, true, true);
+		$message_parser->parse(true, true, true);
 
 		// setup out to address list
 		foreach ($send_via_pm as $id)
@@ -450,7 +464,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 			'enable_bbcode'		=> true,
 			'enable_smilies'	=> true,
 			'enable_urls'		=> true,
-			'enable_sig'		=> false,
+			'enable_sig'		=> true,
 			'message'			=> $message_parser->message,
 			'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
 			'bbcode_uid'		=> $message_parser->bbcode_uid,
@@ -491,8 +505,8 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 				'TYPE'			=> ($rid !== false) ? $user->lang['REPLY'] : $user->lang['BLOG'],
 				'NAME'			=> $post_subject,
 				'BY_USERNAME'	=> $user->data['username'],
-				'U_VIEW'		=> redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$uid}&amp;b={$bid}" . $reply_url_var), true),
-				'U_UNSUBSCRIBE'	=> ($rid !== false) ? redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$uid}&amp;b={$bid}"), true) : redirect(append_sid("{$phpbb_root_path}blog.$phpEx", "u={$uid}")),
+				'U_VIEW'		=> $view_url,
+				'U_UNSUBSCRIBE'	=> $unsubscribe_url,
 			));
 
 			$messenger->send(NOTIFY_EMAIL);
