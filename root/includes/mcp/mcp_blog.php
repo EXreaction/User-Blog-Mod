@@ -109,7 +109,7 @@ class mcp_blog
 
 		if ($blog)
 		{
-			$total_posts = (count($ids) == 1) ? $user->lang['BLOG_COUNT'] : sprintf($user->lang['BLOGS_COUNT'], count($ids));
+			$total_posts = (count($ids) == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], count($ids));
 
 			foreach ($ids as $id)
 			{
@@ -124,7 +124,7 @@ class mcp_blog
 		}
 		else
 		{
-			$total_posts = (count($ids) == 1) ? $user->lang['REPLY_COUNT'] : sprintf($user->lang['REPLIES_COUNT'], count($ids));
+			$total_posts = (count($ids) == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], count($ids));
 
 			foreach ($ids as $id)
 			{

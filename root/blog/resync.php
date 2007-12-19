@@ -23,7 +23,7 @@ if (confirm_box(true))
 {
 	resync_blog('all');
 
-	$message = $user->lang['RESYNC_BLOG_SUCESS'] . '<br/><br/>';
+	$message = $user->lang['RESYNC_BLOG_SUCCESS'] . '<br/><br/>';
 	$message .= sprintf($user->lang['RETURN_MAIN'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
 
 	trigger_error($message);

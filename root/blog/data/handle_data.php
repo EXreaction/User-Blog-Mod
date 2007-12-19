@@ -193,7 +193,7 @@ function update_edit_delete($mode = 'all')
 				// has the blog been deleted?
 				if ($row['blog_deleted'] != 0)
 				{
-					$blog_data->blog[$blog_id]['deleted_message'] = sprintf($user->lang['BLOG_IS_DELETED'], $user_data->user[$row['blog_deleted']]['username_full'], $user->format_date($row['blog_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=undelete&amp;b=$blog_id") . '">', '</a>');
+					$blog_data->blog[$blog_id]['deleted_message'] = sprintf($user->lang['BLOG_DELETED_BY_MSG'], $user_data->user[$row['blog_deleted']]['username_full'], $user->format_date($row['blog_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=undelete&amp;b=$blog_id") . '">', '</a>');
 				}
 				else
 				{
@@ -262,7 +262,7 @@ function update_edit_delete($mode = 'all')
 				// has the reply been deleted?
 				if ($row['reply_deleted'] != 0)
 				{
-					$reply_data->reply[$reply_id]['deleted_message'] = sprintf($user->lang['REPLY_IS_DELETED'], $user_data->user[$row['reply_deleted']]['username_full'], $user->format_date($row['reply_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=undelete&amp;r=$reply_id") . '">', '</a>');
+					$reply_data->reply[$reply_id]['deleted_message'] = sprintf($user->lang['REPLY_DELETED_BY_MSG'], $user_data->user[$row['reply_deleted']]['username_full'], $user->format_date($row['reply_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=undelete&amp;r=$reply_id") . '">', '</a>');
 				}
 				else
 				{

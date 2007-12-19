@@ -445,6 +445,7 @@ class blog_data
 
 		$reply_count = $reply_data->get_reply_data('reply_count', $id);
 
+		$blog['blog_read_count'] = ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count'];
 		$blog_row = array(	
 			'BLOG_ID'			=> $id,
 			'BLOG_MESSAGE'		=> $blog_text,
@@ -454,10 +455,10 @@ class blog_data
 			'EDITED_MESSAGE'	=> $blog['edited_message'],
 			'BLOG_EXTRA'		=> '',
 			'PUB_DATE'			=> date('r', $blog['blog_time']),
-			'REPLIES'			=> ($reply_count != 1) ? ($reply_count == 0) ? sprintf($user->lang['BLOG_REPLIES'], $reply_count, '', '') : sprintf($user->lang['BLOG_REPLIES'], $reply_count, '<a href="' . blog_url($user_id, $id) . '#replies">', '</a>') : sprintf($user->lang['BLOG_REPLY'], '<a href="' . blog_url($user_id, $id) . '#replies">', '</a>'),
+			'REPLIES'			=> ($reply_count == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $reply_count),
 			'TITLE'				=> $blog_subject,
 			'USER_FULL'			=> $user_data->user[$user_id]['username_full'],
-			'VIEWS'				=> ($blog['blog_read_count'] != 1) ? sprintf($user->lang['BLOG_VIEWS_COUNT'], ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count']) : $user->lang['BLOG_VIEW_COUNT'],
+			'VIEWS'				=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
 
 			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
 			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',

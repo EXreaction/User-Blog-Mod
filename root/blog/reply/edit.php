@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $reply_id give them an error...
 if ($reply_id == 0)
 {
-	trigger_error('NO_REPLY');
+	trigger_error('REPLY_NOT_EXIST');
 }
 
 // Add the language Variables for posting
@@ -123,7 +123,7 @@ if (!$submit || sizeof($error))
 		'L_DELETE_POST'				=> $user->lang['DELETE_REPLY'],
 		'L_DELETE_POST_WARN'		=> $user->lang['DELETE_REPLY_WARN'],
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-		'L_POST_A'					=> $user->lang['POST_A_REPLY'],
+		'L_POST_A'					=> $user->lang['EDIT_A_REPLY'],
 
 		'S_DELETE_ALLOWED'			=> $can_delete,
 		'S_EDIT_REASON'				=> true,
@@ -200,7 +200,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message = (!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
+		$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_EDIT_SUCCESS']) . '<br /><br />'; 
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 
 		// redirect
@@ -210,12 +210,12 @@ else // user submitted and there are no errors
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 	if ($user_id == $user->data['user_id'])
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 	}
 	else
 	{
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
+		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
 	trigger_error($message);

@@ -72,7 +72,7 @@ if ($reply_id != 0)
 {
 	if ($reply_data->get_reply_data('reply', $reply_id) === false)
 	{
-		trigger_error('NO_REPLY');
+		trigger_error('REPLY_NOT_EXIST');
 	}
 
 	$reply_user_id = $reply_data->reply[$reply_id]['user_id'];

@@ -17,9 +17,10 @@ include($phpbb_root_path . 'common.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup('common');
+
+$mode = request_var('mode', '');
 */
 
-// If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -202,8 +203,15 @@ function lang_lines($lang, $max_length, &$output, $start = 0)
 		//ksort($lang);
 	}
 
+	$last_name = '';
 	foreach($lang as $name => $value)
 	{
+		if ($name == $last_name)
+		{
+			echo 'Lang Duplicate: ' . $name . '<br/>';
+		}
+		$last_name = $name;
+
 		// make sure to add slashes to single quotes!
 		$name = addcslashes($name, "'");
 
@@ -255,16 +263,20 @@ function lang_lines($lang, $max_length, &$output, $start = 0)
 *
 * The Filename is inputted by sending it via a HTTP Get variable
 */
-function organize_lang()
+function organize_lang($file = false, $skip_errors = false)
 {
 	global $phpbb_root_path, $phpEx;
 
-	$file = request_var('file', '');
+	$file = ($file === false) ? request_var('file', '') : $file;
 
 	// make sure they have a file name
-	if ($file == '')
+	if ($file == '' && !$skip_errors)
 	{
 		trigger_error('No File Specified.');
+	}
+	else if ($skip_errors)
+	{
+		return;
 	}
 
 	// make sure they are not trying to get out of the language directory, otherwise this would be a security risk. ;)
@@ -273,13 +285,44 @@ function organize_lang()
 		trigger_error('You are not allowed out of the language/ directory.');
 	}
 
+	// If the user submitted a directory, do every language file in that directory
+	if (is_dir($phpbb_root_path . 'language/' . $file))
+	{
+		if ($handle = opendir($phpbb_root_path . 'language/' . $file))
+		{
+		    while (false !== ($file1 = readdir($handle)))
+			{
+				if ($file1 == '.' || $file1 == '..' || $file1 == '.svn' || !strpos($file1, ".$phpEx"))
+				{
+					continue;
+				}
+
+				if (substr($file, -1) == '/')
+				{
+					organize_lang($file . substr($file1, 0, strpos($file1, ".$phpEx")));
+				}
+				else
+				{
+					organize_lang($file . '/' . substr($file1, 0, strpos($file1, ".$phpEx")));
+				}
+		    }
+		    closedir($handle);
+		}
+
+		trigger_error('Done organizing all of the language files in language/' . $file . '.');
+	}
+
 	// include the file
 	@include($phpbb_root_path . 'language/' . $file . '.' . $phpEx);
 
 	// make sure it is a valid language file
-	if (!isset($lang) || !is_array($lang))
+	if ((!isset($lang) || !is_array($lang)) && !$skip_errors)
 	{
 		trigger_error('Bad Language File.');
+	}
+	else if ($skip_errors)
+	{
+		return;
 	}
 
 	// setup the $output var
@@ -306,9 +349,14 @@ function organize_lang()
 		}
 		fclose($handle);
 
-		if (!$stopped)
+		if (!$stopped && !$skip_errors)
 		{
 			trigger_error('Please make sure you are using UNIX line endings.');
+		}
+		else if ($skip_errors)
+		{
+			echo 'Bad line endings in ' . $phpbb_root_path . 'language/' . $file . '.' . $phpEx . '<br/>';
+			return;
 		}
 	}
 

@@ -79,7 +79,7 @@ if ($total_replies > 0 || $sort_days != 0)
 	$template->assign_vars(array(
 		'PAGINATION'			=> $pagination,
 		'PAGE_NUMBER' 			=> on_page($total_replies, $limit, $start),
-		'TOTAL_POSTS'			=> ($total_replies == 1) ? $user->lang['REPLY_COUNT'] : sprintf($user->lang['REPLIES_COUNT'], $total_replies),
+		'TOTAL_POSTS'			=> ($total_replies == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $total_replies),
 		'S_REPLIES'				=> true,
 		'S_SORT_REPLY'			=> true,
 		'S_SELECT_SORT_DIR' 	=> $s_sort_dir,

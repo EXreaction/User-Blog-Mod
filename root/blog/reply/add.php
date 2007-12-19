@@ -129,7 +129,7 @@ if ( (!$submit) || (sizeof($error)) )
 		'SUBJECT'					=> $reply_subject,
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
-		'L_POST_A'					=> $user->lang['POST_A_REPLY'],
+		'L_POST_A'					=> $user->lang['POST_A_NEW_REPLY'],
 	));
 
 	// Tell the template parser what template file to use
@@ -188,17 +188,17 @@ else // user submitted and there are no errors
 		inform_approve_report('reply_approve', $reply_id);
 	}
 
-	$message = (!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_SUBMIT_SUCCESS']) . '<br /><br />'; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/>';
 	if ($user_id == $user->data['user_id'])
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 	}
 	else
 	{
 		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
+		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
 	blog_meta_refresh(3, $blog_urls['view_reply']);

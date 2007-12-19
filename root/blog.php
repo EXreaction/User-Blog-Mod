@@ -44,7 +44,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.31';
+$user_blog_version = '0.3.32_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -63,9 +63,6 @@ else
 {
 	$user->setup('mods/blog/common');
 }
-
-// Sometime in the future this will need to be broken down to a more page specific level
-$user->add_lang('mods/blog/blog');
 
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
@@ -113,6 +110,7 @@ switch ($page)
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search
 	case 'resync' : // to resync the blog data
+		$user->add_lang('mods/blog/misc');
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 	// no break
 	case 'install' : // to install the User Blog Mod
@@ -120,12 +118,14 @@ switch ($page)
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for developmental purposes
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+		$user->add_lang('mods/blog/setup');
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
 		break;
 	case 'blog' :
 	case 'reply' :
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+		$user->add_lang(array('posting', 'mods/blog/posting'));
 
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
@@ -180,6 +180,7 @@ if ($default)
 
 	include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
 	check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+	$user->add_lang('mods/blog/view');
 
 	if ($blog_id != 0 || $reply_id != 0)
 	{

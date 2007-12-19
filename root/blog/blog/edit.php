@@ -118,6 +118,7 @@ if (!$submit || sizeof($error))
 		'L_DELETE_POST'				=> $user->lang['DELETE_BLOG'],
 		'L_DELETE_POST_WARN'		=> $user->lang['DELETE_BLOG_WARN'],
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+		'L_POST_A'					=> $user->lang['EDIT_A_BLOG'],
 
 		'S_SHOW_PERMISSIONS_BOX'	=> true,
 		'S_DELETE_ALLOWED'			=> $can_delete,
@@ -196,7 +197,7 @@ else // user submitted and there are no errors
 		$message = $user->lang['BLOG_DELETED'] . '<br/><br/>';
 		if ($user->data['user_id'] == $user_id)
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+			$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 		}
 		else
 		{
@@ -209,11 +210,11 @@ else // user submitted and there are no errors
 	{
 		handle_blog_cache('approve_blog', $user_id);
 
-		$message = (!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
+		$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />'; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
 		if ($user->data['user_id'] == $user_id)
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+			$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 		}
 		else
 		{

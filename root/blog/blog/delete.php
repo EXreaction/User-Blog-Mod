@@ -80,7 +80,7 @@ if (confirm_box(true))
 
 	if ($user->data['user_id'] == $user_id)
 	{
-		$message .= '<br/><br/>' . sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+		$message .= '<br/><br/>' . sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 	}
 	else
 	{

@@ -41,6 +41,7 @@ $lang = array_merge($lang, array(
 	'BREAK_CONTINUE_NOTICE'					=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before before we are done.<br/>Click continue below if you are not automatically redirected to the next page.',
 
 	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
+	'CLICK_UPDATE'							=> 'Click %shere%s to update the database for the User Blog Mod',
 	'CONTINUE'								=> 'Continue',
 	'COPYRIGHT'								=> 'Copyright',
 
@@ -60,12 +61,15 @@ $lang = array_merge($lang, array(
 
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 
+	'LOG_CONFIG_BLOG'						=> '<strong>Altered Blog Settings</strong>',
+
 	'MCP_BLOG'								=> 'Blog',
 	'MCP_BLOG_DISAPPROVED_BLOGS'			=> 'Unapproved Blogs',
 	'MCP_BLOG_DISAPPROVED_REPLIES'			=> 'Unaproved Replies',
 	'MCP_BLOG_REPORTED_BLOGS'				=> 'Reported Blogs',
 	'MCP_BLOG_REPORTED_REPLIES'				=> 'Reported Replies',
 
+	'NO_INSTALLED_PLUGINS'					=> 'No Installed Plugins',
 	'NO_UNINSTALLED_PLUGINS'				=> 'No Uninstalled Plugins',
 
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',

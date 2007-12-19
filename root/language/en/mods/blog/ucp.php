@@ -38,6 +38,7 @@ $lang = array_merge($lang, array(
 	'UCP_BLOG_SETTINGS_EXPLAIN'				=> '',
 	'UCP_BLOG_TITLE_DESCRIPTION'			=> 'Blog Title and Description',
 	'UCP_BLOG_TITLE_DESCRIPTION_EXPLAIN'	=> 'Here you can set the title and description for your blog.',
+	'USER_PERMISSIONS_DISABLED'				=> 'The User Permissions System has been disabled by the Administrators.',
 
 	'VIEW_PERMISSIONS'						=> 'Can read your blogs.',
 ));

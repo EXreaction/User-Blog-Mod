@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.31
+## MOD Version: 0.3.32
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -33,72 +33,68 @@
 ##############################################################
 ## MOD History:
 ##(yyyy-mm-dd)
-## 2007-05-07 Alpha 1 Released
-## 2007-05-12 Alpha 2 Released
-## 2007-05-21 Alpha 3 Released
-## 2007-06-02 Alpha 4 Released
-## 2007-06-07 Alpha 5 Released
-## 2007-06-30 Alpha 6 Released
-## 2007-07-08 Alpha 7 Released
-## 2007-07-12 Alpha 8 Released
-## 2007-07-28 Alpha 9 Released
-## 2007-07-29 Alpha 9a Released
-## 2007-07-30 Alpha 10 Released
-## 2007-07-31 Alpha 10a Released
-## 2007-08-04 Alpha 11 Released
-## 2007-08-07 Alpha 12 Released
-## 2007-08-12 Alpha 13 Released
-## 2007-08-14 Alpha 13a Released
-## 2007-08-15 Alpha 13b Released
-## 2007-08-26 Alpha 14 Released
-## 2007-08-27 Alpha 14a Released
-## 2007-09-10 Alpha 14b Released
-## 2007-09-30 Alpha 15 Released
-## 2007-10-09 Alpha 16 Released
-## 2007-10-15 Alpha 17 Released
-## 2007-10-17 Alpha 18 Released
-## 2007-10-21 Alpha 19 Released
-## 2007-10-22 Alpha 20 Released
-## 2007-10-22 Alpha 20a Released
-## 2007-10-24 Alpha 21 Released
-## 2007-10-26 Alpha 22 Released
-## 2007-10-30 Alpha 23 Released
-## 2007-11-01 Alpha 24 Released
-## 2007-11-03 Alpha 25 Released
-## 2007-11-04 Alpha 26 Released
-## 2007-11-06 Alpha 27 Released
-## 2007-11-07 Alpha 27a Released
-## 2007-11-11 Alpha 28 Released
-## 2007-11-12 Alpha 28a Released
-## 2007-11-13
-##		Alpha 28b Released
-##			+ Some more changes to the Upgrade script.
-##			+ To update, copy the new files over.
-## 2007-11-17
-##		Alpha 29 Released
-##			+ Some misc updates.  The Blog MCP has now been moved into the MCP.
-##			+ To update, make the changes to language/en/mcp.php, copy the new files over, then run the update script by going to blog.php?page=update.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-05-07 Alpha 1
+## 2007-05-12 Alpha 2
+## 2007-05-21 Alpha 3
+## 2007-06-02 Alpha 4
+## 2007-06-07 Alpha 5
+## 2007-06-30 Alpha 6
+## 2007-07-08 Alpha 7
+## 2007-07-12 Alpha 8
+## 2007-07-28 Alpha 9
+## 2007-07-29 Alpha 9a
+## 2007-07-30 Alpha 10
+## 2007-07-31 Alpha 10a
+## 2007-08-04 Alpha 11
+## 2007-08-07 Alpha 12
+## 2007-08-12 Alpha 13
+## 2007-08-14 Alpha 13a
+## 2007-08-15 Alpha 13b
+## 2007-08-26 Alpha 14
+## 2007-08-27 Alpha 14a
+## 2007-09-10 Alpha 14b
+## 2007-09-30 Alpha 15
+## 2007-10-09 Alpha 16
+## 2007-10-15 Alpha 17
+## 2007-10-17 Alpha 18
+## 2007-10-21 Alpha 19
+## 2007-10-22 Alpha 20
+## 2007-10-22 Alpha 20a
+## 2007-10-24 Alpha 21
+## 2007-10-26 Alpha 22
+## 2007-10-30 Alpha 23
+## 2007-11-01 Alpha 24
+## 2007-11-03 Alpha 25
+## 2007-11-04 Alpha 26
+## 2007-11-06 Alpha 27
+## 2007-11-07 Alpha 27a
+## 2007-11-11 Alpha 28
+## 2007-11-12 Alpha 28a
+## 2007-11-13 Alpha 28b
+## 2007-11-17 Alpha 29
 ## 2007-11-24
-##		Alpha 30 Released
+##		Alpha 30
 ##			+ Updates to the search system and some other stuff.  New plugin available named Friends for listing a users' friends on their blog page.
 ##			+ To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.
 ##				- Also make sure to check for new permissions/settings.
 ##				- If you have any plugins installed make sure you update them as well.
 ## 2007-12-13
-##		Alpha 31 Released
+##		Alpha 31
 ##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
 ##			+ To update, copy over the new files, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php,
 ##				- and run the update script by going to blog.php?page=update.
 ## 2007-12-14
-##		Alpha 31a Released
+##		Alpha 31a
 ##			+ Fixed a bug.
 ##			+ To update, just copy over the new files.
 ## 2007-12-14
-##		Alpha 31b Released
+##		Alpha 31b
 ##			+ Oops, I packaged A31a wrong with older files. :o
 ##			+ To update, just copy over the new files.
+## 2007-12
+##		Alpha 32
+##			+ More bug fixes.  Lots of language changes.
+##			+ To update, copy over the new files, update viewtopic.php, and run the upgrade script by going to blog.php?page=update.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -267,7 +263,7 @@ viewtopic.php
 
 // Start Add User Blog Mod ------------------
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
-$user->add_lang('mods/blog/blog');
+$user->add_lang('mods/blog/common');
 get_zebra_info($user->data['user_id'], true);
 get_user_settings($id_cache);
 // End Add User Blog Mod --------------------

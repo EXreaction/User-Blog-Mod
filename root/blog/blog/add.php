@@ -100,6 +100,7 @@ if (!$submit || sizeof($error))
 		'SUBJECT'					=> $blog_subject,
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
+		'L_POST_A'					=> $user->lang['POST_A_NEW_BLOG'],
 	));
 
 	// Tell the template parser what template file to use
@@ -165,10 +166,10 @@ else // user submitted and there are no errors
 		inform_approve_report('blog_approve', $blog_id);
 	}
 
-	$message = (!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : ''; 
+	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_SUBMIT_SUCCESS']) . '<br /><br />'; 
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';
 
-	$message .= sprintf($user->lang['RETURN_BLOG_MAIN_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
+	$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 

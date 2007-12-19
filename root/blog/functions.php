@@ -253,8 +253,8 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				}
 			}
 
-			// Add the Session ID if required
-			if ($_SID)
+			// Add the Session ID if required, do not add it for guests.
+			if ($_SID && $user->data['is_registered'])
 			{
 				$extras .= "_sid-{$_SID}";
 			}

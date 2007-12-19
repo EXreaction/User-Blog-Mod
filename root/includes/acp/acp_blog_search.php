@@ -30,7 +30,7 @@ class acp_blog_search
 	{
 		global $user, $phpbb_root_path, $phpEx;
 
-		$user->add_lang('acp/search');
+		$user->add_lang(array('acp/search', 'mods/blog/setup'));
 
 		// For some this may be of help...
 		@ini_set('memory_limit', '128M');
@@ -316,7 +316,7 @@ class acp_blog_search
 					{
 						$redirect_url = $this->u_action . "&amp;search_type={$this->state[0]}&amp;action={$action}&amp;section={$section}&amp;part={$part}";
 						meta_refresh(1, $redirect_url);
-						trigger_error(sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $section, 3, $part, $part_cnt) . '<br/><br/><a href="' . $redirect_url . '">' . $user->lang['CONTINUE'] . '</a>');
+						trigger_error(sprintf($user->lang['SEARCH_BREAK_CONTINUE_NOTICE'], $section, 3, $part, $part_cnt) . '<br/><br/><a href="' . $redirect_url . '">' . $user->lang['CONTINUE'] . '</a>');
 					}
 				break;
 			}

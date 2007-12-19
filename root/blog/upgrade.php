@@ -15,7 +15,6 @@ if (!defined('IN_PHPBB'))
 
 $user->add_lang('install');
 $user->add_lang('posting');
-$user->add_lang('mods/blog/upgrade');
 
 generate_blog_urls();
 generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
@@ -92,7 +91,7 @@ if ($section <= ($section_cnt - 1) || $part <= ($part_cnt - 1))
 {
 	$redirect_url = append_sid("{$phpbb_root_path}blog.$phpEx", "page=upgrade&amp;mode={$mode}&amp;stage={$stage}&amp;section={$section}&amp;part={$part}");
 	meta_refresh(1, $redirect_url);
-	$message = sprintf($user->lang['BREAK_CONTINUE_NOTICE'], $stage, $section, $section_cnt, $part, $part_cnt);
+	$message = sprintf($user->lang['UPGRADE_BREAK_CONTINUE_NOTICE'], $stage, $section, $section_cnt, $part, $part_cnt);
 }
 else
 {
