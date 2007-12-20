@@ -36,6 +36,7 @@ $lang = array_merge($lang, array(
 	'BLOG_GUEST_CAPTCHA'					=> 'Require Guests to fill out Captcha before posting',
 	'BLOG_INFORM'							=> 'Users to inform of reports or posts needing approval via PM',
 	'BLOG_INFORM_EXPLAIN'					=> 'Enter the user_id\'s of the users you want to receive a Private Message when a blog or reply is reported, or a blog or reply is newly posted and needs approval.  Separate multiple users by a comma, do not add spaces.',
+	'BLOG_POST_VIEW_SETTINGS'				=> 'Blog Viewing and Posting Settings',
 	'BLOG_SETTINGS'							=> 'User Blog Settings',
 	'BLOG_SETTINGS_EXPLAIN'					=> 'Here you can set the settings for the User Blog mod.',
 	'BREAK_CONTINUE_NOTICE'					=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before before we are done.<br/>Click continue below if you are not automatically redirected to the next page.',

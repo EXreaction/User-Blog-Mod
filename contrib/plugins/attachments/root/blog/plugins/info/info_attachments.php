@@ -15,7 +15,7 @@ $this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_ATTACHMENT_T
 $this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ATTACHMENT_DESCRIPTION'];
 
 $this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.7';
+$this->available_plugins[$name]['plugin_version'] = '0.7.8';
 
 if ($plugin_enabled)
 {

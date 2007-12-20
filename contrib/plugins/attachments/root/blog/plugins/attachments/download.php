@@ -38,11 +38,6 @@ if (!$attachment)
 	trigger_error('ERROR_NO_ATTACHMENT');
 }
 
-if (!$config['user_blog_enable_attachments'])
-{
-	trigger_error('ATTACHMENT_FUNCTIONALITY_DISABLED');
-}
-
 $row = array();
 
 if ($attachment['is_orphan'])

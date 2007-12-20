@@ -15,14 +15,15 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'BLOG_FRIENDS_TITLE'			=> 'Friends',
-	'BLOG_FRIENDS_DESCRIPTION'		=> 'Adds Friends list to User Blogs',
+	'BLOG_FRIENDS_DESCRIPTION'	=> 'Adds Friends list to User Blogs',
+	'BLOG_FRIENDS_TITLE'		=> 'Friends',
 
-	'FRIENDS'						=> 'Friends',
-	'FRIENDS_ONLINE'				=> 'Friends Online',
-	'NO_FRIENDS_ONLINE'				=> 'No Friends Online',
-	'FRIENDS_OFFLINE'				=> 'Friends Offline',
-	'NO_FRIENDS_OFFLINE'			=> 'No Friends Offline',
+	'FRIENDS'					=> 'Friends',
+	'FRIENDS_OFFLINE'			=> 'Friends Offline',
+	'FRIENDS_ONLINE'			=> 'Friends Online',
+
+	'NO_FRIENDS_OFFLINE'		=> 'No Friends Offline',
+	'NO_FRIENDS_ONLINE'			=> 'No Friends Online',
 ));
 
 ?>

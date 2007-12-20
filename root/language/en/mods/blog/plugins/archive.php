@@ -15,8 +15,9 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ARCHIVES'						=> 'Archives',
-	'BLOG_ARCHIVES_DESCRIPTION'		=> 'Adds Archive list to User Blogs',
+	'ARCHIVES'					=> 'Archives',
+
+	'BLOG_ARCHIVES_DESCRIPTION'	=> 'Adds Archive list to User Blogs',
 ));
 
 ?>
