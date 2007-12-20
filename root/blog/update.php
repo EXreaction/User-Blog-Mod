@@ -237,6 +237,7 @@ if (confirm_box(true))
 			$db_tool->sql_column_change(BLOGS_REPLY_TABLE, 'reply_subject', array('STEXT_UNI', '', 'true_sort'));
 			$db_tool->sql_column_change(BLOGS_PLUGINS_TABLE, 'plugin_name', array('STEXT_UNI', '', 'true_sort'));
 			$db_tool->sql_column_change(BLOGS_USERS_TABLE, 'title', array('STEXT_UNI', '', 'true_sort'));
+		case '0.3.31' :
 	}
 
 	if (count($sql_array))
