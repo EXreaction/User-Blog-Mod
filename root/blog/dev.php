@@ -29,7 +29,11 @@ if (!defined('IN_PHPBB'))
 switch ($mode)
 {
 	case 'organize_lang' :
-		// to input the file name use HTTP Get vars.  For example, to organize language/en/common.php you type in en/common.  Do not include language/ or .php
+		/**
+		* to input the file name use HTTP Get vars.
+		*  For example, to organize language/en/common.php you type in en/common.  Do not include language/ or .php
+		*  You may also send the directory name and it will organize all language files in it and any subdirectories.
+		*/
 		organize_lang();
 		break;
 	case 'get_hooks' :
@@ -269,6 +273,11 @@ function organize_lang($file = false, $skip_errors = false)
 
 	$file = ($file === false) ? request_var('file', '') : $file;
 
+	if (substr($file, -1) == '/')
+	{
+		$file = substr($file, 0, -1);
+	}
+
 	// make sure they have a file name
 	if ($file == '' && !$skip_errors)
 	{
@@ -292,21 +301,27 @@ function organize_lang($file = false, $skip_errors = false)
 		{
 		    while (false !== ($file1 = readdir($handle)))
 			{
-				if ($file1 == '.' || $file1 == '..' || $file1 == '.svn' || !strpos($file1, ".$phpEx"))
+				if ($file1 == '.' || $file1 == '..' || $file1 == '.svn')
 				{
 					continue;
 				}
 
-				if (substr($file, -1) == '/')
-				{
-					organize_lang($file . substr($file1, 0, strpos($file1, ".$phpEx")));
-				}
-				else
+				if (strpos($file1, ".$phpEx"))
 				{
 					organize_lang($file . '/' . substr($file1, 0, strpos($file1, ".$phpEx")));
 				}
+				else if (is_dir($phpbb_root_path . 'language/' . $file . '/' . $file1))
+				{
+					organize_lang($file . '/' . $file1);
+				}
 		    }
 		    closedir($handle);
+		}
+
+		// if we went to a subdirectory, return
+		if ($file != request_var('file', '') && $file . '/' != request_var('file', ''))
+		{
+			return;
 		}
 
 		trigger_error('Done organizing all of the language files in language/' . $file . '.');
