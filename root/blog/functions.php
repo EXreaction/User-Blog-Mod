@@ -197,7 +197,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		if (isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
 		{
 			// We will be replacing spaces and dashes in the url with an underscore.  Just so things don't get screwed up if the user has something like " start-10" in the title. :P
-			$match = array(' ', '-');
+			$match = array(' ', '-', '?');
 			$title_match ='/(&amp;|&lt;|&gt;|&quot;|[^a-zA-Z0-9\s_])/'; // Replace HTML Entities, and non alphanumeric/space/underscore characters
 			$replace_page = true; // match everything except the page if this is set to false
 

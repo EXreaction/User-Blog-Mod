@@ -244,7 +244,6 @@ class acp_blogs
 		$this->page_title = 'ACP_BLOG_CATEGORIES';
 
 		$form_key = 'acp_blog';
-		add_form_key($form_key);
 
 		$action		= request_var('action', '');
 		$update		= (isset($_POST['update'])) ? true : false;
@@ -252,11 +251,6 @@ class acp_blogs
 
 		$this->parent_id	= request_var('parent_id', 0);
 		$category_data = $errors = array();
-		if ($update && !check_form_key($form_key))
-		{
-			$update = false;
-			$errors[] = $user->lang['FORM_INVALID'];
-		}
 
 		// Clear the categories cache
 		$cache->destroy('_blog_categories');
