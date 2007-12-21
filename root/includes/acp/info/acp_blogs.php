@@ -21,7 +21,10 @@ class acp_blogs_info
 			'title'		=> 'ACP_BLOGS',
 			'version'	=> '1.0.0',
 			'modes'		=> array(
-				'default'	=> array('title' => 'ACP_BLOGS', 'auth' => 'acl_a_blogmanage', 'cat' => array('ACP_DOT_MODS')),
+				'settings'		=> array('title' => 'ACP_BLOG_SETTINGS', 'auth' => 'acl_a_blogmanage', 'cat' => array('ACP_BLOGS')),
+				'categories'	=> array('title' => 'ACP_BLOG_CATEGORIES', 'auth' => 'acl_a_blogmanage', 'cat' => array('ACP_BLOGS')),
+				'plugins'		=> array('title' => 'ACP_BLOG_PLUGINS', 'auth' => 'acl_a_blogmanage', 'cat' => array('ACP_BLOGS')),
+				'search'		=> array('title' => 'ACP_BLOG_SEARCH', 'auth' => 'acl_a_blogmanage', 'cat' => array('ACP_BLOGS')),
 			),
 		);
 	}

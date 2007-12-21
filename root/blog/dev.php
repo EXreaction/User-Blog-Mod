@@ -1220,6 +1220,19 @@ function get_schema_struct()
 		),
 	);
 */
+
+/*
+	$schema_data['phpbb_blog_search_results'] = array(
+		'COLUMNS'		=> array(
+			'search_key'			=> array('VCHAR:32', ''),
+			'search_time'			=> array('TIMESTAMP', 0),
+			'search_keywords'		=> array('MTEXT_UNI', ''),
+			'search_authors'		=> array('MTEXT', ''),
+		),
+		'PRIMARY_KEY'	=> 'search_key',
+	);
+*/
+
 	$schema_data['phpbb_blogs'] = array(
 		'COLUMNS'		=> array(
 			'blog_id'				=> array('UINT', NULL, 'auto_increment'),
@@ -1339,18 +1352,6 @@ function get_schema_struct()
 		'PRIMARY_KEY'	=> 'user_id',
 	);
 
-	/*
-	$schema_data['phpbb_blog_search_results'] = array(
-		'COLUMNS'		=> array(
-			'search_key'			=> array('VCHAR:32', ''),
-			'search_time'			=> array('TIMESTAMP', 0),
-			'search_keywords'		=> array('MTEXT_UNI', ''),
-			'search_authors'		=> array('MTEXT', ''),
-		),
-		'PRIMARY_KEY'	=> 'search_key',
-	);
-	*/
-
 	$schema_data['phpbb_blog_search_wordlist'] = array(
 		'COLUMNS'		=> array(
 			'word_id'			=> array('UINT', NULL, 'auto_increment'),
@@ -1378,6 +1379,37 @@ function get_schema_struct()
 			'blog_id'			=> array('INDEX', 'blog_id'),
 			'reply_id'			=> array('INDEX', 'reply_id'),
 		),
+	);
+
+	$schema_data['phpbb_blogs_categories'] = array(
+		'COLUMNS'		=> array(
+			'category_id'					=> array('UINT', NULL, 'auto_increment'),
+			'parent_id'						=> array('UINT', 0),
+			'left_id'						=> array('UINT', 0),
+			'right_id'						=> array('UINT', 0),
+			'category_name'					=> array('STEXT_UNI', '', 'true_sort'),
+			'category_description'			=> array('MTEXT_UNI', ''),
+			'category_description_bitfield'	=> array('VCHAR:255', ''),
+			'category_description_uid'		=> array('VCHAR:8', ''),
+			'category_description_options'	=> array('UINT:11', 7),
+			'rules'							=> array('MTEXT_UNI', ''),
+			'rules_bitfield'				=> array('VCHAR:255', ''),
+			'rules_uid'						=> array('VCHAR:8', ''),
+			'rules_options'					=> array('UINT:11', 7),
+			'blog_count'					=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> 'category_id',
+		'KEYS'			=> array(
+			'left_right_id'			=> array('INDEX', array('left_id', 'right_id')),
+		),
+	);
+
+	$schema_data['phpbb_blogs_in_categories'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'						=> array('UINT', 0),
+			'category_id'					=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> array('blog_id', 'category_id'),
 	);
 
 	return $schema_data;

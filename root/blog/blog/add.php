@@ -35,6 +35,7 @@ if ($submit || $preview || $refresh)
 	// see if they tried submitting a message or suject(if they hit preview or submit) put it in an array for consistency with the edit mode
 	$blog_subject = utf8_normalize_nfc(request_var('subject', '', true));
 	$blog_text = utf8_normalize_nfc(request_var('message', '', true));
+	$category = request_var('category', array('' => ''));
 
 	// set up the message parser to parse BBCode, Smilies, etc
 	$message_parser->message = $blog_text;
@@ -143,6 +144,27 @@ else // user submitted and there are no errors
 	$blog_id = $db->sql_nextid();
 
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
+
+	// Insert into the categories list
+	if (count($category) > 1 || (isset($category[0]) && $category[0] != 0))
+	{
+		foreach ($category as &$cat_id)
+		{
+			$cat_id = (int) $cat_id;
+			if ($cat_id > 0)
+			{
+				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
+				$db->sql_query($sql);
+			}
+		}
+
+		// Update the blog_count for the categories
+		if ($auth->acl_get('u_blognoapprove'))
+		{
+			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category);
+			$db->sql_query($sql);
+		}
+	}
 
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();

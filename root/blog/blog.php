@@ -16,5 +16,26 @@
 
 $phpbb_root_path = './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+
+$page = (isset($_GET['page'])) ? $_GET['page'] : '';
+$extras = explode('_', $page);
+$_GET['page'] = $_REQUEST['page'] = $page = array_shift($extras);
+
+if (count($extras))
+{
+	foreach ($extras as $extra)
+	{
+		$var = explode('-', $extra);
+
+		if (count($var) != 2 || isset($_REQUEST[$var[0]]))
+		{
+			continue;
+		}
+
+		$_GET[$var[0]] = $var[1];
+		$_REQUEST[$var[0]] = $var[1];
+	}
+}
+
 include("{$phpbb_root_path}blog.$phpEx");
 ?>

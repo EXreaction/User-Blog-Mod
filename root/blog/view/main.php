@@ -25,14 +25,17 @@ $all = (!$random && !$recent && !$popular) ? true : false;
 generate_blog_breadcrumbs();
 page_header($user->lang['USER_BLOGS']);
 
+// Handle the categories and output them
+handle_categories($category_id, $blog_categories);
+
 // Random Blogs
-$random_blog_ids = ($random || $all) ? $blog_data->get_blog_data('random', 0, array('limit' => $limit)) : false;
+$random_blog_ids = ($random || $all) ? $blog_data->get_blog_data('random', 0, array('limit' => $limit, 'category_id' => $category_id)) : false;
 
 // Recent Blogs
-$recent_blog_ids = ($recent || $all) ? $blog_data->get_blog_data('recent', 0, array('limit' => $limit)) : false;
+$recent_blog_ids = ($recent || $all) ? $blog_data->get_blog_data('recent', 0, array('limit' => $limit, 'category_id' => $category_id)) : false;
 
 // Popular blogs
-$popular_blog_ids =($popular || $all) ? $blog_data->get_blog_data('popular', 0, array('limit' => $limit)) : false;
+$popular_blog_ids =($popular || $all) ? $blog_data->get_blog_data('popular', 0, array('limit' => $limit, 'category_id' => $category_id)) : false;
 
 $blog_plugins->plugin_do('view_main_start');
 

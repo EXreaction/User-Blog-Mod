@@ -16,9 +16,12 @@ if (empty($lang) || !is_array($lang))
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
 	'ACP_BLOGS'								=> 'User Blog Mod',
+	'ACP_BLOG_CATEGORIES'					=> 'Blog Categories',
+	'ACP_BLOG_CATEGORIES_EXPLAIN'			=> 'Here you can add/edit/manage Blog Categories.',
 	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
 	'ACP_BLOG_PLUGINS_EXPLAIN'				=> 'Here you can enable/disable/install/uninstall plugins for the User Blog Mod.',
 	'ACP_BLOG_SEARCH'						=> 'Blog Search',
+	'ACP_BLOG_SETTINGS'						=> 'Blog Settings',
 
 	'BLOG_ALWAYS_SHOW_URL'					=> 'Always show blog link in profile',
 	'BLOG_ALWAYS_SHOW_URL_EXPLAIN'			=> 'If this is set to no it will not show the Blog link in each users\'s profile unless they have posted a blog.',
@@ -41,15 +44,31 @@ $lang = array_merge($lang, array(
 	'BLOG_SETTINGS_EXPLAIN'					=> 'Here you can set the settings for the User Blog mod.',
 	'BREAK_CONTINUE_NOTICE'					=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before before we are done.<br/>Click continue below if you are not automatically redirected to the next page.',
 
+	'CATEGORY_CREATED'						=> 'Category successfully created!',
+	'CATEGORY_DELETE'						=> 'Delete Category',
+	'CATEGORY_DELETED'						=> 'The category has been successfully deleted!',
+	'CATEGORY_DELETE_EXPLAIN'				=> 'Are you sure you want to delete this category?',
+	'CATEGORY_DESCRIPTION_EXPLAIN'			=> 'Description of what the category is for.',
+	'CATEGORY_EDITED'						=> 'Category successfully edited.',
+	'CATEGORY_EDIT_EXPLAIN'					=> 'Here you can change category settings.',
+	'CATEGORY_INDEX'						=> 'Category Index',
+	'CATEGORY_NAME_EMPTY'					=> 'You must submit a name for the category',
+	'CATEGORY_PARENT'						=> 'Category Parent',
+	'CATEGORY_RULES_EXPLAIN'				=> 'Here you may write rules that will be shown above each category.',
+	'CATEGORY_SETTINGS'						=> 'Category Settings',
+	'CATEGORY_UPDATED'						=> 'Category successfully updated!',
 	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
 	'CLICK_UPDATE'							=> 'Click %shere%s to update the database for the User Blog Mod',
 	'CONTINUE'								=> 'Continue',
 	'COPYRIGHT'								=> 'Copyright',
+	'CREATE_CATEGORY'						=> 'Create Category',
 
 	'DATABASE_VERSION'						=> 'Database Version',
 	'DEFAULT_TEXT_LIMIT'					=> 'Default text limit for main blog pages',
 	'DEFAULT_TEXT_LIMIT_EXPLAIN'			=> 'After this amount it will trim the rest of the text out of a message (to shorten it)',
+	'DELETE_SUBCATEGORIES'					=> 'Delete Subcategories',
 
+	'EDIT_CATEGORY'							=> 'Edit Category',
 	'ENABLE_BLOG_CUSTOM_PROFILES'			=> 'Display custom profile fields in the User Blog pages',
 	'ENABLE_SUBSCRIPTIONS'					=> 'User/Blog Subscriptions',
 	'ENABLE_SUBSCRIPTIONS_EXPLAIN'			=> 'Allows registered users to subscribe to blogs or users and recieve notifications when a new blog/reply is added where they are subscribed.',
@@ -62,6 +81,9 @@ $lang = array_merge($lang, array(
 
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 
+	'LOG_CATEGORY_ADD'						=> 'Added a new Blog Category.',
+	'LOG_CATEGORY_DELETE'					=> 'Deleted Blog Category',
+	'LOG_CATEGORY_EDIT'						=> 'Edited a Blog Category.',
 	'LOG_CONFIG_BLOG'						=> '<strong>Altered Blog Settings</strong>',
 
 	'MCP_BLOG'								=> 'Blog',
@@ -69,10 +91,15 @@ $lang = array_merge($lang, array(
 	'MCP_BLOG_DISAPPROVED_REPLIES'			=> 'Unaproved Replies',
 	'MCP_BLOG_REPORTED_BLOGS'				=> 'Reported Blogs',
 	'MCP_BLOG_REPORTED_REPLIES'				=> 'Reported Replies',
+	'MOVE_BLOGS_TO'							=> 'Move Blogs to',
+	'MOVE_SUBCATEGORIES_TO'					=> 'Move subcategories to',
 
+	'NO_DESTINATION_CATEGORY'				=> 'No Destination Category',
 	'NO_INSTALLED_PLUGINS'					=> 'No Installed Plugins',
+	'NO_PARENT'								=> 'No Parent',
 	'NO_UNINSTALLED_PLUGINS'				=> 'No Uninstalled Plugins',
 
+	'PARENT_NOT_EXIST'						=> 'The selected parent does not exist.',
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',
 	'PLUGINS_NAME'							=> 'Plugin Name',
 	'PLUGIN_ACTIVATE'						=> 'Activate',
@@ -85,6 +112,10 @@ $lang = array_merge($lang, array(
 	'PLUGIN_UNINSTALL'						=> 'Uninstall',
 	'PLUGIN_UNINSTALL_CONFIRM'				=> 'Are you sure you want to uninstall this plugin?<br/><strong>This will remove all added data by this mod from the database (so any saved data by it will be lost)!</strong><br/><br/>You must manually uninstall any file changes made by this plugin and delete the plugin files to completely remove this plugin.',
 	'PLUGIN_UPDATE'							=> 'Update DB',
+
+	'REMOVE_ALL_BLOGS'						=> 'Just delete the category.',
+
+	'SELECT_CATEGORY'						=> 'Select Category',
 
 	'UCP_BLOG'								=> 'Blog',
 	'UCP_BLOG_PERMISSIONS'					=> 'Blog Permissions',

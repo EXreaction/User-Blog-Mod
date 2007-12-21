@@ -19,11 +19,18 @@ $lang = array_merge($lang, array(
 	'BLOGS'								=> 'Blogs',
 	'BLOG_CREDITS'						=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; 2007 EXreaction',
 	'BLOG_DELETED_BY_MSG'				=> 'This blog was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
+	'BLOG_DESCRIPTION'					=> 'Blog Description',
 	'BLOG_MCP'							=> 'Blog Moderator CP',
 	'BLOG_NOT_EXIST'					=> 'The requested blog does not exist.',
 	'BLOG_SEARCH_BACKEND_NOT_EXIST'		=> 'The Search backend was not found.  Please contact an administrator or moderator.',
 	'BLOG_SUBJECT'						=> 'Blog Subject',
+	'BLOG_TITLE'						=> 'Blog Title',
 
+	'CATEGORIES'						=> 'Categories',
+	'CATEGORY'							=> 'Category',
+	'CATEGORY_DESCRIPTION'				=> 'Category Description',
+	'CATEGORY_NAME'						=> 'Category Name',
+	'CATEGORY_RULES'					=> 'Category Rules',
 	'CLICK_INSTALL_BLOG'				=> 'Click %shere%s to install the User Blog Mod',
 	'CNT_BLOGS'							=> '%s blogs',
 	'CNT_REPLIES'						=> '%s replies',
@@ -37,6 +44,7 @@ $lang = array_merge($lang, array(
 
 	'GUEST_PERMISSIONS'					=> 'Guest Permissions',
 
+	'LAST_BLOG'							=> 'Last Blog',
 	'LIMIT'								=> 'Limit',
 
 	'MUST_BE_FOUNDER'					=> 'You must be a board founder to access this page.',
@@ -46,6 +54,8 @@ $lang = array_merge($lang, array(
 	'NO_BLOGS'							=> 'There are no blogs.',
 	'NO_BLOGS_USER'						=> 'This user has not posted any blogs.',
 	'NO_BLOGS_USER_SORT_DAYS'			=> 'This user has not posted any blogs in the past %s',
+	'NO_CATEGORIES'						=> 'There are no Categories',
+	'NO_CATEGORY'						=> 'The selected category does not exist.',
 	'NO_PERMISSIONS_READ'				=> 'Sorry, but you are not allowed to read this blog.',
 	'NO_REPLIES'						=> 'There are no replies.',
 

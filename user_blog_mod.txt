@@ -4,14 +4,16 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.32
+## MOD Version: 0.3.33
 ##
 ## Installation Level:	Easy
-## Installation Time:	~5 Minutes
+## Installation Time:	~7 Minutes
 ##
 ## Files To Edit:	.htaccess
 ##					adm/index.php
+##					adm/styles/acp_users_profile.html
 ##					includes/functions.php
+##					includes/acp/acp_users.php
 ##					styles/prosilver/templates/overall_header.html
 ##					mcp.php
 ##					ucp.php
@@ -72,12 +74,7 @@
 ## 2007-11-12 Alpha 28a
 ## 2007-11-13 Alpha 28b
 ## 2007-11-17 Alpha 29
-## 2007-11-24
-##		Alpha 30
-##			+ Updates to the search system and some other stuff.  New plugin available named Friends for listing a users' friends on their blog page.
-##			+ To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.
-##				- Also make sure to check for new permissions/settings.
-##				- If you have any plugins installed make sure you update them as well.
+## 2007-11-24 Alpha 30
 ## 2007-12-13
 ##		Alpha 31
 ##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
@@ -96,6 +93,13 @@
 ##			+ A few bug fixes.  Lots of language changes (sorry translators :P)
 ##			+ To update, copy over the new files, update viewtopic.php, and run the upgrade script by going to blog.php?page=update.
 ##				- Make sure to check for updates for any plugins.
+## 2007-12-21
+##		Alpha 33
+##			+ I can has categories?  You can also now edit users' Blog Title and Blog Description in the ACP->Manage Users. :D
+##			+ To update, FIRST delete all of the ACP modules (and the Blog Module Category) added by previous versions of the User Blog Mod in ACP->System->Module Management.
+##				- Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
+##				- Then do the edits for adm/styles/acp_users_profile.html and includes/acp/acp_users.php.
+##				- Finally run the upgrade script by going to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -120,12 +124,32 @@ $user->setup('acp/common');
 // End session management
 
 #
+#-----[ OPEN ]----------------------
+#
+
+adm/styles/acp_users_profile.html
+
+#
+#-----[ FIND ]----------------------
+#
+
+</fieldset>
+
+#
 #-----[ AFTER, ADD ]----------------------
 #
 
-// Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/acp');
-// End Add User Blog Mod --------------------
+	<fieldset>
+		<legend>{L_BLOG}</legend>
+		<dl>
+			<dt><label for="blog_title">{L_BLOG_TITLE}:</label></dt>
+			<dd><input type="text" name="blog_title" id="blog_title" value="{BLOG_TITLE}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="blog_description">{L_BLOG_DESCRIPTION}:</label></dt>
+			<dd><textarea name="blog_description" id="blog_description" rows="3" cols="30">{BLOG_DESCRIPTION}</textarea></dd>
+		</dl>
+	</fieldset>
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -147,6 +171,57 @@ includes/functions.php
 	// Start Add User Blog Mod ------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End Add User Blog Mod --------------------
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+includes/acp/acp_users.php
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+$cp = new custom_profile();
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+				// Start User Blog Mod
+				$user->add_lang('mods/blog/common');
+				include("{$phpbb_root_path}blog/functions.$phpEx");
+
+				if ($submit)
+				{
+					$blog_description = utf8_normalize_nfc(request_var('blog_description', '', true));
+					$blog_description_uid = $blog_description_bitfield = $blog_description_options = '';
+					generate_text_for_storage($blog_description, $blog_description_uid, $blog_description_bitfield, $blog_description_options, true, true, true);
+
+					$blog_data = array(
+						'title'							=> utf8_normalize_nfc(request_var('blog_title', '', true)),
+						'description'					=> $blog_description,
+						'description_bbcode_bitfield'	=> $blog_description_bitfield,
+						'description_bbcode_uid'		=> $blog_description_uid,
+					);
+					update_user_blog_settings($user_id, $blog_data);
+				}
+				else
+				{
+					$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE user_id = \'' . $user_id . '\'';
+					$result = $db->sql_query($sql);
+					$blog_data = $db->sql_fetchrow($result);
+
+					if ($blog_data)
+					{
+						decode_message($blog_data['description'], $blog_data['description_bbcode_uid']);
+						$template->assign_vars(array(
+							'BLOG_TITLE'		=> $blog_data['title'],
+							'BLOG_DESCRIPTION'	=> $blog_data['description'],
+						));
+					}
+				}
+				// End User Blog Mod
 
 #
 #-----[ OPEN ]---------------------------------------------

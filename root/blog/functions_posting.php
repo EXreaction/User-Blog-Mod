@@ -21,10 +21,11 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 	global $blog_plugins, $template, $user;
 
 	$panels = array(
-		'options-panel'		=> $user->lang['OPTIONS'],
+		'options-panel'			=> $user->lang['OPTIONS'],
 	);
 	if ($page == 'blog')
 	{
+		$panels['categories-panel'] = $user->lang['CATEGORIES'];
 		$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
 	}
 	$above_subject = $above_message = $above_submit = $panel_data = '';
@@ -49,6 +50,13 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 	{
 		// Build permissions box
 		permission_settings_builder(true, $mode);
+
+		$category = request_var('category', array('' => ''));
+		// Build Category select box
+		$template->assign_vars(array(
+			'CATEGORY_LIST'		=> make_category_select($category),
+			'S_CAT_0_SELECTED'	=> (in_array(0, $category)), 
+		));
 	}
 
 	$template->assign_vars(array(

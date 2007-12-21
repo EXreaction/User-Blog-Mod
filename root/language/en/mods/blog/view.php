@@ -39,6 +39,9 @@ $lang = array_merge($lang, array(
 	'REPLY_REPORTED_SHORT'			=> 'This Reply has been reported.',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',
 	'REPLY_UNAPPROVED'				=> 'Reply Needs Approval',
+
+	'SUBCATEGORIES'					=> 'Subcategories',
+	'SUBCATEGORY'					=> 'Subcategory',
 ));
 
 ?>

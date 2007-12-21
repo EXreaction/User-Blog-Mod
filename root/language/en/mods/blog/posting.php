@@ -46,6 +46,8 @@ $lang = array_merge($lang, array(
 	'BLOG_UNDELETED'					=> 'The blog has been un-deleted.',
 	'BLOG_USER_NOT_PROVIDED'			=> 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
 
+	'CATEGORY_EXPLAIN'					=> 'You may select more than one category by holding CTRL and clicking more categories you would like to enter it in.<br/><br/>Blogs are <strong>always</strong> shown in your personal Blog page.',
+
 	'DELETE_BLOG'						=> 'Delete Blog',
 	'DELETE_BLOG_CONFIRM'				=> 'Are you sure you want to delete this blog?',
 	'DELETE_BLOG_WARN'					=> 'Once deleted, only a moderator or administrator can un-delete this blog',

@@ -42,6 +42,8 @@ $post_options = new post_options;
 
 $blog_plugins->plugin_do('blog_edit_start');
 
+$category = request_var('category', array('' => ''));
+
 // If they select edit mode and didn't submit or hit preview(means they came directly from the view blog page)
 if (!$submit && !$preview && !$refresh)
 {
@@ -50,6 +52,14 @@ if (!$submit && !$preview && !$refresh)
 	$blog_subject = $blog_data->blog[$blog_id]['blog_subject'];
 	decode_message($blog_text, $blog_data->blog[$blog_id]['bbcode_uid']);
 	$post_options->set_status($blog_data->blog[$blog_id]['enable_bbcode'], $blog_data->blog[$blog_id]['enable_smilies'], $blog_data->blog[$blog_id]['enable_magic_url']);
+
+	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$category[] = $row['category_id'];
+	}
+	$_GET['category'] = $_REQUEST['category'] = $category;
 }
 else
 {
@@ -184,6 +194,17 @@ else // user submitted and there are no errors
 
 	unset($message_parser, $perm_ary, $sql_data);
 
+	// First, delete the category in record for this blog
+	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+		$db->sql_query($sql);
+	}
+	$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$db->sql_query($sql);
+
 	if ( (isset($_POST['delete'])) && $can_delete )
 	{
 		$blog_plugins->plugin_do('blog_edit_delete');
@@ -208,7 +229,28 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		handle_blog_cache('approve_blog', $user_id);
+		// Insert into the categories list
+		if (count($category) > 1 || (isset($category[0]) && $category[0] != 0))
+		{
+			foreach ($category as &$cat_id)
+			{
+				$cat_id = (int) $cat_id;
+				if ($cat_id > 0)
+				{
+					$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
+					$db->sql_query($sql);
+				}
+			}
+
+			// Update the blog_count for the categories
+			if ($auth->acl_get('u_blognoapprove'))
+			{
+				$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category);
+				$db->sql_query($sql);
+			}
+		}
+
+		handle_blog_cache('edit_blog', $user_id);
 
 		$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />'; 
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br/><br/>';

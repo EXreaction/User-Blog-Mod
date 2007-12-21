@@ -14,10 +14,8 @@
 * force style for UCP/MCP
 * auto-subscriptions
 * option to cut off text at space or endline
-* admin edit blog title and description
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
-* Memorable entry (like a sticky)?
 * Information section - MCP
 *
 * Polls
@@ -27,6 +25,7 @@
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
 * OTHER -------------------------------------------------------------------------------------------
+* Memorable entry (like a sticky)?
 * Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
 *  possibly use custom password to verify the script is being called from the board (perhaps the board owner's pw hash or a hash of it)
 * Left Menu Order
@@ -44,7 +43,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.32';
+$user_blog_version = '0.3.33';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -69,6 +68,7 @@ $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
 $blog_id = intval(request_var('b', 0));
 $reply_id = intval(request_var('r', 0));
+$category_id = intval(request_var('c', 0));
 
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
@@ -167,8 +167,10 @@ if ($default)
 
 if ($default)
 {
-	// With SEO urls, we make it so that the page could be the username of the user we want to view...
-	if ($page != '' && $page != 'index')
+	$blog_categories = get_blog_categories();
+
+	// With SEO urls, we make it so that the page could be the username name of the user we want to view...
+	if ($page != '' && $page != 'index' && !$category_id)
 	{
 		$user_id = $user_data->get_user_data(false, false, $page);
 

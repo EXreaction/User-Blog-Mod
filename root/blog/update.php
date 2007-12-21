@@ -39,9 +39,11 @@ if (confirm_box(true))
 	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
 	include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/eami.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$db_tool = new phpbb_db_tools($db);
 	$dbmd = get_available_dbms($dbms);
+	$eami = new eami();
 
 	switch ($config['user_blog_version'])
 	{
@@ -238,6 +240,91 @@ if (confirm_box(true))
 			$db_tool->sql_column_change(BLOGS_PLUGINS_TABLE, 'plugin_name', array('STEXT_UNI', '', 'true_sort'));
 			$db_tool->sql_column_change(BLOGS_USERS_TABLE, 'title', array('STEXT_UNI', '', 'true_sort'));
 		case '0.3.31' :
+		case '0.3.32' :
+			/*
+			* Add New Tables ----------------------------------------------------------------------------------
+			*/
+			switch ($dbms)
+			{
+				case 'mysql' :
+					if (version_compare($db->mysql_version, '4.1.3', '>='))
+					{
+						$dbms_schema = 'mysql_41_schema.sql';
+					}
+					else
+					{
+						$dbms_schema = 'mysql_40_schema.sql';
+					}
+				break;
+				case 'mysqli' :
+					$dbms_schema = 'mysql_41_schema.sql';
+				break;
+				default :
+					$dbms_schema = '' . $dbms . '_schema.sql';
+			}
+
+			if (!file_exists($phpbb_root_path . 'blog/update/0332/' . $dbms_schema))
+			{
+				trigger_error('SCHEMA_NOT_EXIST');
+			}
+
+			$remove_remarks = $dbmd[$dbms]['COMMENTS'];
+			$delimiter = $dbmd[$dbms]['DELIM'];
+
+			$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0326/' . $dbms_schema);
+
+			$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
+
+			$remove_remarks($sql_query);
+
+			$sql_query = split_sql_file($sql_query, $delimiter);
+
+			foreach ($sql_query as $sql)
+			{
+				if (!$db->sql_query($sql))
+				{
+					$error[] = $db->sql_error();
+				}
+			}
+			unset($sql_query);
+
+			// ACP Modules
+			$sql_ary = array(
+				'module_langname'	=> 'ACP_BLOGS',
+			);
+			$eami->add_module('acp', 'ACP_CAT_DOT_MODS', $sql_ary);
+
+			$sql_ary = array(
+				'module_basename'	=> 'blogs',
+				'module_langname'	=> 'ACP_BLOG_SETTINGS',
+				'module_mode'		=> 'settings',
+				'module_auth'		=> 'acl_a_blogmanage',
+			);
+			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+
+			$sql_ary = array(
+				'module_basename'	=> 'blogs',
+				'module_langname'	=> 'ACP_BLOG_PLUGINS',
+				'module_mode'		=> 'plugins',
+				'module_auth'		=> 'acl_a_blogmanage',
+			);
+			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+
+			$sql_ary = array(
+				'module_basename'	=> 'blogs',
+				'module_langname'	=> 'ACP_BLOG_SEARCH',
+				'module_mode'		=> 'search',
+				'module_auth'		=> 'acl_a_blogmanage',
+			);
+			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+
+			$sql_ary = array(
+				'module_basename'	=> 'blogs',
+				'module_langname'	=> 'ACP_BLOG_CATEGORIES',
+				'module_mode'		=> 'categories',
+				'module_auth'		=> 'acl_a_blogmanage',
+			);
+			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 	}
 
 	if (count($sql_array))

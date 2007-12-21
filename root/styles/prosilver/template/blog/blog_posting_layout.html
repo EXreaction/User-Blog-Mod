@@ -127,6 +127,23 @@
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
 
+	<div class="panel bg3" id="categories-panel">
+		<div class="inner"><span class="corners-top"><span></span></span>
+
+		<fieldset class="fields1">
+			<dl>
+				<dt style="width: 25%; padding-right: 16%;"><label for="category">{L_CATEGORY}:</label><br /><span>{L_CATEGORY_EXPLAIN}</span></dt>
+				<dd>
+					<select id="category" name="category[]" multiple="yes" size="5">
+						<option value="0"<!-- IF S_CAT_0_SELECTED --> selected="selected"<!-- ENDIF -->>------</option>
+						{CATEGORY_LIST}
+					</select>
+				</dd>
+			</dl>
+		</fieldset>
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+
 	<!-- IF S_SHOW_PERMISSIONS_BOX -->
 	<fieldset>
 		<div class="panel bg3" id="permissions-panel">

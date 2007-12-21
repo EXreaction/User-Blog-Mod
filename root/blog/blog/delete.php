@@ -70,6 +70,15 @@ if (confirm_box(true))
 		// Update the blog_count for the user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\' AND blog_count > 0';
 		$db->sql_query($sql);
+
+		// Update the blog_count for all the categories it is in.
+		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+			$db->sql_query($sql);
+		}
 	}
 
 	handle_blog_cache('delete_blog', $user_id);
