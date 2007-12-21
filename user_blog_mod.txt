@@ -124,6 +124,14 @@ $user->setup('acp/common');
 // End session management
 
 #
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+// Start Add User Blog Mod ------------------
+$user->add_lang('mods/blog/acp');
+// End Add User Blog Mod --------------------
+
+#
 #-----[ OPEN ]----------------------
 #
 
