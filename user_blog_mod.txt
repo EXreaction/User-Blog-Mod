@@ -9,12 +9,12 @@
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
 ##
-## Files To Edit:	.htaccess
+## Files To Edit:	adm/style/acp_users_profile.html
 ##					adm/index.php
-##					adm/styles/acp_users_profile.html
-##					includes/functions.php
 ##					includes/acp/acp_users.php
+##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
+##					.htaccess
 ##					mcp.php
 ##					ucp.php
 ##					viewtopic.php
@@ -98,7 +98,7 @@
 ##			+ I can has categories?  You can also now edit users' Blog Title and Blog Description in the ACP->Manage Users. :D
 ##			+ To update, FIRST delete all of the ACP modules (and the Blog Module Category) added by previous versions of the User Blog Mod in ACP->System->Module Management.
 ##				- Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
-##				- Then do the edits for adm/styles/acp_users_profile.html and includes/acp/acp_users.php.
+##				- Then do the edits for adm/style/acp_users_profile.html and includes/acp/acp_users.php.
 ##				- Finally run the upgrade script by going to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
@@ -114,28 +114,7 @@ root/* to /
 #-----[ OPEN ]----------------------
 #
 
-adm/index.php
-
-#
-#-----[ FIND ]----------------------
-#
-
-$user->setup('acp/common');
-// End session management
-
-#
-#-----[ AFTER, ADD ]---------------------------------------
-#
-
-// Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/acp');
-// End Add User Blog Mod --------------------
-
-#
-#-----[ OPEN ]----------------------
-#
-
-adm/styles/acp_users_profile.html
+adm/style/acp_users_profile.html
 
 #
 #-----[ FIND ]----------------------
@@ -158,6 +137,27 @@ adm/styles/acp_users_profile.html
 			<dd><textarea name="blog_description" id="blog_description" rows="3" cols="30">{BLOG_DESCRIPTION}</textarea></dd>
 		</dl>
 	</fieldset>
+
+#
+#-----[ OPEN ]----------------------
+#
+
+adm/index.php
+
+#
+#-----[ FIND ]----------------------
+#
+
+$user->setup('acp/common');
+// End session management
+
+#
+#-----[ AFTER, ADD ]---------------------------------------
+#
+
+// Start Add User Blog Mod ------------------
+$user->add_lang('mods/blog/acp');
+// End Add User Blog Mod --------------------
 
 #
 #-----[ OPEN ]---------------------------------------------

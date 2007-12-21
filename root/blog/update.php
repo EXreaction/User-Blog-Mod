@@ -271,7 +271,7 @@ if (confirm_box(true))
 			$remove_remarks = $dbmd[$dbms]['COMMENTS'];
 			$delimiter = $dbmd[$dbms]['DELIM'];
 
-			$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0326/' . $dbms_schema);
+			$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0332/' . $dbms_schema);
 
 			$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
 
