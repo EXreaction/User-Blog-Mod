@@ -37,6 +37,7 @@ function handle_categories($parent_id = 0, $category_list = false, $block = 'cat
 			$template->assign_vars(array(
 				'U_CURRENT_CATEGORY'	=> blog_url(false, false, false, array('page' => $row['category_name'], 'c' => $row['category_id'])),
 				'CURRENT_CATEGORY'		=> $row['category_name'],
+				'CATEGORY_RULES'		=> generate_text_for_display($row['rules'], $row['rules_uid'], $row['rules_bitfield'], $row['rules_options']),
 			));
 		}
 

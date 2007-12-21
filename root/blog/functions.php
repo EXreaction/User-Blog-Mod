@@ -33,6 +33,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 		if ($blog_categories === false)
 		{
+			$blog_categories = array();
 			$sql = 'SELECT * FROM ' . BLOGS_CATEGORIES_TABLE . '
 				ORDER BY left_id ASC';
 			$result = $db->sql_query($sql);
