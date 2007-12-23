@@ -28,6 +28,8 @@ class ucp_blog
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$error = array();
 
+		$user->add_lang(array('mods/blog/common', 'mods/blog/ucp'));
+
 		define('IN_BLOG', true); // So the header does not try to reload these files
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);

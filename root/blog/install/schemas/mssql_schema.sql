@@ -30,7 +30,7 @@ CREATE TABLE [phpbb_blogs] (
 	[blog_edit_locked] [int] DEFAULT (0) NOT NULL ,
 	[blog_deleted] [int] DEFAULT (0) NOT NULL ,
 	[blog_deleted_time] [int] DEFAULT (0) NOT NULL ,
-	[blog_read_count] [int] DEFAULT (0) NOT NULL ,
+	[blog_read_count] [int] DEFAULT (1) NOT NULL ,
 	[blog_reply_count] [int] DEFAULT (0) NOT NULL ,
 	[blog_real_reply_count] [int] DEFAULT (0) NOT NULL ,
 	[perm_guest] [int] DEFAULT (1) NOT NULL ,

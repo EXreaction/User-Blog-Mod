@@ -23,10 +23,28 @@ $popular = ($mode == 'popular') ? true : false;
 $all = (!$random && !$recent && !$popular) ? true : false;
 
 generate_blog_breadcrumbs();
-page_header($user->lang['USER_BLOGS']);
+
+if ($category_id)
+{
+	$category_list = get_blog_categories('category_id');
+
+	if (isset($category_list[$category_id]))
+	{
+		page_header($category_list[$category_id]['category_name']);
+	}
+	else
+	{
+		trigger_error('NO_CATEGORY');
+	}
+	unset($category_list);
+}
+else
+{
+	page_header($user->lang['USER_BLOGS']);
+}
 
 // Handle the categories and output them
-handle_categories($category_id, $blog_categories);
+handle_categories($category_id);
 
 // Random Blogs
 $random_blog_ids = ($random || $all) ? $blog_data->get_blog_data('random', 0, array('limit' => $limit, 'category_id' => $category_id)) : false;

@@ -32,7 +32,7 @@ CREATE TABLE phpbb_blogs (
 	blog_edit_locked INT2 DEFAULT '0' NOT NULL CHECK (blog_edit_locked >= 0),
 	blog_deleted INT4 DEFAULT '0' NOT NULL CHECK (blog_deleted >= 0),
 	blog_deleted_time INT4 DEFAULT '0' NOT NULL CHECK (blog_deleted_time >= 0),
-	blog_read_count INT4 DEFAULT '0' NOT NULL CHECK (blog_read_count >= 0),
+	blog_read_count INT4 DEFAULT '1' NOT NULL CHECK (blog_read_count >= 0),
 	blog_reply_count INT4 DEFAULT '0' NOT NULL CHECK (blog_reply_count >= 0),
 	blog_real_reply_count INT4 DEFAULT '0' NOT NULL CHECK (blog_real_reply_count >= 0),
 	perm_guest INT2 DEFAULT '1' NOT NULL,

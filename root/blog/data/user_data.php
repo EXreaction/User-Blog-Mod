@@ -260,7 +260,6 @@ class user_data
 				'L_USER_FOE'		=> sprintf($user->lang['POST_BY_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 
 				'U_AIM'				=> $this->user[$user_id]['aim_url'],
-				'U_DELETED_LINK'	=> ($auth->acl_get('m_blogreplydelete')) ? '<a href="' . blog_url($user_id, false, false, array('mode' => 'deleted')) . '">' . $user->lang['VIEW_DELETED_BLOGS'] . '</a>' : '',
 				'U_EMAIL'			=> $this->user[$user_id]['email_url'],
 				'U_ICQ'				=> $this->user[$user_id]['icq_url'],
 				'U_JABBER'			=> $this->user[$user_id]['jabber_url'],

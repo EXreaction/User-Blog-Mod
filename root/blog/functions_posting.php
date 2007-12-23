@@ -52,10 +52,17 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 		permission_settings_builder(true, $mode);
 
 		$category = request_var('category', array('' => ''));
-		// Build Category select box
+		if (!count($category))
+		{
+			$category = request_var('c', 0);
+		}
+
 		$template->assign_vars(array(
-			'CATEGORY_LIST'		=> make_category_select($category),
-			'S_CAT_0_SELECTED'	=> (in_array(0, $category)), 
+			'CATEGORY_LIST'				=> make_category_select($category),
+
+			'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
+			'S_SHOW_CATEGORY_BOX'		=> true,
+			'S_SHOW_PERMISSIONS_BOX'	=> true,
 		));
 	}
 
@@ -65,8 +72,6 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 		'EXTRA_ABOVE_SUBMIT'		=> $above_submit,
 		'EXTRA_PANELS'				=> $panel_data,
 		'JS_PANELS_LIST'			=> "'" . implode("', '", array_keys($panels)) . "'",
-
-		'S_SHOW_PERMISSIONS_BOX'	=> ($page == 'blog') ? true : false,
 	));
 
 	foreach ($panels as $name => $title)

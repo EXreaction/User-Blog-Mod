@@ -28,7 +28,7 @@ CREATE TABLE phpbb_blogs (
 	blog_edit_locked number(1) DEFAULT '0' NOT NULL,
 	blog_deleted number(8) DEFAULT '0' NOT NULL,
 	blog_deleted_time number(11) DEFAULT '0' NOT NULL,
-	blog_read_count number(8) DEFAULT '0' NOT NULL,
+	blog_read_count number(8) DEFAULT '1' NOT NULL,
 	blog_reply_count number(8) DEFAULT '0' NOT NULL,
 	blog_real_reply_count number(8) DEFAULT '0' NOT NULL,
 	perm_guest number(1) DEFAULT '1' NOT NULL,

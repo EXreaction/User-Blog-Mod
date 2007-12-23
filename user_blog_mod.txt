@@ -4,19 +4,16 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.33
+## MOD Version: 0.3.34
 ##
 ## Installation Level:	Easy
-## Installation Time:	~7 Minutes
+## Installation Time:	~5 Minutes
 ##
 ## Files To Edit:	adm/style/acp_users_profile.html
-##					adm/index.php
 ##					includes/acp/acp_users.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
 ##					.htaccess
-##					mcp.php
-##					ucp.php
 ##					viewtopic.php
 ##
 ## Included Files:	(many)
@@ -75,11 +72,7 @@
 ## 2007-11-13 Alpha 28b
 ## 2007-11-17 Alpha 29
 ## 2007-11-24 Alpha 30
-## 2007-12-13
-##		Alpha 31
-##			+ Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.
-##			+ To update, copy over the new files, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php,
-##				- and run the update script by going to blog.php?page=update.
+## 2007-12-13 Alpha 31
 ## 2007-12-14
 ##		Alpha 31a
 ##			+ Fixed a bug.
@@ -100,6 +93,12 @@
 ##				- Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
 ##				- Then do the edits for adm/style/acp_users_profile.html and includes/acp/acp_users.php.
 ##				- Finally run the upgrade script by going to blog.php?page=update
+## 2007-12-
+##		Alpha 34
+##			+ Some bug fixes, more work on the display of categories, plus HoL told me of a way to auto-include language files for the modules, so 3 less file edits! :D
+##			+ To update, remove the edits done to adm/index.php, mcp.php, and ucp.php made by previous versions (there is just one edit in each).
+##				- Then update adm/style/acp_users_profile.html with the new code.
+##				- Then copy over the new files, and run the upgrade script by going to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -126,38 +125,7 @@ adm/style/acp_users_profile.html
 #-----[ AFTER, ADD ]----------------------
 #
 
-	<fieldset>
-		<legend>{L_BLOG}</legend>
-		<dl>
-			<dt><label for="blog_title">{L_BLOG_TITLE}:</label></dt>
-			<dd><input type="text" name="blog_title" id="blog_title" value="{BLOG_TITLE}" /></dd>
-		</dl>
-		<dl>
-			<dt><label for="blog_description">{L_BLOG_DESCRIPTION}:</label></dt>
-			<dd><textarea name="blog_description" id="blog_description" rows="3" cols="30">{BLOG_DESCRIPTION}</textarea></dd>
-		</dl>
-	</fieldset>
-
-#
-#-----[ OPEN ]----------------------
-#
-
-adm/index.php
-
-#
-#-----[ FIND ]----------------------
-#
-
-$user->setup('acp/common');
-// End session management
-
-#
-#-----[ AFTER, ADD ]---------------------------------------
-#
-
-// Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/acp');
-// End Add User Blog Mod --------------------
+	<!-- INCLUDE acp_blog_users.html -->
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -276,46 +244,6 @@ Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
 Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
 Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
 Rewriterule ^blog/$						./blog/blog.php
-
-#
-#-----[ OPEN ]---------------------------------------------
-#
-
-mcp.php
-
-#
-#-----[ FIND ]---------------------------------------------
-#
-
-$user->setup('mcp');
-
-#
-#-----[ AFTER, ADD ]---------------------------------------
-#
-
-// Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/mcp');
-// End Add User Blog Mod --------------------
-
-#
-#-----[ OPEN ]---------------------------------------------
-#
-
-ucp.php
-
-#
-#-----[ FIND ]---------------------------------------------
-#
-
-$user->setup('ucp');
-
-#
-#-----[ AFTER, ADD ]---------------------------------------
-#
-
-// Start Add User Blog Mod ------------------
-$user->add_lang('mods/blog/ucp');
-// End Add User Blog Mod --------------------
 
 #
 #-----[ OPEN ]---------------------------------------------

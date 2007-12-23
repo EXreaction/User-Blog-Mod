@@ -43,7 +43,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.33';
+$user_blog_version = '0.3.34';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -167,8 +167,6 @@ if ($default)
 
 if ($default)
 {
-	$blog_categories = get_blog_categories();
-
 	// With SEO urls, we make it so that the page could be the username name of the user we want to view...
 	if ($page != '' && $page != 'index' && !$category_id)
 	{
@@ -184,11 +182,11 @@ if ($default)
 	check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 	$user->add_lang('mods/blog/view');
 
-	if ($blog_id != 0 || $reply_id != 0)
+	if ($blog_id || $reply_id)
 	{
 		include($phpbb_root_path . 'blog/view/single.' . $phpEx);
 	}
-	else if ($user_id != 0)
+	else if ($user_id)
 	{
 		include($phpbb_root_path . 'blog/view/user.' . $phpEx);
 	}

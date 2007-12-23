@@ -35,7 +35,7 @@ class acp_blogs
 			$blog_plugins->load_plugins();
 		}
 
-		$user->add_lang(array('mods/blog/common', 'mods/blog/setup'));
+		$user->add_lang(array('mods/blog/common', 'mods/blog/acp', 'mods/blog/setup'));
 
 		switch($mode)
 		{

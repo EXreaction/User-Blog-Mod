@@ -173,9 +173,6 @@ if (confirm_box(true))
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
 		case '0.3.25' :
 		case '0.3.26' :
-			/*
-			* Add New Tables ----------------------------------------------------------------------------------
-			*/
 			switch ($dbms)
 			{
 				case 'mysql' :
@@ -241,9 +238,6 @@ if (confirm_box(true))
 			$db_tool->sql_column_change(BLOGS_USERS_TABLE, 'title', array('STEXT_UNI', '', 'true_sort'));
 		case '0.3.31' :
 		case '0.3.32' :
-			/*
-			* Add New Tables ----------------------------------------------------------------------------------
-			*/
 			switch ($dbms)
 			{
 				case 'mysql' :
@@ -325,6 +319,8 @@ if (confirm_box(true))
 				'module_auth'		=> 'acl_a_blogmanage',
 			);
 			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+		case '0.3.33' :
+			$db_tool->sql_column_change(BLOGS_TABLE, 'blog_read_count', array('UINT', 1));
 	}
 
 	if (count($sql_array))

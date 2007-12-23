@@ -1256,7 +1256,7 @@ function get_schema_struct()
 			'blog_edit_locked'		=> array('BOOL', 0),
 			'blog_deleted'			=> array('UINT', 0),
 			'blog_deleted_time'		=> array('TIMESTAMP', 0),
-			'blog_read_count'		=> array('UINT', 0),
+			'blog_read_count'		=> array('UINT', 1),
 			'blog_reply_count'		=> array('UINT', 0),
 			'blog_real_reply_count'	=> array('UINT', 0),
 			'perm_guest'			=> array('TINT:1', 1),

@@ -13,6 +13,17 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Are we viewing a blog after a category?
+if ($category_id)
+{
+	$category_list = get_blog_categories('category_id');
+
+	if (!isset($category_list[$category_id]))
+	{
+		trigger_error('NO_CATEGORY');
+	}
+}
+
 // if the blog was deleted and the person trying to view the blog is not a moderator that can view deleted blogs, give them a nice error. :P
 if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('m_blogdelete') && !$auth->acl_get('a_blogdelete'))
 {
@@ -22,12 +33,9 @@ if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('m_blogde
 // Add the language Variables for viewtopic
 $user->add_lang('viewtopic');
 
-// Generate the left menu
-generate_menu($user_id);
-
 // Generate the breadcrumbs, setup the page header, and setup some variables we will use...
 generate_blog_breadcrumbs();
-page_header($user->lang['VIEW_BLOG'] .' - ' . $blog_data->blog[$blog_id]['blog_subject']);
+page_header($blog_data->blog[$blog_id]['blog_subject']);
 
 $total_replies = $reply_data->get_reply_data('reply_count', $blog_id, array('sort_days' => $sort_days));
 
@@ -43,6 +51,12 @@ else
 	$reply_ids = false;
 }
 
+if (!$category_id)
+{
+	// Generate the left menu
+	generate_menu($user_id);
+}
+
 $blog_plugins->plugin_do('view_blog_start');
 
 // Output some data
@@ -52,12 +66,11 @@ $template->assign_vars(array(
 
 	'U_PRINT_TOPIC'		=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',
 	'U_VIEW'			=> $blog_urls['self'],
-
-	'S_SHOW_SIGNATURE'	=> true,
 ));
 
 // Parse the blog data and output it to the template
 $template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $user_data->handle_user_data($user_id));
+$user_data->handle_user_data($user_id, 'blogrow.custom_fields');
 
 $blog_plugins->plugin_do('view_blog_after_blogrow');
 
@@ -113,7 +126,7 @@ $blog_plugins->plugin_do('view_blog_end');
 
 // tell the template parser what template file to use
 $template->set_filenames(array(
-	'body' => 'blog/view_blog.html'
+	'body' => (($category_id) ? 'blog/view_blog_topic_mode.html' : 'blog/view_blog.html'),
 ));
 
 ?>
