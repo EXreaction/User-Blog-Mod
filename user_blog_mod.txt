@@ -93,7 +93,7 @@
 ##				- Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
 ##				- Then do the edits for adm/style/acp_users_profile.html and includes/acp/acp_users.php.
 ##				- Finally run the upgrade script by going to blog.php?page=update
-## 2007-12-
+## 2007-12-22
 ##		Alpha 34
 ##			+ Some bug fixes, more work on the display of categories, plus HoL told me of a way to auto-include language files for the modules, so 3 less file edits! :D
 ##			+ To update, remove the edits done to adm/index.php, mcp.php, and ucp.php made by previous versions (there is just one edit in each).
