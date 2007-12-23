@@ -1372,7 +1372,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			if (!$include_forum && $row['forum_id'] == $forum_id)
+			if (!$include_forum && $row['category_id'] == $category_id)
 			{
 				continue;
 			}

@@ -257,7 +257,7 @@ class user_data
 				'USER_FULL'			=> $this->user[$user_id]['username_full'],
 				'USER_FOE'			=> (isset($zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $zebra_list[$user->data['user_id']]['foe'])) ? true : false,
 
-				'L_USER_FOE'		=> sprintf($user->lang['POST_BY_FOE'], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
+				'L_USER_FOE'		=> sprintf($user->lang['POSTED_BY_FOE'], ''),//'<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
 
 				'U_AIM'				=> $this->user[$user_id]['aim_url'],
 				'U_EMAIL'			=> $this->user[$user_id]['email_url'],

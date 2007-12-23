@@ -23,11 +23,37 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 	$panels = array(
 		'options-panel'			=> $user->lang['OPTIONS'],
 	);
+
 	if ($page == 'blog')
 	{
-		$panels['categories-panel'] = $user->lang['CATEGORIES'];
+		// The category display box
+		$category = request_var('category', array('' => ''));
+		if (!count($category))
+		{
+			$category = request_var('c', 0);
+		}
+
+		$category_list = make_category_select($category);
+
+		if ($category_list)
+		{
+			$panels['categories-panel'] = $user->lang['CATEGORIES'];
+		}
+
+		// Build permissions box
+		permission_settings_builder(true, $mode);
 		$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+
+		// Some variables
+		$template->assign_vars(array(
+			'CATEGORY_LIST'				=> $category_list,
+
+			'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
+			'S_SHOW_CATEGORY_BOX'		=> ($category_list) ? true : false,
+			'S_SHOW_PERMISSIONS_BOX'	=> true,
+		));
 	}
+
 	$above_subject = $above_message = $above_submit = $panel_data = '';
 
 	$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
@@ -45,26 +71,6 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 
 	// Build custom bbcodes array
 	display_custom_bbcodes();
-
-	if ($page == 'blog')
-	{
-		// Build permissions box
-		permission_settings_builder(true, $mode);
-
-		$category = request_var('category', array('' => ''));
-		if (!count($category))
-		{
-			$category = request_var('c', 0);
-		}
-
-		$template->assign_vars(array(
-			'CATEGORY_LIST'				=> make_category_select($category),
-
-			'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
-			'S_SHOW_CATEGORY_BOX'		=> true,
-			'S_SHOW_PERMISSIONS_BOX'	=> true,
-		));
-	}
 
 	$template->assign_vars(array(
 		'EXTRA_ABOVE_SUBJECT'		=> $above_subject,

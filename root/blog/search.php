@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 generate_blog_breadcrumbs($user->lang['SEARCH_BLOGS'], blog_url(false, false, false, array('page' => 'search')));
 page_header($user->lang['SEARCH_BLOGS']);
 
-$user->add_lang('search');
+$user->add_lang(array('search', 'mods/blog/view'));
 
 // Is user able to search? Has search been disabled?
 if (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$config['load_search'])
@@ -187,7 +187,7 @@ if ($keywords || $author)
 	$template->assign_vars(array(
 		'PAGINATION'		=> $pagination,
 		'PAGE_NUMBER' 		=> on_page($matches, $limit, $start),
-		'TOTAL_POSTS'		=> ($matches == 1) ? $user->lang['REPLY_COUNT'] : sprintf($user->lang['REPLIES_COUNT'], $matches),
+		'TOTAL_POSTS'		=> ($matches == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $matches),
 		'SEARCH_MATCHES'	=> ($matches == 1) ? sprintf($user->lang['FOUND_SEARCH_MATCH'], $matches) : sprintf($user->lang['FOUND_SEARCH_MATCHES'], $matches),
 		'U_SEARCH_WORDS'	=> $search_url,
 		'SEARCH_WORDS'		=> (($author) ? $author : $keywords),

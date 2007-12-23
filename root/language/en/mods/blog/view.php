@@ -33,7 +33,7 @@ $lang = array_merge($lang, array(
 	'NO_DELETED_BLOGS'				=> 'There are no deleted blogs by this user.',
 	'NO_DELETED_BLOGS_SORT_DAYS'	=> 'No deleted blogs were posted by this user in the last %s.',
 
-	'POST_BY_FOE'					=> 'This post was made by %s who is currently on your ignore list.',
+	'POSTED_BY_FOE'					=> 'This post was made by %s who is currently on your ignore list.',
 
 	'REPLY_REPORTED'				=> 'Reply has been reported, click to close the report',
 	'REPLY_REPORTED_SHORT'			=> 'This Reply has been reported.',

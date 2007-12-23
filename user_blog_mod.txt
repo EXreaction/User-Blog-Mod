@@ -73,10 +73,7 @@
 ## 2007-11-17 Alpha 29
 ## 2007-11-24 Alpha 30
 ## 2007-12-13 Alpha 31
-## 2007-12-14
-##		Alpha 31a
-##			+ Fixed a bug.
-##			+ To update, just copy over the new files.
+## 2007-12-14 Alpha 31a
 ## 2007-12-14
 ##		Alpha 31b
 ##			+ Oops, I packaged A31a wrong with older files. :o
@@ -99,6 +96,10 @@
 ##			+ To update, remove the edits done to adm/index.php, mcp.php, and ucp.php made by previous versions (there is just one edit in each).
 ##				- Then update adm/style/acp_users_profile.html with the new code.
 ##				- Then copy over the new files, and run the upgrade script by going to blog.php?page=update
+## 2007-12-22
+##		Alpha 34a
+##			+ A few quick bug fixes.
+##			+ To update, just copy over the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
