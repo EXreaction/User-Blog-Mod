@@ -108,15 +108,15 @@ class eami
 		), $data);
 
 		// Update the left and right ID's in this classes data
-		foreach ($this->{$class} as $id => &$row)
+		foreach ($this->{$class} as $id => $row)
 		{
 			if ($row['left_id'] >= $left_id)
 			{
-				$row['left_id'] += 2;
+				$this->{$class}[$id]['left_id'] += 2;
 			}
 			if ($row['right_id'] >= $left_id)
 			{
-				$row['right_id'] += 2;
+				$this->{$class}[$id]['right_id'] += 2;
 			}
 		}
 

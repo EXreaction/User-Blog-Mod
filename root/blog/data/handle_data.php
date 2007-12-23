@@ -61,6 +61,58 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 }
 
 /**
+* Close Tags
+*
+* Closes HTML tags at the end of a string.
+*
+* @param string $html The html code to close the tags for.
+*/
+function close_tags($html)
+{
+	// put all opened tags into an array
+	preg_match_all("|<[^>^/]+?>|U", $html, $result);
+	$openedtags=$result[0];
+
+	// put all closed tags into an array
+	preg_match_all("|</[^>^/]+?>|U",$html,$result);
+	$closedtags=$result[0];
+
+	// all tags are closed
+	if (count($closedtags) == count($openedtags))
+	{
+		return $html;
+	}
+
+	// Reverse the arrays
+	$openedtags = array_reverse($openedtags);
+	$closedtags = array_reverse($closedtags);
+
+	// close tags
+	foreach ($openedtags as $tag)
+	{
+		if ($tag != $closedtags[0])
+		{
+			// if there is a space there are attributes to the tag, and we do not want those on the closing tag
+			if (strpos($tag, ' '))
+			{
+				$html .= '</' . substr($tag, 1, (strpos($tag, ' ') - 1)) . '>';
+			}
+			else
+			{
+				$html .= '</' . substr($tag, 1, -1) . '>';
+			}
+		}
+		else
+		{
+			// If there is a match, remove the first item off of the closedtags array
+			array_shift($closedtags);
+		}
+	}
+
+	return $html;
+}
+
+/**
 * trims the length of the text of a blog or reply
 *
 * @param int|bool $blog_id the blog_id for the blog we will trim the text length for (if not triming the blog text length, set to false)
@@ -80,7 +132,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 	if ($blog_id !== false)
 	{
 		$data = $blog_data->blog[$blog_id];
-		$original_text = $data['blog_text'];
+		$text = $data['blog_text'];
 	}
 	else
 	{
@@ -91,12 +143,8 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 
 		$data = $reply_data->reply[$reply_id];
 		$blog_id = $data['blog_id'];
-		$original_text = $data['reply_text'];
+		$text = $data['reply_text'];
 	}
-
-	$text = html_entity_decode($original_text);
-
-	decode_message($text, $data['bbcode_uid']);
 
 	if (utf8_strlen($text) > $str_limit)
 	{
@@ -123,20 +171,11 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 			$str_limit = utf8_strlen($text);
 		}
 
-		// now trim the text
-		$text = substr($text, 0, $str_limit);
+		$data['bbcode_options'] = (($data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+		$text = generate_text_for_display($text, $data['bbcode_uid'], $data['bbcode_bitfield'], $data['bbcode_options']);
 
-		if (!class_exists('parse_message'))
-		{
-			include("{$phpbb_root_path}includes/message_parser.$phpEx");
-		}
-
-		// Now lets get the bbcode back
-		$message_parser = new parse_message();
-		$message_parser->message = $text;
-		$message_parser->parse($data['enable_bbcode'], $data['enable_magic_url'], $data['enable_smilies']);
-		$text = $message_parser->format_display($data['enable_bbcode'], $data['enable_magic_url'], $data['enable_smilies'], false);
-		unset($message_parser);
+		// now trim the text, then close any opened HTML tags
+		$text = close_tags(substr($text, 0, $str_limit));
 
 		$text .= '...<br/><br/><!-- m --><a href="';
 		if ($reply_id !== false)
@@ -155,7 +194,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 	{
 		if ($always_return)
 		{
-			return $original_text;
+			return $text;
 		}
 		else
 		{
