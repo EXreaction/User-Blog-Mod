@@ -148,9 +148,9 @@ else // user submitted and there are no errors
 	// Insert into the categories list
 	if (count($category) > 1 || (isset($category[0]) && $category[0] != 0))
 	{
-		foreach ($category as &$cat_id)
+		foreach ($category as $i => $cat_id)
 		{
-			$cat_id = (int) $cat_id;
+			$cat_id = $category[$i] = (int) $cat_id;
 			if ($cat_id > 0)
 			{
 				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));

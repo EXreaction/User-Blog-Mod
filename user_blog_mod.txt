@@ -74,10 +74,7 @@
 ## 2007-11-24 Alpha 30
 ## 2007-12-13 Alpha 31
 ## 2007-12-14 Alpha 31a
-## 2007-12-14
-##		Alpha 31b
-##			+ Oops, I packaged A31a wrong with older files. :o
-##			+ To update, just copy over the new files.
+## 2007-12-14 Alpha 31b
 ## 2007-12-19
 ##		Alpha 32
 ##			+ A few bug fixes.  Lots of language changes (sorry translators :P)
@@ -100,6 +97,10 @@
 ##		Alpha 34a
 ##			+ A few quick bug fixes.
 ##			+ To update, just copy over the new files.
+## 2007-12-23
+##		Alpha 34b
+##			+ A few more bug fixes.
+##			+ If everything is already working for you, ignore this release.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
