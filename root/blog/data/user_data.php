@@ -47,21 +47,23 @@ class user_data
 
 		$blog_plugins->plugin_do('user_data_start');
 
-		// this holds the user_id's we will query, always grab the anonymous user
-		$users_to_query = array(1);
+		// this holds the user_id's we will query
+		$users_to_query = array();
 
 		if (!$username)
 		{
 			// if the $user_id isn't an array, make it one for consistency
 			if (!is_array($id))
 			{
-				$id = array($id);
+				$id = array(intval($id));
 			}
 
 			if (!count($id))
 			{
 				return;
 			}
+
+			$id[] = 1;
 
 			foreach ($id as $i)
 			{
@@ -185,7 +187,7 @@ class user_data
 				$status_data = array();
 				$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
 					FROM ' . SESSIONS_TABLE . '
-						WHERE session_user_id = \'' . $user_id . '\'
+						WHERE session_user_id = ' . intval($user_id) . '
 							GROUP BY session_user_id';
 				$result = $db->sql_query($sql);
 				while($row = $db->sql_fetchrow($result))

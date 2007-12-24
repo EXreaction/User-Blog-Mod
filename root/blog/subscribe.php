@@ -180,10 +180,10 @@ function add_subscription($subscribe_user_id, $mode, $user_id, $blog_id = false)
 	global $db, $blog_plugins;
 
 	$sql_data = array(
-		'sub_user_id'	=> $subscribe_user_id,
-		'sub_type'		=> $mode,
-		'blog_id'		=> $blog_id,
-		'user_id'		=> $user_id,
+		'sub_user_id'	=> (int) $subscribe_user_id,
+		'sub_type'		=> (int) $mode,
+		'blog_id'		=> (int) $blog_id,
+		'user_id'		=> (int) $user_id,
 	);
 
 	$blog_plugins->plugin_do_arg_ref('subscription_add', $sql_data);

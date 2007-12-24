@@ -217,6 +217,11 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
 		$extras = $anchor = '';
 
+		if (isset($_GET['style']))
+		{
+			$url_data['style'] = $_GET['style'];
+		}
+
 		if (isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
 		{
 			$title_match ='/([^a-zA-Z0-9\s_])/'; // Replace HTML Entities, and non alphanumeric/space/underscore characters
@@ -695,7 +700,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
 		if ($user_id > 1 && (!isset($user_data['blog_count']) || !isset($user_data['username'])) && $grab_from_db)
 		{
-			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = \'' . intval($user_id) . '\'';
+			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = ' . intval($user_id);
 			$result = $db->sql_query($sql);
 			$user_data = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
@@ -993,7 +998,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		if ($subscription_data === false)
 		{
 			$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-					WHERE sub_user_id = \'' . $user->data['user_id'] . '\'';
+					WHERE sub_user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 			$subscription_data = $db->sql_fetchrowset($result);
 			$cache->put('_blog_subscription' . $user->data['user_id'], $subscription_data);
@@ -1366,7 +1371,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		$sql = 'SELECT f2.*
 			FROM ' . BLOGS_CATEGORIES_TABLE . ' f1
 			LEFT JOIN ' . BLOGS_CATEGORIES_TABLE . " f2 ON ($condition)
-			WHERE f1.category_id = $category_id
+			WHERE f1.category_id = " . intval($category_id) . "
 			ORDER BY f2.left_id " . (($order == 'descending') ? 'ASC' : 'DESC');
 		$result = $db->sql_query($sql);
 

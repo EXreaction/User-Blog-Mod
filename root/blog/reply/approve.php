@@ -43,12 +43,12 @@ if ($reply_data->reply[$reply_id]['reply_approved'] == 0)
 		$blog_plugins->plugin_do('reply_approve_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
-			SET reply_approved = \'1\'
-			WHERE reply_id = ' . $reply_id;
+			SET reply_approved = 1
+			WHERE reply_id = ' . intval($reply_id);
 		$db->sql_query($sql);
 
 		// update the reply count for the blog
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		handle_subscription('new_reply',  censor_text($reply_data->reply[$reply_id]['reply_subject']));

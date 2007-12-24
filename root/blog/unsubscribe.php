@@ -40,8 +40,8 @@ if ($blog_id != 0)
 		$blog_plugins->plugin_do('unsubscribe_blog_confirm');
 
 		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-				AND blog_id = \'' . $blog_id . '\'';
+			WHERE sub_user_id = ' . $user->data['user_id'] . '
+				AND blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		handle_blog_cache('subscription', $user->data['user_id']);
@@ -87,8 +87,8 @@ else if ($user_id != 0)
 		$blog_plugins->plugin_do('unsubscribe_user_confirm');
 
 		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE sub_user_id = \'' . $user->data['user_id'] . '\'
-				AND user_id = \'' . $user_id . '\'';
+			WHERE sub_user_id = ' . $user->data['user_id'] . '
+				AND user_id = ' . intval($user_id);
 		$db->sql_query($sql);
 
 		handle_blog_cache('subscription', $user->data['user_id']);

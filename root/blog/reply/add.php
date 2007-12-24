@@ -175,14 +175,14 @@ else // user submitted and there are no errors
 	// update the reply count for the blog
 	if ($auth->acl_get('u_blogreplynoapprove'))
 	{
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		handle_subscription('new_reply', censor_text($reply_subject));
 	}
 	else
 	{
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		inform_approve_report('reply_approve', $reply_id);

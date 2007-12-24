@@ -49,11 +49,11 @@ if (confirm_box(true))
 	// if it has already been soft deleted
 	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
 	{
-		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = \'' . $reply_id . '\'';
+		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = ' . intval($reply_id);
 		$db->sql_query($sql);
 
 		// update the real reply count for the blog
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count - 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 	}
 	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
@@ -61,11 +61,11 @@ if (confirm_box(true))
 		$blog_search->index_remove($blog_id, $reply_id);
 
 		// soft delete the reply
-		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'' . $user->data['user_id'] . ' \', reply_deleted_time = \'' . time() . '\' WHERE reply_id = \'' . $reply_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = ' . $user->data['user_id'] . ', reply_deleted_time = ' . time() . ' WHERE reply_id = ' . intval($reply_id);
 		$db->sql_query($sql);
 
 		// update the reply count for the blog
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id) . ' AND blog_reply_count > 0';
 		$db->sql_query($sql);
 	}
 

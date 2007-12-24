@@ -52,11 +52,11 @@ if (confirm_box(true))
 	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
 	{
 		// delete the blog
-		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		// delete the replies
-		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 	}
 	else
@@ -64,19 +64,19 @@ if (confirm_box(true))
 		$blog_search->index_remove($blog_id);
 
 		// soft delete the blog
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = \'' . $user->data['user_id'] . ' \', blog_deleted_time = \'' . time() . '\' WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = ' . $user->data['user_id'] . ', blog_deleted_time = ' . time() . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		// Update the blog_count for the user
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\' AND blog_count > 0';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = ' . intval($user_id) . ' AND blog_count > 0';
 		$db->sql_query($sql);
 
 		// Update the blog_count for all the categories it is in.
-		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
 			$db->sql_query($sql);
 		}
 	}
@@ -100,7 +100,7 @@ if (confirm_box(true))
 }
 else
 {
-	if ( ($blog_data->blog[$blog_id]['blog_deleted'] != 0)) // if it has already been soft deleted and we are not trying to undelete
+	if ( ($blog_data->blog[$blog_id]['blog_deleted'] != 0))
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_BLOG');
 	}

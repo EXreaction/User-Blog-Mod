@@ -190,7 +190,7 @@ else // user submitted and there are no errors
 		$blog_plugins->plugin_do('reply_edit_delete');
 
 		// update the reply count for the blog
-		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id) . ' AND blog_reply_count > 0';
 		$db->sql_query($sql);
 
 		$message = $user->lang['REPLY_DELETED'] . '<br/><br/>';

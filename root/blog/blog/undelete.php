@@ -46,19 +46,19 @@ if (confirm_box(true))
 	$blog_search->index('add', $blog_id, 0, $blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['blog_subject'], $user_id);
 
 	// undelete the blog
-	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = \'0\', blog_deleted_time = \'0\' WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = 0, blog_deleted_time = 0 WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
 	// Update the blog_count for the user
-	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user_id . '\'';
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . intval($user_id);
 	$db->sql_query($sql);
 
 	// Update the blog_count for all the categories it is in.
-	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = ' . $row['category_id'];
 		$db->sql_query($sql);
 	}
 

@@ -53,7 +53,7 @@ class reply_data
 		// make sure $id is an array for consistency
 		if (!is_array($id))
 		{
-			$id = array($id);
+			$id = array(intval($id));
 		}
 
 		$sql_array = array(
@@ -67,15 +67,15 @@ class reply_data
 
 		if (!$auth->acl_get('m_blogreplyapprove'))
 		{
-			$sql_where[] = 'reply_approved = \'1\'';
+			$sql_where[] = 'reply_approved = 1';
 		}
 		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
 		{
-			$sql_where[] = 'reply_deleted = \'0\'';
+			$sql_where[] = 'reply_deleted = 0';
 		}
 		if ($sort_days != 0)
 		{
-			$sql_where[] = 'reply_time >= \'' . (time() - $sort_days * 86400) . '\'';
+			$sql_where[] = 'reply_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
@@ -97,7 +97,7 @@ class reply_data
 					return false;
 				}
 
-				$sql_where[] = 'reply_reported = \'1\'';
+				$sql_where[] = 'reply_reported = 1';
 				break;
 			case 'disapproved' : // select disapproved replies
 				if (!$auth->acl_get('m_blogreplyapprove'))
@@ -105,7 +105,7 @@ class reply_data
 					return false;
 				}
 
-				$sql_where[] = 'reply_approved = \'0\'';
+				$sql_where[] = 'reply_approved = 0';
 				break;
 			case 'reply_count' : // for counting how many replies there are for a blog
 				if ($blog_data->blog[$id[0]]['blog_real_reply_count'] == 0 || $blog_data->blog[$id[0]]['blog_real_reply_count'] == $blog_data->blog[$id[0]]['blog_reply_count'])
@@ -120,7 +120,7 @@ class reply_data
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0)
 				{
 					$sql_array['SELECT'] = 'count(reply_id) AS total';
-					$sql_where[] = 'blog_id = \'' . $id[0] . '\'';
+					$sql_where[] = 'blog_id = ' . $id[0] . '';
 					$sql_array['WHERE'] = implode(' AND ', $sql_where);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
 					$result = $db->sql_query($sql);
@@ -136,8 +136,8 @@ class reply_data
 			case 'page' :
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE blog_id = \'' . $id[0] . '\'' .
-						(($sort_days != 0) ? ' AND reply_time >= \'' . (time() - ($sort_days * 86400)) . '\'' : '') .
+					WHERE blog_id = ' . $id[0] . 
+						(($sort_days != 0) ? ' AND reply_time >= ' . (time() - ($sort_days * 86400)) : '') .
 							' ORDER BY ' . $order_by . ' ' . $order_dir;
 				$result = $db->sql_query($sql);
 				while ($row = $db->sql_fetchrow($result))

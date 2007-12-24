@@ -43,20 +43,20 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 		$blog_plugins->plugin_do('blog_approve_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_TABLE . '
-			SET blog_approved = \'1\'
-			WHERE blog_id = ' . $blog_id;
+			SET blog_approved = 1
+			WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		// Update the blog_count for the user
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user_id . '\'';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . intval($user_id);
 		$db->sql_query($sql);
 
 		// Update the blog_count for all the categories it is in.
-		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = ' . $row['category_id'];
 			$db->sql_query($sql);
 		}
 

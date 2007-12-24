@@ -97,7 +97,7 @@ class blog_data
 		// make sure $id is an array for consistency
 		if (!is_array($id))
 		{
-			$id = array($id);
+			$id = array(intval($id));
 		}
 
 		// Switch for the modes
@@ -112,7 +112,7 @@ class blog_data
 					$sql_array['ORDER_BY'] = 'b.blog_deleted_time' . ' ' . $order_dir;
 				}
 				$sql_where[] =  $db->sql_in_set('b.user_id', $id);
-				$sql_where[] =  'b.blog_deleted != \'0\'';
+				$sql_where[] =  'b.blog_deleted != 0';
 				break;
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
 				foreach ($id as $i)
@@ -156,7 +156,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] =  'b.blog_reported = \'1\'';
+				$sql_where[] =  'b.blog_reported = 1';
 				break;
 			case 'disapproved' : // select disapproved blogs
 				if (!$auth->acl_get('m_blogapprove'))
@@ -164,7 +164,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] =  'b.blog_approved = \'0\'';
+				$sql_where[] =  'b.blog_approved = 0';
 				break;
 			default :
 				return false;
@@ -272,19 +272,19 @@ class blog_data
 		}
 		if (!$auth->acl_get('m_blogapprove'))
 		{
-			$sql_where[] = '(b.blog_approved = \'1\' OR b.user_id = \'' . $user->data['user_id'] . '\')';;
+			$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';;
 		}
 		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{
-			$sql_where[] = 'b.blog_deleted != \'0\'';
+			$sql_where[] = 'b.blog_deleted != 0';
 		}
 		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$sql_where[] = '(b.blog_deleted = \'0\' OR b.blog_deleted = \'' . $user->data['user_id'] . '\' )';
+			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 		}
 		if ($sort_days != 0)
 		{
-			$sql_where[] = 'b.blog_time >= \'' . (time() - $sort_days * 86400) . '\'';
+			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400) . '';
 		}
 		if ($custom_sql)
 		{
@@ -344,7 +344,7 @@ class blog_data
 				$user_permission_sql = build_permission_sql($user->data['user_id']);
 
 				$sql_array['SELECT'] = 'count(b.blog_id) AS total';
-				$sql_where[] = 'b.user_id = \'' . $id . '\'';
+				$sql_where[] = 'b.user_id = ' . intval($id);
 
 				$sql_array['WHERE'] = implode(' AND ', $sql_where);
 				$sql = $db->sql_build_query('SELECT', $sql_array);

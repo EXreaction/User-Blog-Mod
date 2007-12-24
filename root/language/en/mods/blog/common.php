@@ -90,8 +90,6 @@ $lang = array_merge($lang, array(
 	'USERNAMES_DELETED_BLOGS'			=> '%s\'s Deleted Blogs',
 	'USER_BLOGS'						=> 'User Blogs',
 	'USER_BLOG_MOD_DISABLED'			=> 'The User Blog Mod has been disabled.',
-	'USER_SUBSCRIPTION_NOTICE'			=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog [url=%2$s]here[/url].<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
-	'USER_SUBSCRIPTION_NOTICE_EMAIL'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog here:/r/n %2$s /r/n /r/n /r/n If you would like to no longer recieve these notices click the following link to unsubscribe:/r/n%3$s',
 
 	'VIEW_BLOG'							=> 'View Blog',
 	'VIEW_BLOGS'						=> 'View Blogs',

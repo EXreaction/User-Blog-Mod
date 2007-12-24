@@ -372,7 +372,7 @@ function feed_output($blog_ids, $feed_type)
 
 	if (!is_array($blog_ids))
 	{
-		$blog_ids = array($blog_ids);
+		$blog_ids = array(intval($blog_ids));
 	}
 
 	$board_url = generate_board_url();
@@ -446,6 +446,11 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		return;
 	}
 
+	if (!isset($user->lang['BLOG_SUBSCRIPTION_NOTICE']))
+	{
+		$user->add_lang('mods/blog/posting');
+	}
+
 	$subscribe_modes = array(0 => 'send_via_pm', 1 => 'send_via_email', 2 => array('send_via_pm', 'send_via_email'));
 	$blog_plugins->plugin_do_arg_ref('function_handle_subscription', $subscribe_modes);
 
@@ -468,8 +473,8 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	if ($mode == 'new_reply' && $rid != 0)
 	{
 		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE blog_id = \'' . $bid . '\'
-			AND sub_user_id != \'' . $user->data['user_id'] . '\'';
+			WHERE blog_id = ' . intval($bid) . '
+			AND sub_user_id != ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -492,8 +497,8 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	else if ($mode == 'new_blog' && $uid != 0)
 	{
 		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
-			WHERE user_id = \'' . $uid . '\'
-			AND sub_user_id != \'' . $user->data['user_id'] . '\'';
+			WHERE user_id = ' . intval($uid) . '
+			AND sub_user_id != ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -638,9 +643,9 @@ function resync_blog($mode)
 			// count all the replies (an SQL query seems the easiest way to do it)
 			$sql = 'SELECT count(reply_id) AS total 
 				FROM ' . BLOGS_REPLY_TABLE . ' 
-					WHERE blog_id = \'' . $row['blog_id'] . '\' 
-						AND reply_deleted = \'0\' 
-						AND reply_approved = \'1\'';
+					WHERE blog_id = ' . $row['blog_id'] . '
+						AND reply_deleted = 0
+						AND reply_approved = 1';
 			$result = $db->sql_query($sql);
 			$total = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
@@ -648,7 +653,7 @@ function resync_blog($mode)
 			if ($total['total'] != $row['blog_reply_count'])
 			{
 				// Update the reply count
-				$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+				$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = ' . $total['total'] . ' WHERE blog_id = ' . $row['blog_id'];
 				$db->sql_query($sql);
 			}
 		}
@@ -664,7 +669,7 @@ function resync_blog($mode)
 			// count all the replies (an SQL query seems the easiest way to do it)
 			$sql = 'SELECT count(reply_id) AS total 
 				FROM ' . BLOGS_REPLY_TABLE . ' 
-					WHERE blog_id = \'' . $row['blog_id'] . '\'';
+					WHERE blog_id = ' . $row['blog_id'];
 			$result = $db->sql_query($sql);
 			$total = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
@@ -672,7 +677,7 @@ function resync_blog($mode)
 			if ($total['total'] != $row['blog_real_reply_count'])
 			{
 				// Update the reply count
-				$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+				$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = ' . $total['total'] . ' WHERE blog_id = ' . $row['blog_id'];
 				$db->sql_query($sql);
 			}
 		}
@@ -691,7 +696,7 @@ function resync_blog($mode)
 			// if the blog_id it attached to is not in $blog_data
 			if (!(array_key_exists($row['blog_id'], $blog_data)))
 			{
-				$sql2 = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = \'' . $row['reply_id'] . '\'';
+				$sql2 = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = ' . $row['reply_id'];
 				$db->sql_query($sql2);
 			}
 		}
@@ -712,8 +717,8 @@ function resync_blog($mode)
 			$sql2 = 'SELECT count(blog_id) AS total 
 				FROM ' . BLOGS_TABLE . ' 
 					WHERE user_id = \'' . $row['user_id'] . '\' 
-						AND blog_deleted = \'0\' 
-						AND blog_approved = \'1\'';
+						AND blog_deleted = 0
+						AND blog_approved = 1';
 			$result2 = $db->sql_query($sql2);
 			$total = $db->sql_fetchrow($result2);
 			$db->sql_freeresult($result2);
@@ -721,7 +726,7 @@ function resync_blog($mode)
 			if ($total['total'] != $row['blog_count'])
 			{
 				// Update the reply count
-				$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = \'' . $total['total'] . '\' WHERE user_id = \'' . $row['user_id'] . '\'';
+				$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = ' . $total['total'] . ' WHERE user_id = ' . $row['user_id'];
 				$db->sql_query($sql);
 			}
 		}
@@ -744,7 +749,7 @@ function resync_blog($mode)
 				'perm_friend'		=> $row['perm_friend'],
 			);
 
-			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE user_id = \'' . $row['user_id'] . '\'';
+			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . ' WHERE user_id = ' . $row['user_id'];
 			$db->sql_query($sql);
 		}
 		$db->sql_freeresult($result);

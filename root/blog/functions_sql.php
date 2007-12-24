@@ -23,12 +23,12 @@ function build_permission_sql($user_id, $add_where = false)
 	global $auth, $config, $db;
 	global $reverse_zebra_list;
 
+	static $sql = '';
+
 	if (!$config['user_blog_user_permissions'])
 	{
 		return '';
 	}
-
-	static $sql = '';
 
 	// Moderators and administrators can see all.
 	if ($auth->acl_gets('a_', 'm_'))
@@ -42,13 +42,15 @@ function build_permission_sql($user_id, $add_where = false)
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
 
+	$user_id = (int) $user_id;
+
 	if ($user_id == ANONYMOUS)
 	{
 		$sql = ' AND perm_guest > 0';
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
 
-	$sql = " AND (user_id = '{$user_id}'";
+	$sql = " AND (user_id = {$user_id}";
 
 	$zebra_list = array();
 	if ($config['user_blog_enable_zebra'])
@@ -59,7 +61,7 @@ function build_permission_sql($user_id, $add_where = false)
 		{
 			foreach ($reverse_zebra_list[$user_id]['foe'] as $zid)
 			{
-				$sql .= " OR (user_id = '{$zid}' AND perm_foe > '0')";
+				$sql .= " OR (user_id = {$zid} AND perm_foe > 0)";
 				$zebra_list[] = $zid;
 			}
 		}
@@ -68,23 +70,23 @@ function build_permission_sql($user_id, $add_where = false)
 		{
 			foreach ($reverse_zebra_list[$user_id]['friend'] as $zid)
 			{
-				$sql .= " OR (user_id = '{$zid}' AND perm_friend > '0')";
+				$sql .= " OR (user_id = {$zid} AND perm_friend > 0)";
 				$zebra_list[] = $zid;
 			}
 		}
 
 		if (count($zebra_list))
 		{
-			$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > '0')";
+			$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > 0)";
 		}
 		else
 		{
-			$sql .= " OR (perm_registered > '0')";
+			$sql .= " OR (perm_registered > 0)";
 		}
 	}
 	else
 	{
-		$sql .= " OR (perm_registered > '0')";
+		$sql .= " OR (perm_registered > 0)";
 	}
 
 	$sql .= ')';

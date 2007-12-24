@@ -44,8 +44,8 @@ if ($blog_data->blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'
 		$blog_plugins->plugin_do('blog_report_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_TABLE . '
-			SET blog_reported = \'0\'
-			WHERE blog_id = ' . $blog_id;
+			SET blog_reported = 0
+			WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
 		blog_meta_refresh(3, $blog_urls['view_blog']);
@@ -66,8 +66,8 @@ else
 		if (!$blog_data->blog[$blog_id]['blog_reported'])
 		{
 			$sql = 'UPDATE ' . BLOGS_TABLE . '
-				SET blog_reported = \'1\'
-				WHERE blog_id = ' . $blog_id;
+				SET blog_reported = 1
+				WHERE blog_id = ' . intval($blog_id);
 			$db->sql_query($sql);
 		}
 

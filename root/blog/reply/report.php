@@ -44,8 +44,8 @@ if ($reply_data->reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogrep
 		$blog_plugins->plugin_do('reply_report_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
-			SET reply_reported = \'0\'
-			WHERE reply_id = ' . $reply_id;
+			SET reply_reported = 0
+			WHERE reply_id = ' . intval($reply_id);
 		$db->sql_query($sql);
 
 		blog_meta_refresh(3, $$blog_urls['view_reply']);

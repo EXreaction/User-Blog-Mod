@@ -48,10 +48,10 @@ if (confirm_box(true))
 
 	$blog_search->index('add', $blog_id, $reply_id, $reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['reply_subject'], $reply_data->reply[$reply_id]['user_id']);
 
-	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = \'0\', reply_deleted_time = \'0\' WHERE reply_id = \'' . $reply_id . '\'';
+	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = 0, reply_deleted_time = 0 WHERE reply_id = ' . intval($reply_id);
 	$db->sql_query($sql);
 
-	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
 	blog_meta_refresh(3, $blog_urls['view_reply']);

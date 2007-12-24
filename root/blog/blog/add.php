@@ -112,10 +112,10 @@ if (!$submit || sizeof($error))
 else // user submitted and there are no errors
 {
 	$perm_ary = array(
-		'perm_guest'		=> request_var('perm_guest', 1),
-		'perm_registered'	=> request_var('perm_registered', 2),
-		'perm_foe'			=> request_var('perm_foe', 0),
-		'perm_friend'		=> request_var('perm_friend', 2),
+		'perm_guest'		=> (int) request_var('perm_guest', 1),
+		'perm_registered'	=> (int) request_var('perm_registered', 2),
+		'perm_foe'			=> (int) request_var('perm_foe', 0),
+		'perm_friend'		=> (int) request_var('perm_friend', 2),
 	);
 
 	$blog_plugins->plugin_do_arg_ref('blog_add_permissions', $perm_ary);
@@ -153,7 +153,7 @@ else // user submitted and there are no errors
 			$cat_id = $category[$i] = (int) $cat_id;
 			if ($cat_id > 0)
 			{
-				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
+				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => intval($cat_id)));
 				$db->sql_query($sql);
 			}
 		}
@@ -180,7 +180,7 @@ else // user submitted and there are no errors
 		handle_subscription('new_blog', censor_text($blog_subject));
 
 		// Update the blog_count for the user
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user->data['user_id'] . '\'';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . $user->data['user_id'];
 		$db->sql_query($sql);
 	}
 	else

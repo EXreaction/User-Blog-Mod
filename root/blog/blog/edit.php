@@ -53,7 +53,7 @@ if (!$submit && !$preview && !$refresh)
 	decode_message($blog_text, $blog_data->blog[$blog_id]['bbcode_uid']);
 	$post_options->set_status($blog_data->blog[$blog_id]['enable_bbcode'], $blog_data->blog[$blog_id]['enable_smilies'], $blog_data->blog[$blog_id]['enable_magic_url']);
 
-	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -144,10 +144,10 @@ if (!$submit || sizeof($error))
 else // user submitted and there are no errors
 {
 	$perm_ary = array(
-		'perm_guest'		=> request_var('perm_guest', 1),
-		'perm_registered'	=> request_var('perm_registered', 2),
-		'perm_foe'			=> request_var('perm_foe', 0),
-		'perm_friend'		=> request_var('perm_friend', 2),
+		'perm_guest'		=> (int) request_var('perm_guest', 1),
+		'perm_registered'	=> (int) request_var('perm_registered', 2),
+		'perm_foe'			=> (int) request_var('perm_foe', 0),
+		'perm_friend'		=> (int) request_var('perm_friend', 2),
 	);
 
 	$blog_plugins->plugin_do_arg_ref('blog_edit_permissions', $perm_ary);
@@ -195,14 +195,14 @@ else // user submitted and there are no errors
 	unset($message_parser, $perm_ary, $sql_data);
 
 	// First, delete the category in record for this blog
-	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = \'' . $row['category_id'] . '\'';
+		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
 		$db->sql_query($sql);
 	}
-	$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
 	if ( (isset($_POST['delete'])) && $can_delete )
@@ -210,7 +210,7 @@ else // user submitted and there are no errors
 		$blog_plugins->plugin_do('blog_edit_delete');
 
 		// Update the blog_count for the user
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = \'' . $user_id . '\' AND blog_count > 0';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = ' . intval($user_id) . ' AND blog_count > 0';
 		$db->sql_query($sql);
 
 		handle_blog_cache('delete_blog', $user_id);
@@ -237,7 +237,7 @@ else // user submitted and there are no errors
 				$cat_id = $category[$i] = (int) $cat_id;
 				if ($cat_id > 0)
 				{
-					$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
+					$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => intval($cat_id)));
 					$db->sql_query($sql);
 				}
 			}

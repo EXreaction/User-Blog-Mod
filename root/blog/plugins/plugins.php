@@ -257,7 +257,7 @@ class blog_plugins
 			return;
 		}
 
-		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = \'1\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
+		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = 1 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
 
 		$this->plugins[$which]['plugin_enabled'] = 1;
@@ -274,7 +274,7 @@ class blog_plugins
 			$this->plugin_install($which);
 		}
 
-		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = \'0\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
+		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = 0 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
 
 		$this->plugins[$which]['plugin_enabled'] = 0;

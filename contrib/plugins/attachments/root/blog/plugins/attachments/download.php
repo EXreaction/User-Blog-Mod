@@ -21,7 +21,7 @@ if (!$download_id)
 	trigger_error('NO_ATTACHMENT_SELECTED');
 }
 
-if (!$config['allow_attachments'] && !$config['allow_pm_attach'])
+if (!$config['allow_attachments'])
 {
 	trigger_error('ATTACHMENT_FUNCTIONALITY_DISABLED');
 }
