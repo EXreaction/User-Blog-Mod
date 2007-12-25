@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds attachments to the User Blog Mod
 ##
-## MOD Version: 0.7.8
+## MOD Version: 0.7.9
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~4 Minutes
@@ -63,6 +63,10 @@
 ##		0.7.8 Released
 ##			+ Language fixes.
 ##				- To upgrade, do the first edit required for includes/acp/acp_attachments.php and upload the new files.
+## 2007-12-24
+##		0.7.9 Released
+##			+ Fixing some bug with some leftover code.
+##				- To upgrade upload the new files.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
