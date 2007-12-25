@@ -90,7 +90,7 @@ function close_tags($html)
 	// close tags
 	foreach ($openedtags as $tag)
 	{
-		if ($tag != $closedtags[0])
+		if (!isset($closedtags[0]) || $tag != $closedtags[0])
 		{
 			// if there is a space there are attributes to the tag, and we do not want those on the closing tag
 			if (strpos($tag, ' '))
@@ -148,6 +148,10 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 
 	if (utf8_strlen($text) > $str_limit)
 	{
+		// Parse the text
+		$data['bbcode_options'] = (($data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+		$text = generate_text_for_display($text, $data['bbcode_uid'], $data['bbcode_bitfield'], $data['bbcode_options']);
+
 		// we will try not to cut off any words :)
 		$next_space = strpos(substr($text, $str_limit), ' ');
 		$next_el = strpos(substr($text, $str_limit), "\n");
@@ -170,9 +174,6 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		{
 			$str_limit = utf8_strlen($text);
 		}
-
-		$data['bbcode_options'] = (($data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-		$text = generate_text_for_display($text, $data['bbcode_uid'], $data['bbcode_bitfield'], $data['bbcode_options']);
 
 		// now trim the text, then close any opened HTML tags
 		$text = close_tags(substr($text, 0, $str_limit));
