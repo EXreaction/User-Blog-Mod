@@ -20,9 +20,6 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'USER_SUBSCRIPTION_NOTICE'			=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog [url=%2$s]here[/url].<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
-	'USER_SUBSCRIPTION_NOTICE_EMAIL'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog here:/r/n %2$s /r/n /r/n /r/n If you would like to no longer recieve these notices click the following link to unsubscribe:/r/n%3$s',
-	'SUBSCRIPTION_NOTICE'				=> 'Subscription notice from the User Blog Mod',
 	'ADD_BLOG'							=> 'Add a new blog',
 	'APPROVE_BLOG'						=> 'Approve Blog',
 	'APPROVE_BLOG_CONFIRM'				=> 'Are you sure you want to approve this blog?',
@@ -92,10 +89,14 @@ $lang = array_merge($lang, array(
 	'REPORT_BLOG'						=> 'Report Blog',
 	'REPORT_REPLY'						=> 'Report Reply',
 
+	'SUBSCRIPTION_NOTICE'				=> 'Subscription notice from the User Blog Mod',
+
 	'UNDELETE_BLOG'						=> 'Un-Delete Blog',
 	'UNDELETE_BLOG_CONFIRM'				=> 'Are you sure you want to un-delete this blog?',
 	'UNDELETE_REPLY'					=> 'Un-delete Reply',
 	'UNDELETE_REPLY_CONFIRM'			=> 'Are you sure you want to un-delete this reply?',
+	'USER_SUBSCRIPTION_NOTICE'			=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog [url=%2$s]here[/url].<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
+	'USER_SUBSCRIPTION_NOTICE_EMAIL'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog has been posted by %1$s.  You can view the blog here:/r/n %2$s /r/n /r/n /r/n If you would like to no longer recieve these notices click the following link to unsubscribe:/r/n%3$s',
 
 	'VIEW_PERMISSIONS_SINGLE'			=> 'Can read this blog.',
 ));

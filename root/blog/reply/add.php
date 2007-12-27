@@ -53,10 +53,16 @@ if ($submit || $preview || $refresh)
 		$error[] = $user->lang['CONFIRM_CODE_WRONG'];
 	}
 
+	// check the form key
+	if (!check_form_key('postform'))
+	{
+		$error[] = $user->lang['FORM_INVALID'];
+	}
+
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
 	{
-		$error[] = $user->lang['EMPTY_SUBJECT'];
+		$error[] = $user->lang['EMPTY_MESSAGE_SUBJECT'];
 	}
 
 	// If any errors were reported by the message parser add those as well

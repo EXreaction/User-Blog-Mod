@@ -23,11 +23,11 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_BLOGS'								=> 'User Blog Mod',
-	'ACP_BLOG_CATEGORIES'					=> 'Blog Categories',
-	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
-	'ACP_BLOG_SEARCH'						=> 'Blog Search',
-	'ACP_BLOG_SETTINGS'						=> 'Blog Settings',
+	'ACP_BLOGS'				=> 'User Blog Mod',
+	'ACP_BLOG_CATEGORIES'	=> 'Blog Categories',
+	'ACP_BLOG_PLUGINS'		=> 'Blog Plugins',
+	'ACP_BLOG_SEARCH'		=> 'Blog Search',
+	'ACP_BLOG_SETTINGS'		=> 'Blog Settings',
 ));
 
 ?>

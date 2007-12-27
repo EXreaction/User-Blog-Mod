@@ -572,7 +572,7 @@ class blog_attachment
 			}
 			else
 			{
-				$allowed_filesize = ($is_message) ? $config['max_filesize_pm'] : $config['max_filesize'];
+				$allowed_filesize = $config['max_filesize'];
 			}
 
 			$file->upload->set_max_filesize($allowed_filesize);

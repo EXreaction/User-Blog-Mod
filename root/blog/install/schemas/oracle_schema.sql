@@ -35,6 +35,8 @@ CREATE TABLE phpbb_blogs (
 	perm_registered number(1) DEFAULT '2' NOT NULL,
 	perm_foe number(1) DEFAULT '0' NOT NULL,
 	perm_friend number(1) DEFAULT '2' NOT NULL,
+	rating number(8) DEFAULT '0' NOT NULL,
+	num_ratings number(8) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs PRIMARY KEY (blog_id)
 )
 /
@@ -54,6 +56,8 @@ CREATE INDEX phpbb_blogs_perm_registered ON phpbb_blogs (perm_registered)
 CREATE INDEX phpbb_blogs_perm_foe ON phpbb_blogs (perm_foe)
 /
 CREATE INDEX phpbb_blogs_perm_friend ON phpbb_blogs (perm_friend)
+/
+CREATE INDEX phpbb_blogs_rating ON phpbb_blogs (rating)
 /
 
 CREATE SEQUENCE phpbb_blogs_seq
@@ -293,6 +297,18 @@ CREATE TABLE phpbb_blogs_in_categories (
 	blog_id number(8) DEFAULT '0' NOT NULL,
 	category_id number(8) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_in_categories PRIMARY KEY (blog_id, category_id)
+)
+/
+
+
+/*
+	Table: 'phpbb_blogs_ratings'
+*/
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id number(8) DEFAULT '0' NOT NULL,
+	user_id number(8) DEFAULT '0' NOT NULL,
+	rating number(8) DEFAULT '0' NOT NULL,
+	CONSTRAINT pk_phpbb_blogs_ratings PRIMARY KEY (blog_id, user_id)
 )
 /
 

@@ -42,7 +42,7 @@ $post_options = new post_options;
 
 $blog_plugins->plugin_do('blog_edit_start');
 
-$category = request_var('category', array('' => ''));
+$category_ary = request_var('category', array(0));
 
 // If they select edit mode and didn't submit or hit preview(means they came directly from the view blog page)
 if (!$submit && !$preview && !$refresh)
@@ -57,9 +57,8 @@ if (!$submit && !$preview && !$refresh)
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$category[] = $row['category_id'];
+		$category_ary[] = $row['category_id'];
 	}
-	$_GET['category'] = $_REQUEST['category'] = $category;
 }
 else
 {
@@ -72,6 +71,12 @@ else
 	$message_parser = new parse_message();
 	$message_parser->message = $blog_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
+
+	// check the form key
+	if (!check_form_key('postform'))
+	{
+		$error[] = $user->lang['FORM_INVALID'];
+	}
 
 	// If they did not include a subject, give them the empty subject error
 	if ($blog_subject == '' && !$refresh)
@@ -144,10 +149,10 @@ if (!$submit || sizeof($error))
 else // user submitted and there are no errors
 {
 	$perm_ary = array(
-		'perm_guest'		=> (int) request_var('perm_guest', 1),
-		'perm_registered'	=> (int) request_var('perm_registered', 2),
-		'perm_foe'			=> (int) request_var('perm_foe', 0),
-		'perm_friend'		=> (int) request_var('perm_friend', 2),
+		'perm_guest'		=> request_var('perm_guest', 1),
+		'perm_registered'	=> request_var('perm_registered', 2),
+		'perm_foe'			=> request_var('perm_foe', 0),
+		'perm_friend'		=> request_var('perm_friend', 2),
 	);
 
 	$blog_plugins->plugin_do_arg_ref('blog_edit_permissions', $perm_ary);
@@ -172,7 +177,7 @@ else // user submitted and there are no errors
 	), $perm_ary);
 
 	// add the delete section to the array if it was deleted, if it was already deleted ignore
-	if ( (!$blog_data->blog[$blog_id]['blog_deleted']) && (isset($_POST['delete'])) && $can_delete)
+	if (!$blog_data->blog[$blog_id]['blog_deleted'] && isset($_POST['delete']) && $can_delete)
 	{
 		$sql_data['blog_deleted'] = $user->data['user_id'];
 		$sql_data['blog_deleted_time'] = time();
@@ -187,7 +192,7 @@ else // user submitted and there are no errors
 
 	$sql = 'UPDATE ' . BLOGS_TABLE . '
 		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
-		WHERE blog_id = \'' . $blog_id . '\'';
+			WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
 	$blog_plugins->plugin_do_arg('blog_edit_after_sql', $blog_id);
@@ -202,10 +207,11 @@ else // user submitted and there are no errors
 		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
 		$db->sql_query($sql);
 	}
+
 	$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
-	if ( (isset($_POST['delete'])) && $can_delete )
+	if (isset($_POST['delete']) && $can_delete)
 	{
 		$blog_plugins->plugin_do('blog_edit_delete');
 
@@ -230,14 +236,15 @@ else // user submitted and there are no errors
 	else
 	{
 		// Insert into the categories list
-		if (count($category) > 1 || (isset($category[0]) && $category[0] != 0))
+		if (count($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))
 		{
-			foreach ($category as $i => $cat_id)
+			$category_list = get_blog_categories('category_id');
+
+			foreach ($category_ary as $i => $cat_id)
 			{
-				$cat_id = $category[$i] = (int) $cat_id;
-				if ($cat_id > 0)
+				if (array_key_exists($cat_id, $category_list))
 				{
-					$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => intval($cat_id)));
+					$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => $cat_id));
 					$db->sql_query($sql);
 				}
 			}
@@ -245,7 +252,7 @@ else // user submitted and there are no errors
 			// Update the blog_count for the categories
 			if ($auth->acl_get('u_blognoapprove'))
 			{
-				$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category);
+				$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category_ary);
 				$db->sql_query($sql);
 			}
 		}

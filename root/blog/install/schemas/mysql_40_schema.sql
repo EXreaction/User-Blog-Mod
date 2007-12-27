@@ -30,6 +30,8 @@ CREATE TABLE phpbb_blogs (
 	perm_registered tinyint(1) DEFAULT '2' NOT NULL,
 	perm_foe tinyint(1) DEFAULT '0' NOT NULL,
 	perm_friend tinyint(1) DEFAULT '2' NOT NULL,
+	rating mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	num_ratings mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (blog_id),
 	KEY user_id (user_id),
 	KEY user_ip (user_ip),
@@ -38,7 +40,8 @@ CREATE TABLE phpbb_blogs (
 	KEY perm_guest (perm_guest),
 	KEY perm_registered (perm_registered),
 	KEY perm_foe (perm_foe),
-	KEY perm_friend (perm_friend)
+	KEY perm_friend (perm_friend),
+	KEY rating (rating)
 );
 
 
@@ -164,6 +167,15 @@ CREATE TABLE phpbb_blogs_in_categories (
 	blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	category_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (blog_id, category_id)
+);
+
+
+# Table: 'phpbb_blogs_ratings'
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	rating mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	PRIMARY KEY (blog_id, user_id)
 );
 
 

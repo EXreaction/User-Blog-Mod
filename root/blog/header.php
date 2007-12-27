@@ -10,25 +10,16 @@
 // check if the User Blog Mod is enabled
 if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 {
-	global $blog_plugins, $blog_plugins_path;
-
 	if (!defined('IN_BLOG'))
 	{
-		// include the functions & permissions file
-		include($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
-
-		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-		$blog_plugins->load_plugins();
+		include($phpbb_root_path . 'blog/includes/functions_permissions.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 	}
 
 	if (!isset($user->lang['USER_BLOGS']))
 	{
 		$user->add_lang('mods/blog/common');
 	}
-
-	$blog_plugins->plugin_do('blog_header');
 
 	// Add the User Blog's Link if they can view blog's
 	if (check_blog_permissions('', '', true))
@@ -41,7 +32,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		));
 
 		// Add the My Blog's Link if they can view blogs and are registered
-		if (check_blog_permissions('blog', 'add', true))// || ($user->data['blog_count'] > 0 && check_blog_permissions('', '', true)))
+		if (check_blog_permissions('blog', 'add', true))
 		{
 			$template->assign_block_vars('blog_links', array(
 				'URL'		=> blog_url($user->data['user_id']),

@@ -30,7 +30,9 @@ CREATE TABLE phpbb_blogs (
 	perm_guest INTEGER DEFAULT 1 NOT NULL,
 	perm_registered INTEGER DEFAULT 2 NOT NULL,
 	perm_foe INTEGER DEFAULT 0 NOT NULL,
-	perm_friend INTEGER DEFAULT 2 NOT NULL
+	perm_friend INTEGER DEFAULT 2 NOT NULL,
+	rating INTEGER DEFAULT 0 NOT NULL,
+	num_ratings INTEGER DEFAULT 0 NOT NULL
 );;
 
 ALTER TABLE phpbb_blogs ADD PRIMARY KEY (blog_id);;
@@ -43,6 +45,7 @@ CREATE INDEX phpbb_blogs_perm_guest ON phpbb_blogs(perm_guest);;
 CREATE INDEX phpbb_blogs_perm_registered ON phpbb_blogs(perm_registered);;
 CREATE INDEX phpbb_blogs_perm_foe ON phpbb_blogs(perm_foe);;
 CREATE INDEX phpbb_blogs_perm_friend ON phpbb_blogs(perm_friend);;
+CREATE INDEX phpbb_blogs_rating ON phpbb_blogs(rating);;
 
 CREATE GENERATOR phpbb_blogs_gen;;
 SET GENERATOR phpbb_blogs_gen TO 0;;
@@ -229,5 +232,15 @@ CREATE TABLE phpbb_blogs_in_categories (
 );;
 
 ALTER TABLE phpbb_blogs_in_categories ADD PRIMARY KEY (blog_id, category_id);;
+
+
+# Table: 'phpbb_blogs_ratings'
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id INTEGER DEFAULT 0 NOT NULL,
+	user_id INTEGER DEFAULT 0 NOT NULL,
+	rating INTEGER DEFAULT 0 NOT NULL
+);;
+
+ALTER TABLE phpbb_blogs_ratings ADD PRIMARY KEY (blog_id, user_id);;
 
 

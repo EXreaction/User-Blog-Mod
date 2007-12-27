@@ -68,10 +68,16 @@ else
 	$message_parser->message = $reply_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
+	// check the form key
+	if (!check_form_key('postform'))
+	{
+		$error[] = $user->lang['FORM_INVALID'];
+	}
+
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
 	{
-		$error[] = $user->lang['EMPTY_SUBJECT'];
+		$error[] = $user->lang['EMPTY_MESSAGE_SUBJECT'];
 	}
 
 	// If any errors were reported by the message parser add those as well

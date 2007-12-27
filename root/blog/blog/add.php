@@ -35,7 +35,7 @@ if ($submit || $preview || $refresh)
 	// see if they tried submitting a message or suject(if they hit preview or submit) put it in an array for consistency with the edit mode
 	$blog_subject = utf8_normalize_nfc(request_var('subject', '', true));
 	$blog_text = utf8_normalize_nfc(request_var('message', '', true));
-	$category = request_var('category', array('' => ''));
+	$category_ary = request_var('category', array(0));
 
 	// set up the message parser to parse BBCode, Smilies, etc
 	$message_parser->message = $blog_text;
@@ -45,6 +45,12 @@ if ($submit || $preview || $refresh)
 	if (!handle_captcha('check'))
 	{
 		$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+	}
+
+	// check the form key
+	if (!check_form_key('postform'))
+	{
+		$error[] = $user->lang['FORM_INVALID'];
 	}
 
 	// If they did not include a subject, give them the empty subject error
@@ -112,10 +118,10 @@ if (!$submit || sizeof($error))
 else // user submitted and there are no errors
 {
 	$perm_ary = array(
-		'perm_guest'		=> (int) request_var('perm_guest', 1),
-		'perm_registered'	=> (int) request_var('perm_registered', 2),
-		'perm_foe'			=> (int) request_var('perm_foe', 0),
-		'perm_friend'		=> (int) request_var('perm_friend', 2),
+		'perm_guest'		=> request_var('perm_guest', 1),
+		'perm_registered'	=> request_var('perm_registered', 2),
+		'perm_foe'			=> request_var('perm_foe', 0),
+		'perm_friend'		=> request_var('perm_friend', 2),
 	);
 
 	$blog_plugins->plugin_do_arg_ref('blog_add_permissions', $perm_ary);
@@ -146,14 +152,15 @@ else // user submitted and there are no errors
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
 
 	// Insert into the categories list
-	if (count($category) > 1 || (isset($category[0]) && $category[0] != 0))
+	if (count($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))
 	{
-		foreach ($category as $i => $cat_id)
+		$category_list = get_blog_categories('category_id');
+
+		foreach ($category_ary as $i => $cat_id)
 		{
-			$cat_id = $category[$i] = (int) $cat_id;
-			if ($cat_id > 0)
+			if (array_key_exists($cat_id, $category_list))
 			{
-				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => intval($cat_id)));
+				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
 				$db->sql_query($sql);
 			}
 		}
@@ -161,7 +168,7 @@ else // user submitted and there are no errors
 		// Update the blog_count for the categories
 		if ($auth->acl_get('u_blognoapprove'))
 		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category);
+			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category_ary);
 			$db->sql_query($sql);
 		}
 	}

@@ -284,7 +284,7 @@ class blog_data
 		}
 		if ($sort_days != 0)
 		{
-			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400) . '';
+			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
@@ -442,6 +442,7 @@ class blog_data
 			'TITLE'				=> $blog_subject,
 			'USER_FULL'			=> $user_data->user[$user_id]['username_full'],
 			'VIEWS'				=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
+			'RATING_STRING'		=> (!$shortened) ? get_star_rating($blog['rating'], $id) : false,
 
 			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
 			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',

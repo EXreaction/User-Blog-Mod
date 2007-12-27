@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.35
+## MOD Version: 0.3.36_dev
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -75,18 +75,8 @@
 ## 2007-12-13 Alpha 31
 ## 2007-12-14 Alpha 31a
 ## 2007-12-14 Alpha 31b
-## 2007-12-19
-##		Alpha 32
-##			+ A few bug fixes.  Lots of language changes (sorry translators :P)
-##			+ To update, copy over the new files, update viewtopic.php, and run the upgrade script by going to blog.php?page=update.
-##				- Make sure to check for updates for any plugins.
-## 2007-12-21
-##		Alpha 33
-##			+ I can has categories?  You can also now edit users' Blog Title and Blog Description in the ACP->Manage Users. :D
-##			+ To update, FIRST delete all of the ACP modules (and the Blog Module Category) added by previous versions of the User Blog Mod in ACP->System->Module Management.
-##				- Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
-##				- Then do the edits for adm/style/acp_users_profile.html and includes/acp/acp_users.php.
-##				- Finally run the upgrade script by going to blog.php?page=update
+## 2007-12-19 Alpha 32
+## 2007-12-21 Alpha 33
 ## 2007-12-22
 ##		Alpha 34
 ##			+ Some bug fixes, more work on the display of categories, plus HoL told me of a way to auto-include language files for the modules, so 3 less file edits! :D
@@ -105,6 +95,10 @@
 ##		Alpha 35
 ##			+ A few more bug fixes and some more misc things.
 ##			+ Copy the new files over and run the upgrade script by going to blog.php?page=update
+## 2007-12-27
+##		Alpha 36_dev
+##			+ Now you can give blogs ratings!
+##			+ Copy the new files over and run the upgrade script by going to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -113,7 +107,7 @@
 #-----[ COPY ]---------------------------------------------
 # Copy everything from the root/ folder to your phpBB3 forums' root
 
-root/* to /
+root/* to /*.*
 
 #
 #-----[ OPEN ]----------------------

@@ -7,7 +7,6 @@
 *
 */
 
-// If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -20,42 +19,27 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 	// Include the constants.php and sql_functions.php files
 	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
-	include($phpbb_root_path . 'blog/functions_sql.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_categories.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_permissions.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_rate.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_sql.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 
 	/**
-	* Get all blog categories
+	* Setup the blog plugin system
 	*/
-	function get_blog_categories($order = 'left_id')
+	function setup_blog_plugins()
 	{
-		global $cache, $db;
+		global $blog_plugins, $blog_plugins_path, $phpbb_root_path, $phpEx;
 
-		$blog_categories = $cache->get('_blog_categories');
-
-		if ($blog_categories === false)
+		if (!class_exists('blog_plugins'))
 		{
-			$blog_categories = array();
-			$sql = 'SELECT * FROM ' . BLOGS_CATEGORIES_TABLE . "
-				ORDER BY left_id ASC";
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$blog_categories[$row['left_id']] = $row;
-			}
-
-			$cache->put('_blog_categories', $blog_categories);
+			include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 		}
 
-		if ($order != 'left_id')
-		{
-			$blog_cats = $blog_categories;
-			$blog_categories = array();
-			foreach ($blog_cats as $left_id => $row)
-			{
-				$blog_categories[$row[$order]] = $row;
-			}
-		}
-
-		return $blog_categories;
+		$blog_plugins = new blog_plugins();
+		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
+		$blog_plugins->load_plugins();
 	}
 
 	/**
@@ -192,225 +176,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	}
 
 	/**
-	* URL Replace
-	*
-	* Replaces tags and other items that could break the URL's
-	*/
-	function url_replace($url)
-	{
-		$match = array('-', '?', '/', '\\', '\'', '&amp;', '&lt;', '&gt;', '&quot;', ':');
-
-		// First replace all the above items with nothing, then replace spaces with _, then replace 3 _ in a row with a 1 _
-		return str_replace(array(' ', '___'), '_', str_replace($match, '', $url));
-	}
-
-	/**
-	* URL handler
-	*/
-	function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
-	{
-		global $config, $phpbb_root_path, $phpEx, $user, $_SID;
-		global $blog_data, $reply_data, $user_data;
-
-		// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
-		static $start_url = '';
-		$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
-		$extras = $anchor = '';
-
-		if (isset($_GET['style']))
-		{
-			$url_data['style'] = $_GET['style'];
-		}
-
-		if (isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
-		{
-			$title_match ='/([^a-zA-Z0-9\s_])/'; // Replace HTML Entities, and non alphanumeric/space/underscore characters
-			$replace_page = true; // match everything except the page if this is set to false
-
-			if (!isset($url_data['page']) && $user_id !== false)
-			{
-				// Do not do the str_replace for the username!  It would break it! :P
-				$replace_page = false;
-
-				if ($user_id == $user->data['user_id'])
-				{
-					$url_data['page'] = $user->data['username'];
-				}
-				else if (isset($extra_data['username']))
-				{
-					$url_data['page'] = $extra_data['username'];
-				}
-				else if (!empty($user_data))
-				{
-					if (!isset($user_data->user[$user_id]))
-					{
-						$user_data->get_user_data($user_id);
-					}
-					$url_data['page'] = $user_data->user[$user_id]['username'];
-				}
-			}
-			else
-			{
-				$url_data['u'] = ($user_id) ? $user_id : '*skip*';
-				$url_data['b'] = ($blog_id) ? $blog_id : '*skip*';
-				$url_data['r'] = ($reply_id) ? $reply_id : '*skip*';
-			}
-
-			if ($reply_id)
-			{
-				$url_data['r'] = $reply_id;
-				$url_data['anchor'] = (isset($url_data['anchor'])) ? $url_data['anchor'] : 'r' . $reply_id;
-				if (!isset($url_data['mode']))
-				{
-					if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))
-					{
-						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $reply_data->reply[$reply_id]['reply_subject']));
-					}
-					else if (array_key_exists('reply_subject', $extra_data))
-					{
-						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['reply_subject']));
-					}
-				}
-			}
-			else if ($blog_id)
-			{
-				$url_data['b'] = $blog_id;
-				if (!isset($url_data['mode']))
-				{
-					if (!empty($blog_data) && array_key_exists($blog_id, $blog_data->blog))
-					{
-						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $blog_data->blog[$blog_id]['blog_subject']));
-					}
-					else if (array_key_exists('blog_subject', $extra_data))
-					{
-						$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['blog_subject']));
-					}
-				}
-			}
-
-			if (isset($url_data['anchor']))
-			{
-				$anchor = '#' . $url_data['anchor'];
-			}
-
-			if (count($url_data))
-			{
-				foreach ($url_data as $name => $value)
-				{
-					if ($name == 'page' || $name == 'mode' || $name == 'anchor' || $value == '*skip*')
-					{
-						continue;
-					}
-					$extras .= '_' . url_replace($name) . '-' . url_replace($value);
-				}
-			}
-
-			// Add the Session ID if required, do not add it for guests.
-			if ($_SID && $user->data['is_registered'])
-			{
-				$extras .= "_sid-{$_SID}";
-			}
-
-			if (isset($url_data['page']))
-			{
-				if ($replace_page)
-				{
-					$url_data['page'] = url_replace($url_data['page']);
-				}
-
-				if (isset($url_data['mode']))
-				{
-					$url_data['mode'] = url_replace($url_data['mode']);
-					$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
-				}
-				else
-				{
-					if ($extras != '')
-					{
-						$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
-					}
-					else
-					{
-						$return = "blog/{$url_data['page']}/";
-					}
-				}
-			}
-			else
-			{
-				$return = "blog/index{$extras}.html{$anchor}";
-			}
-
-			if (isset($return))
-			{
-				return $start_url . $return;
-			}
-		}
-
-		if (count($url_data))
-		{
-			foreach ($url_data as $name => $var)
-			{
-				// Do not add the blog/reply/user id to the url string, they get added later
-				if ($name == 'b' || $name == 'u' || $name == 'r' || $var == '*skip*')
-				{
-					continue;
-				}
-
-				$extras .= '&amp;' . $name . '=' . $var;
-			}
-		}
-
-		$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
-		$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
-		$extras .= (($reply_id) ? '&amp;r=' . $reply_id . '#r' . $reply_id: '');
-		$extras = substr($extras, 5);
-		$url = $phpbb_root_path . 'blog.' . $phpEx;
-		return append_sid($url, $extras);
-	}
-
-	/**
-	* generates the basic URL's used by this mod
-	*/
-	function generate_blog_urls()
-	{
-		global $phpbb_root_path, $phpEx, $config, $user;
-		global $blog_id, $reply_id, $user_id, $start, $category_id;
-		global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
-
-		static $blog_categories = false;
-
-		if ($blog_categories === false)
-		{
-			$blog_categories = get_blog_categories('category_id');
-		}
-
-		$self_data = $_GET;
-
-		$blog_urls = array(
-			'main'				=> blog_url(false),
-			'self'				=> blog_url($user_id, $blog_id, $reply_id, $self_data),
-			'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
-			'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
-			'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
-
-			'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))),
-			'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
-
-			'view_blog'			=> ($blog_id) ? (($category_id && isset($blog_categories[$category_id])) ? blog_url(false, $blog_id, false, array('page' => $blog_categories[$category_id]['category_name'], 'c' => $category_id)) : blog_url($user_id, $blog_id)) : '',
-			'view_reply'		=> ($reply_id) ? (($category_id && isset($blog_categories[$category_id])) ? blog_url(false, $blog_id, $reply_id, array('page' => $blog_categories[$category_id]['category_name'], 'c' => $category_id)) : blog_url($user_id, $blog_id, $reply_id)) : '',
-			'view_user'			=> ($user_id) ? blog_url($user_id) : false,
-			'view_user_deleted'	=> ($user_id) ? blog_url($user_id, false, false, array('mode' => 'deleted')) : false,
-			'view_user_self'	=> blog_url($user->data['user_id']),
-		);
-
-		$blog_urls['self_minus_print'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => '*skip*')));
-		$blog_urls['self_minus_start'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*skip*')));
-		$blog_urls['start_zero'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*')));
-
-		$blog_plugins->plugin_do('function_generate_blog_urls');
-	}
-
-	/**
 	* Updates user settings
 	*/
 	function update_user_blog_settings($user_id, $data, $resync = false)
@@ -506,10 +271,15 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 
 				if ($reply_id != 0 && $page == 'reply')
 				{
-					$template->assign_block_vars('navlinks', array(
-						'FORUM_NAME'		=> (censor_text($reply_data->reply[$reply_id]['reply_subject']) != '') ? censor_text($reply_data->reply[$reply_id]['reply_subject']) : $user->lang['UNTITLED_REPLY'],
-						'U_VIEW_FORUM'		=> $blog_urls['view_reply'],
-					));
+					$c_text = censor_text($reply_data->reply[$reply_id]['reply_subject']);
+					
+					if ($c_text)
+					{
+						$template->assign_block_vars('navlinks', array(
+							'FORUM_NAME'		=> $c_text,
+							'U_VIEW_FORUM'		=> $blog_urls['view_reply'],
+						));
+					}
 				}
 			}
 		}
@@ -938,6 +708,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 				$cache->destroy("_blog_archive{$user_id}");
 				$cache->destroy('_blog_settings_' . $user_id);
 				$cache->destroy("_blog_subscription{$user_id}");
+				$cache->destroy("_blog_rating_{$user_id}");
 			}
 		}
 
@@ -1130,7 +901,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	}
 
 	/**
-	* Blog Meta Refresh (the normal one does not work with the SEO Url's
+	* Blog Meta Refresh (the normal one does not work with the SEO Url's)
 	*/
 	function blog_meta_refresh($time, $url, $instant = false)
 	{
@@ -1152,241 +923,6 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			meta_refresh($time, $url);
 		}
-	}
-
-	/**
-	 *  Check blog permissions
-	 *
-	 * @param string $page The page requested - blog, reply, mcp, install, upgrade, update, dev, resync
-	 * @param string $mode The mode requested - depends on the $page requested
-	 * @param bool $return If you would like this function to return true or false (if they have permission or not).  If it is false we give them a login box if they are not logged in, or give them the NO_AUTH error message
-	 * @param int $blog_id The blog_id requested (needed for some things, like blog edit, delete, etc
-	 * @param int $reply_id The reply_id requested, used for the same reason as $blog_id
-	 *
-	 * @return Returns
-	 *	- true if the user is authorized to do the requested action
-	 *	- false if the user is not authorized to do the requested action
-	 */
-	function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $reply_id = 0)
-	{
-		global $user, $config, $auth;
-		global $blog_data, $reply_data, $user_data, $blog_plugins;
-
-		$blog_plugins->plugin_do('permissions_start');
-
-		switch ($page)
-		{
-			case 'blog' :
-				switch ($mode)
-				{
-					case 'add' :
-						$is_auth = ($auth->acl_get('u_blogpost')) ? true : false;
-						break;
-					case 'edit' :
-						$is_auth = ($user->data['user_id'] != ANONYMOUS && ($auth->acl_get('u_blogedit') && ($user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogedit'))) ? true : false;
-						break;
-					case 'delete' :
-						if ($blog_data->blog[$blog_id]['blog_deleted'] == 0 || $auth->acl_get('a_blogdelete'))
-						{
-							$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogdelete') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogdelete') || $auth->acl_get('a_blogdelete'))) ? true : false;
-						}
-						break;
-					case 'undelete' :
-						$is_auth = ($auth->acl_gets('m_blogdelete', 'a_blogdelete')) ? true : false;
-						break;
-					case 'report' :
-						$is_auth = ($auth->acl_get('u_blogreport')) ? true : false;
-						break;
-					case 'approve' :
-						$is_auth = ($auth->acl_get('m_blogapprove')) ? true : false;
-						break;
-				}
-				break;
-			case 'reply' :
-				switch ($mode)
-				{
-					case 'add' :
-					case 'quote' :
-							$is_auth = ($auth->acl_get('u_blogreply') && handle_user_blog_permissions($blog_id, false, 'reply')) ? true : false;
-						break;
-					case 'edit' :
-						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplyedit') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogreplyedit'))) ? true : false;
-						break;
-					case 'delete' :
-						if ($reply_data->reply[$reply_id]['reply_deleted'] == 0 || $auth->acl_get('a_blogreplydelete'))
-						{
-							$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete'))) ? true : false;
-						}
-						break;
-					case 'undelete' :
-						$is_auth = ($auth->acl_get('m_blogreplydelete') || $auth->acl_get('a_blogreplydelete')) ? true : false;
-						break;
-					case 'report' :
-						$is_auth = ($auth->acl_get('u_blogreport')) ? true : false;
-						break;
-					case 'approve' :
-						$is_auth = ($auth->acl_get('m_blogreplyapprove')) ? true : false;
-						break;
-				}
-				break;
-			case 'mcp' :
-				$is_auth = ($auth->acl_gets('m_blogapprove', 'acl_m_blogreport')) ? true : false;
-				break;
-			case 'install' :
-			case 'update' :
-			case 'upgrade' :
-			case 'dev' :
-			case 'resync' :
-				$is_auth = ($user->data['user_type'] == USER_FOUNDER) ? true : false;
-				$founder = true;
-				break;
-		}
-
-		// if $is_auth hasn't been set yet they are just viewing a blog/user/etc, if it has been set also check to make sure they can view blogs
-		if (!isset($is_auth))
-		{
-			$is_auth = ($auth->acl_get('u_blogview')) ? true : false;
-		}
-		else
-		{
-			// if it is the install page they will not have viewing permissions :P
-			$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
-		}
-
-		$blog_plugins->plugin_do_arg_ref('permissions_end', $is_auth);
-
-		if (!$return)
-		{
-			if (!$is_auth)
-			{
-				if (!$user->data['is_registered'])
-				{
-					login_box();
-				}
-				else
-				{
-					if (isset($founder) && $founder)
-					{
-						trigger_error('MUST_BE_FOUNDER');
-					}
-					else
-					{
-						trigger_error('NO_AUTH_OPERATION');
-					}
-				}
-			}
-		}
-		else
-		{
-			return $is_auth;
-		}
-	}
-
-	/**
-	* Simple version of jumpbox, just lists categories
-	* Copied from make_forum_select
-	*/
-	function make_category_select($select_id = false, $ignore_id = false, $return_array = false)
-	{
-		global $db, $user;
-
-		// This query is identical to the jumpbox one
-		$sql = 'SELECT category_id, category_name, parent_id, left_id, right_id
-			FROM ' . BLOGS_CATEGORIES_TABLE . '
-			ORDER BY left_id ASC';
-		$result = $db->sql_query($sql);
-
-		$right = 0;
-		$padding_store = array('0' => '');
-		$padding = '';
-		$category_list = ($return_array) ? array() : '';
-
-		// Sometimes it could happen that forums will be displayed here not be displayed within the index page
-		// This is the result of forums not displayed at index, having list permissions and a parent of a forum with no permissions.
-		// If this happens, the padding could be "broken"
-
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if ($row['left_id'] < $right)
-			{
-				$padding .= '&nbsp; &nbsp;';
-				$padding_store[$row['parent_id']] = $padding;
-			}
-			else if ($row['left_id'] > $right + 1)
-			{
-				$padding = (isset($padding_store[$row['parent_id']])) ? $padding_store[$row['parent_id']] : '';
-			}
-
-			$right = $row['right_id'];
-			$disabled = false;
-
-			if ((is_array($ignore_id) && in_array($row['category_id'], $ignore_id)) || $row['category_id'] == $ignore_id)
-			{
-				$disabled = true;
-			}
-
-			if ($return_array)
-			{
-				// Include some more information...
-				$selected = (is_array($select_id)) ? ((in_array($row['category_id'], $select_id)) ? true : false) : (($row['category_id'] == $select_id) ? true : false);
-				$category_list[$row['category_id']] = array_merge(array('padding' => $padding, 'selected' => ($selected && !$disabled), 'disabled' => $disabled), $row);
-			}
-			else
-			{
-				$selected = (is_array($select_id)) ? ((in_array($row['category_id'], $select_id)) ? ' selected="selected"' : '') : (($row['category_id'] == $select_id) ? ' selected="selected"' : '');
-				$category_list .= '<option value="' . $row['category_id'] . '"' . (($disabled) ? ' disabled="disabled" class="disabled-option"' : $selected) . '>' . $padding . $row['category_name'] . '</option>';
-			}
-		}
-		$db->sql_freeresult($result);
-		unset($padding_store);
-
-		return $category_list;
-	}
-
-	/**
-	* Get category branch
-	* From get_forum_branch
-	*/
-	function get_category_branch($category_id, $type = 'all', $order = 'descending', $include_forum = true)
-	{
-		global $db;
-
-		switch ($type)
-		{
-			case 'parents':
-				$condition = 'f1.left_id BETWEEN f2.left_id AND f2.right_id';
-			break;
-
-			case 'children':
-				$condition = 'f2.left_id BETWEEN f1.left_id AND f1.right_id';
-			break;
-
-			default:
-				$condition = 'f2.left_id BETWEEN f1.left_id AND f1.right_id OR f1.left_id BETWEEN f2.left_id AND f2.right_id';
-			break;
-		}
-
-		$rows = array();
-
-		$sql = 'SELECT f2.*
-			FROM ' . BLOGS_CATEGORIES_TABLE . ' f1
-			LEFT JOIN ' . BLOGS_CATEGORIES_TABLE . " f2 ON ($condition)
-			WHERE f1.category_id = " . intval($category_id) . "
-			ORDER BY f2.left_id " . (($order == 'descending') ? 'ASC' : 'DESC');
-		$result = $db->sql_query($sql);
-
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if (!$include_forum && $row['category_id'] == $category_id)
-			{
-				continue;
-			}
-
-			$rows[] = $row;
-		}
-		$db->sql_freeresult($result);
-
-		return $rows;
 	}
 }
 ?>

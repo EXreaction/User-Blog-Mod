@@ -31,7 +31,9 @@ CREATE TABLE phpbb_blogs (
 	perm_guest tinyint(1) NOT NULL DEFAULT '1',
 	perm_registered tinyint(1) NOT NULL DEFAULT '2',
 	perm_foe tinyint(1) NOT NULL DEFAULT '0',
-	perm_friend tinyint(1) NOT NULL DEFAULT '2'
+	perm_friend tinyint(1) NOT NULL DEFAULT '2',
+	rating INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	num_ratings INTEGER UNSIGNED NOT NULL DEFAULT '0'
 );
 
 CREATE INDEX phpbb_blogs_user_id ON phpbb_blogs (user_id);
@@ -42,6 +44,7 @@ CREATE INDEX phpbb_blogs_perm_guest ON phpbb_blogs (perm_guest);
 CREATE INDEX phpbb_blogs_perm_registered ON phpbb_blogs (perm_registered);
 CREATE INDEX phpbb_blogs_perm_foe ON phpbb_blogs (perm_foe);
 CREATE INDEX phpbb_blogs_perm_friend ON phpbb_blogs (perm_friend);
+CREATE INDEX phpbb_blogs_rating ON phpbb_blogs (rating);
 
 # Table: 'phpbb_blogs_reply'
 CREATE TABLE phpbb_blogs_reply (
@@ -161,6 +164,15 @@ CREATE TABLE phpbb_blogs_in_categories (
 	blog_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
 	category_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
 	PRIMARY KEY (blog_id, category_id)
+);
+
+
+# Table: 'phpbb_blogs_ratings'
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	user_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	rating INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	PRIMARY KEY (blog_id, user_id)
 );
 
 

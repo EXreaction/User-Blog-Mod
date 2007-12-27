@@ -21,27 +21,27 @@ $refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($
 $cancel = (isset($_POST['cancel'])) ? true : false;
 
 // get some more initial data
-$user_id = (!isset($user_id)) ? intval(request_var('u', 0)) : $user_id;
-$blog_id = intval(request_var('b', 0));
-$reply_id = intval(request_var('r', 0));
+$user_id = (!isset($user_id)) ? request_var('u', 0) : $user_id;
+$blog_id = request_var('b', 0);
+$reply_id = request_var('r', 0);
 $feed = request_var('feed', '');
 $hilit_words = request_var('hilit', '', true);
-$start = intval(request_var('start', 0));
+$start = request_var('start', 0);
 $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
 
 if ($page == 'search')
 {
-	$limit = intval(request_var('limit', 20));
+	$limit = request_var('limit', 20);
 }
 else if ($blog_id || $reply_id)
 {
-	$limit = intval(request_var('limit', 10));
+	$limit = request_var('limit', 10);
 }
 else
 {
-	$limit = intval(request_var('limit', 5));
+	$limit = request_var('limit', 5);
 }
 
 // setting some variables for sorting
@@ -174,6 +174,13 @@ $initial_data = array(
 	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
 	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : $blog_urls['subscribe'],
 	'S_WATCHING_FORUM'		=> $subscribed,
+
+	'UA_GREY_STAR_SRC'		=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_grey.gif',
+	'UA_GREEN_STAR_SRC'		=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_green.gif',
+	'UA_RED_STAR_SRC'		=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_red.gif',
+	'UA_ORANGE_STAR_SRC'	=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_orange.gif',
+	'UA_MAX_RATING'			=> $config['user_blog_max_rating'],
+	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
 
 	'ADD_BLOG_IMG'			=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/' . $user->data['user_lang'] . '/button_blog_new.gif',
 	'DIGG_IMG'				=> $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_digg.png',

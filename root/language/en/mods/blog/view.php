@@ -20,6 +20,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+	'AVERAGE_RATING'				=> 'Average Rating',
+
 	'BLOG_REPORTED'					=> 'Blog has been reported, click to close the report',
 	'BLOG_REPORTED_SHORT'			=> 'This Blog has been reported.',
 	'BLOG_UNAPPROVED'				=> 'Blog Needs Approval',
@@ -30,11 +32,15 @@ $lang = array_merge($lang, array(
 	'DELETED_MESSAGE_EXPLAIN'		=> 'There is a link in every "This blog was deleted by..." section to un-delete the blog.',
 	'DELETED_REPLY_SHOW'			=> 'This reply has been soft deleted.  Click here to show the reply.',
 
+	'MY_RATING'						=> 'My Rating',
+
 	'NO_DELETED_BLOGS'				=> 'There are no deleted blogs by this user.',
 	'NO_DELETED_BLOGS_SORT_DAYS'	=> 'No deleted blogs were posted by this user in the last %s.',
 
 	'POSTED_BY_FOE'					=> 'This post was made by %s who is currently on your ignore list.',
 
+	'RATE_ME'						=> '%1$s out of %2$s',
+	'REMOVE_RATING'					=> 'Reset Rating',
 	'REPLY_REPORTED'				=> 'Reply has been reported, click to close the report',
 	'REPLY_REPORTED_SHORT'			=> 'This Reply has been reported.',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',

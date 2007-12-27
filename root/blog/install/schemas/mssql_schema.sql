@@ -36,7 +36,9 @@ CREATE TABLE [phpbb_blogs] (
 	[perm_guest] [int] DEFAULT (1) NOT NULL ,
 	[perm_registered] [int] DEFAULT (2) NOT NULL ,
 	[perm_foe] [int] DEFAULT (0) NOT NULL ,
-	[perm_friend] [int] DEFAULT (2) NOT NULL 
+	[perm_friend] [int] DEFAULT (2) NOT NULL ,
+	[rating] [int] DEFAULT (0) NOT NULL ,
+	[num_ratings] [int] DEFAULT (0) NOT NULL 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
@@ -69,6 +71,9 @@ CREATE  INDEX [perm_foe] ON [phpbb_blogs]([perm_foe]) ON [PRIMARY]
 GO
 
 CREATE  INDEX [perm_friend] ON [phpbb_blogs]([perm_friend]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [rating] ON [phpbb_blogs]([rating]) ON [PRIMARY]
 GO
 
 
@@ -288,6 +293,25 @@ ALTER TABLE [phpbb_blogs_in_categories] WITH NOCHECK ADD
 	(
 		[blog_id],
 		[category_id]
+	)  ON [PRIMARY] 
+GO
+
+
+/*
+	Table: 'phpbb_blogs_ratings'
+*/
+CREATE TABLE [phpbb_blogs_ratings] (
+	[blog_id] [int] DEFAULT (0) NOT NULL ,
+	[user_id] [int] DEFAULT (0) NOT NULL ,
+	[rating] [int] DEFAULT (0) NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_ratings] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_ratings] PRIMARY KEY  CLUSTERED 
+	(
+		[blog_id],
+		[user_id]
 	)  ON [PRIMARY] 
 GO
 

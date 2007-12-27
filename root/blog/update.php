@@ -317,6 +317,58 @@ if (confirm_box(true))
 			$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 		case '0.3.33' :
 			$db_tool->sql_column_change(BLOGS_TABLE, 'blog_read_count', array('UINT', 1));
+		case '0.3.34' :
+		case '0.3.35' :
+			switch ($dbms)
+			{
+				case 'mysql' :
+					if (version_compare($db->mysql_version, '4.1.3', '>='))
+					{
+						$dbms_schema = 'mysql_41_schema.sql';
+					}
+					else
+					{
+						$dbms_schema = 'mysql_40_schema.sql';
+					}
+				break;
+				case 'mysqli' :
+					$dbms_schema = 'mysql_41_schema.sql';
+				break;
+				default :
+					$dbms_schema = '' . $dbms . '_schema.sql';
+			}
+
+			if (!file_exists($phpbb_root_path . 'blog/update/0335/' . $dbms_schema))
+			{
+				trigger_error('SCHEMA_NOT_EXIST');
+			}
+
+			$remove_remarks = $dbmd[$dbms]['COMMENTS'];
+			$delimiter = $dbmd[$dbms]['DELIM'];
+
+			$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0335/' . $dbms_schema);
+
+			$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
+
+			$remove_remarks($sql_query);
+
+			$sql_query = split_sql_file($sql_query, $delimiter);
+
+			foreach ($sql_query as $sql)
+			{
+				if (!$db->sql_query($sql))
+				{
+					$error[] = $db->sql_error();
+				}
+			}
+			unset($sql_query);
+
+			$db_tool->sql_column_add(BLOGS_TABLE, 'rating', array('UINT', 0));
+			$db_tool->sql_column_add(BLOGS_TABLE, 'num_ratings', array('UINT', 0));
+
+			set_config('user_blog_min_rating', 1);
+			set_config('user_blog_max_rating', 5);
+			set_config('user_blog_enable_ratings', true);
 	}
 
 	if (count($sql_array))

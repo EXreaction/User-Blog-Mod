@@ -43,7 +43,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.35';
+$user_blog_version = '0.3.36';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -66,9 +66,9 @@ else
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
-$blog_id = intval(request_var('b', 0));
-$reply_id = intval(request_var('r', 0));
-$category_id = intval(request_var('c', 0));
+$blog_id = request_var('b', 0);
+$reply_id = request_var('r', 0);
+$category_id = request_var('c', 0);
 
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
@@ -97,10 +97,7 @@ $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
 // Start loading the plugins
-include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
-$blog_plugins = new blog_plugins();
-$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-$blog_plugins->load_plugins();
+setup_blog_plugins();
 $blog_plugins->plugin_do('blog_start');
 
 $default = false;
@@ -110,9 +107,12 @@ switch ($page)
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search
 	case 'resync' : // to resync the blog data
+	case 'rate' : // to rate a blog
 		$user->add_lang('mods/blog/misc');
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-	// no break
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+		include($phpbb_root_path . "blog/{$page}.$phpEx");
+	break;
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
@@ -120,7 +120,7 @@ switch ($page)
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang('mods/blog/setup');
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
-		break;
+	break;
 	case 'blog' :
 	case 'reply' :
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
@@ -129,7 +129,7 @@ switch ($page)
 
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-		include($phpbb_root_path . 'blog/functions_posting.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/functions_posting.' . $phpEx);
 
 		$blog_search = setup_blog_search();
 		$message_parser = new parse_message();
@@ -154,14 +154,14 @@ switch ($page)
 			default :
 				$default = true;
 		}
-		break;
+	break;
 	default :
 		$default = true;
 }
 
 if ($default)
 {
-	// If you are adding your own page with this, make sure to set $default to false, otherwise it will load the default page below
+	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
 	$blog_plugins->plugin_do_arg_ref('blog_page_switch', $default);
 }
 

@@ -1,5 +1,7 @@
 <!-- INCLUDE overall_header.html -->
 
+<!-- I think this will be changed to something more like adm/style/acp_board.html so it is more flexible -->
+
 <form id="confirm" action="{S_CONFIRM_ACTION}" method="post">
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
@@ -8,7 +10,6 @@
 	<p>{MESSAGE_TEXT}</p>
 	
 	<fieldset class="submit-buttons">
-		{S_HIDDEN_FIELDS}
 		<input type="submit" name="post" value="{L_PRIVATE_MESSAGE}" class="button2" />&nbsp; &nbsp; 
 		<!-- IF S_EMAIL_ENABLED -->
 			<input type="submit" name="post" value="{L_EMAIL}" class="button2" />&nbsp; &nbsp; 
@@ -19,6 +20,9 @@
 
 	<span class="corners-bottom"><span></span></span></div>
 </div>
+	{S_HIDDEN_FIELDS}
+
+	{S_FORM_TOKEN}
 </form>
 
 <!-- INCLUDE overall_footer.html -->

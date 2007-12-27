@@ -271,7 +271,7 @@ function organize_lang($file = false, $skip_errors = false)
 {
 	global $phpbb_root_path, $phpEx;
 
-	$file = ($file === false) ? request_var('file', '') : $file;
+	$file = ($file === false) ? request_var('file', 'mods/') : $file;
 
 	if (substr($file, -1) == '/')
 	{
@@ -1263,6 +1263,8 @@ function get_schema_struct()
 			'perm_registered'		=> array('TINT:1', 2),
 			'perm_foe'				=> array('TINT:1', 0),
 			'perm_friend'			=> array('TINT:1', 2),
+			'rating'				=> array('UINT', 0),
+			'num_ratings'			=> array('UINT', 0),
 		),
 		'PRIMARY_KEY'	=> 'blog_id',
 		'KEYS'			=> array(
@@ -1274,6 +1276,7 @@ function get_schema_struct()
 			'perm_registered'		=> array('INDEX', 'perm_registered'),
 			'perm_foe'				=> array('INDEX', 'perm_foe'),
 			'perm_friend'			=> array('INDEX', 'perm_friend'),
+			'rating'				=> array('INDEX', 'rating'),
 		),
 	);
 
@@ -1410,6 +1413,15 @@ function get_schema_struct()
 			'category_id'					=> array('UINT', 0),
 		),
 		'PRIMARY_KEY'	=> array('blog_id', 'category_id'),
+	);
+
+	$schema_data['phpbb_blogs_ratings'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'						=> array('UINT', 0),
+			'user_id'						=> array('UINT', 0),
+			'rating'						=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> array('blog_id', 'user_id'),
 	);
 
 	return $schema_data;

@@ -58,6 +58,14 @@ if (confirm_box(true))
 		// delete the replies
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
+
+		// delete from the blogs_in_categories
+		$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		$db->sql_query($sql);
+
+		// delete from the blogs_ratings
+		$sql = 'DELETE FROM ' . BLOGS_RATINGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		$db->sql_query($sql);
 	}
 	else
 	{
@@ -100,7 +108,7 @@ if (confirm_box(true))
 }
 else
 {
-	if ( ($blog_data->blog[$blog_id]['blog_deleted'] != 0))
+	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0)
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_BLOG');
 	}
