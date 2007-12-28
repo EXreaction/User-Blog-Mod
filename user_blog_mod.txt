@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.36
+## MOD Version: 0.3.37_dev
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~5 Minutes
@@ -77,12 +77,7 @@
 ## 2007-12-14 Alpha 31b
 ## 2007-12-19 Alpha 32
 ## 2007-12-21 Alpha 33
-## 2007-12-22
-##		Alpha 34
-##			+ Some bug fixes, more work on the display of categories, plus HoL told me of a way to auto-include language files for the modules, so 3 less file edits! :D
-##			+ To update, remove the edits done to adm/index.php, mcp.php, and ucp.php made by previous versions (there is just one edit in each).
-##				- Then update adm/style/acp_users_profile.html with the new code.
-##				- Then copy over the new files, and run the upgrade script by going to blog.php?page=update
+## 2007-12-22 Alpha 34
 ## 2007-12-22
 ##		Alpha 34a
 ##			+ A few quick bug fixes.
@@ -99,6 +94,14 @@
 ##		Alpha 36
 ##			+ Now you can give blogs ratings!
 ##			+ Copy the new files over and run the upgrade script by going to blog.php?page=update
+## 2007-12-28
+##		Alpha 36a
+##			+ Had some bugs in the header file.
+##			+ To update, copy the new files over.
+## 2007-12-
+##		Alpha 37_dev
+##			+ 
+##			+ To update, copy the new files over, update viewtopic.php, and run the update script by going to blog.php?page=update.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -274,7 +277,8 @@ viewtopic.php
 #
 
 // Start Add User Blog Mod ------------------
-include($phpbb_root_path . 'blog/functions.' . $phpEx);
+include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
+include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 $user->add_lang('mods/blog/common');
 get_zebra_info($user->data['user_id'], true);
 get_user_settings($id_cache);

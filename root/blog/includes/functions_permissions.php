@@ -13,6 +13,209 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Handles blog view/reply permissions (those set by users)
+*/
+function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read')
+{
+	global $auth, $cache, $config, $db, $user;
+	global $blog_data, $zebra_list, $blog_plugins, $user_settings;
+
+	if (!$config['user_blog_user_permissions'])
+	{
+		return true;
+	}
+
+	if ($blog_id !== false && isset($blog_data->blog[$blog_id]))
+	{
+		$var = $blog_data->blog[$blog_id];
+		$user_id = $blog_data->blog[$blog_id]['user_id'];
+	}
+	else if ($user_id !== false)
+	{
+		$var = (isset($user_settings[$user_id])) ? $user_settings[$user_id] : '';
+	}
+
+	if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || !isset($user_settings[$user_id]) || $auth->acl_gets('a_', 'm_'))
+	{
+		return true;
+	}
+
+	if ($user->data['user_id'] == ANONYMOUS)
+	{
+		switch ($mode)
+		{
+			case 'read' :
+				if ($var['perm_guest'] > 0)
+				{
+					return true;
+				}
+				return false;
+			break;
+			case 'reply' :
+				if ($var['perm_guest'] > 1)
+				{
+					return true;
+				}
+				return false;
+			break;
+		}
+	}
+
+	if ($config['user_blog_enable_zebra'])
+	{
+		if (!array_key_exists($user_id, $zebra_list))
+		{
+			get_zebra_info($user_id);
+		}
+
+		if (isset($zebra_list[$user_id]['foe']) && in_array($user->data['user_id'], $zebra_list[$user_id]['foe']))
+		{
+			switch ($mode)
+			{
+				case 'read' :
+					if ($var['perm_foe'] > 0)
+					{
+						return true;
+					}
+					return false;
+				break;
+				case 'reply' :
+					if ($var['perm_foe'] > 1)
+					{
+						return true;
+					}
+					return false;
+				break;
+			}
+		}
+		else if (isset($zebra_list[$user_id]['friend']) && in_array($user->data['user_id'], $zebra_list[$user_id]['friend']))
+		{
+			switch ($mode)
+			{
+				case 'read' :
+					if ($var['perm_friend'] > 0)
+					{
+						return true;
+					}
+					return false;
+				break;
+				case 'reply' :
+					if ($var['perm_friend'] > 1)
+					{
+						return true;
+					}
+					return false;
+				break;
+			}
+		}
+	}
+
+	if ($user->data['user_id'] != ANONYMOUS)
+	{
+		switch ($mode)
+		{
+			case 'read' :
+				if ($var['perm_registered'] > 0)
+				{
+					return true;
+				}
+				return false;
+			break;
+			case 'reply' :
+				if ($var['perm_registered'] > 1)
+				{
+					return true;
+				}
+				return false;
+			break;
+		}
+	}
+
+	$temp = array('blog_id' => $blog_id, 'user_id' => $user_id, 'mode' => $mode, 'return' => false);
+	$blog_plugins->plugin_do_arg_ref('handle_user_blog_permissions', $temp);
+	return $temp['return'];
+}
+
+/**
+* Builds permission settings
+*
+* @param bool $send_to_template - Automatically put the data in the template, otherwise it returns it.
+*/
+function permission_settings_builder($send_to_template = true, $mode = 'add')
+{
+	global $blog_plugins, $config, $template, $user, $user_settings;
+	global $blog_data, $blog_id;
+
+	if (!$config['user_blog_user_permissions'])
+	{
+		return;
+	}
+
+	if ($mode == 'edit' && isset($blog_data->blog[$blog_id]))
+	{
+		$perm_guest = (request_var('perm_guest', -1) != -1) ? request_var('perm_guest', -1) : $blog_data->blog[$blog_id]['perm_guest'];
+		$perm_registered = (request_var('perm_registered', -1) != -1) ? request_var('perm_registered', -1) : $blog_data->blog[$blog_id]['perm_registered'];
+		$perm_foe = (request_var('perm_foe', -1) != -1) ? request_var('perm_foe', -1) : $blog_data->blog[$blog_id]['perm_foe'];
+		$perm_friend = (request_var('perm_friend', -1) != -1) ? request_var('perm_friend', -1) : $blog_data->blog[$blog_id]['perm_friend'];
+	}
+	else if (isset($user_settings[$user->data['user_id']]))
+	{
+		$perm_guest = (request_var('perm_guest', -1) != -1) ? request_var('perm_guest', -1) : $user_settings[$user->data['user_id']]['perm_guest'];
+		$perm_registered = (request_var('perm_registered', -1) != -1) ? request_var('perm_registered', -1) : $user_settings[$user->data['user_id']]['perm_registered'];
+		$perm_foe = (request_var('perm_foe', -1) != -1) ? request_var('perm_foe', -1) : $user_settings[$user->data['user_id']]['perm_foe'];
+		$perm_friend = (request_var('perm_friend', -1) != -1) ? request_var('perm_friend', -1) : $user_settings[$user->data['user_id']]['perm_friend'];
+	}
+	else
+	{
+		$perm_guest = 1;
+		$perm_registered = 2;
+		$perm_foe = 0;
+		$perm_friend = 2;
+	}
+
+	$permission_settings = array(
+		array(
+			'TITLE'			=> $user->lang['GUEST_PERMISSIONS'],
+			'NAME'			=> 'perm_guest',
+			'DEFAULT'		=> $perm_guest,
+		),
+		array(
+			'TITLE'			=> $user->lang['REGISTERED_PERMISSIONS'],
+			'NAME'			=> 'perm_registered',
+			'DEFAULT'		=> $perm_registered,
+		),
+	);
+
+	if ($config['user_blog_enable_zebra'])
+	{
+		$permission_settings[] = array(
+			'TITLE'			=> $user->lang['FOE_PERMISSIONS'],
+			'NAME'			=> 'perm_foe',
+			'DEFAULT'		=> $perm_foe,
+		);
+		$permission_settings[] = array(
+			'TITLE'			=> $user->lang['FRIEND_PERMISSIONS'],
+			'NAME'			=> 'perm_friend',
+			'DEFAULT'		=> $perm_friend,
+		);
+	}
+
+	$blog_plugins->plugin_do_arg_ref('function_permission_settings_builder', $permission_settings);
+
+	if ($send_to_template)
+	{
+		foreach ($permission_settings as $row)
+		{
+			$template->assign_block_vars('permissions', $row);
+		}
+	}
+	else
+	{
+		return $permission_settings;
+	}
+}
+
+/**
  *  Check blog permissions
  *
  * @param string $page The page requested - blog, reply, mcp, install, upgrade, update, dev, resync

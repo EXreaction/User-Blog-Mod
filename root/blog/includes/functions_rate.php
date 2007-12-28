@@ -41,11 +41,11 @@ function get_user_blog_rating_data($user_id)
 		$rating_data = array();
 		$sql = 'SELECT * FROM ' . BLOGS_RATINGS_TABLE . ' WHERE user_id = ' . $user_id;
 		$result = $db->sql_query($sql);
-
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$rating_data[$row['blog_id']] = $row['rating'];
 		}
+		$db->sql_freeresult($result);
 
 		$cache->put('_user_blog_rating_' . $user_id, $rating_data);
 	}
@@ -118,7 +118,7 @@ function get_star_rating($int_rating, $blog_id, $average = false)
 		$int_rating = $rating_data[$blog_id];
 	}
 
-	$final_code .= ($user->data['is_registered'] && !$average) ? $user->lang['MY_RATING'] . ': ' : '';
+	$final_code .= (isset($rating_data[$blog_id]) && !$average) ? $user->lang['MY_RATING'] . ': ' : '';
 
 	$final_code .= '<div>';
 	for ($i = $config['user_blog_min_rating']; $i <= $config['user_blog_max_rating']; $i++)

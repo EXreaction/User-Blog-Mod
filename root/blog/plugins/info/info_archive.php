@@ -13,7 +13,7 @@ $this->available_plugins[$name]['plugin_title'] = $user->lang['ARCHIVES'];
 $this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ARCHIVES_DESCRIPTION'];
 
 $this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.1';
+$this->available_plugins[$name]['plugin_version'] = '0.7.2';
 
 if ($plugin_enabled)
 {

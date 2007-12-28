@@ -50,7 +50,7 @@ function friends_function_generate_menu(&$arg)
 				)
 			),
 
-			'WHERE'		=> 'z.user_id = ' . $user_id . '
+			'WHERE'		=> 'z.user_id = ' . intval($user_id) . '
 				AND z.friend = 1
 				AND u.user_id = z.zebra_id',
 
@@ -76,7 +76,7 @@ function friends_function_generate_menu(&$arg)
 			'USER_ID'		=> $row['user_id'],
 
 			'U_PROFILE'		=> get_username_string('profile', $row['user_id'], $row['username'], $row['user_colour']),
-			'U_VIEW_BLOG'		=> blog_url($row['user_id']),
+			'U_VIEW_BLOG'	=> blog_url($row['user_id']),
 			'USER_COLOUR'	=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 			'USERNAME'		=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 			'USERNAME_FULL'	=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
@@ -87,7 +87,7 @@ function friends_function_generate_menu(&$arg)
 	$template->assign_vars(array(
 		'S_SHOW_NEXT_ONLINE'		=> (($menu_friends_online > $limit) ? true : false),
 		'S_SHOW_NEXT_OFFLINE'		=> (($menu_friends_offline > $limit) ? true : false),
-		'S_MENU_ZEBRA_ENABLED'		=> true,
+		'S_MENU_ZEBRA_ENABLED'		=> ($menu_friends_online || $menu_friends_offline) ? true : false,
 	));
 
 	$template->set_filenames(array(

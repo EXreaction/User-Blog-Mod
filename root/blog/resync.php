@@ -21,6 +21,8 @@ generate_blog_breadcrumbs($user->lang['RESYNC_BLOG']);
 
 if (confirm_box(true))
 {
+	include($phpbb_root_path . 'blog/includes/functions_admin.' . $phpEx);
+
 	resync_blog('all');
 
 	$message = $user->lang['RESYNC_BLOG_SUCCESS'] . '<br/><br/>';
@@ -32,5 +34,6 @@ else
 {
 	confirm_box(false, 'RESYNC_BLOG');
 }
+
 blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
 ?>

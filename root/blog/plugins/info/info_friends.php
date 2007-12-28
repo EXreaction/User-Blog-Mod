@@ -13,7 +13,7 @@ $this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_FRIENDS_TITL
 $this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_FRIENDS_DESCRIPTION'];
 
 $this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.0';
+$this->available_plugins[$name]['plugin_version'] = '0.7.1';
 
 if ($plugin_enabled)
 {

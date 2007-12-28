@@ -21,7 +21,7 @@ $refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($
 $cancel = (isset($_POST['cancel'])) ? true : false;
 
 // get some more initial data
-$user_id = (!isset($user_id)) ? request_var('u', 0) : $user_id;
+$user_id = (!isset($user_id)) ? request_var('u', 0) : intval($user_id);
 $blog_id = request_var('b', 0);
 $reply_id = request_var('r', 0);
 $feed = request_var('feed', '');
@@ -95,7 +95,7 @@ if ($blog_id != 0)
 
 	$user_id = $blog_data->blog[$blog_id]['user_id'];
 	get_zebra_info(array($user->data['user_id'], $user_id));
-	get_user_settings(array($user_id, $user->data['user_id']));
+	//get_user_settings(array($user_id, $user->data['user_id']));
 
 	if (!handle_user_blog_permissions($blog_id))
 	{
@@ -146,23 +146,12 @@ $feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') 
 // Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
-// The blog title/description
-if (isset($user_settings[$user_id]))
-{
-	$blog_title = censor_text($user_settings[$user_id]['title']);
-	$blog_description = generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7);
-}
-else
-{
-	$blog_title = $blog_description = false;
-}
-
 // Add some data to the template
 $initial_data = array(
 	'MODE'					=> $mode,
 	'PAGE'					=> $page,
-	'BLOG_TITLE'			=> $blog_title,
-	'BLOG_DESCRIPTION'		=> $blog_description,
+	'BLOG_TITLE'			=> (isset($user_settings[$user_id])) ? censor_text($user_settings[$user_id]['title']) : false,
+	'BLOG_DESCRIPTION'		=> (isset($user_settings[$user_id])) ? generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7) : false,
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
 	'U_BLOG'				=> $blog_urls['self_minus_print'],

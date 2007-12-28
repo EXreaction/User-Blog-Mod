@@ -7,12 +7,15 @@
 *
 */
 
-// check if the User Blog Mod is enabled
 if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 {
-	if (!defined('IN_BLOG'))
+	if (!function_exists('check_blog_permissions'))
 	{
 		include($phpbb_root_path . 'blog/includes/functions_permissions.' . $phpEx);
+	}
+
+	if (!function_exists('blog_url'))
+	{
 		include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 	}
 
@@ -46,6 +49,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// If we are viewing a users' profile add a link to view the users' blog in the custom profile section
 	if ( (request_var('mode', '') == 'viewprofile') && (request_var('u', '') != '') )
 	{
+		include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 		add_blog_links(request_var('u', ''), 'custom_fields', false, true);
 	}
 }

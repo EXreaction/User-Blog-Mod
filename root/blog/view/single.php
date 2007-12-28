@@ -23,6 +23,11 @@ if ($category_id)
 		trigger_error('NO_CATEGORY');
 	}
 }
+else
+{
+	// Generate the left menu
+	generate_menu($user_id);
+}
 
 // if the blog was deleted and the person trying to view the blog is not a moderator that can view deleted blogs, give them a nice error. :P
 if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('m_blogdelete') && !$auth->acl_get('a_blogdelete'))
@@ -51,21 +56,15 @@ else
 	$reply_ids = false;
 }
 
-if (!$category_id)
-{
-	// Generate the left menu
-	generate_menu($user_id);
-}
-
 $blog_plugins->plugin_do('view_blog_start');
 
 // Output some data
 $template->assign_vars(array(
-	'POST_SUBJECT'		=> $blog_data->blog[$blog_id]['blog_subject'],
-	'TITLE'				=> $blog_data->blog[$blog_id]['blog_subject'],
-
 	'U_PRINT_TOPIC'		=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',
 	'U_VIEW'			=> $blog_urls['self'],
+
+	'S_CATEGORY_MODE'	=> ($category_id) ? true : false,
+	'S_SINGLE'			=> true,
 ));
 
 // Parse the blog data and output it to the template
@@ -77,7 +76,7 @@ $blog_plugins->plugin_do('view_blog_after_blogrow');
 // to update the read count, we are only doing this if the user is not the owner, and the user doesn't view the shortened version, and we are not viewing the deleted blogs page
 if ($user->data['user_id'] != $user_id)
 {
-	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_read_count = blog_read_count + 1 WHERE blog_id = \'' . $blog_id . '\'';
+	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_read_count = blog_read_count + 1 WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 }
 
@@ -126,7 +125,7 @@ $blog_plugins->plugin_do('view_blog_end');
 
 // tell the template parser what template file to use
 $template->set_filenames(array(
-	'body' => (($category_id) ? 'blog/view_blog_topic_mode.html' : 'blog/view_blog.html'),
+	'body' => 'blog/view_blog.html',
 ));
 
 ?>

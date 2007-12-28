@@ -271,7 +271,7 @@ function organize_lang($file = false, $skip_errors = false)
 {
 	global $phpbb_root_path, $phpEx;
 
-	$file = ($file === false) ? request_var('file', 'mods/') : $file;
+	$file = ($file === false) ? request_var('file', 'en/mods/') : $file;
 
 	if (substr($file, -1) == '/')
 	{

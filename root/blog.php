@@ -43,7 +43,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.36';
+$user_blog_version = '0.3.37_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -86,7 +86,6 @@ include($phpbb_root_path . 'blog/functions.' . $phpEx);
 include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
 include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
 include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/handle_data.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();

@@ -13,6 +13,53 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Handle the categories
+*
+* @param int $parent_id If this is set to something other than 0 it will only list categories under the category_id given
+* @param string $block Set the name of the block to output it to.
+* @param bool $ignore_subcats True to ignore subcategories, false to display them.
+*/
+function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false)
+{
+	global $template, $user;
+
+	$category_list = get_blog_categories('left_id');
+
+	foreach ($category_list as $left_id => $row)
+	{
+		if ($parent_id == $row['category_id'] && !$ignore_subcats)
+		{
+			$template->assign_vars(array(
+				'U_CURRENT_CATEGORY'	=> blog_url(false, false, false, array('page' => $row['category_name'], 'c' => $row['category_id'])),
+				'CURRENT_CATEGORY'		=> $row['category_name'],
+				'CATEGORY_RULES'		=> generate_text_for_display($row['rules'], $row['rules_uid'], $row['rules_bitfield'], $row['rules_options']),
+			));
+		}
+
+		if ($parent_id == $row['parent_id'])
+		{
+			$template->assign_block_vars($block, array(
+				'CATEGORY_NAME'			=> $row['category_name'],
+				'CATEGORY_DESCRIPTION'	=> generate_text_for_display($row['category_description'], $row['category_description_uid'], $row['category_description_bitfield'], $row['category_description_options']),
+				'BLOGS'					=> $row['blog_count'],
+
+				'U_CATEGORY'			=> blog_url(false, false, false, array('page' => $row['category_name'], 'c' => $row['category_id'])),
+
+				'S_SUBCATEGORY'			=> ($row['right_id'] > ($row['left_id'] + 1) && !$ignore_subcats),
+
+				'L_SUBCATEGORY'			=> ($row['right_id'] > ($row['left_id'] + 3)) ? $user->lang['SUBCATEGORIES'] : $user->lang['SUBCATEGORY'],
+			));
+
+			// If not, then there are subcategories
+			if ($row['right_id'] > ($row['left_id'] + 1) && !$ignore_subcats)
+			{
+				handle_categories($row['category_id'], $category_list, 'category_row.subcategory', true);
+			}
+		}
+	}
+}
+
+/**
 * Get all blog categories
 */
 function get_blog_categories($order = 'left_id')
@@ -31,6 +78,7 @@ function get_blog_categories($order = 'left_id')
 		{
 			$blog_categories[$row['left_id']] = $row;
 		}
+		$db->sql_freeresult($result);
 
 		$cache->put('_blog_categories', $blog_categories);
 	}

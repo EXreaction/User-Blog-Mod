@@ -132,9 +132,7 @@ class blog_data
 				$limit = 0;
 				break;
 			case 'recent' : // select recent blogs
-				//$sql = 'SELECT * FROM ' . BLOGS_TABLE .
-				//	$sql_array['ORDER_BY'] = 'blog_time DESC';
-				//$sql = fix_where_sql($sql);
+				$sql_array['ORDER_BY'] = 'b.blog_time DESC';
 				break;
 			case 'random' : // select random blogs
 				$random_ids = $this->get_blog_info('random_blog_ids', 0, $selection_data);
