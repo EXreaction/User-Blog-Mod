@@ -94,7 +94,7 @@ class ucp_blog
 				include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 				include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 				include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-				include($phpbb_root_path . 'blog/functions_posting.' . $phpEx);
+				include($phpbb_root_path . 'blog/includes/functions_posting.' . $phpEx);
 
 				$user->add_lang('posting');
 
