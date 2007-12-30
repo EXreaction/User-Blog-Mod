@@ -274,6 +274,7 @@ viewtopic.php
 #
 
 // Start Add User Blog Mod ------------------
+include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 $user->add_lang('mods/blog/common');
