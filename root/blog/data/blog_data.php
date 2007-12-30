@@ -67,23 +67,23 @@ class blog_data
 				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
 				'ON'		=> 'bc.blog_id = b.blog_id',
 			));
-			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = \'' . $category_id . '\'';
+			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . intval($category_id) . '';
 		}
 		if (!$auth->acl_get('m_blogapprove'))
 		{
-			$sql_where[] = '(b.blog_approved = \'1\' OR b.user_id = \'' . $user->data['user_id'] . '\')';;
+			$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';;
 		}
 		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{
-			$sql_where[] = 'b.blog_deleted != \'0\'';
+			$sql_where[] = 'b.blog_deleted != 0';
 		}
 		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$sql_where[] = '(b.blog_deleted = \'0\' OR b.blog_deleted = \'' . $user->data['user_id'] . '\' )';
+			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = \'' . $user->data['user_id'] . '\' )';
 		}
 		if ($sort_days != 0)
 		{
-			$sql_where[] = 'b.blog_time >= \'' . (time() - $sort_days * 86400) . '\'';
+			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
@@ -383,13 +383,6 @@ class blog_data
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
 		global $reply_data, $user_data, $blog_plugins, $category_id;
 
-		static $blog_categories = false;
-
-		if ($blog_categories === false)
-		{
-			$blog_categories = get_blog_categories('category_id');
-		}
-
 		$blog = &$this->blog[$id];
 		$user_id = $blog['user_id'];
 
@@ -442,13 +435,13 @@ class blog_data
 			'VIEWS'				=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
 			'RATING_STRING'		=> (!$shortened) ? get_star_rating($blog['rating'], $id) : false,
 
-			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
-			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
+			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
+			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
 			'U_DIGG'			=> (!$shortened) ? 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']) : '',
-			'U_EDIT'			=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'edit', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
-			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
-			'U_REPORT'			=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
-			'U_VIEW'			=> ($category_id && isset($blog_categories[$category_id])) ? blog_url(false, $id, false, array('page' => $blog_categories[$category_id]['category_name'], 'c' => $category_id)) : blog_url($user_id, $id),
+			'U_EDIT'			=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
+			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPORT'			=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
+			'U_VIEW'			=> blog_url($user_id, $id),
 			'U_VIEW_PERMANENT'	=> blog_url($user_id, $id, false, array(), array(), true),
 			'U_WARN'			=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 

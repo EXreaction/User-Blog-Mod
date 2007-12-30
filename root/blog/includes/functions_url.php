@@ -38,9 +38,39 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
 	$extras = $anchor = '';
 
-	if (isset($_GET['style']))
+	// Add the category stuff if c is in the url
+	static $blog_categories = false;
+	if (isset($_GET['c']) && !isset($url_data['c']))
+	{
+		$category_id = request_var('c', 0);
+		if ($blog_categories === false)
+		{
+			$blog_categories = get_blog_categories('category_id');
+		}
+
+		if (!isset($url_data['page']) && isset($blog_categories[$category_id]) && isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
+		{
+			$url_data['page'] = $blog_categories[$category_id]['category_name'];
+		}
+
+		$url_data['c'] = $category_id;
+	}
+
+	// Add style= to the url data if it is in there
+	if (isset($_GET['style']) && !isset($url_data['style']))
 	{
 		$url_data['style'] = $_GET['style'];
+	}
+
+	// Handle the anchor
+	if (isset($url_data['anchor']))
+	{
+		$anchor = '#' . $url_data['anchor'];
+		unset($url_data['anchor']);
+	}
+	else if ($reply_id)
+	{
+		$anchor = '#r' . $reply_id;
 	}
 
 	if (isset($config['user_blog_seo']) && $config['user_blog_seo'] && !$force_no_seo)
@@ -50,7 +80,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 		if (!isset($url_data['page']) && $user_id !== false)
 		{
-			// Do not do the str_replace for the username!  It would break it! :P
+			// Do not do the str_replace for the username, it would break it! :P
 			$replace_page = false;
 
 			if ($user_id == $user->data['user_id'])
@@ -70,17 +100,10 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 				$url_data['page'] = $user_data->user[$user_id]['username'];
 			}
 		}
-		else
-		{
-			$url_data['u'] = ($user_id) ? $user_id : '*skip*';
-			$url_data['b'] = ($blog_id) ? $blog_id : '*skip*';
-			$url_data['r'] = ($reply_id) ? $reply_id : '*skip*';
-		}
 
 		if ($reply_id)
 		{
 			$url_data['r'] = $reply_id;
-			$url_data['anchor'] = (isset($url_data['anchor'])) ? $url_data['anchor'] : 'r' . $reply_id;
 			if (!isset($url_data['mode']))
 			{
 				if (!empty($reply_data) && array_key_exists($reply_id, $reply_data->reply))
@@ -109,19 +132,15 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			}
 		}
 
-		if (isset($url_data['anchor']))
-		{
-			$anchor = '#' . $url_data['anchor'];
-		}
-
 		if (count($url_data))
 		{
 			foreach ($url_data as $name => $value)
 			{
-				if ($name == 'page' || $name == 'mode' || $name == 'anchor' || $value == '*skip*')
+				if ($name == 'page' || $name == 'mode' || $value == '*skip*')
 				{
 					continue;
 				}
+
 				$extras .= '_' . url_replace($name) . '-' . url_replace($value);
 			}
 		}
@@ -132,21 +151,21 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$extras .= "_sid-{$_SID}";
 		}
 
-		if (isset($url_data['page']))
+		if (isset($url_data['page']) && $url_data['page'])
 		{
 			if ($replace_page)
 			{
 				$url_data['page'] = url_replace($url_data['page']);
 			}
 
-			if (isset($url_data['mode']))
+			if (isset($url_data['mode']) && $url_data['mode'])
 			{
 				$url_data['mode'] = url_replace($url_data['mode']);
 				$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
 			}
 			else
 			{
-				if ($extras != '')
+				if ($extras || $anchor)
 				{
 					$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
 				}
@@ -183,10 +202,10 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 	$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
 	$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
-	$extras .= (($reply_id) ? '&amp;r=' . $reply_id . '#r' . $reply_id: '');
-	$extras = substr($extras, 5);
-	$url = $phpbb_root_path . 'blog.' . $phpEx;
-	return append_sid($url, $extras);
+	$extras .= (($reply_id) ? '&amp;r=' . $reply_id : '');
+
+	$extras = substr($extras, 5); // remove the first &amp;
+	return append_sid($phpbb_root_path . 'blog.' . $phpEx, $extras) . $anchor;
 }
 
 /**

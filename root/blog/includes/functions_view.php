@@ -20,89 +20,77 @@ function generate_blog_pagination($base_url, $num_items, $per_page, $start_item,
 {
 	global $config, $template, $user;
 
-	if (strpos($base_url, '#'))
+	// Make sure $per_page is a valid value
+	$per_page = ($per_page <= 0) ? 1 : $per_page;
+
+	$seperator = '<span class="page-sep">' . $user->lang['COMMA_SEPARATOR'] . '</span>';
+	$total_pages = ceil($num_items / $per_page);
+
+	if ($total_pages == 1 || !$num_items)
 	{
-		$base_url = substr($base_url, 0, strpos($base_url, '#'));
+		return false;
 	}
 
-	if ($config['user_blog_seo'])
+	$on_page = floor($start_item / $per_page) + 1;
+	$page_string = ($on_page == 1) ? '<strong>1</strong>' : '<a href="' . str_replace('*start*', '0', $base_url) . '">1</a>';
+
+	if ($total_pages > 5)
 	{
-		// Make sure $per_page is a valid value
-		$per_page = ($per_page <= 0) ? 1 : $per_page;
+		$start_cnt = min(max(1, $on_page - 4), $total_pages - 5);
+		$end_cnt = max(min($total_pages, $on_page + 4), 6);
 
-		$seperator = '<span class="page-sep">' . $user->lang['COMMA_SEPARATOR'] . '</span>';
-		$total_pages = ceil($num_items / $per_page);
+		$page_string .= ($start_cnt > 1) ? ' ... ' : $seperator;
 
-		if ($total_pages == 1 || !$num_items)
+		for ($i = $start_cnt + 1; $i < $end_cnt; $i++)
 		{
-			return false;
-		}
-
-		$on_page = floor($start_item / $per_page) + 1;
-		$page_string = ($on_page == 1) ? '<strong>1</strong>' : '<a href="' . str_replace('*start*', '0', $base_url) . '">1</a>';
-
-		if ($total_pages > 5)
-		{
-			$start_cnt = min(max(1, $on_page - 4), $total_pages - 5);
-			$end_cnt = max(min($total_pages, $on_page + 4), 6);
-
-			$page_string .= ($start_cnt > 1) ? ' ... ' : $seperator;
-
-			for ($i = $start_cnt + 1; $i < $end_cnt; $i++)
+			$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
+			if ($i < $end_cnt - 1)
 			{
-				$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
-				if ($i < $end_cnt - 1)
-				{
-					$page_string .= $seperator;
-				}
-			}
-
-			$page_string .= ($end_cnt < $total_pages) ? ' ... ' : $seperator;
-		}
-		else
-		{
-			$page_string .= $seperator;
-
-			for ($i = 2; $i < $total_pages; $i++)
-			{
-				$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
-				if ($i < $total_pages)
-				{
-					$page_string .= $seperator;
-				}
+				$page_string .= $seperator;
 			}
 		}
 
-		$page_string .= ($on_page == $total_pages) ? '<strong>' . $total_pages . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $total_pages . '</a>';
-
-		if ($add_prevnext_text)
-		{
-			if ($on_page != 1) 
-			{
-				$page_string = '<a href="' . str_replace('*start*', (($on_page - 2) * $per_page), $base_url) . '">' . $user->lang['PREVIOUS'] . '</a>&nbsp;&nbsp;' . $page_string;
-			}
-
-			if ($on_page != $total_pages)
-			{
-				$page_string .= '&nbsp;&nbsp;<a href="' . str_replace('*start*', ($on_page * $per_page), $base_url) . '">' . $user->lang['NEXT'] . '</a>';
-			}
-		}
-
-		$template->assign_vars(array(
-			$tpl_prefix . 'BASE_URL'	=> $base_url,
-			$tpl_prefix . 'PER_PAGE'	=> $per_page,
-
-			$tpl_prefix . 'PREVIOUS_PAGE'	=> ($on_page == 1) ? '' : str_replace('*start*', (($on_page - 2) * $per_page), $base_url),
-			$tpl_prefix . 'NEXT_PAGE'		=> ($on_page == $total_pages) ? '' : str_replace('*start*', ($on_page  * $per_page), $base_url),
-			$tpl_prefix . 'TOTAL_PAGES'		=> $total_pages)
-		);
-
-		return $page_string;
+		$page_string .= ($end_cnt < $total_pages) ? ' ... ' : $seperator;
 	}
 	else
 	{
-		return generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text, $tpl_prefix);
+		$page_string .= $seperator;
+
+		for ($i = 2; $i < $total_pages; $i++)
+		{
+			$page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $i . '</a>';
+			if ($i < $total_pages)
+			{
+				$page_string .= $seperator;
+			}
+		}
 	}
+
+	$page_string .= ($on_page == $total_pages) ? '<strong>' . $total_pages . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $total_pages . '</a>';
+
+	if ($add_prevnext_text)
+	{
+		if ($on_page != 1) 
+		{
+			$page_string = '<a href="' . str_replace('*start*', (($on_page - 2) * $per_page), $base_url) . '">' . $user->lang['PREVIOUS'] . '</a>&nbsp;&nbsp;' . $page_string;
+		}
+
+		if ($on_page != $total_pages)
+		{
+			$page_string .= '&nbsp;&nbsp;<a href="' . str_replace('*start*', ($on_page * $per_page), $base_url) . '">' . $user->lang['NEXT'] . '</a>';
+		}
+	}
+
+	$template->assign_vars(array(
+		$tpl_prefix . 'BASE_URL'	=> $base_url,
+		$tpl_prefix . 'PER_PAGE'	=> $per_page,
+
+		$tpl_prefix . 'PREVIOUS_PAGE'	=> ($on_page == 1) ? '' : str_replace('*start*', (($on_page - 2) * $per_page), $base_url),
+		$tpl_prefix . 'NEXT_PAGE'		=> ($on_page == $total_pages) ? '' : str_replace('*start*', ($on_page  * $per_page), $base_url),
+		$tpl_prefix . 'TOTAL_PAGES'		=> $total_pages)
+	);
+
+	return $page_string;
 }
 
 /**
@@ -452,7 +440,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		$text .= '...<br/><br/><!-- m --><a href="';
 		if ($reply_id !== false)
 		{
-			$text .= blog_url(false, $blog_id, $reply_id);
+			$text .= blog_url($blog_data->blog[$blog_id]['user_id'], $blog_id, $reply_id);
 		}
 		else
 		{

@@ -21,7 +21,7 @@ if (!defined('IN_PHPBB'))
 */
 function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false)
 {
-	global $template, $user;
+	global $config, $template, $user;
 
 	$category_list = get_blog_categories('left_id');
 
@@ -30,7 +30,7 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 		if ($parent_id == $row['category_id'] && !$ignore_subcats)
 		{
 			$template->assign_vars(array(
-				'U_CURRENT_CATEGORY'	=> blog_url(false, false, false, array('page' => $row['category_name'], 'c' => $row['category_id'])),
+				'U_CURRENT_CATEGORY'	=> blog_url(false, false, false, array('page' => (($config['user_blog_seo']) ? $row['category_name'] : '*skip*'), 'c' => $row['category_id'])),
 				'CURRENT_CATEGORY'		=> $row['category_name'],
 				'CATEGORY_RULES'		=> generate_text_for_display($row['rules'], $row['rules_uid'], $row['rules_bitfield'], $row['rules_options']),
 			));
@@ -43,7 +43,7 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 				'CATEGORY_DESCRIPTION'	=> generate_text_for_display($row['category_description'], $row['category_description_uid'], $row['category_description_bitfield'], $row['category_description_options']),
 				'BLOGS'					=> $row['blog_count'],
 
-				'U_CATEGORY'			=> blog_url(false, false, false, array('page' => $row['category_name'], 'c' => $row['category_id'])),
+				'U_CATEGORY'			=> blog_url(false, false, false, array('page' => (($config['user_blog_seo']) ? $row['category_name'] : '*skip*'), 'c' => $row['category_id'])),
 
 				'S_SUBCATEGORY'			=> ($row['right_id'] > ($row['left_id'] + 1) && !$ignore_subcats),
 
