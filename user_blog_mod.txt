@@ -109,7 +109,7 @@
 ##			+ Lots of updates, to name a few: Added DB2 support, re-integrated the Attachments plugin (I plan to fork this mod later on to mods that require attachments),
 ##				- 
 ##			+ To update, copy the new files over and run the upgrade script by going to blog.php?page=update
-##				- If you had the attachment plugin installed you should delete every file you had to upload to install it.
+##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
