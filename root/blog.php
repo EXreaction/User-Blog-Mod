@@ -12,8 +12,6 @@
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * super cache - cache entire pages
-* report blog bug if clicking no
-* change blog subscription confirm page to work more like board_config so it can accept a bunch of custom options
 * add place to allow subscription notices when posting a blog/reply (drop down box)
 * auto-subscriptions in the UCP (which get selected in the add subscription on add blog/reply page automatically)
 * Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
