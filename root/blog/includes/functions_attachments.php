@@ -20,14 +20,14 @@ if (!defined('IN_PHPBB'))
 */
 class blog_attachment
 {
-	var $attachment_data = array();
-	var $filename_data = array();
-	var $warn_msg = array();
+	public $attachment_data = array();
+	public $filename_data = array();
+	public $warn_msg = array();
 
 	/**
 	* Updates some attachment data
 	*/
-	function update_attachment_data($blog_id, $reply_id = 0)
+	public function update_attachment_data($blog_id, $reply_id = 0)
 	{
 		global $auth, $config, $db;
 
@@ -59,7 +59,7 @@ class blog_attachment
 	/**
 	* Generate inline attachment entry
 	*/
-	function posting_gen_attachment_entry($attachment_data, &$filename_data)
+	public function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
 		global $template, $config, $phpbb_root_path, $phpEx, $user;
 
@@ -121,7 +121,7 @@ class blog_attachment
 	* @param int|array $blog_ids An array of blog_ids to look up
 	* @param int|array|bool $reply_ids An array of reply_ids to look up
 	*/
-	function get_attachment_data($blog_ids, $reply_ids = false)
+	public function get_attachment_data($blog_ids, $reply_ids = false)
 	{
 		global $auth, $config, $db;
 		global $blog_data, $reply_data;
@@ -203,7 +203,7 @@ class blog_attachment
 	/**
 	* Parse Attachments
 	*/
-	function parse_attachments($form_name, $submit, $preview, $refresh, &$text)
+	public function parse_attachments($form_name, $submit, $preview, $refresh, &$text)
 	{
 		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser;
 
@@ -411,7 +411,7 @@ class blog_attachment
 	/**
 	* Output Attachment Data to Template
 	*/
-	function output_attachment_data($attachment_data, $prefix = 0)
+	public function output_attachment_data($attachment_data, $prefix = 0)
 	{
 		global $auth, $config, $template;
 
@@ -430,7 +430,7 @@ class blog_attachment
 	/**
 	* Get Attachment Data
 	*/
-	function get_submitted_attachment_data($check_user_id = false)
+	public function get_submitted_attachment_data($check_user_id = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth;
 
@@ -523,7 +523,7 @@ class blog_attachment
 	* Upload Attachment - filedata is generated here
 	* Uses upload class
 	*/
-	function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
+	public function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
 	{
 		global $auth, $user, $config, $db, $cache, $phpbb_root_path, $phpEx;
 
@@ -676,7 +676,7 @@ class blog_attachment
 	*
 	* @return array allowed extensions array.
 	*/
-	function obtain_blog_attach_extensions()
+	public function obtain_blog_attach_extensions()
 	{
 		global $cache, $config;
 
@@ -745,7 +745,7 @@ class blog_attachment
 	* @param array &$update_count The attachment counts to be updated - will be filled
 	* @param bool $preview If set to true the attachments are parsed for preview. Within preview mode the comments are fetched from the given $attachments array and not fetched from the database.
 	*/
-	function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
+	public function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
 	{
 		global $template, $cache, $user, $config, $phpbb_root_path, $phpEx, $auth;
 

@@ -28,6 +28,7 @@ $lang = array_merge($lang, array(
 	'BLOG_UNAPPROVED'				=> 'Blog Needs Approval',
 
 	'CLICK_HERE_SHOW_POST'			=> 'Click here to show the post.',
+	'CNT_COMMENTS'					=> '%s Comments',
 	'COMMENTS'						=> 'Comments',
 
 	'DELETED_MESSAGE'				=> 'These blogs have all been deleted.',
@@ -38,6 +39,8 @@ $lang = array_merge($lang, array(
 
 	'NO_DELETED_BLOGS'				=> 'There are no deleted blogs by this user.',
 	'NO_DELETED_BLOGS_SORT_DAYS'	=> 'No deleted blogs were posted by this user in the last %s.',
+
+	'ONE_COMMENT'					=> '1 Comment',
 
 	'POSTED_BY_FOE'					=> 'This post was made by %s who is currently on your ignore list.',
 

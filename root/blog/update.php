@@ -444,6 +444,13 @@ if (confirm_box(true))
 				);
 				$auth_admin->acl_add_option($blog_permissions);
 				set_config('user_blog_max_attachments', 3);
+				$sql_ary = array(
+					'module_basename'	=> 'blogs',
+					'module_langname'	=> 'ACP_EXTENSION_GROUPS',
+					'module_mode'		=> 'ext_groups',
+					'module_auth'		=> 'acl_a_blogmanage',
+				);
+				$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 			}
 	}
 

@@ -53,6 +53,14 @@ $sql_ary = array(
 );
 $eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 
+$sql_ary = array(
+	'module_basename'	=> 'blogs',
+	'module_langname'	=> 'ACP_EXTENSION_GROUPS',
+	'module_mode'		=> 'ext_groups',
+	'module_auth'		=> 'acl_a_blogmanage',
+);
+$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+
 // MCP Modules
 $sql_ary = array(
 	'module_langname'	=> 'MCP_BLOG',

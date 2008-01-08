@@ -25,8 +25,18 @@ class acp_blogs
 		global $phpbb_root_path, $phpEx, $user;
 		global $blog_plugins, $blog_plugins_path;
 
+		$submit = (isset($_POST['submit'])) ? true : false;
+
+		// Check Form Key
+		add_form_key('acp_blogs');
+		if ($submit && !check_form_key('acp_blogs'))
+		{
+			trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+		$user->add_lang(array('mods/blog/common', 'mods/blog/acp', 'mods/blog/setup'));
 
 		if ($mode != 'plugins')
 		{
@@ -34,8 +44,6 @@ class acp_blogs
 			$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
 			$blog_plugins->load_plugins();
 		}
-
-		$user->add_lang(array('mods/blog/common', 'mods/blog/acp', 'mods/blog/setup'));
 
 		switch($mode)
 		{
@@ -47,6 +55,9 @@ class acp_blogs
 			break;
 			case 'categories' :
 				$this->categories($id, $mode);
+			break;
+			case 'ext_groups' :
+				$this->extensions($id, $mode);
 			break;
 			default :
 				$this->settings($id, $mode);
@@ -1659,5 +1670,500 @@ class acp_blogs
 
 		return $target['category_name'];
 	}
+
+	function extensions($id, $mode)
+	{
+		global $db, $user, $auth, $template, $cache;
+		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx;
+
+		$user->add_lang(array('posting', 'viewtopic', 'acp/attachments'));
+
+		$error = $notify = array();
+		$submit = (isset($_POST['submit'])) ? true : false;
+		$action = request_var('action', '');
+
+		$this->tpl_name = 'acp_blog_attachments';
+		$this->page_title = 'ACP_EXTENSION_GROUPS';
+
+		$template->assign_vars(array(
+			'L_TITLE'			=> $user->lang['ACP_EXTENSION_GROUPS'],
+			'L_TITLE_EXPLAIN'	=> $user->lang['ACP_EXTENSION_GROUPS_EXPLAIN'],
+			'U_ACTION'			=> $this->u_action)
+		);
+
+		$template->assign_var('S_EXTENSION_GROUPS', true);
+
+		if ($submit)
+		{
+			$action = request_var('action', '');
+			$group_id = request_var('g', 0);
+
+			if ($action != 'add' && $action != 'edit')
+			{
+				trigger_error('NO_MODE', E_USER_ERROR);
+			}
+
+			if (!$group_id && $action == 'edit')
+			{
+				trigger_error($user->lang['NO_EXT_GROUP_SPECIFIED'] . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			if ($group_id)
+			{
+				$sql = 'SELECT *
+					FROM ' . EXTENSION_GROUPS_TABLE . "
+					WHERE group_id = $group_id";
+				$result = $db->sql_query($sql);
+				$ext_row = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+
+				if (!$ext_row)
+				{
+					trigger_error($user->lang['NO_EXT_GROUP_SPECIFIED'] . adm_back_link($this->u_action), E_USER_WARNING);
+				}
+			}
+			else
+			{
+				$ext_row = array();
+			}
+
+			$group_name = utf8_normalize_nfc(request_var('group_name', '', true));
+			$new_group_name = ($action == 'add') ? $group_name : (($ext_row['group_name'] != $group_name) ? $group_name : '');
+
+			if (!$group_name)
+			{
+				$error[] = $user->lang['NO_EXT_GROUP_NAME'];
+			}
+
+			// Check New Group Name
+			if ($new_group_name)
+			{
+				$sql = 'SELECT group_id
+					FROM ' . EXTENSION_GROUPS_TABLE . "
+					WHERE LOWER(group_name) = '" . $db->sql_escape(utf8_strtolower($new_group_name)) . "'";
+				$result = $db->sql_query($sql);
+
+				if ($db->sql_fetchrow($result))
+				{
+					$error[] = sprintf($user->lang['EXTENSION_GROUP_EXIST'], $new_group_name);
+				}
+				$db->sql_freeresult($result);
+			}
+
+			$allow_in_blog	= (isset($_POST['allow_in_blog'])) ? true : false;
+			$cache->destroy('_blog_extensions');
+
+			if (!sizeof($error))
+			{
+				// Ok, build the update/insert array
+				$upload_icon	= request_var('upload_icon', 'no_image');
+				$size_select	= request_var('size_select', 'b');
+				$forum_select	= request_var('forum_select', false);
+				$allowed_forums	= request_var('allowed_forums', array(0));
+				$allow_in_pm	= (isset($_POST['allow_in_pm'])) ? true : false;
+				$max_filesize	= request_var('max_filesize', 0);
+				$max_filesize	= ($size_select == 'kb') ? round($max_filesize * 1024) : (($size_select == 'mb') ? round($max_filesize * 1048576) : $max_filesize);
+				$allow_group	= (isset($_POST['allow_group'])) ? true : false;
+
+				if ($max_filesize == $config['max_filesize'])
+				{
+					$max_filesize = 0;
+				}
+
+				if (!sizeof($allowed_forums))
+				{
+					$forum_select = false;
+				}
+
+				$group_ary = array(
+					'group_name'	=> $group_name,
+					'cat_id'		=> request_var('special_category', ATTACHMENT_CATEGORY_NONE),
+					'allow_group'	=> ($allow_group) ? 1 : 0,
+					'upload_icon'	=> ($upload_icon == 'no_image') ? '' : $upload_icon,
+					'max_filesize'	=> $max_filesize,
+					'allowed_forums'=> ($forum_select) ? serialize($allowed_forums) : '',
+					'allow_in_pm'	=> ($allow_in_pm) ? 1 : 0,
+					'allow_in_blog'	=> ($allow_in_blog) ? 1 : 0,
+				);
+
+				if ($action == 'add')
+				{
+					$group_ary['download_mode'] = INLINE_LINK;
+				}
+
+				$sql = ($action == 'add') ? 'INSERT INTO ' . EXTENSION_GROUPS_TABLE . ' ' : 'UPDATE ' . EXTENSION_GROUPS_TABLE . ' SET ';
+				$sql .= $db->sql_build_array((($action == 'add') ? 'INSERT' : 'UPDATE'), $group_ary);
+				$sql .= ($action == 'edit') ? " WHERE group_id = $group_id" : '';
+
+				$db->sql_query($sql);
+
+				if ($action == 'add')
+				{
+					$group_id = $db->sql_nextid();
+				}
+
+				add_log('admin', 'LOG_ATTACH_EXTGROUP_' . strtoupper($action), $group_name);
+			}
+
+			$extension_list = request_var('extensions', array(0));
+
+			if ($action == 'edit' && sizeof($extension_list))
+			{
+				$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+					SET group_id = 0
+					WHERE group_id = $group_id";
+				$db->sql_query($sql);
+			}
+
+			if (sizeof($extension_list))
+			{
+				$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+					SET group_id = $group_id
+					WHERE " . $db->sql_in_set('extension_id', $extension_list);
+				$db->sql_query($sql);
+			}
+
+			$cache->destroy('_extensions');
+
+			if (!sizeof($error))
+			{
+				$notify[] = $user->lang['SUCCESS_EXTENSION_GROUP_' . strtoupper($action)];
+			}
+		}
+
+		$cat_lang = array(
+			ATTACHMENT_CATEGORY_NONE		=> $user->lang['NO_FILE_CAT'],
+			ATTACHMENT_CATEGORY_IMAGE		=> $user->lang['CAT_IMAGES'],
+			ATTACHMENT_CATEGORY_WM			=> $user->lang['CAT_WM_FILES'],
+			ATTACHMENT_CATEGORY_RM			=> $user->lang['CAT_RM_FILES'],
+			ATTACHMENT_CATEGORY_FLASH		=> $user->lang['CAT_FLASH_FILES'],
+			ATTACHMENT_CATEGORY_QUICKTIME	=> $user->lang['CAT_QUICKTIME_FILES'],
+		);
+
+		$group_id = request_var('g', 0);
+		$action = (isset($_POST['add'])) ? 'add' : $action;
+
+		switch ($action)
+		{
+			case 'delete':
+
+				if (confirm_box(true))
+				{
+					$sql = 'SELECT group_name
+						FROM ' . EXTENSION_GROUPS_TABLE . "
+						WHERE group_id = $group_id";
+					$result = $db->sql_query($sql);
+					$group_name = (string) $db->sql_fetchfield('group_name');
+					$db->sql_freeresult($result);
+
+					$sql = 'DELETE
+						FROM ' . EXTENSION_GROUPS_TABLE . "
+						WHERE group_id = $group_id";
+					$db->sql_query($sql);
+
+					// Set corresponding Extensions to a pending Group
+					$sql = 'UPDATE ' . EXTENSIONS_TABLE . "
+						SET group_id = 0
+						WHERE group_id = $group_id";
+					$db->sql_query($sql);
+			
+					add_log('admin', 'LOG_ATTACH_EXTGROUP_DEL', $group_name);
+
+					$cache->destroy('_extensions');
+
+					trigger_error($user->lang['EXTENSION_GROUP_DELETED'] . adm_back_link($this->u_action));
+				}
+				else
+				{
+					confirm_box(false, $user->lang['CONFIRM_OPERATION'], build_hidden_fields(array(
+						'i'			=> $id,
+						'mode'		=> $mode,
+						'group_id'	=> $group_id,
+						'action'	=> 'delete',
+					)));
+				}
+
+			break;
+
+			case 'edit':
+
+				if (!$group_id)
+				{
+					trigger_error($user->lang['NO_EXT_GROUP_SPECIFIED'] . adm_back_link($this->u_action), E_USER_WARNING);
+				}
+
+				$sql = 'SELECT *
+					FROM ' . EXTENSION_GROUPS_TABLE . "
+					WHERE group_id = $group_id";
+				$result = $db->sql_query($sql);
+				$ext_group_row = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+
+				$forum_ids = (!$ext_group_row['allowed_forums']) ? array() : unserialize(trim($ext_group_row['allowed_forums']));
+
+			// no break;
+
+			case 'add':
+
+				if ($action == 'add')
+				{
+					$ext_group_row = array(
+						'group_name'	=> utf8_normalize_nfc(request_var('group_name', '', true)),
+						'cat_id'		=> 0,
+						'allow_group'	=> 1,
+						'allow_in_pm'	=> 1,
+						'allow_in_blog'	=> 1,
+						'upload_icon'	=> '',
+						'max_filesize'	=> 0,
+					);
+
+					$forum_ids = array();
+				}
+
+				$extensions = array();
+
+				$sql = 'SELECT *
+					FROM ' . EXTENSIONS_TABLE . "
+					WHERE group_id = $group_id
+						OR group_id = 0
+					ORDER BY extension";
+				$result = $db->sql_query($sql);
+				$extensions = $db->sql_fetchrowset($result);
+				$db->sql_freeresult($result);
+
+				if ($ext_group_row['max_filesize'] == 0)
+				{
+					$ext_group_row['max_filesize'] = (int) $config['max_filesize'];
+				}
+
+				$size_format = ($ext_group_row['max_filesize'] >= 1048576) ? 'mb' : (($ext_group_row['max_filesize'] >= 1024) ? 'kb' : 'b');
+
+				$ext_group_row['max_filesize'] = ($ext_group_row['max_filesize'] >= 1048576) ? round($ext_group_row['max_filesize'] / 1048576 * 100) / 100 : (($ext_group_row['max_filesize'] >= 1024) ? round($ext_group_row['max_filesize'] / 1024 * 100) / 100 : $ext_group_row['max_filesize']);
+
+				$img_path = $config['upload_icons_path'];
+
+				$filename_list = '';
+				$no_image_select = false;
+
+				$imglist = filelist($phpbb_root_path . $img_path);
+
+				if (sizeof($imglist))
+				{
+					$imglist = array_values($imglist);
+					$imglist = $imglist[0];
+
+					foreach ($imglist as $key => $img)
+					{
+						if (!$ext_group_row['upload_icon'])
+						{
+							$no_image_select = true;
+							$selected = '';
+						}
+						else
+						{
+							$selected = ($ext_group_row['upload_icon'] == $img) ? ' selected="selected"' : '';
+						}
+
+						if (strlen($img) > 255)
+						{
+							continue;
+						}
+
+						$filename_list .= '<option value="' . htmlspecialchars($img) . '"' . $selected . '>' . htmlspecialchars($img) . '</option>';
+					}
+				}
+
+				$i = 0;
+				$assigned_extensions = '';
+				foreach ($extensions as $num => $row)
+				{
+					if ($row['group_id'] == $group_id && $group_id)
+					{
+						$assigned_extensions .= ($i) ? ', ' . $row['extension'] : $row['extension'];
+						$i++;
+					}
+				}
+
+				$s_extension_options = '';
+				foreach ($extensions as $row)
+				{
+					$s_extension_options .= '<option' . ((!$row['group_id']) ? ' class="disabled"' : '') . ' value="' . $row['extension_id'] . '"' . (($row['group_id'] == $group_id && $group_id) ? ' selected="selected"' : '') . '>' . $row['extension'] . '</option>';
+				}
+
+				$template->assign_vars(array(
+					'PHPBB_ROOT_PATH'		=> $phpbb_root_path,
+					'IMG_PATH'				=> $img_path,
+					'ACTION'				=> $action,
+					'GROUP_ID'				=> $group_id,
+					'GROUP_NAME'			=> $ext_group_row['group_name'],
+					'ALLOW_GROUP'			=> $ext_group_row['allow_group'],
+					'ALLOW_IN_PM'			=> $ext_group_row['allow_in_pm'],
+					'ALLOW_IN_BLOG'			=> $ext_group_row['allow_in_blog'],
+					'UPLOAD_ICON_SRC'		=> $phpbb_root_path . $img_path . '/' . $ext_group_row['upload_icon'],
+					'EXTGROUP_FILESIZE'		=> $ext_group_row['max_filesize'],
+					'ASSIGNED_EXTENSIONS'	=> $assigned_extensions,
+
+					'S_CATEGORY_SELECT'			=> $this->category_select('special_category', $group_id, 'category'),
+					'S_EXT_GROUP_SIZE_OPTIONS'	=> size_select_options($size_format),
+					'S_EXTENSION_OPTIONS'		=> $s_extension_options,
+					'S_FILENAME_LIST'			=> $filename_list,
+					'S_EDIT_GROUP'				=> true,
+					'S_NO_IMAGE'				=> $no_image_select,
+					'S_FORUM_IDS'				=> (sizeof($forum_ids)) ? true : false,
+
+					'U_EXTENSIONS'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=extensions"),
+					'U_BACK'			=> $this->u_action,
+
+					'L_LEGEND'			=> $user->lang[strtoupper($action) . '_EXTENSION_GROUP'])
+				);
+
+				$s_forum_id_options = '';
+
+				$sql = 'SELECT forum_id, forum_name, parent_id, forum_type, left_id, right_id
+					FROM ' . FORUMS_TABLE . '
+					ORDER BY left_id ASC';
+				$result = $db->sql_query($sql, 600);
+
+				$right = $cat_right = $padding_inc = 0;
+				$padding = $forum_list = $holding = '';
+				$padding_store = array('0' => '');
+
+				while ($row = $db->sql_fetchrow($result))
+				{
+					if ($row['forum_type'] == FORUM_CAT && ($row['left_id'] + 1 == $row['right_id']))
+					{
+						// Non-postable forum with no subforums, don't display
+						continue;
+					}
+
+					if (!$auth->acl_get('f_list', $row['forum_id']))
+					{
+						// if the user does not have permissions to list this forum skip
+						continue;
+					}
+
+					if ($row['left_id'] < $right)
+					{
+						$padding .= '&nbsp; &nbsp;';
+						$padding_store[$row['parent_id']] = $padding;
+					}
+					else if ($row['left_id'] > $right + 1)
+					{
+						$padding = $padding_store[$row['parent_id']];
+					}
+
+					$right = $row['right_id'];
+
+					$selected = (in_array($row['forum_id'], $forum_ids)) ? ' selected="selected"' : '';
+
+					if ($row['left_id'] > $cat_right)
+					{
+						// make sure we don't forget anything
+						$s_forum_id_options .= $holding;
+						$holding = '';
+					}
+
+					if ($row['right_id'] - $row['left_id'] > 1)
+					{
+						$cat_right = max($cat_right, $row['right_id']);
+
+						$holding .= '<option value="' . $row['forum_id'] . '"' . (($row['forum_type'] == FORUM_POST) ? ' class="sep"' : '') . $selected . '>' . $padding . $row['forum_name'] . '</option>';
+					}
+					else
+					{
+						$s_forum_id_options .= $holding . '<option value="' . $row['forum_id'] . '"' . (($row['forum_type'] == FORUM_POST) ? ' class="sep"' : '') . $selected . '>' . $padding . $row['forum_name'] . '</option>';
+						$holding = '';
+					}
+				}
+
+				if ($holding)
+				{
+					$s_forum_id_options .= $holding;
+				}
+
+				$db->sql_freeresult($result);
+				unset($padding_store);
+
+				$template->assign_vars(array(
+					'S_FORUM_ID_OPTIONS'	=> $s_forum_id_options)
+				);
+			break;
+		}
+
+		$sql = 'SELECT *
+			FROM ' . EXTENSION_GROUPS_TABLE . '
+			ORDER BY allow_group DESC, allow_in_pm DESC, group_name';
+		$result = $db->sql_query($sql);
+
+		$old_allow_group = $old_allow_pm = 1;
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$s_add_spacer = ($old_allow_group != $row['allow_group'] || $old_allow_pm != $row['allow_in_pm']) ? true : false;
+
+			$template->assign_block_vars('groups', array(
+				'S_ADD_SPACER'		=> $s_add_spacer,
+				'S_ALLOWED_IN_PM'	=> ($row['allow_in_pm']) ? true : false,
+				'S_ALLOWED_IN_BLOG'	=> ($row['allow_in_blog']) ? true : false,
+				'S_GROUP_ALLOWED'	=> ($row['allow_group']) ? true : false,
+
+				'U_EDIT'		=> $this->u_action . "&amp;action=edit&amp;g={$row['group_id']}",
+				'U_DELETE'		=> $this->u_action . "&amp;action=delete&amp;g={$row['group_id']}",
+
+				'GROUP_NAME'	=> $row['group_name'],
+				'CATEGORY'		=> $cat_lang[$row['cat_id']],
+				)
+			);
+
+			$old_allow_group = $row['allow_group'];
+			$old_allow_pm = $row['allow_in_pm'];
+		}
+		$db->sql_freeresult($result);
+	}
+
+	/**
+	* Build Select for category items
+	*/
+	function category_select($select_name, $group_id = false, $key = '')
+	{
+		global $db, $user;
+
+		$types = array(
+			ATTACHMENT_CATEGORY_NONE		=> $user->lang['NO_FILE_CAT'],
+			ATTACHMENT_CATEGORY_IMAGE		=> $user->lang['CAT_IMAGES'],
+			ATTACHMENT_CATEGORY_WM			=> $user->lang['CAT_WM_FILES'],
+			ATTACHMENT_CATEGORY_RM			=> $user->lang['CAT_RM_FILES'],
+			ATTACHMENT_CATEGORY_FLASH		=> $user->lang['CAT_FLASH_FILES'],
+			ATTACHMENT_CATEGORY_QUICKTIME	=> $user->lang['CAT_QUICKTIME_FILES'],
+		);
+		
+		if ($group_id)
+		{
+			$sql = 'SELECT cat_id
+				FROM ' . EXTENSION_GROUPS_TABLE . '
+				WHERE group_id = ' . (int) $group_id;
+			$result = $db->sql_query($sql);
+
+			$cat_type = (!($row = $db->sql_fetchrow($result))) ? ATTACHMENT_CATEGORY_NONE : $row['cat_id'];
+
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+			$cat_type = ATTACHMENT_CATEGORY_NONE;
+		}
+		
+		$group_select = '<select name="' . $select_name . '"' . (($key) ? ' id="' . $key . '"' : '') . '>';
+
+		foreach ($types as $type => $mode)
+		{
+			$selected = ($type == $cat_type) ? ' selected="selected"' : '';
+			$group_select .= '<option value="' . $type . '"' . $selected . '>' . $mode . '</option>';
+		}
+
+		$group_select .= '</select>';
+
+		return $group_select;
+	}
+
 }
 ?>

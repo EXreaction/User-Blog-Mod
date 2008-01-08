@@ -442,7 +442,7 @@ class blog_data
 			'EDITED_MESSAGE'		=> $blog['edited_message'],
 			'BLOG_EXTRA'			=> '',
 			'PUB_DATE'				=> date('r', $blog['blog_time']),
-			'REPLIES'				=> ($reply_count == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $reply_count),
+			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
 			'USER_FULL'				=> user_data::$user[$user_id]['username_full'],
 			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
