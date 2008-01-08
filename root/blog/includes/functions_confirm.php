@@ -34,7 +34,7 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 	{
 		global $blog_urls;
 
-		if (false)//isset($blog_urls['self']))
+		if (isset($blog_urls['self']))
 		{
 			$action = $blog_urls['self'];
 		}

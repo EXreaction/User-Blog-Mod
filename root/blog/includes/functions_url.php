@@ -100,6 +100,10 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 				$url_data['page'] = user_data::$user[$user_id]['username'];
 			}
 		}
+		else if (isset($url_data['page']) && $user_id !== false)
+		{
+			$url_data['u'] = $user_id;
+		}
 
 		if ($reply_id)
 		{
