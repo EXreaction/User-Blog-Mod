@@ -49,7 +49,7 @@
 				<dd>
 					<div class="archive_sdmenu">
 						<!-- BEGIN archiverow -->
-							<span onclick="toggle_month({archiverow.S_ROW_COUNT});"><strong><img id="month_image_{archiverow.S_ROW_COUNT}" src="<!-- IF archiverow.S_ROW_COUNT > 0 -->{T_THEME_PATH}/images/plus.gif<!-- ELSE -->{T_THEME_PATH}/images/minus.gif<!-- ENDIF -->" alt="-" /> {archiverow.MONTH} {archiverow.YEAR}</strong></span>
+							<span onclick="toggle_month({archiverow.S_ROW_COUNT});" style="cursor: pointer;"><strong><img id="month_image_{archiverow.S_ROW_COUNT}" src="<!-- IF archiverow.S_ROW_COUNT > 0 -->{T_THEME_PATH}/images/plus.gif<!-- ELSE -->{T_THEME_PATH}/images/minus.gif<!-- ENDIF -->" alt="-" /> {archiverow.MONTH} {archiverow.YEAR}</strong></span>
 							<div id="month_{archiverow.S_ROW_COUNT}" <!-- IF archiverow.S_ROW_COUNT > 0 -->style="display: none;"<!-- ENDIF -->>
 								<!-- BEGIN monthrow -->
 									<dl class="panel">
