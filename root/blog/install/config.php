@@ -17,8 +17,8 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 */
 set_config('user_blog_enable', 1);
 set_config('user_blog_custom_profile_enable', 0);
-set_config('user_blog_text_limit', '50');
-set_config('user_blog_user_text_limit', '500');
+set_config('user_blog_text_limit', 200);
+set_config('user_blog_user_text_limit', 1000);
 set_config('user_blog_inform', '2');
 set_config('user_blog_always_show_blog_url', 0);
 set_config('user_blog_force_style', 0);
@@ -33,6 +33,8 @@ set_config('user_blog_search', 1);
 set_config('user_blog_search_type', 'fulltext_native');
 set_config('user_blog_min_rating', 1);
 set_config('user_blog_max_rating', 5);
+set_config('user_blog_enable_attachments', 1);
+set_config('user_blog_max_attachments', 3);
 
 set_config('user_blog_version', $user_blog_version);
 ?>

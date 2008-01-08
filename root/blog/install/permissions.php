@@ -34,6 +34,8 @@ $blog_permissions = array(
 		'u_blogurl',
 		'u_blogflash',
 		'u_blogmoderate',
+		'u_blogattach',
+		'u_blognolimitattach',
 		'm_blogapprove',
 		'm_blogedit',
 		'm_bloglockedit',

@@ -26,7 +26,7 @@ if ($cancel)
 }
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($blog_data->blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
+if (blog_data::$blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
 {
 	trigger_error('BLOG_EDIT_LOCKED');
 }
@@ -37,7 +37,7 @@ page_header($user->lang['DELETE_BLOG']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['DELETE_BLOG']);
 
-if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogdelete'))
+if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogdelete'))
 {
 	trigger_error('BLOG_ALREADY_DELETED');
 }
@@ -49,8 +49,20 @@ if (confirm_box(true))
 	$blog_plugins->plugin_do('blog_delete_confirm');
 
 	// if it has already been soft deleted, and we want to hard delete it
-	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
+	if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
 	{
+		// Delete the Attachments
+		$blog_attachment->get_attachment_data($blog_id);
+		if (count(blog_data::$blog[$blog_id]['attachment_data']))
+		{
+			foreach (blog_data::$blog[$blog_id]['attachment_data'] as $null => $data)
+			{
+				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
+				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
+				$db->sql_query($sql);
+			}
+		}
+
 		// delete the blog
 		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
@@ -108,7 +120,7 @@ if (confirm_box(true))
 }
 else
 {
-	if ($blog_data->blog[$blog_id]['blog_deleted'] != 0)
+	if (blog_data::$blog[$blog_id]['blog_deleted'] != 0)
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_BLOG');
 	}
@@ -117,5 +129,5 @@ else
 		confirm_box(false, 'DELETE_BLOG');
 	}
 }
-blog_meta_refresh(0, $blog_urls['view_blog'], true);
+blog_meta_refresh(0, $blog_urls['view_blog']);
 ?>

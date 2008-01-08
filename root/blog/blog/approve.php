@@ -36,7 +36,7 @@ generate_blog_breadcrumbs($user->lang['APPROVE_BLOG']);
 
 $blog_plugins->plugin_do('blog_approve');
 
-if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
+if (blog_data::$blog[$blog_id]['blog_approved'] == 0)
 {
 	if (confirm_box(true))
 	{
@@ -62,7 +62,7 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 
 		handle_blog_cache('approve_blog', $user_id);
 
-		handle_subscription('new_blog', censor_text($blog_data->blog[$blog_id]['blog_subject']));
+		handle_subscription('new_blog', censor_text(blog_data::$blog[$blog_id]['blog_subject']));
 
 		blog_meta_refresh(3, $blog_urls['view_blog']);
 
@@ -74,7 +74,7 @@ if ($blog_data->blog[$blog_id]['blog_approved'] == 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -95,11 +95,11 @@ else
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
 	trigger_error($message);
 }
-blog_meta_refresh(0, $blog_urls['view_blog'], true);
+blog_meta_refresh(0, $blog_urls['view_blog']);
 ?>

@@ -30,7 +30,7 @@ else
 }
 
 // if the blog was deleted and the person trying to view the blog is not a moderator that can view deleted blogs, give them a nice error. :P
-if ($blog_data->blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('m_blogdelete') && !$auth->acl_get('a_blogdelete'))
+if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('m_blogdelete') && !$auth->acl_get('a_blogdelete'))
 {
 	trigger_error('BLOG_DELETED');
 }
@@ -40,7 +40,7 @@ $user->add_lang('viewtopic');
 
 // Generate the breadcrumbs, setup the page header, and setup some variables we will use...
 generate_blog_breadcrumbs();
-page_header($blog_data->blog[$blog_id]['blog_subject']);
+page_header(blog_data::$blog[$blog_id]['blog_subject']);
 
 $total_replies = $reply_data->get_reply_data('reply_count', $blog_id, array('sort_days' => $sort_days));
 
@@ -56,6 +56,9 @@ else
 	$reply_ids = false;
 }
 
+// Get the Attachment Data
+$blog_attachment->get_attachment_data($blog_id, $reply_ids);
+
 $blog_plugins->plugin_do('view_blog_start');
 
 // Output some data
@@ -70,6 +73,7 @@ $template->assign_vars(array(
 // Parse the blog data and output it to the template
 $template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $user_data->handle_user_data($user_id));
 $user_data->handle_user_data($user_id, 'blogrow.custom_fields');
+$blog_attachment->output_attachment_data(blog_data::$blog[$blog_id]['attachment_data'], 'blogrow');
 
 $blog_plugins->plugin_do('view_blog_after_blogrow');
 
@@ -106,7 +110,7 @@ if ($total_replies > 0 || $sort_days != 0)
 		// use a foreach to easily output the data
 		foreach($reply_ids as $id)
 		{
-			$data = $reply_data->handle_reply_data($id) + $user_data->handle_user_data($reply_data->reply[$id]['user_id']);
+			$data = $reply_data->handle_reply_data($id) + $user_data->handle_user_data(reply_data::$reply[$id]['user_id']);
 
 			$blog_plugins->plugin_do_arg_ref('view_blog_reply_while', $data);
 
@@ -114,7 +118,9 @@ if ($total_replies > 0 || $sort_days != 0)
 			$template->assign_block_vars('replyrow', $data);
 
 			// output the custom fields
-			$user_data->handle_user_data($reply_data->reply[$id]['user_id'], 'replyrow.custom_fields');
+			$user_data->handle_user_data(reply_data::$reply[$id]['user_id'], 'replyrow.custom_fields');
+
+			$blog_attachment->output_attachment_data(reply_data::$reply[$id]['attachment_data'], 'replyrow');
 
 			unset($data);
 		}

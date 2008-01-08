@@ -167,6 +167,16 @@ if (confirm_box(true))
 				set_config('user_blog_force_style', 0);
 			}
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
+
+			// This is the last time it is used.
+			if (count($sql_array))
+			{
+				foreach ($sql_array as $sql)
+				{
+					$db->sql_query($sql);
+				}
+			}
+			unset($sql_array);
 		case '0.3.25' :
 		case '0.3.26' :
 			switch ($dbms)
@@ -369,14 +379,72 @@ if (confirm_box(true))
 			set_config('user_blog_min_rating', 1);
 			set_config('user_blog_max_rating', 5);
 			set_config('user_blog_enable_ratings', true);
-	}
+		case '0.3.36' :
+		case '0.3.37' :
+			if (version_compare(PHP_VERSION, '5.1.0') < 0)
+			{
+				trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
+			}
 
-	if (count($sql_array))
-	{
-		foreach ($sql_array as $sql)
-		{
-			$db->sql_query($sql);
-		}
+			set_config('user_blog_enable_attachments', 1);
+
+			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'attachments\'';
+			$result = $db->sql_query($sql);
+			if ($db->sql_fetchrow($result))
+			{
+				// They have already installed the attachments plugin
+				$sql = 'DELETE FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'attachments\'';
+				$db->sql_query($sql);
+			}
+			else
+			{
+				switch ($dbms)
+				{
+					case 'mysqli' :
+						$dbms_schema = 'mysql_schema.sql';
+					break;
+					default :
+						$dbms_schema = '' . $dbms . '_schema.sql';
+				}
+
+				if (!file_exists($phpbb_root_path . 'blog/update/0338/' . $dbms_schema))
+				{
+					trigger_error('SCHEMA_NOT_EXIST');
+				}
+
+				$remove_remarks = $dbmd[$dbms]['COMMENTS'];
+				$delimiter = $dbmd[$dbms]['DELIM'];
+
+				$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0338/' . $dbms_schema);
+
+				$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
+
+				$remove_remarks($sql_query);
+
+				$sql_query = split_sql_file($sql_query, $delimiter);
+
+				foreach ($sql_query as $sql)
+				{
+					if (!$db->sql_query($sql))
+					{
+						$error[] = $db->sql_error();
+					}
+				}
+				unset($sql_query);
+
+				$db_tool->sql_column_add(BLOGS_TABLE, 'blog_attachment', array('BOOL', 0));
+				$db_tool->sql_column_add(BLOGS_REPLY_TABLE, 'reply_attachment', array('BOOL', 0));
+				$db_tool->sql_column_add(EXTENSION_GROUPS_TABLE, 'allow_in_blog', array('BOOL', 0));
+				$blog_permissions = array(
+					'local'      => array(),
+					'global'   => array(
+						'u_blogattach',
+						'u_blognolimitattach',
+					)
+				);
+				$auth_admin->acl_add_option($blog_permissions);
+				set_config('user_blog_max_attachments', 3);
+			}
 	}
 
 	// update the version

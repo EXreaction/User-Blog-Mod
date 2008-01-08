@@ -75,8 +75,8 @@ if ($reply_id != 0)
 		trigger_error('REPLY_NOT_EXIST');
 	}
 
-	$reply_user_id = $reply_data->reply[$reply_id]['user_id'];
-	$blog_id = $reply_data->reply[$reply_id]['blog_id'];
+	$reply_user_id = reply_data::$reply[$reply_id]['user_id'];
+	$blog_id = reply_data::$reply[$reply_id]['blog_id'];
 
 	if (intval(request_var('start', -1)) == -1)
 	{
@@ -93,7 +93,7 @@ if ($blog_id != 0)
 		trigger_error('BLOG_NOT_EXIST');
 	}
 
-	$user_id = $blog_data->blog[$blog_id]['user_id'];
+	$user_id = blog_data::$blog[$blog_id]['user_id'];
 	get_zebra_info(array($user->data['user_id'], $user_id));
 	//get_user_settings(array($user_id, $user->data['user_id']));
 
@@ -108,7 +108,7 @@ if ($blog_id != 0)
 
 if ($user_id != 0)
 {
-	array_push($user_data->user_queue, $user_id);
+	array_push(user_data::$user_queue, $user_id);
 }
 
 if ($user_id != 0 && $blog_id == 0)
@@ -129,13 +129,13 @@ $user_data->get_user_data(false, true);
 update_edit_delete();
 
 // make sure they user they requested exists
-if ($user_id != 0 && !array_key_exists($user_id, $user_data->user))
+if ($user_id != 0 && !array_key_exists($user_id, user_data::$user))
 {
 	trigger_error('NO_USER');
 }
 
 // now that we got the user data, let us set another variable to shorten things up later
-$username = ($user_id != 0) ? $user_data->user[$user_id]['username'] : '';
+$username = ($user_id != 0) ? user_data::$user[$user_id]['username'] : '';
 
 // generate the blog urls
 generate_blog_urls();

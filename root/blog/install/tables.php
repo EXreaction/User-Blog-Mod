@@ -17,18 +17,8 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 */
 switch ($dbms)
 {
-	case 'mysql' :
-		if (version_compare($db->mysql_version, '4.1.3', '>='))
-		{
-			$dbms_schema = 'schemas/mysql_41_schema.sql';
-		}
-		else
-		{
-			$dbms_schema = 'schemas/mysql_40_schema.sql';
-		}
-	break;
 	case 'mysqli' :
-		$dbms_schema = 'schemas/mysql_41_schema.sql';
+		$dbms_schema = 'schemas/mysql_schema.sql';
 	break;
 	default :
 		$dbms_schema = 'schemas/' . $dbms . '_schema.sql';
@@ -63,4 +53,5 @@ unset($sql_query);
 * Alter Existing Tables -----------------------------------------------------------------------
 */
 $db_tool->sql_column_add(USERS_TABLE, 'blog_count', array('UINT', 0));
+$db_tool->sql_column_add(EXTENSION_GROUPS_TABLE, 'allow_in_blog', array('BOOL', 0));
 ?>

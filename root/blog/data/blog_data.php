@@ -21,7 +21,7 @@ if (!defined('IN_PHPBB'))
 class blog_data
 {
 	// this is our large array holding all the data
-	var $blog = array();
+	public static $blog = array();
 
 	/**
 	* Get Blogs
@@ -32,7 +32,7 @@ class blog_data
 	* @param int $id To input the wanted blog_id, this may be an array if you want to select more than 1
 	* @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
 	*/
-	function get_blog_data($mode, $id = 0, $selection_data = array())
+	public function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $cache;
 		global $blog_data, $reply_data, $user_data, $blog_plugins;
@@ -117,7 +117,7 @@ class blog_data
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
 				foreach ($id as $i)
 				{
-					if (!array_key_exists($i, $this->blog) && !in_array($id, $to_query))
+					if (!array_key_exists($i, self::$blog) && !in_array($id, $to_query))
 					{
 						$to_query[] = $i;
 					}
@@ -171,6 +171,7 @@ class blog_data
 		$temp = compact('sql_array', 'sql_where');
 		$blog_plugins->plugin_do_arg_ref('blog_data_sql', $temp);
 		extract($temp);
+		unset($temp);
 
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
 		$sql = $db->sql_build_query('SELECT', $sql_array);
@@ -187,22 +188,25 @@ class blog_data
 		{
 			$blog_plugins->plugin_do_arg_ref('blog_data_while', $row);
 
+			// Initialize the attachment data
+			$row['attachment_data'] = array();
+
 			// now put all the data in the blog array
-			$this->blog[$row['blog_id']] = $row;
+			self::$blog[$row['blog_id']] = $row;
 
 			// add the blog owners' user_ids to the user_queue
-			array_push($user_data->user_queue, $row['user_id']);
+			array_push(user_data::$user_queue, $row['user_id']);
 
 			// Add the edit user to the user_queue, if there is one
 			if ($row['blog_edit_count'] != 0)
 			{
-				array_push($user_data->user_queue, $row['blog_edit_user']);
+				array_push(user_data::$user_queue, $row['blog_edit_user']);
 			}
 
 			// Add the deleter user to the user_queue, if there is one
 			if ($row['blog_deleted'] != 0)
 			{
-				array_push($user_data->user_queue, $row['blog_deleted']);
+				array_push(user_data::$user_queue, $row['blog_deleted']);
 			}
 
 			// make sure we don't record the same blog id in the list that we return more than once
@@ -231,7 +235,7 @@ class blog_data
 	* @param int $id The ID we will select (used for misc things like the user_count mode, where we count the # of blogs by a user_id (in that case $id would be the $user_id))
 	* @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
 	*/
-	function get_blog_info($mode, $id = 0, $selection_data = array())
+	public function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $cache, $user, $auth;
 		global $reply_data, $user_data, $blog_plugins;
@@ -371,19 +375,19 @@ class blog_data
 	}
 
 	/**
-	 * Handle blog data
-	 *
-	 * To handle the raw data gotten from the database
-	 *
-	 * @param int $id The id of the blog we want to handle
-	 * @param int|bool $trim_text If we want to trim the text or not(if true we will trim with the setting in $config['user_blog_user_text_limit'], else if it is an integer we will trim the text to that length)
-	 */
-	function handle_blog_data($id, $trim_text = false)
+	* Handle blog data
+	*
+	* To handle the raw data gotten from the database
+	*
+	* @param int $id The id of the blog we want to handle
+	* @param int|bool $trim_text If we want to trim the text or not(if true we will trim with the setting in $config['user_blog_user_text_limit'], else if it is an integer we will trim the text to that length)
+	*/
+	public function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $reply_data, $user_data, $blog_plugins, $category_id;
+		global $blog_attachment, $reply_data, $user_data, $blog_plugins, $category_id;
 
-		$blog = &$this->blog[$id];
+		$blog = &self::$blog[$id];
 		$user_id = $blog['user_id'];
 
 		$blog_plugins->plugin_do('blog_handle_data_start');
@@ -403,11 +407,15 @@ class blog_data
 		// censor the text of the subject
 		$blog_subject = censor_text($blog['blog_subject']);
 
-		if (!$shortened)
+		// Parse BBCode and prepare the message for viewing
+		$bbcode_options = (($blog['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($blog['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($blog['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+		$blog_text = generate_text_for_display($blog_text, $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options);
+
+		if (!$shortened && $config['user_blog_enable_ratings'])
 		{
-			// Parse BBCode and prepare the message for viewing
-			$bbcode_options = (($blog['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($blog['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($blog['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-			$blog_text = generate_text_for_display($blog_text, $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options);
+			$rating_data = get_user_blog_rating_data($user->data['user_id']);
+			$rate_url = blog_url($user_id, $id, false, array('page' => 'rate', 'rating' => '*rating*'));
+			$delete_rate_url = blog_url($user_id, $id, false, array('page' => 'rate', 'delete' => $id));
 		}
 
 		// For Highlighting
@@ -420,35 +428,42 @@ class blog_data
 		$reply_count = $reply_data->get_reply_data('reply_count', $id);
 
 		$blog['blog_read_count'] = ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count'];
+
+		// Attachments
+		$update_count = array();
+		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
+
 		$blog_row = array(	
-			'BLOG_ID'			=> $id,
-			'BLOG_MESSAGE'		=> $blog_text,
-			'DATE'				=> $user->format_date($blog['blog_time']),
-			'DELETED_MESSAGE'	=> $blog['deleted_message'],
-			'EDIT_REASON'		=> $blog['edit_reason'],
-			'EDITED_MESSAGE'	=> $blog['edited_message'],
-			'BLOG_EXTRA'		=> '',
-			'PUB_DATE'			=> date('r', $blog['blog_time']),
-			'REPLIES'			=> ($reply_count == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $reply_count),
-			'TITLE'				=> $blog_subject,
-			'USER_FULL'			=> $user_data->user[$user_id]['username_full'],
-			'VIEWS'				=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
-			'RATING_STRING'		=> (!$shortened) ? get_star_rating($blog['rating'], $id) : false,
+			'BLOG_ID'				=> $id,
+			'BLOG_MESSAGE'			=> $blog_text,
+			'DATE'					=> $user->format_date($blog['blog_time']),
+			'DELETED_MESSAGE'		=> $blog['deleted_message'],
+			'EDIT_REASON'			=> $blog['edit_reason'],
+			'EDITED_MESSAGE'		=> $blog['edited_message'],
+			'BLOG_EXTRA'			=> '',
+			'PUB_DATE'				=> date('r', $blog['blog_time']),
+			'REPLIES'				=> ($reply_count == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $reply_count),
+			'TITLE'					=> $blog_subject,
+			'USER_FULL'				=> user_data::$user[$user_id]['username_full'],
+			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
+			'RATING_STRING'			=> (!$shortened && $config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 
-			'U_APPROVE'			=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
-			'U_DELETE'			=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
-			'U_DIGG'			=> (!$shortened) ? 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']) : '',
-			'U_EDIT'			=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
-			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
-			'U_REPORT'			=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
-			'U_VIEW'			=> blog_url($user_id, $id),
-			'U_VIEW_PERMANENT'	=> blog_url($user_id, $id, false, array(), array(), true),
-			'U_WARN'			=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
+			'U_APPROVE'				=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
+			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
+			'U_DIGG'				=> (!$shortened) ? 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']) : '',
+			'U_EDIT'				=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
+			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPORT'				=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
+			'U_VIEW'				=> blog_url($user_id, $id),
+			'U_VIEW_PERMANENT'		=> blog_url($user_id, $id, false, array(), array(), true),
+			'U_WARN'				=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
-			'S_DELETED'			=> ($blog['blog_deleted']) ? true : false,
-			'S_REPORTED'		=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
-			'S_SHORTENED'		=> $shortened,
-			'S_UNAPPROVED'		=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove'))) ? true : false,
+			'S_DELETED'				=> ($blog['blog_deleted']) ? true : false,
+			'S_REPORTED'			=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
+			'S_SHORTENED'			=> $shortened,
+			'S_UNAPPROVED'			=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove'))) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog['blog_attachment'] && count($blog['attachment_data'])) ? true : false,
+			'S_HAS_ATTACHMENTS'		=> ($blog['blog_attachment']) ? true : false,
 		);
 
 		$blog_plugins->plugin_do_arg_ref('blog_handle_data_end', $blog_row);

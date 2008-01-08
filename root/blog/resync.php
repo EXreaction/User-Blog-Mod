@@ -35,5 +35,5 @@ else
 	confirm_box(false, 'RESYNC_BLOG');
 }
 
-blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
+blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"));
 ?>

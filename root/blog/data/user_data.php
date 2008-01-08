@@ -21,20 +21,20 @@ if (!defined('IN_PHPBB'))
 class user_data
 {
 	// this is our large array holding all the data
-	var $user = array();
+	public static $user = array();
 
 	// this holds a user_queue of the user's data when requesting replies so we can cut down on queries
-	var $user_queue = array();
+	public static $user_queue = array();
 
 	/**
-	 * Get user data
-	 *
-	 * grabs the data on the user and places it in the $this->user array
-	 *
-	 * @param int|bool $id The user_id (or multiple user_ids if given an array) of the user we want to grab the data for
-	 * @param bool $user_queue If user_queue is true then we just grab the user_ids from the user_queue, otherwise we select data from $id.
-	 */
-	function get_user_data($id, $user_queue = false, $username = false)
+	* Get user data
+	*
+	* grabs the data on the user and places it in the self::$user array
+	*
+	* @param int|bool $id The user_id (or multiple user_ids if given an array) of the user we want to grab the data for
+	* @param bool $user_queue If user_queue is true then we just grab the user_ids from the user_queue, otherwise we select data from $id.
+	*/
+	public function get_user_data($id, $user_queue = false, $username = false)
 	{
 		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp;
 		global $blog_data, $reply_data, $blog_plugins;
@@ -42,7 +42,7 @@ class user_data
 		// if we are using the user_queue, set $user_id as that for consistency
 		if ($user_queue)
 		{
-			$id = $this->user_queue;
+			$id = self::$user_queue;
 		}
 
 		$blog_plugins->plugin_do('user_data_start');
@@ -67,7 +67,7 @@ class user_data
 
 			foreach ($id as $i)
 			{
-				if ( (!array_key_exists($i, $this->user)) && (!in_array($i, $users_to_query)) )
+				if ( (!array_key_exists($i, self::$user)) && (!in_array($i, $users_to_query)) )
 				{
 					$users_to_query[] = $i;
 				}
@@ -168,7 +168,7 @@ class user_data
 			}
 
 			// now lets put everything in the user array
-			$this->user[$user_id] = $row;
+			self::$user[$user_id] = $row;
 		}
 		$db->sql_freeresult($result);
 		unset($status_data, $row);
@@ -176,7 +176,7 @@ class user_data
 		// if we did use the user_queue, reset it
 		if ($user_queue)
 		{
-			$this->user_queue = array();
+			self::$user_queue = array();
 		}
 
 		if ($username)
@@ -197,7 +197,7 @@ class user_data
 				$db->sql_freeresult($result);
 				$update_time = $config['load_online_time'] * 60;
 
-				$this->user[$user_id]['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
+				self::$user[$user_id]['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
 				unset($status_data);
 
 				return $user_id;
@@ -212,16 +212,16 @@ class user_data
 			// replace any non-existing users with the anonymous user.
 			foreach ($id as $i)
 			{
-				if (!array_key_exists($i, $this->user))
+				if (!array_key_exists($i, self::$user))
 				{
-					$this->user[$i] = $this->user[1];
+					self::$user[$i] = self::$user[1];
 				}
 			}
 		}
 	}
 
 	// Gets the user_id from the username
-	function get_id_by_username($username)
+	public function get_id_by_username($username)
 	{
 		global $db;
 
@@ -235,7 +235,7 @@ class user_data
 	
 	// prepares the user data for output to the template, and outputs the custom profile rows when requested
 	// Mostly for shortenting up code
-	function handle_user_data($user_id, $output_custom = false)
+	public function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
 		global $blog_data, $reply_data, $zebra_list, $blog_plugins;
@@ -245,34 +245,34 @@ class user_data
 			$output_data = array(
 				'USER_ID'			=> $user_id,
 
-				'AVATAR'			=> $this->user[$user_id]['avatar'],
-				'POSTER_FROM'		=> $this->user[$user_id]['user_from'],
-				'POSTER_JOINED'		=> $user->format_date($this->user[$user_id]['user_regdate']),
-				'POSTER_POSTS'		=> $this->user[$user_id]['user_posts'],
-				'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, $this->user[$user_id]['rank_img']),
-				'RANK_IMG_SRC'		=> $this->user[$user_id]['rank_img_src'],
-				'RANK_TITLE'		=> $this->user[$user_id]['rank_title'],
-				'SIGNATURE'			=> $this->user[$user_id]['user_sig'],
-				'STATUS_IMG'		=> (($this->user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE')),
-				'USERNAME'			=> $this->user[$user_id]['username'],
-				'USER_COLOUR'		=> $this->user[$user_id]['user_colour'],
-				'USER_FULL'			=> $this->user[$user_id]['username_full'],
+				'AVATAR'			=> self::$user[$user_id]['avatar'],
+				'POSTER_FROM'		=> self::$user[$user_id]['user_from'],
+				'POSTER_JOINED'		=> $user->format_date(self::$user[$user_id]['user_regdate']),
+				'POSTER_POSTS'		=> self::$user[$user_id]['user_posts'],
+				'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, self::$user[$user_id]['rank_img']),
+				'RANK_IMG_SRC'		=> self::$user[$user_id]['rank_img_src'],
+				'RANK_TITLE'		=> self::$user[$user_id]['rank_title'],
+				'SIGNATURE'			=> self::$user[$user_id]['user_sig'],
+				'STATUS_IMG'		=> ((self::$user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE')),
+				'USERNAME'			=> self::$user[$user_id]['username'],
+				'USER_COLOUR'		=> self::$user[$user_id]['user_colour'],
+				'USER_FULL'			=> self::$user[$user_id]['username_full'],
 				'USER_FOE'			=> (isset($zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $zebra_list[$user->data['user_id']]['foe'])) ? true : false,
 
-				'L_USER_FOE'		=> sprintf($user->lang['POSTED_BY_FOE'], ''),//'<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . $this->user[$user_id]['username_full'] . '</a>'),
+				'L_USER_FOE'		=> sprintf($user->lang['POSTED_BY_FOE'], ''),//'<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id") . '">' . self::$user[$user_id]['username_full'] . '</a>'),
 
-				'U_AIM'				=> $this->user[$user_id]['aim_url'],
-				'U_EMAIL'			=> $this->user[$user_id]['email_url'],
-				'U_ICQ'				=> $this->user[$user_id]['icq_url'],
-				'U_JABBER'			=> $this->user[$user_id]['jabber_url'],
-				'U_MSN'				=> $this->user[$user_id]['msn_url'],
-				'U_PM'				=> $this->user[$user_id]['pm_url'],
+				'U_AIM'				=> self::$user[$user_id]['aim_url'],
+				'U_EMAIL'			=> self::$user[$user_id]['email_url'],
+				'U_ICQ'				=> self::$user[$user_id]['icq_url'],
+				'U_JABBER'			=> self::$user[$user_id]['jabber_url'],
+				'U_MSN'				=> self::$user[$user_id]['msn_url'],
+				'U_PM'				=> self::$user[$user_id]['pm_url'],
 				'U_VIEW_PROFILE'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id"),
-				'U_WWW'				=> $this->user[$user_id]['user_website'],
-				'U_YIM'				=> $this->user[$user_id]['yim_url'],
+				'U_WWW'				=> self::$user[$user_id]['user_website'],
+				'U_YIM'				=> self::$user[$user_id]['yim_url'],
 
-				'S_CUSTOM_FIELDS'	=> (isset($this->user[$user_id]['cp_row']['blockrow'])) ? true : false,
-				'S_ONLINE'			=> $this->user[$user_id]['status'],
+				'S_CUSTOM_FIELDS'	=> (isset(self::$user[$user_id]['cp_row']['blockrow'])) ? true : false,
+				'S_ONLINE'			=> self::$user[$user_id]['status'],
 
 				'USER_EXTRA'		=> '',
 			);
@@ -289,9 +289,9 @@ class user_data
 			if ($config['user_blog_custom_profile_enable'])
 			{	
 				// output the custom profile fields
-				if (isset($this->user[$user_id]['cp_row']['blockrow']))
+				if (isset(self::$user[$user_id]['cp_row']['blockrow']))
 				{
-					foreach ($this->user[$user_id]['cp_row']['blockrow'] as $row)
+					foreach (self::$user[$user_id]['cp_row']['blockrow'] as $row)
 					{
 						$template->assign_block_vars($output_custom, array(
 							'PROFILE_FIELD_NAME'	=> $row['PROFILE_FIELD_NAME'],
@@ -302,7 +302,7 @@ class user_data
 			}
 
 			// add the blog links in the custom fields
-			add_blog_links($user_id, $output_custom, $this->user[$user_id]);
+			add_blog_links($user_id, $output_custom, self::$user[$user_id]);
 		}
 	}
 }

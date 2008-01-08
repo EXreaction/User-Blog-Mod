@@ -20,13 +20,15 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'AVERAGE_RATING'				=> 'Average Rating',
+	'AVERAGE_OF_RATING'				=> 'Average of %s rating',
+	'AVERAGE_OF_RATINGS'			=> 'Average of %s ratings',
 
 	'BLOG_REPORTED'					=> 'Blog has been reported, click to close the report',
 	'BLOG_REPORTED_SHORT'			=> 'This Blog has been reported.',
 	'BLOG_UNAPPROVED'				=> 'Blog Needs Approval',
 
 	'CLICK_HERE_SHOW_POST'			=> 'Click here to show the post.',
+	'COMMENTS'						=> 'Comments',
 
 	'DELETED_MESSAGE'				=> 'These blogs have all been deleted.',
 	'DELETED_MESSAGE_EXPLAIN'		=> 'There is a link in every "This blog was deleted by..." section to un-delete the blog.',

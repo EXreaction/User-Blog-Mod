@@ -70,6 +70,15 @@ if ($submit || $preview || $refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
 	}
+
+	// Attachments
+	$blog_attachment->get_submitted_attachment_data();
+	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $reply_text);
+
+	if (sizeof($blog_attachment->warn_msg))
+	{
+		$error[] = implode('<br />', $blog_attachment->warn_msg);
+	}
 }
 else
 {
@@ -81,27 +90,26 @@ else
 	{
 		if ($reply_id != 0)
 		{
-			$reply_subject = 'RE: ' . $reply_data->reply[$reply_id]['reply_subject'];
-			decode_message($reply_data->reply[$reply_id]['reply_text'], $reply_data->reply[$reply_id]['bbcode_uid']);
-			$reply_text = '[quote="' . $user_data->user[$reply_user_id]['username'] . '"]' . $reply_data->reply[$reply_id]['reply_text'] . '[/quote]';;
+			$reply_subject = 'RE: ' . reply_data::$reply[$reply_id]['reply_subject'];
+			decode_message(reply_data::$reply[$reply_id]['reply_text'], reply_data::$reply[$reply_id]['bbcode_uid']);
+			$reply_text = '[quote="' . user_data::$user[$reply_user_id]['username'] . '"]' . reply_data::$reply[$reply_id]['reply_text'] . '[/quote]';;
 		}
 		else
 		{
-			decode_message($blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['bbcode_uid']);
-			$reply_subject = 'RE: ' . $blog_data->blog[$blog_id]['blog_subject'];
-			$reply_text = '[quote="' . $user_data->user[$user_id]['username'] . '"]' . $blog_data->blog[$blog_id]['blog_text'] . '[/quote]';;
+			decode_message(blog_data::$blog[$blog_id]['blog_text'], blog_data::$blog[$blog_id]['bbcode_uid']);
+			$reply_subject = 'RE: ' . blog_data::$blog[$blog_id]['blog_subject'];
+			$reply_text = '[quote="' . user_data::$user[$user_id]['username'] . '"]' . blog_data::$blog[$blog_id]['blog_text'] . '[/quote]';;
 		}
 	}
 	else
 	{
-		$reply_subject = 'RE: ' . $blog_data->blog[$blog_id]['blog_subject'];
+		$reply_subject = 'RE: ' . blog_data::$blog[$blog_id]['blog_subject'];
 	}
 }
 
-$temp = array('subject' => $reply_subject, 'text' => $reply_text);
+$temp = compact('reply_subject', 'reply_text', 'error');
 $blog_plugins->plugin_do_arg_ref('reply_add_after_setup', $temp);
-$reply_subject = $temp['subject'];
-$reply_text = $temp['text'];
+extract($temp);
 unset($temp);
 
 // if they did not submit or they have an error
@@ -111,6 +119,29 @@ if ( (!$submit) || (sizeof($error)) )
 	if ($preview && !sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
+
+		// Attachments
+		if (sizeof($blog_attachment->attachment_data))
+		{
+			$template->assign_var('S_HAS_ATTACHMENTS', true);
+
+			$update_count = array();
+			$attachment_data = $blog_attachment->attachment_data;
+
+			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
+
+			if (count($attachment_data))
+			{
+				foreach ($attachment_data as $row)
+				{
+					$template->assign_block_vars('attachment', array(
+						'DISPLAY_ATTACHMENT' => $row,
+					));
+				}
+			}
+
+			unset($attachment_data);
+		}
 
 		$blog_plugins->plugin_do_arg_ref('reply_add_preview', $preview_message);
 
@@ -161,6 +192,7 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
 		'reply_edit_reason'		=> '',
+		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
 	$blog_plugins->plugin_do_arg_ref('reply_add_sql', $sql_data);
@@ -173,6 +205,8 @@ else // user submitted and there are no errors
 
 	// update the URLS to include the new reply_id
 	generate_blog_urls();
+
+	$blog_attachment->update_attachment_data(false, $reply_id);
 
 	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
 
@@ -203,7 +237,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 */
 function handle_basic_posting_data($page = 'blog', $mode = 'add')
 {
-	global $blog_plugins, $template, $user;
+	global $auth, $blog_attachment, $blog_plugins, $config, $template, $user, $phpbb_root_path, $phpEx;
 
 	$panels = array(
 		'options-panel'			=> $user->lang['OPTIONS'],
@@ -39,9 +39,12 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 			$panels['categories-panel'] = $user->lang['CATEGORIES'];
 		}
 
-		// Build permissions box
-		permission_settings_builder(true, $mode);
-		$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+		if ($user->data['is_registered'])
+		{
+			// Build permissions box
+			permission_settings_builder(true, $mode);
+			$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+		}
 
 		// Some variables
 		$template->assign_vars(array(
@@ -65,6 +68,23 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 		handle_captcha('build');
 	}
 
+	// Attachments
+	$attachment_data = $blog_attachment->attachment_data;
+	$filename_data = $blog_attachment->filename_data;
+	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
+	posting_gen_inline_attachments($attachment_data);
+	if (($auth->acl_get('u_blogattach')) && $config['allow_attachments'] && $form_enctype)
+	{
+		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
+
+		if (count($allowed_extensions['_allowed_']))
+		{
+			$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
+
+			$panels['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
+		}
+	}
+
 	// Add the forum key
 	add_form_key('postform');
 
@@ -80,6 +100,10 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 		'EXTRA_ABOVE_SUBMIT'		=> $above_submit,
 		'EXTRA_PANELS'				=> $panel_data,
 		'JS_PANELS_LIST'			=> "'" . implode("', '", array_keys($panels)) . "'",
+
+		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
+		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
+		'S_FORM_ENCTYPE'			=> $form_enctype,
 	));
 
 	foreach ($panels as $name => $title)

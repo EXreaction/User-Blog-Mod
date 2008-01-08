@@ -18,16 +18,16 @@ if (!defined('IN_PHPBB'))
 */
 class blog_plugins
 {
-	var $plugins = array();
-	var $available_plugins = array();
-	var $to_do = array();
+	public $plugins = array();
+	public $available_plugins = array();
+	private $to_do = array();
 
 	/**
 	* Load the required plugins
 	*
 	* @param bool $load_all - set to yes to load all plugins (including uninstalled).  This should only be used when displaying a list of available plugins (it is more intensive on the server and makes the page take longer to load).
 	*/
-	function load_plugins($load_all = false)
+	public function load_plugins($load_all = false)
 	{
 		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
 
@@ -101,7 +101,7 @@ class blog_plugins
 		return true;
 	}
 
-	function plugin_do($what)
+	public function plugin_do($what)
 	{
 		if (isset($this->to_do[$what]))
 		{
@@ -112,7 +112,7 @@ class blog_plugins
 		}
 	}
 
-	function plugin_do_arg($what, $args)
+	public function plugin_do_arg($what, $args)
 	{
 		if (isset($this->to_do[$what]))
 		{
@@ -123,7 +123,7 @@ class blog_plugins
 		}
 	}
 
-	function plugin_do_arg_ref($what, &$args)
+	public function plugin_do_arg_ref($what, &$args)
 	{
 		if (isset($this->to_do[$what]))
 		{
@@ -134,7 +134,7 @@ class blog_plugins
 		}
 	}
 
-	function plugin_install($which)
+	public function plugin_install($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 
@@ -171,7 +171,7 @@ class blog_plugins
 		$cache->purge();
 	}
 
-	function plugin_uninstall($which)
+	public function plugin_uninstall($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 		if (!array_key_exists($which, $this->plugins))
@@ -197,7 +197,7 @@ class blog_plugins
 		$cache->purge();
 	}
 
-	function plugin_update($which)
+	public function plugin_update($which)
 	{
 		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 		if (!array_key_exists($which, $this->plugins))
@@ -247,7 +247,7 @@ class blog_plugins
 		}
 	}
 
-	function plugin_enable($which)
+	public function plugin_enable($which)
 	{
 		global $db;
 
@@ -265,7 +265,7 @@ class blog_plugins
 		handle_blog_cache('plugins');
 	}
 
-	function plugin_disable($which)
+	public function plugin_disable($which)
 	{
 		global $db;
 

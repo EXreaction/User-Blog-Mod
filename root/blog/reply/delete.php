@@ -29,7 +29,7 @@ if ($cancel)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if ($reply_data->reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
+if (reply_data::$reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -47,8 +47,20 @@ if (confirm_box(true))
 	$blog_plugins->plugin_do('reply_delete_confirm');
 
 	// if it has already been soft deleted
-	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
+	if (reply_data::$reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
 	{
+		// Delete the Attachments
+		$blog_attachment->get_attachment_data(false, $reply_id);
+		if (count(reply_data::$reply[$reply_id]['attachment_data']))
+		{
+			foreach (reply_data::$reply[$reply_id]['attachment_data'] as $null => $data)
+			{
+				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
+				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
+				$db->sql_query($sql);
+			}
+		}
+
 		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = ' . intval($reply_id);
 		$db->sql_query($sql);
 
@@ -56,7 +68,7 @@ if (confirm_box(true))
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = blog_real_reply_count - 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 	}
-	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
+	else if (reply_data::$reply[$reply_id]['reply_deleted'] == 0)
 	{
 		$blog_search->index_remove($blog_id, $reply_id);
 
@@ -79,7 +91,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
@@ -88,16 +100,16 @@ if (confirm_box(true))
 else
 {
 	// if it has already been soft deleted
-	if ($reply_data->reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
+	if (reply_data::$reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
 	{
 		confirm_box(false, 'PERMANENTLY_DELETE_REPLY');
 	}
-	else if ($reply_data->reply[$reply_id]['reply_deleted'] == 0)
+	else if (reply_data::$reply[$reply_id]['reply_deleted'] == 0)
 	{
 		confirm_box(false, 'DELETE_REPLY');
 	}
 }
 
 // they pressed No, so redirect them
-blog_meta_refresh(0, $blog_urls['view_reply'], true);
+blog_meta_refresh(0, $blog_urls['view_reply']);
 ?>

@@ -37,7 +37,7 @@ generate_blog_breadcrumbs($user->lang['REPORT_BLOG']);
 $blog_plugins->plugin_do('blog_report_start');
 
 // To close the reports
-if ($blog_data->blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'))
+if (blog_data::$blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'))
 {
 	if (confirm_box(true))
 	{
@@ -63,7 +63,7 @@ else
 {
 	if (confirm_box(true))
 	{
-		if (!$blog_data->blog[$blog_id]['blog_reported'])
+		if (!blog_data::$blog[$blog_id]['blog_reported'])
 		{
 			$sql = 'UPDATE ' . BLOGS_TABLE . '
 				SET blog_reported = 1
@@ -83,5 +83,5 @@ else
 		confirm_box(false, 'BLOG_REPORT');
 	}
 }
-blog_meta_refresh(0, $blog_urls['view_blog'], true);
+blog_meta_refresh(0, $blog_urls['view_blog']);
 ?>

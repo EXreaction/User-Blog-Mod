@@ -25,10 +25,10 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 		return true;
 	}
 
-	if ($blog_id !== false && isset($blog_data->blog[$blog_id]))
+	if ($blog_id !== false && isset(blog_data::$blog[$blog_id]))
 	{
-		$var = $blog_data->blog[$blog_id];
-		$user_id = $blog_data->blog[$blog_id]['user_id'];
+		$var = blog_data::$blog[$blog_id];
+		$user_id = blog_data::$blog[$blog_id]['user_id'];
 	}
 	else if ($user_id !== false)
 	{
@@ -151,12 +151,12 @@ function permission_settings_builder($send_to_template = true, $mode = 'add')
 		return;
 	}
 
-	if ($mode == 'edit' && isset($blog_data->blog[$blog_id]))
+	if ($mode == 'edit' && isset(blog_data::$blog[$blog_id]))
 	{
-		$perm_guest = (request_var('perm_guest', -1) != -1) ? request_var('perm_guest', -1) : $blog_data->blog[$blog_id]['perm_guest'];
-		$perm_registered = (request_var('perm_registered', -1) != -1) ? request_var('perm_registered', -1) : $blog_data->blog[$blog_id]['perm_registered'];
-		$perm_foe = (request_var('perm_foe', -1) != -1) ? request_var('perm_foe', -1) : $blog_data->blog[$blog_id]['perm_foe'];
-		$perm_friend = (request_var('perm_friend', -1) != -1) ? request_var('perm_friend', -1) : $blog_data->blog[$blog_id]['perm_friend'];
+		$perm_guest = (request_var('perm_guest', -1) != -1) ? request_var('perm_guest', -1) : blog_data::$blog[$blog_id]['perm_guest'];
+		$perm_registered = (request_var('perm_registered', -1) != -1) ? request_var('perm_registered', -1) : blog_data::$blog[$blog_id]['perm_registered'];
+		$perm_foe = (request_var('perm_foe', -1) != -1) ? request_var('perm_foe', -1) : blog_data::$blog[$blog_id]['perm_foe'];
+		$perm_friend = (request_var('perm_friend', -1) != -1) ? request_var('perm_friend', -1) : blog_data::$blog[$blog_id]['perm_friend'];
 	}
 	else if (isset($user_settings[$user->data['user_id']]))
 	{
@@ -247,12 +247,12 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 					$is_auth = ($auth->acl_get('u_blogpost')) ? true : false;
 				break;
 				case 'edit' :
-					$is_auth = ($user->data['user_id'] != ANONYMOUS && ($auth->acl_get('u_blogedit') && ($user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogedit'))) ? true : false;
+					$is_auth = ($user->data['user_id'] != ANONYMOUS && ($auth->acl_get('u_blogedit') && ($user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_get('m_blogedit'))) ? true : false;
 				break;
 				case 'delete' :
-					if ($blog_data->blog[$blog_id]['blog_deleted'] == 0 || $auth->acl_get('a_blogdelete'))
+					if (blog_data::$blog[$blog_id]['blog_deleted'] == 0 || $auth->acl_get('a_blogdelete'))
 					{
-						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogdelete') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogdelete') || $auth->acl_get('a_blogdelete'))) ? true : false;
+						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogdelete') && $user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_get('m_blogdelete') || $auth->acl_get('a_blogdelete'))) ? true : false;
 					}
 				break;
 				case 'undelete' :
@@ -273,12 +273,12 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 						$is_auth = ($auth->acl_get('u_blogreply') && handle_user_blog_permissions($blog_id, false, 'reply')) ? true : false;
 				break;
 				case 'edit' :
-					$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplyedit') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_get('m_blogreplyedit'))) ? true : false;
+					$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplyedit') && $user->data['user_id'] == reply_data::$reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_get('m_blogreplyedit'))) ? true : false;
 				break;
 				case 'delete' :
-					if ($reply_data->reply[$reply_id]['reply_deleted'] == 0 || $auth->acl_get('a_blogreplydelete'))
+					if (reply_data::$reply[$reply_id]['reply_deleted'] == 0 || $auth->acl_get('a_blogreplydelete'))
 					{
-						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == $reply_data->reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == $blog_data->blog[$blog_id]['user_id']) || $auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete'))) ? true : false;
+						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == reply_data::$reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete'))) ? true : false;
 					}
 				break;
 				case 'undelete' :

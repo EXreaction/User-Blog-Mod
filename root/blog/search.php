@@ -161,9 +161,9 @@ if ($keywords || $author)
 		{
 			if (isset($id['blog_id']))
 			{
-				if (isset($blog_data->blog[$id['blog_id']]))
+				if (isset(blog_data::$blog[$id['blog_id']]))
 				{
-					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data($blog_data->blog[$id['blog_id']]['user_id']));
+					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data(blog_data::$blog[$id['blog_id']]['user_id']));
 				}
 				else
 				{
@@ -173,7 +173,7 @@ if ($keywords || $author)
 			}
 			else 
 			{
-				$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data($reply_data->reply[$id['reply_id']]['user_id']));
+				$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data(reply_data::$reply[$id['reply_id']]['user_id']));
 			}
 		}
 	}

@@ -11,9 +11,18 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* super cache - cache entire pages
+* report blog bug if clicking no
+* change blog subscription confirm page to work more like board_config so it can accept a bunch of custom options
+* add place to allow subscription notices when posting a blog/reply (drop down box)
+* auto-subscriptions in the UCP (which get selected in the add subscription on add blog/reply page automatically)
+* Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
+*  possibly use custom password to verify the script is being called from the board (perhaps the board owner's pw hash or a hash of it)
+* LOG_CONFIG_BLOG
 * force style for UCP/MCP
-* auto-subscriptions
 * option to cut off text at space or endline
+* re-integrate attachment plugin?
+* make separate page for allowed extensions for attachments
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
@@ -26,15 +35,12 @@
 *
 * OTHER -------------------------------------------------------------------------------------------
 * Memorable entry (like a sticky)?
-* Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
-*  possibly use custom password to verify the script is being called from the board (perhaps the board owner's pw hash or a hash of it)
 * Left Menu Order
 *
 * UCP
 *	custom CSS coding allowed?
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
-* add in a section for gallery display - plugin
 * integrate with Handymans Cash Mod - plugin
 * Integrate with phpbb search - plugin
 *
@@ -43,7 +49,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.37';
+$user_blog_version = '0.3.38_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -75,7 +81,7 @@ if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUN
 {
 	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
 }
-else if ((isset($config['user_blog_enable']) && !$config['user_blog_enable']) || (!isset($config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER))
+else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $page != 'update' && $page != 'install' && $user->data['user_type'] != USER_FOUNDER)
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
@@ -91,6 +97,7 @@ include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
 $blog_data = new blog_data();
 $reply_data = new reply_data();
 $user_data = new user_data();
+$blog_attachment = new blog_attachment();
 $error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
@@ -109,16 +116,22 @@ switch ($page)
 	case 'rate' : // to rate a blog
 		$user->add_lang('mods/blog/misc');
 		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+	// no break
+	case 'download' : // to download an attachment
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
 	break;
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
-	case 'dev' : // used for developmental purposes
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang('mods/blog/setup');
 		include($phpbb_root_path . "blog/{$page}.$phpEx");
+	break;
+	case 'dev' : // used for developmental purposes
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+		$user->add_lang('mods/blog/setup');
+		include($phpbb_root_path . "blog/dev/{$page}.$phpEx");
 	break;
 	case 'blog' :
 	case 'reply' :

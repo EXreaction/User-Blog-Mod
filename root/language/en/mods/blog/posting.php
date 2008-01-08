@@ -60,6 +60,8 @@ $lang = array_merge($lang, array(
 	'EDIT_BLOG'							=> 'Edit Blog',
 	'EDIT_REPLY'						=> 'Edit Reply',
 
+	'FILES_CANT_WRITE'					=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
+
 	'NOT_SUBSCRIBED_BLOG'				=> 'You are not subscribed to this blog.',
 	'NOT_SUBSCRIBED_USER'				=> 'You are not subscribed to this user.',
 	'NO_PERMISSIONS_SINGLE'				=> 'Can not read or reply to this blog.',

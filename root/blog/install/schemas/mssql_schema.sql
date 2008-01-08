@@ -1,5 +1,7 @@
 /*
-User Blogs Mod Database Schema
+
+ $Id: $
+
 */
 
 BEGIN TRANSACTION

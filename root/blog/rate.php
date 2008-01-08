@@ -68,5 +68,5 @@ if ($did_something)
 	$cache->destroy('_blog_rating_' . $user->data['user_id']);
 }
 
-redirect($blog_urls['view_blog']);
+blog_meta_refresh(0, $blog_urls['view_blog']);
 ?>

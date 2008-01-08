@@ -80,6 +80,7 @@ class acp_blogs
 			'user_blog_search'					=> array('lang' => 'BLOG_ENABLE_SEARCH',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_user_permissions'		=> array('lang' => 'BLOG_ENABLE_USER_PERMISSIONS',	'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_ratings'			=> array('lang' => 'BLOG_ENABLE_RATINGS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
+			'user_blog_enable_attachments'		=> array('lang' => 'BLOG_ENABLE_ATTACHMENTS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 
 			'legend2'							=> 'BLOG_POST_VIEW_SETTINGS',
 			'user_blog_force_style'				=> array('lang' => 'BLOG_FORCE_STYLE',				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
@@ -92,6 +93,9 @@ class acp_blogs
 			'user_blog_inform'					=> array('lang' => 'BLOG_INFORM', 					'validate' => 'string',	'type' => 'text:25:100',				'explain' => true),
 			'user_blog_min_rating'				=> array('lang' => 'BLOG_MIN_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_max_rating'				=> array('lang' => 'BLOG_MAX_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
+
+			'legend3'							=> 'BLOG_ATTACHMENT_SETTINGS',
+			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 		);
 
 		$blog_plugins->plugin_do_arg('acp_main_settings', $settings);

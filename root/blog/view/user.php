@@ -47,12 +47,12 @@ if (!$feed)
 	if ($mode == 'deleted')
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], $user_data->user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], user_data::$user[$user_id]['username']));
 	}
 	else
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_BLOGS'], $user_data->user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_BLOGS'], user_data::$user[$user_id]['username']));
 	}
 
 	// Output some data
@@ -78,20 +78,24 @@ if (!$feed)
 	// parse and output the blogs
 	if ($blog_ids !== false)
 	{
+		// Get the Attachment Data
+		$blog_attachment->get_attachment_data($blog_ids, false);
+
 		// read blogs, for updating the read count
 		$read_blogs = array();
 
 		foreach($blog_ids as $id)
 		{
 			$blogrow = $blog_data->handle_blog_data($id, true);
-		
-			// for updating the read count later
+			$template->assign_block_vars('blogrow', $blogrow);
+
 			if (!$blogrow['S_SHORTENED'])
 			{
+				$blog_attachment->output_attachment_data(blog_data::$blog[$id]['attachment_data'], 'blogrow');		
+
+				// for updating the read count later
 				array_push($read_blogs, $id);
 			}
-		
-			$template->assign_block_vars('blogrow', $blogrow);
 		}
 
 		// to update the read count, we are only doing this if the user is not the owner, and the user doesn't view the shortened version, and we are not viewing the deleted blogs page

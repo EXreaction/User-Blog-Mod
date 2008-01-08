@@ -256,13 +256,13 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 		if ($blog_id != 0)
 		{
 			$template->assign_block_vars('navlinks', array(
-				'FORUM_NAME'		=> censor_text($blog_data->blog[$blog_id]['blog_subject']),
+				'FORUM_NAME'		=> censor_text(blog_data::$blog[$blog_id]['blog_subject']),
 				'U_VIEW_FORUM'		=> $blog_urls['view_blog'],
 			));
 
 			if ($reply_id != 0 && $page == 'reply')
 			{
-				$c_text = censor_text($reply_data->reply[$reply_id]['reply_subject']);
+				$c_text = censor_text(reply_data::$reply[$reply_id]['reply_subject']);
 				
 				if ($c_text)
 				{
@@ -320,55 +320,168 @@ function generate_menu($user_id = false)
 }
 
 /**
-* Close Tags
+* BBCode-safe truncating of text
 *
-* Closes HTML tags at the end of a string.
+* From: http://www.phpbb.com/community/viewtopic.php?f=71&t=670335
+* Slightly modified to trim at either the first found end line or space
 *
-* @param string $html The html code to close the tags for.
+* @param string $text Text containing BBCode tags to be truncated
+* @param string $uid BBCode uid
+* @param int $max_length Text length limit
+* @param string $bitfield BBCode bitfield (optional)
+* @param bool $enable_bbcode Whether BBCode is enabled (true by default)
+* @return string
 */
-function close_tags($html)
+function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = true)
 {
-	// put all opened tags into an array
-	preg_match_all("|<[^>^/]+?>|U", $html, $result);
-	$openedtags=$result[0];
+   // If there is any custom BBCode that can have space in its argument, turn this on,
+   // but else I suggest turning this off as it adds one additional (cache) SQL query
+   $check_custom_bbcodes = true;
 
-	// put all closed tags into an array
-	preg_match_all("|</[^>^/]+?>|U",$html,$result);
-	$closedtags=$result[0];
+   if ($enable_bbcode && $check_custom_bbcodes)
+   {
+	  global $db;
+	  static $custom_bbcodes = array();
 
-	// all tags are closed
-	if (count($closedtags) == count($openedtags))
-	{
-		return $html;
-	}
+	  // Get all custom bbcodes
+	  if (empty($custom_bbcodes))
+	  {
+		 $sql = 'SELECT bbcode_id, bbcode_tag
+			FROM ' . BBCODES_TABLE;
+		 $result = $db->sql_query($sql, 108000);
 
-	// Reverse the arrays
-	$openedtags = array_reverse($openedtags);
-	$closedtags = array_reverse($closedtags);
-
-	// close tags
-	foreach ($openedtags as $tag)
-	{
-		if (!isset($closedtags[0]) || $tag != $closedtags[0])
-		{
-			// if there is a space there are attributes to the tag, and we do not want those on the closing tag
-			if (strpos($tag, ' '))
+		 while ($row = $db->sql_fetchrow($result))
+		 {
+			// There can be problems only with tags having an argument
+			if (substr($row['bbcode_tag'], -1, 1) == '=')
 			{
-				$html .= '</' . substr($tag, 1, (strpos($tag, ' ') - 1)) . '>';
+			   $custom_bbcodes[$row['bbcode_id']] = array('[' . $row['bbcode_tag'], ':' . $uid . ']');
+			}
+		 }
+		 $db->sql_freeresult($result);
+	  }
+   }
+
+   // First truncate the text
+   if (utf8_strlen($text) > $max_length)
+   {
+		$next_space = strpos(substr($text, $max_length), ' ');
+		$next_el = strpos(substr($text, $max_length), "\n");
+		if ($next_space !== false)
+		{
+			if ($next_el !== false)
+			{
+				$max_length = ($next_space < $next_el) ? $next_space + $max_length : $next_el + $max_length;
 			}
 			else
 			{
-				$html .= '</' . substr($tag, 1, -1) . '>';
+				$max_length = $next_space + $max_length;
 			}
+		}
+		else if ($next_el !== false)
+		{
+			$max_length = $next_el + $max_length;
 		}
 		else
 		{
-			// If there is a match, remove the first item off of the closedtags array
-			array_shift($closedtags);
+			$max_length = utf8_strlen($text);
 		}
-	}
 
-	return $html;
+	  $text = utf8_substr($text, 0, $max_length);
+
+	  // Append three dots indicating that this is not the real end of the text
+	  $text .= '...';
+	  
+	  if (!$enable_bbcode)
+	  {
+		 return $text;
+	  }
+   }
+   else
+   {
+	  return $text;
+   }
+
+   // Some tags may contain spaces inside the tags themselves.
+   // If there is any tag that had been started but not ended
+   // cut the string off before it begins and add three dots
+   // to the end of the text again as this has been just cut off too.
+   $unsafe_tags = array(
+	  array('<', '>'),
+	  array('[quote=&quot;', "&quot;:$uid]"),
+   );
+
+   // If bitfield is given only check for tags that are surely existing in the text
+   if (!empty($bitfield))
+   {
+	  // Get all used tags
+	  $bitfield = new bitfield($bitfield);
+	  $bbcodes_set = $bitfield->get_all_set();
+
+	  // Add custom BBCodes having a parameter and being used
+	  // to the array of potential tags that can be cut apart.
+	  foreach ($custom_bbcodes as $bbcode_id => $bbcode_name)
+	  {
+		 if (in_array($bbcode_id, $bbcodes_set))
+		 {
+			$unsafe_tags[] = $bbcode_name;
+		 }
+	  }
+   }
+   // Do the check for all possible tags
+   else
+   {
+	  $unsafe_tags += $custom_bbcodes;
+   }
+
+   foreach($unsafe_tags as $tag)
+   {
+	  if (($start_pos = strrpos($text, $tag[0])) > strrpos($text, $tag[1]))
+	  {
+		 $text = substr($text, 0, $start_pos) . ' …';
+	  }
+   }
+
+   // Get all of the BBCodes the text contains.
+   // If it does not contain any than just skip this step.
+   // Preg expression is borrowed from strip_bbcode()
+   if (preg_match_all("#\[(\/?)([a-z0-9\*\+\-]+)(?:=(&quot;.*&quot;|[^\]]*))?(?::[a-z])?(?:\:$uid)\]#", $text, $matches, PREG_PATTERN_ORDER) != 0)
+   {
+	  $open_tags = array();
+
+	  for ($i = 0, $size = sizeof($matches[0]); $i < $size; ++$i)
+	  {
+		 $bbcode_name = &$matches[2][$i];
+		 $opening = ($matches[1][$i] == '/') ? false : true;
+
+		 // If a new BBCode is opened add it to the array of open BBCodes
+		 if ($opening)
+		 {
+			$open_tags[] = array(
+			   'name' => $bbcode_name,
+			   'plus' => ($opening && $bbcode_name == 'list' && !empty($matches[3][$i])) ? ':o' : '',
+			);
+		 }
+		 // If a BBCode is closed remove it from the array of open BBCodes.
+		 // As always only the last opened open tag can be closed
+		 // we only need to remove the last element of the array.
+		 else
+		 {
+			array_pop($open_tags);
+		 }
+	  }
+
+	  // Sort open BBCode tags so the most recently opened will be the first (because it has to be closed first)
+	  krsort ($open_tags);
+
+	  // Close remaining open BBCode tags
+	  foreach ($open_tags as $tag)
+	  {
+		 $text .= '[/' . $tag['name'] . $tag['plus'] . ':' . $uid . ']';   
+	  }
+   }
+
+   return $text;
 }
 
 /**
@@ -390,7 +503,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 
 	if ($blog_id !== false)
 	{
-		$data = $blog_data->blog[$blog_id];
+		$data = blog_data::$blog[$blog_id];
 		$text = $data['blog_text'];
 	}
 	else
@@ -400,53 +513,25 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 			return false;
 		}
 
-		$data = $reply_data->reply[$reply_id];
+		$data = reply_data::$reply[$reply_id];
 		$blog_id = $data['blog_id'];
 		$text = $data['reply_text'];
 	}
 
 	if (utf8_strlen($text) > $str_limit)
 	{
-		// Parse the text
-		$data['bbcode_options'] = (($data['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($data['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($data['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-		$text = generate_text_for_display($text, $data['bbcode_uid'], $data['bbcode_bitfield'], $data['bbcode_options']);
+		$text = trim_text($text, $data['bbcode_uid'], $str_limit, $data['bbcode_uid']);
 
-		// we will try not to cut off any words :)
-		$next_space = strpos(substr($text, $str_limit), ' ');
-		$next_el = strpos(substr($text, $str_limit), "\n");
-		if ($next_space !== false)
-		{
-			if ($next_el !== false)
-			{
-				$str_limit = ($next_space < $next_el) ? $next_space + $str_limit : $next_el + $str_limit;
-			}
-			else
-			{
-				$str_limit = $next_space + $str_limit;
-			}
-		}
-		else if ($next_el !== false)
-		{
-			$str_limit = $next_el + $str_limit;
-		}
-		else
-		{
-			$str_limit = utf8_strlen($text);
-		}
-
-		// now trim the text, then close any opened HTML tags
-		$text = close_tags(substr($text, 0, $str_limit));
-
-		$text .= '...<br/><br/><!-- m --><a href="';
+		$text .= "\n \n <a href=";
 		if ($reply_id !== false)
 		{
-			$text .= blog_url($blog_data->blog[$blog_id]['user_id'], $blog_id, $reply_id);
+			$text .= blog_url(blog_data::$blog[$blog_id]['user_id'], $blog_id, $reply_id);
 		}
 		else
 		{
-			$text .= blog_url($blog_data->blog[$blog_id]['user_id'], $blog_id);
+			$text .= blog_url(blog_data::$blog[$blog_id]['user_id'], $blog_id);
 		}
-		$text .= '">[ ' . $user->lang['CONTINUED'] . ' ]</a><!-- m -->';
+		$text .= '">[ ' . $user->lang['CONTINUED'] . ' ]</a>';
 
 		return $text;
 	}
@@ -482,7 +567,7 @@ function update_edit_delete($mode = 'all')
 
 	if ($mode == 'all' || $mode == 'blog')
 	{
-		foreach ($blog_data->blog as $row)
+		foreach (blog_data::$blog as $row)
 		{
 			if ((!isset($row['edited_message'])) && (!isset($row['deleted_message'])) )
 			{
@@ -495,17 +580,17 @@ function update_edit_delete($mode = 'all')
 					{
 						if ($auth->acl_get('u_viewprofile'))
 						{
-							$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], $user_data->user[$row['blog_edit_user']]['username_full'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+							blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], user_data::$user[$row['blog_edit_user']]['username_full'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 						}
 						else
 						{
-							if ($user_data->user[$row['blog_edit_user']]['user_colour'] != '')
+							if (user_data::$user[$row['blog_edit_user']]['user_colour'] != '')
 							{
-								$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . $user_data->user[$row['blog_edit_user']]['user_colour'] . '">' . $user_data->user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . user_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . user_data::$user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 							else
 							{
-								$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], $user_data->user[$row['blog_edit_user']]['username'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], user_data::$user[$row['blog_edit_user']]['username'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 						}
 					}
@@ -513,37 +598,37 @@ function update_edit_delete($mode = 'all')
 					{
 						if ($auth->acl_get('u_viewprofile'))
 						{
-							$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], $user_data->user[$row['blog_edit_user']]['username_full'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+							blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], user_data::$user[$row['blog_edit_user']]['username_full'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 						}
 						else
 						{
-							if ($user_data->user[$row['blog_edit_user']]['user_colour'] != '')
+							if (user_data::$user[$row['blog_edit_user']]['user_colour'] != '')
 							{
-								$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . $user_data->user[$row['blog_edit_user']]['user_colour'] . '">' . $user_data->user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . user_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . user_data::$user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 							else
 							{
-								$blog_data->blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], $user_data->user[$row['blog_edit_user']]['username'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], user_data::$user[$row['blog_edit_user']]['username'], $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 						}
 					}
 		
-					$blog_data->blog[$blog_id]['edit_reason'] = censor_text($row['blog_edit_reason']);
+					blog_data::$blog[$blog_id]['edit_reason'] = censor_text($row['blog_edit_reason']);
 				}
 				else
 				{
-					$blog_data->blog[$blog_id]['edited_message'] = '';
-					$blog_data->blog[$blog_id]['edit_reason'] = '';
+					blog_data::$blog[$blog_id]['edited_message'] = '';
+					blog_data::$blog[$blog_id]['edit_reason'] = '';
 				}
 	
 				// has the blog been deleted?
 				if ($row['blog_deleted'] != 0)
 				{
-					$blog_data->blog[$blog_id]['deleted_message'] = sprintf($user->lang['BLOG_DELETED_BY_MSG'], $user_data->user[$row['blog_deleted']]['username_full'], $user->format_date($row['blog_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=undelete&amp;b=$blog_id") . '">', '</a>');
+					blog_data::$blog[$blog_id]['deleted_message'] = sprintf($user->lang['BLOG_DELETED_BY_MSG'], user_data::$user[$row['blog_deleted']]['username_full'], $user->format_date($row['blog_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=blog&amp;mode=undelete&amp;b=$blog_id") . '">', '</a>');
 				}
 				else
 				{
-					$blog_data->blog[$blog_id]['deleted_message'] = '';
+					blog_data::$blog[$blog_id]['deleted_message'] = '';
 				}
 			}
 		}
@@ -551,7 +636,7 @@ function update_edit_delete($mode = 'all')
 
 	if ($mode == 'all' || $mode == 'reply')
 	{
-		foreach ($reply_data->reply as $row)
+		foreach (reply_data::$reply as $row)
 		{
 			if ((!isset($row['edited_message'])) && (!isset($row['deleted_message'])) )
 			{
@@ -564,17 +649,17 @@ function update_edit_delete($mode = 'all')
 					{
 						if ($auth->acl_get('u_viewprofile'))
 						{
-							$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], $user_data->user[$row['reply_edit_user']]['username_full'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+							reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], user_data::$user[$row['reply_edit_user']]['username_full'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 						}
 						else
 						{
-							if ($user_data->user[$row['reply_edit_user']]['user_colour'] != '')
+							if (user_data::$user[$row['reply_edit_user']]['user_colour'] != '')
 							{
-								$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . $user_data->user[$row['reply_edit_user']]['user_colour'] . '">' . $user_data->user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . user_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . user_data::$user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 							else
 							{
-								$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], $user_data->user[$row['reply_edit_user']]['username'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], user_data::$user[$row['reply_edit_user']]['username'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 						}
 					}
@@ -582,37 +667,37 @@ function update_edit_delete($mode = 'all')
 					{
 						if ($auth->acl_get('u_viewprofile'))
 						{
-							$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], $user_data->user[$row['reply_edit_user']]['username_full'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+							reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], user_data::$user[$row['reply_edit_user']]['username_full'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 						}
 						else
 						{
-							if ($user_data->user[$row['reply_edit_user']]['user_colour'] != '')
+							if (user_data::$user[$row['reply_edit_user']]['user_colour'] != '')
 							{
-								$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . $user_data->user[$row['reply_edit_user']]['user_colour'] . '">' . $user_data->user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . user_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . user_data::$user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 							else
 							{
-								$reply_data->reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], $user_data->user[$row['reply_edit_user']]['username'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								reply_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], user_data::$user[$row['reply_edit_user']]['username'], $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 						}
 					}
 		
-					$reply_data->reply[$reply_id]['edit_reason'] = censor_text($row['reply_edit_reason']);
+					reply_data::$reply[$reply_id]['edit_reason'] = censor_text($row['reply_edit_reason']);
 				}
 				else
 				{
-					$reply_data->reply[$reply_id]['edited_message'] = '';
-					$reply_data->reply[$reply_id]['edit_reason'] = '';
+					reply_data::$reply[$reply_id]['edited_message'] = '';
+					reply_data::$reply[$reply_id]['edit_reason'] = '';
 				}
 	
 				// has the reply been deleted?
 				if ($row['reply_deleted'] != 0)
 				{
-					$reply_data->reply[$reply_id]['deleted_message'] = sprintf($user->lang['REPLY_DELETED_BY_MSG'], $user_data->user[$row['reply_deleted']]['username_full'], $user->format_date($row['reply_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=undelete&amp;r=$reply_id") . '">', '</a>');
+					reply_data::$reply[$reply_id]['deleted_message'] = sprintf($user->lang['REPLY_DELETED_BY_MSG'], user_data::$user[$row['reply_deleted']]['username_full'], $user->format_date($row['reply_deleted_time']), '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", "page=reply&amp;mode=undelete&amp;r=$reply_id") . '">', '</a>');
 				}
 				else
 				{
-					$reply_data->reply[$reply_id]['deleted_message'] = '';
+					reply_data::$reply[$reply_id]['deleted_message'] = '';
 				}
 			}
 		}
@@ -666,7 +751,7 @@ function feed_output($blog_ids, $feed_type)
 
 		$row = array(
 			'URL'		=> $board_url . "/blog.{$phpEx}?b=$id",
-			'USERNAME'	=> $user_data->user[$blog_data->blog[$id]['user_id']]['username'],
+			'USERNAME'	=> user_data::$user[blog_data::$blog[$id]['user_id']]['username'],
 		);
 
 		$template->assign_block_vars('item', $blog_row + $row);

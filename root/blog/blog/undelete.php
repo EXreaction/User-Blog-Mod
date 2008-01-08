@@ -26,7 +26,7 @@ if ($cancel)
 }
 
 // if someone is trying to un-delete a blog and the blog is not deleted
-if ($blog_data->blog[$blog_id]['blog_deleted'] == 0)
+if (blog_data::$blog[$blog_id]['blog_deleted'] == 0)
 {
 	trigger_error('BLOG_NOT_DELETED');
 }
@@ -43,7 +43,7 @@ if (confirm_box(true))
 {
 	$blog_plugins->plugin_do('blog_undelete_confirm');
 
-	$blog_search->index('add', $blog_id, 0, $blog_data->blog[$blog_id]['blog_text'], $blog_data->blog[$blog_id]['blog_subject'], $user_id);
+	$blog_search->index('add', $blog_id, 0, blog_data::$blog[$blog_id]['blog_text'], blog_data::$blog[$blog_id]['blog_subject'], $user_id);
 
 	// undelete the blog
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_deleted = 0, blog_deleted_time = 0 WHERE blog_id = ' . intval($blog_id);
@@ -74,7 +74,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $user_data->user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
@@ -84,5 +84,5 @@ else
 {
 	confirm_box(false, 'UNDELETE_BLOG');
 }
-blog_meta_refresh(0, $blog_urls['view_blog'], true);
+blog_meta_refresh(0, $blog_urls['view_blog']);
 ?>

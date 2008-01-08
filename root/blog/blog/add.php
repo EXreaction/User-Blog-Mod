@@ -64,16 +64,24 @@ if ($submit || $preview || $refresh)
 	{
 		$error[] = implode('<br />', $message_parser->warn_msg);
 	}
+
+	// Attachments
+	$blog_attachment->get_submitted_attachment_data();
+	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $blog_text);
+
+	if (sizeof($blog_attachment->warn_msg))
+	{
+		$error[] = implode('<br />', $blog_attachment->warn_msg);
+	}
 }
 else
 {
 	$blog_subject = $blog_text = '';
 }
 
-$temp = array('subject' => $blog_subject, 'text' => $blog_text);
+$temp = compact('blog_subject', 'blog_text', 'error');
 $blog_plugins->plugin_do_arg_ref('blog_add_after_setup', $temp);
-$blog_subject = $temp['subject'];
-$blog_text = $temp['text'];
+extract($temp);
 unset($temp);
 
 // if they did not submit or they have an error
@@ -83,6 +91,29 @@ if (!$submit || sizeof($error))
 	if ($preview && !sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
+
+		// Attachments
+		if (sizeof($blog_attachment->attachment_data))
+		{
+			$template->assign_var('S_HAS_ATTACHMENTS', true);
+
+			$update_count = array();
+			$attachment_data = $blog_attachment->attachment_data;
+
+			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
+
+			if (count($attachment_data))
+			{
+				foreach ($attachment_data as $row)
+				{
+					$template->assign_block_vars('attachment', array(
+						'DISPLAY_ATTACHMENT' => $row,
+					));
+				}
+			}
+
+			unset($attachment_data);
+		}
 
 		$blog_plugins->plugin_do_arg_ref('blog_add_preview', $preview_message);
 
@@ -117,17 +148,8 @@ if (!$submit || sizeof($error))
 }
 else // user submitted and there are no errors
 {
-	$perm_ary = array(
-		'perm_guest'		=> request_var('perm_guest', 1),
-		'perm_registered'	=> request_var('perm_registered', 2),
-		'perm_foe'			=> request_var('perm_foe', 0),
-		'perm_friend'		=> request_var('perm_friend', 2),
-	);
-
-	$blog_plugins->plugin_do_arg_ref('blog_add_permissions', $perm_ary);
-
 	// insert array
-	$sql_data = array_merge(array(
+	$sql_data = array(
 		'user_id' 					=> $user->data['user_id'],
 		'user_ip'					=> $user->data['user_ip'],
 		'blog_time'					=> time(),
@@ -141,7 +163,12 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'			=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'				=> $message_parser->bbcode_uid,
 		'blog_edit_reason'			=> '',
-	), $perm_ary);
+		'perm_guest'				=> request_var('perm_guest', 1),
+		'perm_registered'			=> request_var('perm_registered', 2),
+		'perm_foe'					=> request_var('perm_foe', 0),
+		'perm_friend'				=> request_var('perm_friend', 2),
+		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+	);
 
 	$blog_plugins->plugin_do_arg_ref('blog_add_sql', $sql_data);
 
@@ -176,9 +203,11 @@ else // user submitted and there are no errors
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();
 
+	$blog_attachment->update_attachment_data($blog_id);
+
 	$blog_plugins->plugin_do_arg('blog_add_after_sql', $blog_id);
 
-	unset($message_parser, $perm_ary, $sql_data);
+	unset($message_parser, $sql_data);
 
 	handle_blog_cache('new_blog', $user->data['user_id']);
 

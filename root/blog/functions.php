@@ -18,6 +18,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	define('BLOG_FUNCTIONS_INCLUDED', true);
 
 	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_categories.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_permissions.' . $phpEx);
@@ -134,26 +135,19 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	/**
 	* Blog Meta Refresh (the normal one does not work with the SEO Url's)
 	*/
-	function blog_meta_refresh($time, $url, $instant = false)
+	function blog_meta_refresh($time, $url)
 	{
 		global $config, $template, $user, $user_settings;
 
-		if ($instant || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
+		if ($time == 0 || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
 		{
 			$time = 0;
 			header('Location: ' . str_replace('&amp;', '&', $url));
 		}
 
-		if ($config['user_blog_seo'])
-		{
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />')
-			);
-		}
-		else
-		{
-			meta_refresh($time, $url);
-		}
+		$template->assign_vars(array(
+			'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />')
+		);
 	}
 }
 ?>

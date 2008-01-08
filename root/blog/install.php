@@ -18,6 +18,11 @@ if (isset($config['user_blog_version']))
 	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
+if (version_compare(PHP_VERSION, '5.1.0') < 0)
+{
+	trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
+}
+
 if (confirm_box(true))
 {
 	$error = array();
@@ -65,5 +70,5 @@ else
 	confirm_box(false, 'INSTALL_BLOG_DB');
 }
 
-blog_meta_refresh(0, append_sid("{$phpbb_root_path}blog.$phpEx"), true);
+redirect(append_sid("{$phpbb_root_path}blog.$phpEx"));
 ?>

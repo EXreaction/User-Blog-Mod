@@ -29,24 +29,32 @@ if (confirm_box(true))
 
 	$sql_ary = array(
 		'module_basename'	=> 'blogs',
-		'module_langname'	=> 'ACP_BLOGS',
-		'module_mode'		=> 'default',
+		'module_langname'	=> 'ACP_BLOG_SETTINGS',
+		'module_mode'		=> 'settings',
 		'module_auth'		=> 'acl_a_blogmanage',
 	);
 	$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 
 	$sql_ary = array(
-		'module_basename'	=> 'blog_plugins',
+		'module_basename'	=> 'blogs',
 		'module_langname'	=> 'ACP_BLOG_PLUGINS',
-		'module_mode'		=> 'default',
+		'module_mode'		=> 'plugins',
 		'module_auth'		=> 'acl_a_blogmanage',
 	);
 	$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 
 	$sql_ary = array(
-		'module_basename'	=> 'blog_search',
+		'module_basename'	=> 'blogs',
 		'module_langname'	=> 'ACP_BLOG_SEARCH',
-		'module_mode'		=> 'default',
+		'module_mode'		=> 'search',
+		'module_auth'		=> 'acl_a_blogmanage',
+	);
+	$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
+
+	$sql_ary = array(
+		'module_basename'	=> 'blogs',
+		'module_langname'	=> 'ACP_BLOG_CATEGORIES',
+		'module_mode'		=> 'categories',
 		'module_auth'		=> 'acl_a_blogmanage',
 	);
 	$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);

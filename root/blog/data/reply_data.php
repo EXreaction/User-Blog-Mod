@@ -21,18 +21,18 @@ if (!defined('IN_PHPBB'))
 class reply_data
 {
 	// this is our large array holding all the data
-	var $reply = array();
+	public static $reply = array();
 
 	/**
-	 * Get reply data
-	 *
-	 * To select reply data from the database
-	 *
-	 * @param string $mode The mode we want
-	 * @param int $id To input the wanted blog_id, this may be an array if you want to select more than 1
-	 * @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
-	 */
-	function get_reply_data($mode, $id = 0, $selection_data = array())
+	* Get reply data
+	*
+	* To select reply data from the database
+	*
+	* @param string $mode The mode we want
+	* @param int $id To input the wanted blog_id, this may be an array if you want to select more than 1
+	* @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
+	*/
+	public function get_reply_data($mode, $id = 0, $selection_data = array())
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth;
 		global $blog_data, $user_data, $blog_plugins;
@@ -108,14 +108,14 @@ class reply_data
 				$sql_where[] = 'reply_approved = 0';
 				break;
 			case 'reply_count' : // for counting how many replies there are for a blog
-				if ($blog_data->blog[$id[0]]['blog_real_reply_count'] == 0 || $blog_data->blog[$id[0]]['blog_real_reply_count'] == $blog_data->blog[$id[0]]['blog_reply_count'])
+				if (blog_data::$blog[$id[0]]['blog_real_reply_count'] == 0 || blog_data::$blog[$id[0]]['blog_real_reply_count'] == blog_data::$blog[$id[0]]['blog_reply_count'])
 				{
-					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
+					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
 				}
 
 				if ($sort_days == 0 && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
 				{
-					return $blog_data->blog[$id[0]]['blog_real_reply_count'];
+					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
 				}
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0)
 				{
@@ -130,7 +130,7 @@ class reply_data
 				}
 				else
 				{
-					return $blog_data->blog[$id[0]]['blog_reply_count'];
+					return blog_data::$blog[$id[0]]['blog_reply_count'];
 				}
 				break;
 			case 'page' :
@@ -176,22 +176,25 @@ class reply_data
 		{
 			$blog_plugins->plugin_do_arg_ref('reply_data_while', $row);
 
+			// Initialize the attachment data
+			$row['attachment_data'] = array();
+
 			// now put all the data in the reply array
-			$this->reply[$row['reply_id']] = $row;
+			self::$reply[$row['reply_id']] = $row;
 
 			// Add this user's ID to the user_queue
-			array_push($user_data->user_queue, $row['user_id']);
+			array_push(user_data::$user_queue, $row['user_id']);
 
 			// has the reply been edited?  If so add that user to the user_queue
 			if ($row['reply_edit_count'] != 0)
 			{
-				array_push($user_data->user_queue, $row['reply_edit_user']);
+				array_push(user_data::$user_queue, $row['reply_edit_user']);
 			}
 	
 			// has the reply been deleted?  If so add that user to the user_queue
 			if ($row['reply_deleted'] != 0)
 			{
-				array_push($user_data->user_queue, $row['reply_deleted']);
+				array_push(user_data::$user_queue, $row['reply_deleted']);
 			}
 
 			// make sure we don't record the same ID more than once
@@ -212,18 +215,18 @@ class reply_data
 	}
 
 	/**
-	 * Handle reply data
-	 *
-	 * To handle the raw data gotten from the database
-	 *
-	 * @param int $id The id of the reply we want to handle
-	 */
-	function handle_reply_data($id)
+	* Handle reply data
+	*
+	* To handle the raw data gotten from the database
+	*
+	* @param int $id The id of the reply we want to handle
+	*/
+	public function handle_reply_data($id)
 	{
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_data, $user_data, $blog_plugins, $category_id;
+		global $blog_attachment, $blog_data, $user_data, $blog_plugins, $category_id;
 
-		$reply = &$this->reply[$id];
+		$reply = &self::$reply[$id];
 		$blog_id = $reply['blog_id'];
 		$user_id = $reply['user_id'];
 
@@ -243,31 +246,37 @@ class reply_data
 			$reply_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply_text);
 		}
 
+		// Attachments
+		$update_count = array();
+		$blog_attachment->parse_attachments_for_view($reply_text, $reply['attachment_data'], $update_count);
+
 		$replyrow = array(
-			'ID'				=> $id,
-			'TITLE'				=> $reply_subject,
-			'DATE'				=> $user->format_date($reply['reply_time']),
-			'REPLY_EXTRA'		=> '',
+			'ID'					=> $id,
+			'TITLE'					=> $reply_subject,
+			'DATE'					=> $user->format_date($reply['reply_time']),
+			'REPLY_EXTRA'			=> '',
 
-			'REPLY_MESSAGE'		=> $reply_text,
+			'REPLY_MESSAGE'			=> $reply_text,
 
-			'EDITED_MESSAGE'	=> $reply['edited_message'],
-			'EDIT_REASON'		=> $reply['edit_reason'],
-			'DELETED_MESSAGE'	=> $reply['deleted_message'],
+			'EDITED_MESSAGE'		=> $reply['edited_message'],
+			'EDIT_REASON'			=> $reply['edit_reason'],
+			'DELETED_MESSAGE'		=> $reply['deleted_message'],
 
-			'U_VIEW'			=> blog_url($user_id, $blog_id, $id),
-			'U_VIEW_PERMANENT'	=> blog_url($user_id, $blog_id, $id, array(), array(), true),
+			'U_VIEW'				=> blog_url($user_id, $blog_id, $id),
+			'U_VIEW_PERMANENT'		=> blog_url($user_id, $blog_id, $id, array(), array(), true),
 
-			'U_APPROVE'			=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'approve')) : '',
-			'U_DELETE'			=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
-			'U_EDIT'			=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
-			'U_QUOTE'			=> (check_blog_permissions('reply', 'quote', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
-			'U_REPORT'			=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'report')) : '',
-			'U_WARN'			=> (($auth->acl_get('m_warn')) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
+			'U_APPROVE'				=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'approve')) : '',
+			'U_DELETE'				=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
+			'U_EDIT'				=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
+			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPORT'				=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'report')) : '',
+			'U_WARN'				=> (($auth->acl_get('m_warn')) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
 
-			'S_DELETED'			=> ($reply['reply_deleted'] != 0) ? true : false,
-			'S_UNAPPROVED'		=> ($reply['reply_approved'] == 0) ? true : false,
-			'S_REPORTED'		=> ($reply['reply_reported'] && $auth->acl_get('m_blogreplyreport')) ? true : false,
+			'S_DELETED'				=> ($reply['reply_deleted'] != 0) ? true : false,
+			'S_UNAPPROVED'			=> ($reply['reply_approved'] == 0) ? true : false,
+			'S_REPORTED'			=> ($reply['reply_reported'] && $auth->acl_get('m_blogreplyreport')) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $reply['reply_attachment'] && count($reply['attachment_data'])) ? true : false,
+			'S_HAS_ATTACHMENTS'		=> ($reply['reply_attachment']) ? true : false,
 		);
 
 		$blog_plugins->plugin_do_arg_ref('reply_handle_data_end', $replyrow);
