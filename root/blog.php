@@ -41,7 +41,7 @@
 *	custom CSS coding allowed?
 *	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
 *
-* integrate with Handymans Cash Mod - plugin
+* cash mod plugin
 * Integrate with phpbb search - plugin
 *
 */

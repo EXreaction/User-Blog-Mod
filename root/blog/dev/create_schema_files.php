@@ -2,7 +2,7 @@
 /**
 *
 * @package phpBB3
-* @version $Id: create_schema_files.php,v 1.70 2008/01/06 13:48:28 davidmj Exp $
+* @version $Id: create_schema_files.php,v 1.72 2008/01/08 06:46:08 davidmj Exp $
 * @copyright (c) 2006 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -201,7 +201,7 @@ $dbms_type_map = array(
 		'UINT'		=> 'INT4', // unsigned
 		'UINT:'		=> 'INT4', // unsigned
 		'USINT'		=> 'INT2', // unsigned
-		'BOOL'		=> 'INT2', // unsigned
+		'BOOL'		=> 'boolean', // unsigned
 		'TINT:'		=> 'INT2',
 		'VCHAR'		=> 'varchar(255)',
 		'VCHAR:'	=> 'varchar(%d)',
@@ -221,7 +221,7 @@ $dbms_type_map = array(
 		'PDECIMAL:'	=> 'decimal(%d,3)',
 		'VCHAR_UNI'	=> 'varchar(255)',
 		'VCHAR_UNI:'=> 'varchar(%d)',
-		'VCHAR_CI'	=> 'varchar_ci',
+		'VCHAR_CI'	=> 'varchar(255)',
 		'VARBINARY'	=> 'bytea',
 	),
 );
@@ -992,6 +992,7 @@ function get_schema_struct()
 		'PRIMARY_KEY'	=> 'config_name',
 		'KEYS'			=> array(
 			'is_dynamic'		=> array('INDEX', 'is_dynamic'),
+			'config_name'		=> array('INDEX', 'config_name'),
 		),
 	);
 
@@ -1143,7 +1144,8 @@ function get_schema_struct()
 			'group_id'				=> array('UINT', NULL, 'auto_increment'),
 			'group_type'			=> array('TINT:4', 1),
 			'group_founder_manage'	=> array('BOOL', 0),
-			'group_name'			=> array('VCHAR_CI', ''),
+			'group_name'			=> array('VCHAR_UNI', ''),
+			'group_name_clean'		=> array('VCHAR_UNI', ''),
 			'group_desc'			=> array('TEXT_UNI', ''),
 			'group_desc_bitfield'	=> array('VCHAR:255', ''),
 			'group_desc_options'	=> array('UINT:11', 7),
@@ -1796,8 +1798,8 @@ function get_schema_struct()
 			'user_perm_from'			=> array('UINT', 0),
 			'user_ip'					=> array('VCHAR:40', ''),
 			'user_regdate'				=> array('TIMESTAMP', 0),
-			'username'					=> array('VCHAR_CI', ''),
-			'username_clean'			=> array('VCHAR_CI', ''),
+			'username'					=> array('VCHAR_UNI', ''),
+			'username_clean'			=> array('VCHAR_UNI', ''),
 			'user_password'				=> array('VCHAR_UNI:40', ''),
 			'user_passchg'				=> array('TIMESTAMP', 0),
 			'user_pass_convert'			=> array('BOOL', 0),
@@ -1901,6 +1903,9 @@ function get_schema_struct()
 			'foe'					=> array('BOOL', 0),
 		),
 		'PRIMARY_KEY'	=> array('user_id', 'zebra_id'),
+		'KEYS'			=> array(
+			'zebra_user'			=> array('INDEX', array('zebra_id', 'user_id')),
+		),
 	);
 
 	return $schema_data;
@@ -1912,132 +1917,6 @@ function get_schema_struct()
 */
 function custom_data($dbms)
 {
-	switch ($dbms)
-	{
-		case 'oracle':
-			return <<<EOF
-/*
-  This first section is optional, however its probably the best method
-  of running phpBB on Oracle. If you already have a tablespace and user created
-  for phpBB you can leave this section commented out!
-
-  The first set of statements create a phpBB tablespace and a phpBB user,
-  make sure you change the password of the phpBB user before you run this script!!
-*/
-
-/*
-CREATE TABLESPACE "PHPBB"
-	LOGGING
-	DATAFILE 'E:\ORACLE\ORADATA\LOCAL\PHPBB.ora'
-	SIZE 10M
-	AUTOEXTEND ON NEXT 10M
-	MAXSIZE 100M;
-
-CREATE USER "PHPBB"
-	PROFILE "DEFAULT"
-	IDENTIFIED BY "phpbb_password"
-	DEFAULT TABLESPACE "PHPBB"
-	QUOTA UNLIMITED ON "PHPBB"
-	ACCOUNT UNLOCK;
-
-GRANT ANALYZE ANY TO "PHPBB";
-GRANT CREATE SEQUENCE TO "PHPBB";
-GRANT CREATE SESSION TO "PHPBB";
-GRANT CREATE TABLE TO "PHPBB";
-GRANT CREATE TRIGGER TO "PHPBB";
-GRANT CREATE VIEW TO "PHPBB";
-GRANT "CONNECT" TO "PHPBB";
-
-COMMIT;
-DISCONNECT;
-
-CONNECT phpbb/phpbb_password;
-*/
-EOF;
-
-		break;
-
-		case 'postgres':
-			return <<<EOF
-/*
-	Domain definition
-*/
-CREATE DOMAIN varchar_ci AS varchar(255) NOT NULL DEFAULT ''::character varying;
-
-/*
-	Operation Functions
-*/
-CREATE FUNCTION _varchar_ci_equal(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) = LOWER($2)' LANGUAGE SQL STRICT;
-CREATE FUNCTION _varchar_ci_not_equal(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) != LOWER($2)' LANGUAGE SQL STRICT;
-CREATE FUNCTION _varchar_ci_less_than(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) < LOWER($2)' LANGUAGE SQL STRICT;
-CREATE FUNCTION _varchar_ci_less_equal(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) <= LOWER($2)' LANGUAGE SQL STRICT;
-CREATE FUNCTION _varchar_ci_greater_than(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) > LOWER($2)' LANGUAGE SQL STRICT;
-CREATE FUNCTION _varchar_ci_greater_equals(varchar_ci, varchar_ci) RETURNS boolean AS 'SELECT LOWER($1) >= LOWER($2)' LANGUAGE SQL STRICT;
-
-/*
-	Operators
-*/
-CREATE OPERATOR <(
-  PROCEDURE = _varchar_ci_less_than,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = >,
-  NEGATOR = >=,
-  RESTRICT = scalarltsel,
-  JOIN = scalarltjoinsel);
-
-CREATE OPERATOR <=(
-  PROCEDURE = _varchar_ci_less_equal,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = >=,
-  NEGATOR = >,
-  RESTRICT = scalarltsel,
-  JOIN = scalarltjoinsel);
-
-CREATE OPERATOR >(
-  PROCEDURE = _varchar_ci_greater_than,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = <,
-  NEGATOR = <=,
-  RESTRICT = scalargtsel,
-  JOIN = scalargtjoinsel);
-
-CREATE OPERATOR >=(
-  PROCEDURE = _varchar_ci_greater_equals,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = <=,
-  NEGATOR = <,
-  RESTRICT = scalargtsel,
-  JOIN = scalargtjoinsel);
-
-CREATE OPERATOR <>(
-  PROCEDURE = _varchar_ci_not_equal,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = <>,
-  NEGATOR = =,
-  RESTRICT = neqsel,
-  JOIN = neqjoinsel);
-
-CREATE OPERATOR =(
-  PROCEDURE = _varchar_ci_equal,
-  LEFTARG = varchar_ci,
-  RIGHTARG = varchar_ci,
-  COMMUTATOR = =,
-  NEGATOR = <>,
-  RESTRICT = eqsel,
-  JOIN = eqjoinsel,
-  HASHES,
-  MERGES,
-  SORT1= <);
-
-EOF;
-		break;
-	}
-
 	return '';
 }
 

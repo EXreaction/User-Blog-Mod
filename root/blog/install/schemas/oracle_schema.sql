@@ -4,43 +4,7 @@
 
 */
 
-/*
-  This first section is optional, however its probably the best method
-  of running phpBB on Oracle. If you already have a tablespace and user created
-  for phpBB you can leave this section commented out!
-
-  The first set of statements create a phpBB tablespace and a phpBB user,
-  make sure you change the password of the phpBB user before you run this script!!
-*/
-
-/*
-CREATE TABLESPACE "PHPBB"
-	LOGGING
-	DATAFILE 'E:\ORACLE\ORADATA\LOCAL\PHPBB.ora'
-	SIZE 10M
-	AUTOEXTEND ON NEXT 10M
-	MAXSIZE 100M;
-
-CREATE USER "PHPBB"
-	PROFILE "DEFAULT"
-	IDENTIFIED BY "phpbb_password"
-	DEFAULT TABLESPACE "PHPBB"
-	QUOTA UNLIMITED ON "PHPBB"
-	ACCOUNT UNLOCK;
-
-GRANT ANALYZE ANY TO "PHPBB";
-GRANT CREATE SEQUENCE TO "PHPBB";
-GRANT CREATE SESSION TO "PHPBB";
-GRANT CREATE TABLE TO "PHPBB";
-GRANT CREATE TRIGGER TO "PHPBB";
-GRANT CREATE VIEW TO "PHPBB";
-GRANT "CONNECT" TO "PHPBB";
-
-COMMIT;
-DISCONNECT;
-
-CONNECT phpbb/phpbb_password;
-*/
+
 /*
 	Table: 'phpbb_blogs'
 */
@@ -69,6 +33,7 @@ CREATE TABLE phpbb_blogs (
 	blog_read_count number(8) DEFAULT '1' NOT NULL,
 	blog_reply_count number(8) DEFAULT '0' NOT NULL,
 	blog_real_reply_count number(8) DEFAULT '0' NOT NULL,
+	blog_attachment number(1) DEFAULT '0' NOT NULL,
 	perm_guest number(1) DEFAULT '1' NOT NULL,
 	perm_registered number(1) DEFAULT '2' NOT NULL,
 	perm_foe number(1) DEFAULT '0' NOT NULL,
@@ -115,6 +80,152 @@ END;
 
 
 /*
+	Table: 'phpbb_blogs_attachment'
+*/
+CREATE TABLE phpbb_blogs_attachment (
+	attach_id number(8) NOT NULL,
+	blog_id number(8) DEFAULT '0' NOT NULL,
+	reply_id number(8) DEFAULT '0' NOT NULL,
+	poster_id number(8) DEFAULT '0' NOT NULL,
+	is_orphan number(1) DEFAULT '1' NOT NULL,
+	physical_filename varchar2(255) DEFAULT '' ,
+	real_filename varchar2(255) DEFAULT '' ,
+	download_count number(8) DEFAULT '0' NOT NULL,
+	attach_comment clob DEFAULT '' ,
+	extension varchar2(100) DEFAULT '' ,
+	mimetype varchar2(100) DEFAULT '' ,
+	filesize number(20) DEFAULT '0' NOT NULL,
+	filetime number(11) DEFAULT '0' NOT NULL,
+	thumbnail number(1) DEFAULT '0' NOT NULL,
+	CONSTRAINT pk_phpbb_blogs_attachment PRIMARY KEY (attach_id)
+)
+/
+
+CREATE INDEX phpbb_blogs_attachment_blog_id ON phpbb_blogs_attachment (blog_id)
+/
+CREATE INDEX phpbb_blogs_attachment_reply_id ON phpbb_blogs_attachment (reply_id)
+/
+CREATE INDEX phpbb_blogs_attachment_filetime ON phpbb_blogs_attachment (filetime)
+/
+CREATE INDEX phpbb_blogs_attachment_poster_id ON phpbb_blogs_attachment (poster_id)
+/
+CREATE INDEX phpbb_blogs_attachment_is_orphan ON phpbb_blogs_attachment (is_orphan)
+/
+
+CREATE SEQUENCE phpbb_blogs_attachment_seq
+/
+
+CREATE OR REPLACE TRIGGER t_phpbb_blogs_attachment
+BEFORE INSERT ON phpbb_blogs_attachment
+FOR EACH ROW WHEN (
+	new.attach_id IS NULL OR new.attach_id = 0
+)
+BEGIN
+	SELECT phpbb_blogs_attachment_seq.nextval
+	INTO :new.attach_id
+	FROM dual;
+END;
+/
+
+
+/*
+	Table: 'phpbb_blogs_categories'
+*/
+CREATE TABLE phpbb_blogs_categories (
+	category_id number(8) NOT NULL,
+	parent_id number(8) DEFAULT '0' NOT NULL,
+	left_id number(8) DEFAULT '0' NOT NULL,
+	right_id number(8) DEFAULT '0' NOT NULL,
+	category_name varchar2(765) DEFAULT '' ,
+	category_description clob DEFAULT '' ,
+	category_description_bitfield varchar2(255) DEFAULT '' ,
+	category_description_uid varchar2(8) DEFAULT '' ,
+	category_description_options number(11) DEFAULT '7' NOT NULL,
+	rules clob DEFAULT '' ,
+	rules_bitfield varchar2(255) DEFAULT '' ,
+	rules_uid varchar2(8) DEFAULT '' ,
+	rules_options number(11) DEFAULT '7' NOT NULL,
+	blog_count number(8) DEFAULT '0' NOT NULL,
+	CONSTRAINT pk_phpbb_blogs_categories PRIMARY KEY (category_id)
+)
+/
+
+CREATE INDEX phpbb_blogs_categories_left_right_id ON phpbb_blogs_categories (left_id, right_id)
+/
+
+CREATE SEQUENCE phpbb_blogs_categories_seq
+/
+
+CREATE OR REPLACE TRIGGER t_phpbb_blogs_categories
+BEFORE INSERT ON phpbb_blogs_categories
+FOR EACH ROW WHEN (
+	new.category_id IS NULL OR new.category_id = 0
+)
+BEGIN
+	SELECT phpbb_blogs_categories_seq.nextval
+	INTO :new.category_id
+	FROM dual;
+END;
+/
+
+
+/*
+	Table: 'phpbb_blogs_in_categories'
+*/
+CREATE TABLE phpbb_blogs_in_categories (
+	blog_id number(8) DEFAULT '0' NOT NULL,
+	category_id number(8) DEFAULT '0' NOT NULL,
+	CONSTRAINT pk_phpbb_blogs_in_categories PRIMARY KEY (blog_id, category_id)
+)
+/
+
+
+/*
+	Table: 'phpbb_blogs_plugins'
+*/
+CREATE TABLE phpbb_blogs_plugins (
+	plugin_id number(8) NOT NULL,
+	plugin_name varchar2(765) DEFAULT '' ,
+	plugin_enabled number(1) DEFAULT '0' NOT NULL,
+	plugin_version varchar2(300) DEFAULT '' ,
+	CONSTRAINT pk_phpbb_blogs_plugins PRIMARY KEY (plugin_id)
+)
+/
+
+CREATE INDEX phpbb_blogs_plugins_plugin_name ON phpbb_blogs_plugins (plugin_name)
+/
+CREATE INDEX phpbb_blogs_plugins_plugin_enabled ON phpbb_blogs_plugins (plugin_enabled)
+/
+
+CREATE SEQUENCE phpbb_blogs_plugins_seq
+/
+
+CREATE OR REPLACE TRIGGER t_phpbb_blogs_plugins
+BEFORE INSERT ON phpbb_blogs_plugins
+FOR EACH ROW WHEN (
+	new.plugin_id IS NULL OR new.plugin_id = 0
+)
+BEGIN
+	SELECT phpbb_blogs_plugins_seq.nextval
+	INTO :new.plugin_id
+	FROM dual;
+END;
+/
+
+
+/*
+	Table: 'phpbb_blogs_ratings'
+*/
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id number(8) DEFAULT '0' NOT NULL,
+	user_id number(8) DEFAULT '0' NOT NULL,
+	rating number(8) DEFAULT '0' NOT NULL,
+	CONSTRAINT pk_phpbb_blogs_ratings PRIMARY KEY (blog_id, user_id)
+)
+/
+
+
+/*
 	Table: 'phpbb_blogs_reply'
 */
 CREATE TABLE phpbb_blogs_reply (
@@ -140,6 +251,7 @@ CREATE TABLE phpbb_blogs_reply (
 	reply_edit_locked number(1) DEFAULT '0' NOT NULL,
 	reply_deleted number(8) DEFAULT '0' NOT NULL,
 	reply_deleted_time number(11) DEFAULT '0' NOT NULL,
+	reply_attachment number(1) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_reply PRIMARY KEY (reply_id)
 )
 /
@@ -181,39 +293,6 @@ CREATE TABLE phpbb_blogs_subscription (
 	user_id number(8) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_subscription PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
 )
-/
-
-
-/*
-	Table: 'phpbb_blogs_plugins'
-*/
-CREATE TABLE phpbb_blogs_plugins (
-	plugin_id number(8) NOT NULL,
-	plugin_name varchar2(765) DEFAULT '' ,
-	plugin_enabled number(1) DEFAULT '0' NOT NULL,
-	plugin_version varchar2(300) DEFAULT '' ,
-	CONSTRAINT pk_phpbb_blogs_plugins PRIMARY KEY (plugin_id)
-)
-/
-
-CREATE INDEX phpbb_blogs_plugins_plugin_name ON phpbb_blogs_plugins (plugin_name)
-/
-CREATE INDEX phpbb_blogs_plugins_plugin_enabled ON phpbb_blogs_plugins (plugin_enabled)
-/
-
-CREATE SEQUENCE phpbb_blogs_plugins_seq
-/
-
-CREATE OR REPLACE TRIGGER t_phpbb_blogs_plugins
-BEFORE INSERT ON phpbb_blogs_plugins
-FOR EACH ROW WHEN (
-	new.plugin_id IS NULL OR new.plugin_id = 0
-)
-BEGIN
-	SELECT phpbb_blogs_plugins_seq.nextval
-	INTO :new.plugin_id
-	FROM dual;
-END;
 /
 
 
@@ -286,68 +365,4 @@ CREATE INDEX phpbb_blog_search_wordmatch_blog_id ON phpbb_blog_search_wordmatch 
 /
 CREATE INDEX phpbb_blog_search_wordmatch_reply_id ON phpbb_blog_search_wordmatch (reply_id)
 /
-
-/*
-	Table: 'phpbb_blogs_categories'
-*/
-CREATE TABLE phpbb_blogs_categories (
-	category_id number(8) NOT NULL,
-	parent_id number(8) DEFAULT '0' NOT NULL,
-	left_id number(8) DEFAULT '0' NOT NULL,
-	right_id number(8) DEFAULT '0' NOT NULL,
-	category_name varchar2(765) DEFAULT '' ,
-	category_description clob DEFAULT '' ,
-	category_description_bitfield varchar2(255) DEFAULT '' ,
-	category_description_uid varchar2(8) DEFAULT '' ,
-	category_description_options number(11) DEFAULT '7' NOT NULL,
-	rules clob DEFAULT '' ,
-	rules_bitfield varchar2(255) DEFAULT '' ,
-	rules_uid varchar2(8) DEFAULT '' ,
-	rules_options number(11) DEFAULT '7' NOT NULL,
-	blog_count number(8) DEFAULT '0' NOT NULL,
-	CONSTRAINT pk_phpbb_blogs_categories PRIMARY KEY (category_id)
-)
-/
-
-CREATE INDEX phpbb_blogs_categories_left_right_id ON phpbb_blogs_categories (left_id, right_id)
-/
-
-CREATE SEQUENCE phpbb_blogs_categories_seq
-/
-
-CREATE OR REPLACE TRIGGER t_phpbb_blogs_categories
-BEFORE INSERT ON phpbb_blogs_categories
-FOR EACH ROW WHEN (
-	new.category_id IS NULL OR new.category_id = 0
-)
-BEGIN
-	SELECT phpbb_blogs_categories_seq.nextval
-	INTO :new.category_id
-	FROM dual;
-END;
-/
-
-
-/*
-	Table: 'phpbb_blogs_in_categories'
-*/
-CREATE TABLE phpbb_blogs_in_categories (
-	blog_id number(8) DEFAULT '0' NOT NULL,
-	category_id number(8) DEFAULT '0' NOT NULL,
-	CONSTRAINT pk_phpbb_blogs_in_categories PRIMARY KEY (blog_id, category_id)
-)
-/
-
-
-/*
-	Table: 'phpbb_blogs_ratings'
-*/
-CREATE TABLE phpbb_blogs_ratings (
-	blog_id number(8) DEFAULT '0' NOT NULL,
-	user_id number(8) DEFAULT '0' NOT NULL,
-	rating number(8) DEFAULT '0' NOT NULL,
-	CONSTRAINT pk_phpbb_blogs_ratings PRIMARY KEY (blog_id, user_id)
-)
-/
-
 

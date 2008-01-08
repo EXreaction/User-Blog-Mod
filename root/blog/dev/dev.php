@@ -518,6 +518,88 @@ function get_blog_schema_struct()
 		),
 	);
 
+	$schema_data['phpbb_blogs_attachment'] = array(
+		'COLUMNS'		=> array(
+			'attach_id'				=> array('UINT', NULL, 'auto_increment'),
+			'blog_id'				=> array('UINT', 0),
+			'reply_id'				=> array('UINT', 0),
+			'poster_id'				=> array('UINT', 0),
+			'is_orphan'				=> array('BOOL', 1),
+			'is_orphan'				=> array('BOOL', 1),
+			'physical_filename'		=> array('VCHAR', ''),
+			'real_filename'			=> array('VCHAR', ''),
+			'download_count'		=> array('UINT', 0),
+			'attach_comment'		=> array('TEXT_UNI', ''),
+			'extension'				=> array('VCHAR:100', ''),
+			'mimetype'				=> array('VCHAR:100', ''),
+			'filesize'				=> array('UINT:20', 0),
+			'filetime'				=> array('TIMESTAMP', 0),
+			'thumbnail'				=> array('BOOL', 0),
+		),
+		'PRIMARY_KEY'	=> 'attach_id',
+		'KEYS'			=> array(
+			'blog_id'				=> array('INDEX', 'blog_id'),
+			'reply_id'				=> array('INDEX', 'reply_id'),
+			'filetime'				=> array('INDEX', 'filetime'),
+			'poster_id'				=> array('INDEX', 'poster_id'),
+			'is_orphan'				=> array('INDEX', 'is_orphan'),
+		),
+	);
+
+	$schema_data['phpbb_blogs_categories'] = array(
+		'COLUMNS'		=> array(
+			'category_id'					=> array('UINT', NULL, 'auto_increment'),
+			'parent_id'						=> array('UINT', 0),
+			'left_id'						=> array('UINT', 0),
+			'right_id'						=> array('UINT', 0),
+			'category_name'					=> array('STEXT_UNI', '', 'true_sort'),
+			'category_description'			=> array('MTEXT_UNI', ''),
+			'category_description_bitfield'	=> array('VCHAR:255', ''),
+			'category_description_uid'		=> array('VCHAR:8', ''),
+			'category_description_options'	=> array('UINT:11', 7),
+			'rules'							=> array('MTEXT_UNI', ''),
+			'rules_bitfield'				=> array('VCHAR:255', ''),
+			'rules_uid'						=> array('VCHAR:8', ''),
+			'rules_options'					=> array('UINT:11', 7),
+			'blog_count'					=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> 'category_id',
+		'KEYS'			=> array(
+			'left_right_id'			=> array('INDEX', array('left_id', 'right_id')),
+		),
+	);
+
+	$schema_data['phpbb_blogs_in_categories'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'						=> array('UINT', 0),
+			'category_id'					=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> array('blog_id', 'category_id'),
+	);
+
+	$schema_data['phpbb_blogs_plugins'] = array(
+		'COLUMNS'		=> array(
+			'plugin_id'				=> array('UINT', NULL, 'auto_increment'),
+			'plugin_name'			=> array('STEXT_UNI', '', 'true_sort'),
+			'plugin_enabled'		=> array('BOOL', 0),
+			'plugin_version'		=> array('XSTEXT_UNI', '', 'true_sort'),
+		),
+		'PRIMARY_KEY'	=> 'plugin_id',
+		'KEYS'			=> array(
+			'plugin_name'			=> array('INDEX', 'plugin_name'),
+			'plugin_enabled'		=> array('INDEX', 'plugin_enabled'),
+		),
+	);
+
+	$schema_data['phpbb_blogs_ratings'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'						=> array('UINT', 0),
+			'user_id'						=> array('UINT', 0),
+			'rating'						=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> array('blog_id', 'user_id'),
+	);
+
 	$schema_data['phpbb_blogs_reply'] = array(
 		'COLUMNS'		=> array(
 			'reply_id'				=> array('UINT', NULL, 'auto_increment'),
@@ -564,20 +646,6 @@ function get_blog_schema_struct()
 		'PRIMARY_KEY'	=> 'sub_user_id, sub_type, blog_id, user_id',
 	);
 
-	$schema_data['phpbb_blogs_plugins'] = array(
-		'COLUMNS'		=> array(
-			'plugin_id'				=> array('UINT', NULL, 'auto_increment'),
-			'plugin_name'			=> array('STEXT_UNI', '', 'true_sort'),
-			'plugin_enabled'		=> array('BOOL', 0),
-			'plugin_version'		=> array('XSTEXT_UNI', '', 'true_sort'),
-		),
-		'PRIMARY_KEY'	=> 'plugin_id',
-		'KEYS'			=> array(
-			'plugin_name'			=> array('INDEX', 'plugin_name'),
-			'plugin_enabled'		=> array('INDEX', 'plugin_enabled'),
-		),
-	);
-
 	$schema_data['phpbb_blogs_users'] = array(
 		'COLUMNS'		=> array(
 			'user_id'				=> array('UINT', 0),
@@ -592,34 +660,6 @@ function get_blog_schema_struct()
 			'instant_redirect'		=> array('BOOL', 1),
 		),
 		'PRIMARY_KEY'	=> 'user_id',
-	);
-
-	$schema_data['phpbb_blogs_attachment'] = array(
-		'COLUMNS'		=> array(
-			'attach_id'				=> array('UINT', NULL, 'auto_increment'),
-			'blog_id'				=> array('UINT', 0),
-			'reply_id'				=> array('UINT', 0),
-			'poster_id'				=> array('UINT', 0),
-			'is_orphan'				=> array('BOOL', 1),
-			'is_orphan'				=> array('BOOL', 1),
-			'physical_filename'		=> array('VCHAR', ''),
-			'real_filename'			=> array('VCHAR', ''),
-			'download_count'		=> array('UINT', 0),
-			'attach_comment'		=> array('TEXT_UNI', ''),
-			'extension'				=> array('VCHAR:100', ''),
-			'mimetype'				=> array('VCHAR:100', ''),
-			'filesize'				=> array('UINT:20', 0),
-			'filetime'				=> array('TIMESTAMP', 0),
-			'thumbnail'				=> array('BOOL', 0),
-		),
-		'PRIMARY_KEY'	=> 'attach_id',
-		'KEYS'			=> array(
-			'blog_id'				=> array('INDEX', 'blog_id'),
-			'reply_id'				=> array('INDEX', 'reply_id'),
-			'filetime'				=> array('INDEX', 'filetime'),
-			'poster_id'				=> array('INDEX', 'poster_id'),
-			'is_orphan'				=> array('INDEX', 'is_orphan'),
-		),
 	);
 
 	$schema_data['phpbb_blog_search_wordlist'] = array(
@@ -649,46 +689,6 @@ function get_blog_schema_struct()
 			'blog_id'			=> array('INDEX', 'blog_id'),
 			'reply_id'			=> array('INDEX', 'reply_id'),
 		),
-	);
-
-	$schema_data['phpbb_blogs_categories'] = array(
-		'COLUMNS'		=> array(
-			'category_id'					=> array('UINT', NULL, 'auto_increment'),
-			'parent_id'						=> array('UINT', 0),
-			'left_id'						=> array('UINT', 0),
-			'right_id'						=> array('UINT', 0),
-			'category_name'					=> array('STEXT_UNI', '', 'true_sort'),
-			'category_description'			=> array('MTEXT_UNI', ''),
-			'category_description_bitfield'	=> array('VCHAR:255', ''),
-			'category_description_uid'		=> array('VCHAR:8', ''),
-			'category_description_options'	=> array('UINT:11', 7),
-			'rules'							=> array('MTEXT_UNI', ''),
-			'rules_bitfield'				=> array('VCHAR:255', ''),
-			'rules_uid'						=> array('VCHAR:8', ''),
-			'rules_options'					=> array('UINT:11', 7),
-			'blog_count'					=> array('UINT', 0),
-		),
-		'PRIMARY_KEY'	=> 'category_id',
-		'KEYS'			=> array(
-			'left_right_id'			=> array('INDEX', array('left_id', 'right_id')),
-		),
-	);
-
-	$schema_data['phpbb_blogs_in_categories'] = array(
-		'COLUMNS'		=> array(
-			'blog_id'						=> array('UINT', 0),
-			'category_id'					=> array('UINT', 0),
-		),
-		'PRIMARY_KEY'	=> array('blog_id', 'category_id'),
-	);
-
-	$schema_data['phpbb_blogs_ratings'] = array(
-		'COLUMNS'		=> array(
-			'blog_id'						=> array('UINT', 0),
-			'user_id'						=> array('UINT', 0),
-			'rating'						=> array('UINT', 0),
-		),
-		'PRIMARY_KEY'	=> array('blog_id', 'user_id'),
 	);
 // */
 

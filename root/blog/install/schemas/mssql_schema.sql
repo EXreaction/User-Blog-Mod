@@ -35,6 +35,7 @@ CREATE TABLE [phpbb_blogs] (
 	[blog_read_count] [int] DEFAULT (1) NOT NULL ,
 	[blog_reply_count] [int] DEFAULT (0) NOT NULL ,
 	[blog_real_reply_count] [int] DEFAULT (0) NOT NULL ,
+	[blog_attachment] [int] DEFAULT (0) NOT NULL ,
 	[perm_guest] [int] DEFAULT (1) NOT NULL ,
 	[perm_registered] [int] DEFAULT (2) NOT NULL ,
 	[perm_foe] [int] DEFAULT (0) NOT NULL ,
@@ -80,6 +81,144 @@ GO
 
 
 /*
+	Table: 'phpbb_blogs_attachment'
+*/
+CREATE TABLE [phpbb_blogs_attachment] (
+	[attach_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[blog_id] [int] DEFAULT (0) NOT NULL ,
+	[reply_id] [int] DEFAULT (0) NOT NULL ,
+	[poster_id] [int] DEFAULT (0) NOT NULL ,
+	[is_orphan] [int] DEFAULT (1) NOT NULL ,
+	[physical_filename] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[real_filename] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[download_count] [int] DEFAULT (0) NOT NULL ,
+	[attach_comment] [varchar] (4000) DEFAULT ('') NOT NULL ,
+	[extension] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[mimetype] [varchar] (100) DEFAULT ('') NOT NULL ,
+	[filesize] [int] DEFAULT (0) NOT NULL ,
+	[filetime] [int] DEFAULT (0) NOT NULL ,
+	[thumbnail] [int] DEFAULT (0) NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_attachment] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_attachment] PRIMARY KEY  CLUSTERED 
+	(
+		[attach_id]
+	)  ON [PRIMARY] 
+GO
+
+CREATE  INDEX [blog_id] ON [phpbb_blogs_attachment]([blog_id]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [reply_id] ON [phpbb_blogs_attachment]([reply_id]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [filetime] ON [phpbb_blogs_attachment]([filetime]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [poster_id] ON [phpbb_blogs_attachment]([poster_id]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [is_orphan] ON [phpbb_blogs_attachment]([is_orphan]) ON [PRIMARY]
+GO
+
+
+/*
+	Table: 'phpbb_blogs_categories'
+*/
+CREATE TABLE [phpbb_blogs_categories] (
+	[category_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[parent_id] [int] DEFAULT (0) NOT NULL ,
+	[left_id] [int] DEFAULT (0) NOT NULL ,
+	[right_id] [int] DEFAULT (0) NOT NULL ,
+	[category_name] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[category_description] [text] DEFAULT ('') NOT NULL ,
+	[category_description_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[category_description_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
+	[category_description_options] [int] DEFAULT (7) NOT NULL ,
+	[rules] [text] DEFAULT ('') NOT NULL ,
+	[rules_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[rules_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
+	[rules_options] [int] DEFAULT (7) NOT NULL ,
+	[blog_count] [int] DEFAULT (0) NOT NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_categories] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_categories] PRIMARY KEY  CLUSTERED 
+	(
+		[category_id]
+	)  ON [PRIMARY] 
+GO
+
+CREATE  INDEX [left_right_id] ON [phpbb_blogs_categories]([left_id], [right_id]) ON [PRIMARY]
+GO
+
+
+/*
+	Table: 'phpbb_blogs_in_categories'
+*/
+CREATE TABLE [phpbb_blogs_in_categories] (
+	[blog_id] [int] DEFAULT (0) NOT NULL ,
+	[category_id] [int] DEFAULT (0) NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_in_categories] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_in_categories] PRIMARY KEY  CLUSTERED 
+	(
+		[blog_id],
+		[category_id]
+	)  ON [PRIMARY] 
+GO
+
+
+/*
+	Table: 'phpbb_blogs_plugins'
+*/
+CREATE TABLE [phpbb_blogs_plugins] (
+	[plugin_id] [int] IDENTITY (1, 1) NOT NULL ,
+	[plugin_name] [varchar] (255) DEFAULT ('') NOT NULL ,
+	[plugin_enabled] [int] DEFAULT (0) NOT NULL ,
+	[plugin_version] [varchar] (100) DEFAULT ('') NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_plugins] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_plugins] PRIMARY KEY  CLUSTERED 
+	(
+		[plugin_id]
+	)  ON [PRIMARY] 
+GO
+
+CREATE  INDEX [plugin_name] ON [phpbb_blogs_plugins]([plugin_name]) ON [PRIMARY]
+GO
+
+CREATE  INDEX [plugin_enabled] ON [phpbb_blogs_plugins]([plugin_enabled]) ON [PRIMARY]
+GO
+
+
+/*
+	Table: 'phpbb_blogs_ratings'
+*/
+CREATE TABLE [phpbb_blogs_ratings] (
+	[blog_id] [int] DEFAULT (0) NOT NULL ,
+	[user_id] [int] DEFAULT (0) NOT NULL ,
+	[rating] [int] DEFAULT (0) NOT NULL 
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [phpbb_blogs_ratings] WITH NOCHECK ADD 
+	CONSTRAINT [PK_phpbb_blogs_ratings] PRIMARY KEY  CLUSTERED 
+	(
+		[blog_id],
+		[user_id]
+	)  ON [PRIMARY] 
+GO
+
+
+/*
 	Table: 'phpbb_blogs_reply'
 */
 CREATE TABLE [phpbb_blogs_reply] (
@@ -104,7 +243,8 @@ CREATE TABLE [phpbb_blogs_reply] (
 	[reply_edit_count] [int] DEFAULT (0) NOT NULL ,
 	[reply_edit_locked] [int] DEFAULT (0) NOT NULL ,
 	[reply_deleted] [int] DEFAULT (0) NOT NULL ,
-	[reply_deleted_time] [int] DEFAULT (0) NOT NULL 
+	[reply_deleted_time] [int] DEFAULT (0) NOT NULL ,
+	[reply_attachment] [int] DEFAULT (0) NOT NULL 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
@@ -147,31 +287,6 @@ ALTER TABLE [phpbb_blogs_subscription] WITH NOCHECK ADD
 	(
 		[sub_user_id, sub_type, blog_id, user_id]
 	)  ON [PRIMARY] 
-GO
-
-
-/*
-	Table: 'phpbb_blogs_plugins'
-*/
-CREATE TABLE [phpbb_blogs_plugins] (
-	[plugin_id] [int] IDENTITY (1, 1) NOT NULL ,
-	[plugin_name] [varchar] (255) DEFAULT ('') NOT NULL ,
-	[plugin_enabled] [int] DEFAULT (0) NOT NULL ,
-	[plugin_version] [varchar] (100) DEFAULT ('') NOT NULL 
-) ON [PRIMARY]
-GO
-
-ALTER TABLE [phpbb_blogs_plugins] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blogs_plugins] PRIMARY KEY  CLUSTERED 
-	(
-		[plugin_id]
-	)  ON [PRIMARY] 
-GO
-
-CREATE  INDEX [plugin_name] ON [phpbb_blogs_plugins]([plugin_name]) ON [PRIMARY]
-GO
-
-CREATE  INDEX [plugin_enabled] ON [phpbb_blogs_plugins]([plugin_enabled]) ON [PRIMARY]
 GO
 
 
@@ -246,75 +361,6 @@ CREATE  INDEX [blog_id] ON [phpbb_blog_search_wordmatch]([blog_id]) ON [PRIMARY]
 GO
 
 CREATE  INDEX [reply_id] ON [phpbb_blog_search_wordmatch]([reply_id]) ON [PRIMARY]
-GO
-
-
-/*
-	Table: 'phpbb_blogs_categories'
-*/
-CREATE TABLE [phpbb_blogs_categories] (
-	[category_id] [int] IDENTITY (1, 1) NOT NULL ,
-	[parent_id] [int] DEFAULT (0) NOT NULL ,
-	[left_id] [int] DEFAULT (0) NOT NULL ,
-	[right_id] [int] DEFAULT (0) NOT NULL ,
-	[category_name] [varchar] (255) DEFAULT ('') NOT NULL ,
-	[category_description] [text] DEFAULT ('') NOT NULL ,
-	[category_description_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
-	[category_description_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
-	[category_description_options] [int] DEFAULT (7) NOT NULL ,
-	[rules] [text] DEFAULT ('') NOT NULL ,
-	[rules_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
-	[rules_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
-	[rules_options] [int] DEFAULT (7) NOT NULL ,
-	[blog_count] [int] DEFAULT (0) NOT NULL 
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-
-ALTER TABLE [phpbb_blogs_categories] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blogs_categories] PRIMARY KEY  CLUSTERED 
-	(
-		[category_id]
-	)  ON [PRIMARY] 
-GO
-
-CREATE  INDEX [left_right_id] ON [phpbb_blogs_categories]([left_id], [right_id]) ON [PRIMARY]
-GO
-
-
-/*
-	Table: 'phpbb_blogs_in_categories'
-*/
-CREATE TABLE [phpbb_blogs_in_categories] (
-	[blog_id] [int] DEFAULT (0) NOT NULL ,
-	[category_id] [int] DEFAULT (0) NOT NULL 
-) ON [PRIMARY]
-GO
-
-ALTER TABLE [phpbb_blogs_in_categories] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blogs_in_categories] PRIMARY KEY  CLUSTERED 
-	(
-		[blog_id],
-		[category_id]
-	)  ON [PRIMARY] 
-GO
-
-
-/*
-	Table: 'phpbb_blogs_ratings'
-*/
-CREATE TABLE [phpbb_blogs_ratings] (
-	[blog_id] [int] DEFAULT (0) NOT NULL ,
-	[user_id] [int] DEFAULT (0) NOT NULL ,
-	[rating] [int] DEFAULT (0) NOT NULL 
-) ON [PRIMARY]
-GO
-
-ALTER TABLE [phpbb_blogs_ratings] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blogs_ratings] PRIMARY KEY  CLUSTERED 
-	(
-		[blog_id],
-		[user_id]
-	)  ON [PRIMARY] 
 GO
 
 

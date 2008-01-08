@@ -29,6 +29,7 @@ CREATE TABLE phpbb_blogs (
 	blog_read_count INTEGER DEFAULT 1 NOT NULL,
 	blog_reply_count INTEGER DEFAULT 0 NOT NULL,
 	blog_real_reply_count INTEGER DEFAULT 0 NOT NULL,
+	blog_attachment INTEGER DEFAULT 0 NOT NULL,
 	perm_guest INTEGER DEFAULT 1 NOT NULL,
 	perm_registered INTEGER DEFAULT 2 NOT NULL,
 	perm_foe INTEGER DEFAULT 0 NOT NULL,
@@ -60,6 +61,119 @@ BEGIN
 END;;
 
 
+# Table: 'phpbb_blogs_attachment'
+CREATE TABLE phpbb_blogs_attachment (
+	attach_id INTEGER NOT NULL,
+	blog_id INTEGER DEFAULT 0 NOT NULL,
+	reply_id INTEGER DEFAULT 0 NOT NULL,
+	poster_id INTEGER DEFAULT 0 NOT NULL,
+	is_orphan INTEGER DEFAULT 1 NOT NULL,
+	physical_filename VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	real_filename VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	download_count INTEGER DEFAULT 0 NOT NULL,
+	attach_comment BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
+	extension VARCHAR(100) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	mimetype VARCHAR(100) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	filesize INTEGER DEFAULT 0 NOT NULL,
+	filetime INTEGER DEFAULT 0 NOT NULL,
+	thumbnail INTEGER DEFAULT 0 NOT NULL
+);;
+
+ALTER TABLE phpbb_blogs_attachment ADD PRIMARY KEY (attach_id);;
+
+CREATE INDEX phpbb_blogs_attachment_blog_id ON phpbb_blogs_attachment(blog_id);;
+CREATE INDEX phpbb_blogs_attachment_reply_id ON phpbb_blogs_attachment(reply_id);;
+CREATE INDEX phpbb_blogs_attachment_filetime ON phpbb_blogs_attachment(filetime);;
+CREATE INDEX phpbb_blogs_attachment_poster_id ON phpbb_blogs_attachment(poster_id);;
+CREATE INDEX phpbb_blogs_attachment_is_orphan ON phpbb_blogs_attachment(is_orphan);;
+
+CREATE GENERATOR phpbb_blogs_attachment_gen;;
+SET GENERATOR phpbb_blogs_attachment_gen TO 0;;
+
+CREATE TRIGGER t_phpbb_blogs_attachment FOR phpbb_blogs_attachment
+BEFORE INSERT
+AS
+BEGIN
+	NEW.attach_id = GEN_ID(phpbb_blogs_attachment_gen, 1);
+END;;
+
+
+# Table: 'phpbb_blogs_categories'
+CREATE TABLE phpbb_blogs_categories (
+	category_id INTEGER NOT NULL,
+	parent_id INTEGER DEFAULT 0 NOT NULL,
+	left_id INTEGER DEFAULT 0 NOT NULL,
+	right_id INTEGER DEFAULT 0 NOT NULL,
+	category_name VARCHAR(255) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE,
+	category_description BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
+	category_description_bitfield VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	category_description_uid VARCHAR(8) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	category_description_options INTEGER DEFAULT 7 NOT NULL,
+	rules BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
+	rules_bitfield VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	rules_uid VARCHAR(8) CHARACTER SET NONE DEFAULT '' NOT NULL,
+	rules_options INTEGER DEFAULT 7 NOT NULL,
+	blog_count INTEGER DEFAULT 0 NOT NULL
+);;
+
+ALTER TABLE phpbb_blogs_categories ADD PRIMARY KEY (category_id);;
+
+CREATE INDEX phpbb_blogs_categories_left_right_id ON phpbb_blogs_categories(left_id, right_id);;
+
+CREATE GENERATOR phpbb_blogs_categories_gen;;
+SET GENERATOR phpbb_blogs_categories_gen TO 0;;
+
+CREATE TRIGGER t_phpbb_blogs_categories FOR phpbb_blogs_categories
+BEFORE INSERT
+AS
+BEGIN
+	NEW.category_id = GEN_ID(phpbb_blogs_categories_gen, 1);
+END;;
+
+
+# Table: 'phpbb_blogs_in_categories'
+CREATE TABLE phpbb_blogs_in_categories (
+	blog_id INTEGER DEFAULT 0 NOT NULL,
+	category_id INTEGER DEFAULT 0 NOT NULL
+);;
+
+ALTER TABLE phpbb_blogs_in_categories ADD PRIMARY KEY (blog_id, category_id);;
+
+
+# Table: 'phpbb_blogs_plugins'
+CREATE TABLE phpbb_blogs_plugins (
+	plugin_id INTEGER NOT NULL,
+	plugin_name VARCHAR(255) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE,
+	plugin_enabled INTEGER DEFAULT 0 NOT NULL,
+	plugin_version VARCHAR(100) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE
+);;
+
+ALTER TABLE phpbb_blogs_plugins ADD PRIMARY KEY (plugin_id);;
+
+CREATE INDEX phpbb_blogs_plugins_plugin_name ON phpbb_blogs_plugins(plugin_name);;
+CREATE INDEX phpbb_blogs_plugins_plugin_enabled ON phpbb_blogs_plugins(plugin_enabled);;
+
+CREATE GENERATOR phpbb_blogs_plugins_gen;;
+SET GENERATOR phpbb_blogs_plugins_gen TO 0;;
+
+CREATE TRIGGER t_phpbb_blogs_plugins FOR phpbb_blogs_plugins
+BEFORE INSERT
+AS
+BEGIN
+	NEW.plugin_id = GEN_ID(phpbb_blogs_plugins_gen, 1);
+END;;
+
+
+# Table: 'phpbb_blogs_ratings'
+CREATE TABLE phpbb_blogs_ratings (
+	blog_id INTEGER DEFAULT 0 NOT NULL,
+	user_id INTEGER DEFAULT 0 NOT NULL,
+	rating INTEGER DEFAULT 0 NOT NULL
+);;
+
+ALTER TABLE phpbb_blogs_ratings ADD PRIMARY KEY (blog_id, user_id);;
+
+
 # Table: 'phpbb_blogs_reply'
 CREATE TABLE phpbb_blogs_reply (
 	reply_id INTEGER NOT NULL,
@@ -83,7 +197,8 @@ CREATE TABLE phpbb_blogs_reply (
 	reply_edit_count INTEGER DEFAULT 0 NOT NULL,
 	reply_edit_locked INTEGER DEFAULT 0 NOT NULL,
 	reply_deleted INTEGER DEFAULT 0 NOT NULL,
-	reply_deleted_time INTEGER DEFAULT 0 NOT NULL
+	reply_deleted_time INTEGER DEFAULT 0 NOT NULL,
+	reply_attachment INTEGER DEFAULT 0 NOT NULL
 );;
 
 ALTER TABLE phpbb_blogs_reply ADD PRIMARY KEY (reply_id);;
@@ -114,30 +229,6 @@ CREATE TABLE phpbb_blogs_subscription (
 );;
 
 ALTER TABLE phpbb_blogs_subscription ADD PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id);;
-
-
-# Table: 'phpbb_blogs_plugins'
-CREATE TABLE phpbb_blogs_plugins (
-	plugin_id INTEGER NOT NULL,
-	plugin_name VARCHAR(255) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE,
-	plugin_enabled INTEGER DEFAULT 0 NOT NULL,
-	plugin_version VARCHAR(100) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE
-);;
-
-ALTER TABLE phpbb_blogs_plugins ADD PRIMARY KEY (plugin_id);;
-
-CREATE INDEX phpbb_blogs_plugins_plugin_name ON phpbb_blogs_plugins(plugin_name);;
-CREATE INDEX phpbb_blogs_plugins_plugin_enabled ON phpbb_blogs_plugins(plugin_enabled);;
-
-CREATE GENERATOR phpbb_blogs_plugins_gen;;
-SET GENERATOR phpbb_blogs_plugins_gen TO 0;;
-
-CREATE TRIGGER t_phpbb_blogs_plugins FOR phpbb_blogs_plugins
-BEFORE INSERT
-AS
-BEGIN
-	NEW.plugin_id = GEN_ID(phpbb_blogs_plugins_gen, 1);
-END;;
 
 
 # Table: 'phpbb_blogs_users'
@@ -193,56 +284,4 @@ CREATE UNIQUE INDEX phpbb_blog_search_wordmatch_unq_mtch ON phpbb_blog_search_wo
 CREATE INDEX phpbb_blog_search_wordmatch_word_id ON phpbb_blog_search_wordmatch(word_id);;
 CREATE INDEX phpbb_blog_search_wordmatch_blog_id ON phpbb_blog_search_wordmatch(blog_id);;
 CREATE INDEX phpbb_blog_search_wordmatch_reply_id ON phpbb_blog_search_wordmatch(reply_id);;
-
-# Table: 'phpbb_blogs_categories'
-CREATE TABLE phpbb_blogs_categories (
-	category_id INTEGER NOT NULL,
-	parent_id INTEGER DEFAULT 0 NOT NULL,
-	left_id INTEGER DEFAULT 0 NOT NULL,
-	right_id INTEGER DEFAULT 0 NOT NULL,
-	category_name VARCHAR(255) CHARACTER SET UTF8 DEFAULT '' NOT NULL COLLATE UNICODE,
-	category_description BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
-	category_description_bitfield VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
-	category_description_uid VARCHAR(8) CHARACTER SET NONE DEFAULT '' NOT NULL,
-	category_description_options INTEGER DEFAULT 7 NOT NULL,
-	rules BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
-	rules_bitfield VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
-	rules_uid VARCHAR(8) CHARACTER SET NONE DEFAULT '' NOT NULL,
-	rules_options INTEGER DEFAULT 7 NOT NULL,
-	blog_count INTEGER DEFAULT 0 NOT NULL
-);;
-
-ALTER TABLE phpbb_blogs_categories ADD PRIMARY KEY (category_id);;
-
-CREATE INDEX phpbb_blogs_categories_left_right_id ON phpbb_blogs_categories(left_id, right_id);;
-
-CREATE GENERATOR phpbb_blogs_categories_gen;;
-SET GENERATOR phpbb_blogs_categories_gen TO 0;;
-
-CREATE TRIGGER t_phpbb_blogs_categories FOR phpbb_blogs_categories
-BEFORE INSERT
-AS
-BEGIN
-	NEW.category_id = GEN_ID(phpbb_blogs_categories_gen, 1);
-END;;
-
-
-# Table: 'phpbb_blogs_in_categories'
-CREATE TABLE phpbb_blogs_in_categories (
-	blog_id INTEGER DEFAULT 0 NOT NULL,
-	category_id INTEGER DEFAULT 0 NOT NULL
-);;
-
-ALTER TABLE phpbb_blogs_in_categories ADD PRIMARY KEY (blog_id, category_id);;
-
-
-# Table: 'phpbb_blogs_ratings'
-CREATE TABLE phpbb_blogs_ratings (
-	blog_id INTEGER DEFAULT 0 NOT NULL,
-	user_id INTEGER DEFAULT 0 NOT NULL,
-	rating INTEGER DEFAULT 0 NOT NULL
-);;
-
-ALTER TABLE phpbb_blogs_ratings ADD PRIMARY KEY (blog_id, user_id);;
-
 
