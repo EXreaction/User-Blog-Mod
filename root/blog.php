@@ -19,8 +19,6 @@
 * LOG_CONFIG_BLOG
 * force style for UCP/MCP
 * option to cut off text at space or endline
-* re-integrate attachment plugin?
-* make separate page for allowed extensions for attachments
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
