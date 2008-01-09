@@ -203,7 +203,7 @@ class acp_blogs
 
 		if ($submit)
 		{
-			add_log('admin', 'LOG_CONFIG_BLOG');
+			add_log('admin', 'LOG_BLOG_CONFIG');
 
 			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
 		}
@@ -283,6 +283,7 @@ class acp_blogs
 					$subcategories_to_id	= request_var('subcategories_to_id', 0);
 					$action_blogs		= request_var('action_blogs', '');
 					$blogs_to_id		= request_var('blogs_to_id', 0);
+					$row = $this->get_category_info($category_id);
 
 					$errors = $this->delete_category($category_id, $action_blogs, $action_subcategories, $blogs_to_id, $subcategories_to_id);
 
@@ -291,6 +292,7 @@ class acp_blogs
 						break;
 					}
 
+					add_log('admin', 'LOG_BLOG_CATEGORY_DELETED', $row['category_name']);
 					trigger_error($user->lang['CATEGORY_DELETED'] . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
 	
 				break;
@@ -846,10 +848,6 @@ class acp_blogs
 		if ($submit)
 		{
 			$extra_message = '';
-			if ($updated)
-			{
-				add_log('admin', 'LOG_CONFIG_SEARCH');
-			}
 
 			if (isset($cfg_array['search_type']) && in_array($cfg_array['search_type'], $search_types, true) && ($cfg_array['search_type'] != $config['search_type']))
 			{
@@ -866,7 +864,7 @@ class acp_blogs
 
 							if (!$updated)
 							{
-								add_log('admin', 'LOG_CONFIG_SEARCH');
+								add_log('admin', 'LOG_BLOG_CONFIG_SEARCH');
 							}
 							$extra_message = '<br />' . $user->lang['SWITCHED_SEARCH_BACKEND'] . '<br /><a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=search&amp;mode=index') . '">&raquo; ' . $user->lang['GO_TO_SEARCH_INDEX'] . '</a>';
 						}
@@ -892,6 +890,7 @@ class acp_blogs
 				}
 			}
 
+			add_log('admin', 'LOG_BLOG_CONFIG_SEARCH');
 			trigger_error($user->lang['CONFIG_UPDATED'] . $extra_message . adm_back_link($this->u_action));
 		}
 		unset($cfg_array);
@@ -945,7 +944,7 @@ class acp_blogs
 				case 'delete':
 					$this->search->delete_index();
 
-					add_log('admin', 'LOG_SEARCH_INDEX_REMOVED', $name);
+					add_log('admin', 'LOG_BLOG_SEARCH_INDEX_REMOVED');
 					trigger_error($user->lang['SEARCH_INDEX_REMOVED'] . adm_back_link($this->u_action));
 				break;
 
@@ -1023,7 +1022,7 @@ class acp_blogs
 
 					if ($section > 2)
 					{
-						add_log('admin', 'LOG_SEARCH_INDEX_CREATED', $name);
+						add_log('admin', 'LOG_BLOG_SEARCH_INDEX_CREATED');
 						trigger_error($user->lang['SEARCH_INDEX_CREATED'] . adm_back_link($this->u_action));
 					}
 					else
@@ -1265,7 +1264,7 @@ class acp_blogs
 
 			$category_data['category_id'] = $db->sql_nextid();
 
-			add_log('admin', 'LOG_CATEGORY_ADD', $category_data['category_name']);
+			add_log('admin', 'LOG_BLOG_CATEGORY_ADD', $category_data['category_name']);
 		}
 		else
 		{
@@ -1300,7 +1299,7 @@ class acp_blogs
 			// Add it back
 			$category_data['category_id'] = $category_id;
 
-			add_log('admin', 'LOG_CATEGORY_EDIT', $category_data['category_name']);
+			add_log('admin', 'LOG_BLOG_CATEGORY_EDIT', $category_data['category_name']);
 		}
 
 		return $errors;
@@ -1586,7 +1585,7 @@ class acp_blogs
 			WHERE left_id > {$category_data['right_id']}";
 		$db->sql_query($sql);
 
-		add_log('admin', 'LOG_CATEGORY_DELETE');
+		add_log('admin', 'LOG_CATEGORY_DELETE', $category_data['category_name']);
 
 		return $errors;
 	}

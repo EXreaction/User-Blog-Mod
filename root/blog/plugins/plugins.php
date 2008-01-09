@@ -168,6 +168,8 @@ class blog_plugins
 		$db->sql_query($sql);
 		$this->plugins[$which] = $sql_data;
 
+		add_log('admin', 'LOG_BLOG_PLUGIN_INSTALLED', $which);
+
 		$cache->purge();
 	}
 
@@ -193,6 +195,8 @@ class blog_plugins
 		$db->sql_query($sql);
 
 		unset($this->plugins[$which]);
+
+		add_log('admin', 'LOG_BLOG_PLUGIN_UNINSTALLED', $which);
 
 		$cache->purge();
 	}
@@ -243,6 +247,8 @@ class blog_plugins
 
 			$this->plugins[$which]['plugin_version'] = $this->available_plugins[$which]['plugin_version'];
 
+			add_log('admin', 'LOG_BLOG_PLUGIN_UPDATED', $which);
+
 			handle_blog_cache('plugins');
 		}
 	}
@@ -262,6 +268,8 @@ class blog_plugins
 
 		$this->plugins[$which]['plugin_enabled'] = 1;
 
+		add_log('admin', 'LOG_BLOG_PLUGIN_ENABLED', $which);
+
 		handle_blog_cache('plugins');
 	}
 
@@ -278,6 +286,8 @@ class blog_plugins
 		$db->sql_query($sql);
 
 		$this->plugins[$which]['plugin_enabled'] = 0;
+
+		add_log('admin', 'LOG_BLOG_PLUGIN_DISABLED', $which);
 
 		handle_blog_cache('plugins');
 	}
