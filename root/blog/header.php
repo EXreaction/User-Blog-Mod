@@ -19,7 +19,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 	}
 
-	if (!isset($user->lang['USER_BLOGS']))
+	if (!isset($user->lang['USER_BLOGS']) || !isset($user->lang['MY_BLOG']))
 	{
 		$user->add_lang('mods/blog/common');
 	}
