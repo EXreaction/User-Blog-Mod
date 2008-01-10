@@ -48,6 +48,8 @@ if (blog_data::$blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'
 			WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
+		handle_blog_cache('report_blog', $user_id);
+
 		blog_meta_refresh(3, $blog_urls['view_blog']);
 
 		$message = $user->lang['REPORT_CLOSED_SUCCESS'];
@@ -72,6 +74,8 @@ else
 		}
 
 		inform_approve_report('blog_report', $blog_id);
+
+		handle_blog_cache('report_blog', $user_id);
 
 		blog_meta_refresh(3, $blog_urls['view_blog']);
 	

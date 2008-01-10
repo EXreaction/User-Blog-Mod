@@ -62,7 +62,7 @@ if (confirm_box(true))
 		$db->sql_query($sql);
 	}
 
-	handle_blog_cache('delete_blog', $user_id);
+	handle_blog_cache('undelete_blog', $user_id);
 
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 

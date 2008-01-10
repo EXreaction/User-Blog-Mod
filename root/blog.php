@@ -11,6 +11,9 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* finish cache cleanup.
+* subcategory list wrong
+* option to hard delete on delete page
 * truncate functions - check if works with DB type
 * super cache - cache entire pages
 * add place to allow subscription notices when posting a blog/reply (drop down box)
@@ -105,6 +108,9 @@ $blog_plugins->plugin_do('blog_start');
 $default = false;
 switch ($page)
 {
+	case 'send_subscriptions' : // sends out the subscription notices
+		
+	break;
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search

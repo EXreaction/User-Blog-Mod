@@ -44,7 +44,7 @@ if ($blog_id != 0)
 				AND blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
-		handle_blog_cache('subscription', $user->data['user_id']);
+		$cache->destroy("_blog_subscription_{$user_id}");
 
 		$template->assign_vars(array(
 			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_BLOG'],
@@ -91,7 +91,7 @@ else if ($user_id != 0)
 				AND user_id = ' . intval($user_id);
 		$db->sql_query($sql);
 
-		handle_blog_cache('subscription', $user->data['user_id']);
+		$cache->destroy("_blog_subscription_{$user_id}");
 
 		$template->assign_vars(array(
 			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_USER'],

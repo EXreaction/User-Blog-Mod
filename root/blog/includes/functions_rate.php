@@ -24,7 +24,7 @@ function get_user_blog_rating_data($user_id)
 		return false;
 	}
 
-	// This function will be called upon quite often, so I will be storing the data in a static array after it is gotten.
+	// This function will be called upon quite often, so I will be storing the data in a static array after we get it once
 	static $ratings = array();
 
 	$user_id = (int) $user_id;
@@ -47,7 +47,7 @@ function get_user_blog_rating_data($user_id)
 		}
 		$db->sql_freeresult($result);
 
-		$cache->put('_user_blog_rating_' . $user_id, $rating_data);
+		$cache->put('_blog_rating_' . $user_id, $rating_data);
 	}
 
 	$ratings[$user_id] = $rating_data;

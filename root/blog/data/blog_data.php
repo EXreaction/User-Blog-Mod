@@ -34,7 +34,7 @@ class blog_data
 	*/
 	public function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $phpbb_root_path, $phpEx, $auth, $cache;
+		global $db, $user, $phpbb_root_path, $phpEx, $auth;
 		global $blog_data, $reply_data, $user_data, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_data_start', $selection_data);
@@ -237,7 +237,7 @@ class blog_data
 	*/
 	public function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $cache, $user, $auth;
+		global $db, $user, $auth;
 		global $reply_data, $user_data, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_info_start', $selection_data);

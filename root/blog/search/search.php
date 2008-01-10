@@ -101,6 +101,9 @@ class blog_search
 	{
 		global $cache;
 
+		// Not using this ATM
+		return;
+
 		if (!($stored_ids = $cache->get('_blog_search_results_' . $search_key)))
 		{
 			// no search results cached for this search_key

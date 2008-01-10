@@ -14,12 +14,12 @@
 	var max_rating = "{UA_MAX_RATING}";
 	var min_rating = "{UA_MIN_RATING}";
 
-	function toggleDiv(divName, toggle)
+	function toggleDiv(divName)
 	{
 	    thisDiv = document.getElementById(divName);
 	    if (thisDiv)
 		{
-	        if (thisDiv.style.display == "none" || toggle == "show")
+	        if (thisDiv.style.display == "none")
 			{
 	            thisDiv.style.display = "block";
 	        }

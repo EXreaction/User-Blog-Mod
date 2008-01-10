@@ -212,6 +212,8 @@ else // user submitted and there are no errors
 
 	unset($message_parser, $sql_data);
 
+	handle_blog_cache('add_reply', $user_id);
+
 	// update the reply count for the blog
 	if ($auth->acl_get('u_blogreplynoapprove'))
 	{

@@ -81,6 +81,8 @@ if (confirm_box(true))
 		$db->sql_query($sql);
 	}
 
+	handle_blog_cache('delete_reply', $user_id);
+
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 
 	$message = $user->lang['REPLY_DELETED'] . '<br/><br/>';

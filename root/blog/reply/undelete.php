@@ -54,6 +54,8 @@ if (confirm_box(true))
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
+	handle_blog_cache('undelete_reply', $user_id);
+
 	blog_meta_refresh(3, $blog_urls['view_reply']);
 
 	$message = $user->lang['REPLY_UNDELETED'] . '<br/><br/>';

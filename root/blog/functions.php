@@ -74,59 +74,39 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	{
 		global $cache, $auth, $user, $db, $blog_plugins;
 
-		$blog_plugins->plugin_do('function_handle_blog_cache');
+		$temp = compact('mode', 'user_id');
+		$blog_plugins->plugin_do_arg('function_handle_blog_cache', $temp);
 
-		if ($mode == 'blog' || (strpos($mode, 'blog') !== false))
+		if (!$mode && $user_id)
 		{
-			$cache->destroy('sql', BLOGS_TABLE);
-
-			if ($user_id === false)
-			{
-				$sql = 'SELECT user_id FROM ' . USERS_TABLE;
-				$result = $db->sql_query($sql);
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$cache->destroy('_blog_archive' . $row['user_id']);
-					$cache->destroy('_blog_settings_' . $row['user_id']);
-					$cache->destroy('_blog_subscription' . $row['user_id']);
-				}
-			}
-			else
-			{
-				$cache->destroy('_blog_categories');
-				$cache->destroy("_blog_archive{$user_id}");
-				$cache->destroy('_blog_settings_' . $user_id);
-				$cache->destroy("_blog_subscription{$user_id}");
-				$cache->destroy("_blog_rating_{$user_id}");
-			}
+			$cache->destroy("_blog_settings_{$user_id}");
+			$cache->destroy("_blog_subscription_{$user_id}");
+			$cache->destroy("_blog_rating_{$user_id}");
 		}
 
 		switch ($mode)
 		{
+/*			Not currently used
 			case 'new_blog' :
-				if ($auth->acl_get('u_blognoapprove'))
-				{
-					$cache->destroy('all_blog_ids');
-				}
-				else
-				{
-					$cache->destroy('all_unapproved_blog_ids');
-				}
-			break;
 			case 'approve_blog' :
-				$cache->destroy('all_blog_ids');
-			break;
+			case 'report_blog' :
 			case 'delete_blog' :
-				$cache->destroy('all_blog_ids');
-			break;
-			case 'blog' :
-				$cache->destroy('all_blog_ids');
-			break;
-			case 'subscription' :
-				$cache->destroy("_blog_subscription{$user_id}");
-			break;
+			case 'undelete_blog' :
+			case 'new_reply' :
+			case 'approve_reply' :
+			case 'report_reply' :
+			case 'delete_reply' :
+			case 'undelete_reply' :
+*/
 			case 'plugins' :
 				$cache->destroy('_blog_plugins');
+			break;
+			case 'extensions' :
+				$cache->destroy('_blog_extensions');
+			break;
+			case 'categories' :
+				$cache->destroy('_blog_categories');
+			break;
 			default :
 				$blog_plugins->plugin_do_arg('function_handle_blog_cache_mode', $mode);
 		}

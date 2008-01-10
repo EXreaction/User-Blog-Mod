@@ -22,8 +22,8 @@ function archive_function_generate_menu(&$arg)
 
 	$user_permission_sql = build_permission_sql($user->data['user_id']);
 	$sql = 'SELECT blog_id, blog_time, blog_subject FROM ' . BLOGS_TABLE . '
-				WHERE user_id = \'' . intval($arg['user_id']) . '\'
-					AND blog_deleted = \'0\'' .
+				WHERE user_id = ' . intval($arg['user_id']) . '
+					AND blog_deleted = 0' .
 						$user_permission_sql . '
 						ORDER BY blog_id DESC';
 	$result = $db->sql_query($sql);

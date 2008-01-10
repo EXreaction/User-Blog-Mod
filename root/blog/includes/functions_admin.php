@@ -23,7 +23,7 @@ if (!defined('IN_PHPBB'))
 */
 function resync_blog($mode)
 {
-	global $db, $blog_plugins;
+	global $cache, $db, $blog_plugins;
 
 	$blog_data = array();
 	$reply_data = array();
@@ -159,8 +159,8 @@ function resync_blog($mode)
 		$db->sql_freeresult($result);
 	}
 
-	// clear the user blog mod's cache
-	handle_blog_cache('blog', false);
+	// clear the cache
+	$cache->purge();
 
 	$blog_plugins->plugin_do_arg('function_resync_blog', $mode);
 }

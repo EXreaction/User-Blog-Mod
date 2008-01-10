@@ -214,6 +214,8 @@ else // user submitted and there are no errors
 	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_EDIT_SUCCESS']) . '<br /><br />'; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
 
+	handle_blog_cache('edit_reply', $user_id);
+
 	// redirect
 	blog_meta_refresh(3, $blog_urls['view_reply']);
 

@@ -53,6 +53,8 @@ if (reply_data::$reply[$reply_id]['reply_approved'] == 0)
 
 		handle_subscription('new_reply',  censor_text(reply_data::$reply[$reply_id]['reply_subject']));
 
+		handle_blog_cache('approve_reply', $user_id);
+
 		blog_meta_refresh(3, $blog_urls['view_reply']);
 
 		$message = $user->lang['APPROVE_REPLY_SUCCESS'] . '<br/><br/>';

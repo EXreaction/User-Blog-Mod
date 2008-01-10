@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 */
 function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read')
 {
-	global $auth, $cache, $config, $db, $user;
+	global $auth, $config, $db, $user;
 	global $blog_data, $zebra_list, $blog_plugins, $user_settings;
 
 	if (!$config['user_blog_user_permissions'])

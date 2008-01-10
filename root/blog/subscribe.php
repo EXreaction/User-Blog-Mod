@@ -49,6 +49,8 @@ if (is_array($settings))
 {
 	$blog_plugins->plugin_do('subscribe_blog_confirm');
 
+	$cache->destroy("_blog_subscription_{$user_id}");
+
 	foreach ($settings as $mode => $yn)
 	{
 		if ($yn && array_key_exists($mode, $display_vars))

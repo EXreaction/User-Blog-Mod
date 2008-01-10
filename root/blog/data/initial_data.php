@@ -161,7 +161,7 @@ $initial_data = array(
 	'S_POST_ACTION'			=> $blog_urls['self'],
 	'S_PRINT_MODE'			=> $print,
 	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
-	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : $blog_urls['subscribe'],
+	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : (($user->data['user_id'] != $user_id || $blog_id) ? $blog_urls['subscribe'] : ''),
 	'S_WATCHING_FORUM'		=> $subscribed,
 
 	'UA_GREY_STAR_SRC'		=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_grey.gif',

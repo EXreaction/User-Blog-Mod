@@ -13,12 +13,12 @@ $this->available_plugins[$name]['plugin_title'] = $user->lang['ARCHIVES'];
 $this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ARCHIVES_DESCRIPTION'];
 
 $this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.2';
+$this->available_plugins[$name]['plugin_version'] = '0.7.3';
 
 if ($plugin_enabled)
 {
 	$to_do = array(
-		'function_generate_menu'	=> array('archive_function_generate_menu'),
+		'function_generate_menu'		=> array('archive_function_generate_menu'),
 	);
 
 	foreach($to_do as $do => $what)

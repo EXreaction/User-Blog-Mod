@@ -525,7 +525,7 @@ class blog_attachment
 	*/
 	public function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
 	{
-		global $auth, $user, $config, $db, $cache, $phpbb_root_path, $phpEx;
+		global $auth, $user, $config, $db, $phpbb_root_path, $phpEx;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -747,7 +747,7 @@ class blog_attachment
 	*/
 	public function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
 	{
-		global $template, $cache, $user, $config, $phpbb_root_path, $phpEx, $auth;
+		global $template, $user, $config, $phpbb_root_path, $phpEx, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !sizeof($attachments) || !$auth->acl_get('u_download'))
 		{

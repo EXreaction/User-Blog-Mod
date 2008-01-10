@@ -66,7 +66,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 	if ($mode == 'new_reply' && $rid != 0)
 	{
-		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+		$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
 			WHERE blog_id = ' . intval($bid) . '
 			AND sub_user_id != ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
@@ -170,7 +170,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$messenger = new messenger(false);
 
 		$user_data->get_user_data($send_via_email);
-		$reply_url_var = ($rid !== false) ? "r={$rid}#r{$rid}" : '';
+		$reply_url_var = ($rid) ? "r={$rid}#r{$rid}" : '';
 
 		foreach ($send_via_email as $uid)
 		{
@@ -187,7 +187,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 				'BOARD_CONTACT'	=> $config['board_contact'],
 				'SUBJECT'		=> $user->lang['SUBSCRIPTION_NOTICE'],
 				'TO_USERNAME'	=> user_data::$user[$uid]['username'],
-				'TYPE'			=> ($rid !== false) ? $user->lang['REPLY'] : $user->lang['BLOG'],
+				'TYPE'			=> ($rid) ? $user->lang['REPLY'] : $user->lang['BLOG'],
 				'NAME'			=> $post_subject,
 				'BY_USERNAME'	=> $user->data['username'],
 				'U_VIEW'		=> $view_url,
@@ -196,6 +196,10 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 			$messenger->send(NOTIFY_EMAIL);
 		}
+
+		// save the queue if we must
+		$messenger->save_queue();
+
 		unset($messenger);
 	}
 
@@ -222,7 +226,7 @@ function get_subscription_info($blog_id, $user_id = false)
 	}
 
 	// attempt to get the data from the cache
-	$subscription_data = $cache->get('_blog_subscription' . $user->data['user_id']);
+	$subscription_data = $cache->get('_blog_subscription_' . $user->data['user_id']);
 
 	// grab data from the db if it isn't cached
 	if ($subscription_data === false)
@@ -232,7 +236,7 @@ function get_subscription_info($blog_id, $user_id = false)
 		$result = $db->sql_query($sql);
 		$subscription_data = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
-		$cache->put('_blog_subscription' . $user->data['user_id'], $subscription_data);
+		$cache->put('_blog_subscription_' . $user->data['user_id'], $subscription_data);
 	}
 
 	if (count($subscription_data))

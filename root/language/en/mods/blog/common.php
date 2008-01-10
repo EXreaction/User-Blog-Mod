@@ -74,7 +74,7 @@ $lang = array_merge($lang, array(
 	'REPLY_COUNT'					=> 'Reply Count',
 	'REPLY_DELETED_BY_MSG'			=> 'This reply was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this reply.',
 	'REPLY_NOT_EXIST'				=> 'The requested reply does not exist.',
-	'RETURN_BLOG_MAIN'				=> '%sReturn to %s\'s the main User Blogs page%s',
+	'RETURN_BLOG_MAIN'				=> '%1$sReturn to %2$s\'s Blogs%3$s',
 	'RETURN_BLOG_OWN'				=> '%sReturn to your blog%s',
 	'RETURN_MAIN'					=> 'Click %shere%s to return to the main User Blog page',
 
