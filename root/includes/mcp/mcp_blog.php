@@ -22,7 +22,7 @@ class mcp_blog
 
 	function main($id, $mode)
 	{
-		global $auth, $db, $user, $template, $cache;
+		global $auth, $db, $user, $template;
 		global $config, $phpbb_root_path, $phpEx, $action;
 		global $blog_data, $reply_data, $user_data, $blog_plugins, $blog_urls;
 

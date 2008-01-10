@@ -11,7 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* finish cache cleanup.
 * subcategory list wrong
 * option to hard delete on delete page
 * truncate functions - check if works with DB type

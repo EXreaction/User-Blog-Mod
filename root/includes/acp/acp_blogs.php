@@ -66,7 +66,7 @@ class acp_blogs
 
 	function settings($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $cache;
+		global $config, $db, $user, $auth, $template;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
 		global $blog_plugins, $blog_plugins_path;
 
@@ -643,7 +643,7 @@ class acp_blogs
 
 	function plugins($id, $mode)
 	{
-		global $config, $db, $user, $auth, $template, $cache;
+		global $config, $db, $user, $auth, $template;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
 		global $blog_plugins_path, $blog_plugins;
 
@@ -766,7 +766,7 @@ class acp_blogs
 
 	function search_settings($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache;
+		global $db, $user, $auth, $template;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -909,7 +909,7 @@ class acp_blogs
 
 	function search_index($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache;
+		global $db, $user, $auth, $template;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 		if (isset($_REQUEST['action']) && is_array($_REQUEST['action']))
@@ -1197,7 +1197,7 @@ class acp_blogs
 	*/
 	function update_category_data(&$category_data)
 	{
-		global $db, $user, $cache;
+		global $db, $user;
 
 		$errors = array();
 
@@ -1440,7 +1440,7 @@ class acp_blogs
 	*/
 	function delete_category($category_id, $action_blogs = 'delete', $action_subcategories = 'delete', $blogs_to_id = 0, $subcategories_to_id = 0)
 	{
-		global $db, $user, $cache;
+		global $db, $user;
 
 		$category_data = $this->get_category_info($category_id);
 
@@ -1750,7 +1750,6 @@ class acp_blogs
 			}
 
 			$allow_in_blog	= (isset($_POST['allow_in_blog'])) ? true : false;
-			$cache->destroy('_blog_extensions');
 
 			if (!sizeof($error))
 			{
@@ -1823,6 +1822,7 @@ class acp_blogs
 			}
 
 			$cache->destroy('_extensions');
+			$cache->destroy('_blog_extensions');
 
 			if (!sizeof($error))
 			{
@@ -1869,6 +1869,7 @@ class acp_blogs
 					add_log('admin', 'LOG_ATTACH_EXTGROUP_DEL', $group_name);
 
 					$cache->destroy('_extensions');
+					$cache->destroy('_blog_extensions');
 
 					trigger_error($user->lang['EXTENSION_GROUP_DELETED'] . adm_back_link($this->u_action));
 				}
