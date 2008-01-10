@@ -11,14 +11,11 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* subcategory list wrong
 * option to hard delete on delete page
 * truncate functions - check if works with DB type
 * super cache - cache entire pages
-* add place to allow subscription notices when posting a blog/reply (drop down box)
+* add place to allow subscription notices when posting a blog/reply (drop down box?)
 * auto-subscriptions in the UCP (which get selected in the add subscription on add blog/reply page automatically)
-* Move email/pm sender to other script so the user does not have to wait for the subscription notices to be sent out.
-*  possibly use custom password to verify the script is being called from the board (perhaps the board owner's pw hash or a hash of it)
 * force style for UCP/MCP
 * option to cut off text at space or endline
 *

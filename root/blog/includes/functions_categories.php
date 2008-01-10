@@ -18,12 +18,16 @@ if (!defined('IN_PHPBB'))
 * @param int $parent_id If this is set to something other than 0 it will only list categories under the category_id given
 * @param string $block Set the name of the block to output it to.
 * @param bool $ignore_subcats True to ignore subcategories, false to display them.
+* @param array $category_list If you want to send the already gotten category list...
 */
-function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false)
+function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false, $category_list = false)
 {
 	global $config, $template, $user;
 
-	$category_list = get_blog_categories('left_id');
+	if (!is_array($category_list))
+	{
+		$category_list = get_blog_categories('left_id');
+	}
 
 	foreach ($category_list as $left_id => $row)
 	{
@@ -53,7 +57,7 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 			// If not, then there are subcategories
 			if ($row['right_id'] > ($row['left_id'] + 1) && !$ignore_subcats)
 			{
-				handle_categories($row['category_id'], $category_list, 'category_row.subcategory', true);
+				handle_categories($row['category_id'], 'category_row.subcategory', true, $category_list);
 			}
 		}
 	}
