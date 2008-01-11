@@ -79,14 +79,8 @@
 ## 2007-12-21 Alpha 33
 ## 2007-12-22 Alpha 34
 ## 2007-12-22 Alpha 34a
-## 2007-12-23
-##		Alpha 34b
-##			+ A few more bug fixes.
-##			+ If everything is already working for you, ignore this release.
-## 2007-12-24
-##		Alpha 35
-##			+ A few more bug fixes and some more misc things.
-##			+ Copy the new files over and run the upgrade script by going to blog.php?page=update
+## 2007-12-23 Alpha 34b
+## 2007-12-24 Alpha 35
 ## 2007-12-27
 ##		Alpha 36
 ##			+ Now you can give blogs ratings!
@@ -107,7 +101,7 @@
 ##		Alpha 38_dev
 ##			+ Less than PHP 5.1.0 and less than MySQL 4.1.3 is no longer supported.
 ##			+ Lots of updates, to name a few: Added DB2 support, re-integrated the Attachments plugin (I plan to fork this mod later on to mods that require attachments),
-##				- 
+##				- Added easier access for subscriptions by putting it in as you add a reply + default setting for it in UCP.
 ##			+ To update, copy the new files over and run the upgrade script by going to blog.php?page=update
 ##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
 ##############################################################
