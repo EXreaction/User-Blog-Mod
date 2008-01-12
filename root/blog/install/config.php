@@ -31,6 +31,7 @@ set_config('user_blog_guest_captcha', 1);
 set_config('user_blog_user_permissions', 1);
 set_config('user_blog_search', 1);
 set_config('user_blog_search_type', 'fulltext_native');
+set_config('user_blog_enable_ratings', 1);
 set_config('user_blog_min_rating', 1);
 set_config('user_blog_max_rating', 5);
 set_config('user_blog_enable_attachments', 1);
