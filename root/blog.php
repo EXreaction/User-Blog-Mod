@@ -11,6 +11,7 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* add blog_plugins to attachments class
 * Split up installer?
 * Change the system to build schema OTF, like phpBB3 now does.
 * option to hard delete on delete page
@@ -85,7 +86,6 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
-include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
