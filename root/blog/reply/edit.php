@@ -23,7 +23,7 @@ if ($reply_id == 0)
 $user->add_lang('posting');
 
 // check to see if editing this message is locked, or if the one editing it has mod powers
-if (reply_data::$reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
+if (blog_data::$reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
 {
 	trigger_error('REPLY_EDIT_LOCKED');
 }
@@ -43,21 +43,21 @@ $blog_plugins->plugin_do('reply_edit_start');
 if (!$submit && !$preview && !$refresh)
 {
 	// Setup the message so we can import it to the edit page
-	$reply_subject = reply_data::$reply[$reply_id]['reply_subject'];
-	$reply_text = reply_data::$reply[$reply_id]['reply_text'];
-	decode_message($reply_text, reply_data::$reply[$reply_id]['bbcode_uid']);
-	$post_options->set_status(reply_data::$reply[$reply_id]['enable_bbcode'], reply_data::$reply[$reply_id]['enable_smilies'], reply_data::$reply[$reply_id]['enable_magic_url']);
+	$reply_subject = blog_data::$reply[$reply_id]['reply_subject'];
+	$reply_text = blog_data::$reply[$reply_id]['reply_text'];
+	decode_message($reply_text, blog_data::$reply[$reply_id]['bbcode_uid']);
+	$post_options->set_status(blog_data::$reply[$reply_id]['enable_bbcode'], blog_data::$reply[$reply_id]['enable_smilies'], blog_data::$reply[$reply_id]['enable_magic_url']);
 
 	// Attachments
 	$blog_attachment->get_attachment_data(false, $reply_id);
-	$blog_attachment->attachment_data = reply_data::$reply[$reply_id]['attachment_data'];
+	$blog_attachment->attachment_data = blog_data::$reply[$reply_id]['attachment_data'];
 }
 else
 {
 	// so we can check if they did edit any text when they hit submit
-	$original_subject = reply_data::$reply[$reply_id]['reply_subject'];
-	$original_text = reply_data::$reply[$reply_id]['reply_text'];
-	decode_message($original_text, reply_data::$reply[$reply_id]['bbcode_uid']);
+	$original_subject = blog_data::$reply[$reply_id]['reply_subject'];
+	$original_text = blog_data::$reply[$reply_id]['reply_text'];
+	decode_message($original_text, blog_data::$reply[$reply_id]['bbcode_uid']);
 
 	$reply_subject = utf8_normalize_nfc(request_var('subject', '', true));
 	$reply_text = utf8_normalize_nfc(request_var('message', '', true));
@@ -142,7 +142,7 @@ if (!$submit || sizeof($error))
 			'S_DISPLAY_PREVIEW'			=> true,
 			'PREVIEW_SUBJECT'			=> censor_text($reply_subject),
 			'PREVIEW_MESSAGE'			=> $preview_message,
-			'POST_DATE'					=> $user->format_date(reply_data::$reply[$reply_id]['reply_time']),
+			'POST_DATE'					=> $user->format_date(blog_data::$reply[$reply_id]['reply_time']),
 		));
 	}
 
@@ -175,11 +175,11 @@ else // user submitted and there are no errors
 	if ($original_subject != $reply_subject || $original_text != $reply_text || (request_var('edit_reason', '', true) != ''))
 	{
 		$sql_data = array(
-			'user_ip'				=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : reply_data::$reply[$reply_id]['user_ip'],
+			'user_ip'				=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : blog_data::$reply[$reply_id]['user_ip'],
 			'reply_subject'			=> $reply_subject,
 			'reply_text'			=> $message_parser->message,
 			'reply_checksum'		=> md5($message_parser->message),
-			'reply_approved' 		=> (reply_data::$reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0 : 1,
+			'reply_approved' 		=> (blog_data::$reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0 : 1,
 			'enable_bbcode' 		=> $post_options->enable_bbcode,
 			'enable_smilies'		=> $post_options->enable_smilies,
 			'enable_magic_url'		=> $post_options->enable_magic_url,
@@ -188,12 +188,12 @@ else // user submitted and there are no errors
 			'reply_edit_time'		=> time(),
 			'reply_edit_reason'		=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
 			'reply_edit_user'		=> $user->data['user_id'],
-			'reply_edit_count'		=> reply_data::$reply[$reply_id]['reply_edit_count'] + 1,
+			'reply_edit_count'		=> blog_data::$reply[$reply_id]['reply_edit_count'] + 1,
 			'reply_edit_locked'		=> ($auth->acl_get('m_blogreplylockedit') && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
 			'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 		);
 
-		$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, reply_data::$reply[$reply_id]['user_id']);
+		$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
 
 		$blog_plugins->plugin_do_arg_ref('reply_edit_sql', $sql_data);
 
@@ -226,7 +226,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', blog_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

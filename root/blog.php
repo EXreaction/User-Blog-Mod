@@ -86,13 +86,9 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
 include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
-include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
-$reply_data = new reply_data();
-$user_data = new user_data();
 $blog_attachment = new blog_attachment();
 $error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
@@ -181,7 +177,7 @@ if ($default)
 	// With SEO urls, we make it so that the page could be the username name of the user we want to view...
 	if ($page != '' && $page != 'index' && !$category_id)
 	{
-		$user_id = $user_data->get_user_data(false, false, $page);
+		$user_id = $blog_data->get_user_data(false, false, $page);
 
 		if ($user_id === false)
 		{

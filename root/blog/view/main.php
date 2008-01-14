@@ -57,7 +57,7 @@ $popular_blog_ids =($popular || $all) ? $blog_data->get_blog_data('popular', 0, 
 
 $blog_plugins->plugin_do('view_main_start');
 
-$user_data->get_user_data(false, true);
+$blog_data->get_user_data(false, true);
 update_edit_delete('blog');
 
 $text_limit = ($all) ? $config['user_blog_text_limit'] : $config['user_blog_user_text_limit'];
@@ -78,7 +78,7 @@ if ($feed == false || $all)
 			foreach ($random_blog_ids as $id)
 			{
 				// handle user and blog data
-				$user_row = $user_data->handle_user_data(blog_data::$blog[$id]['user_id']);
+				$user_row = $blog_data->handle_user_data(blog_data::$blog[$id]['user_id']);
 				$blog_row = $blog_data->handle_blog_data($id, $text_limit);
 			
 				$template->assign_block_vars('column.row', $user_row + $blog_row);
@@ -101,7 +101,7 @@ if ($feed == false || $all)
 			foreach ($recent_blog_ids as $id)
 			{
 				// handle user and blog data
-				$user_row = $user_data->handle_user_data(blog_data::$blog[$id]['user_id']);
+				$user_row = $blog_data->handle_user_data(blog_data::$blog[$id]['user_id']);
 				$blog_row = $blog_data->handle_blog_data($id, $text_limit);
 
 				$template->assign_block_vars('column.row', $user_row + $blog_row);
@@ -124,7 +124,7 @@ if ($feed == false || $all)
 			foreach ($popular_blog_ids as $id)
 			{
 				// handle user and blog data
-				$user_row = $user_data->handle_user_data(blog_data::$blog[$id]['user_id']);
+				$user_row = $blog_data->handle_user_data(blog_data::$blog[$id]['user_id']);
 				$blog_row = $blog_data->handle_blog_data($id, $text_limit);
 
 				$template->assign_block_vars('column.row', $user_row + $blog_row);

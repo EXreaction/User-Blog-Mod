@@ -22,6 +22,15 @@ class blog_data
 {
 	// this is our large array holding all the data
 	public static $blog = array();
+	public static $reply = array();
+	public static $user = array();
+
+	// this holds a user_queue of the user's data when requesting replies so we can cut down on queries
+	public static $user_queue = array();
+
+	/**
+	* --------------------------------------------------------------------------------------------------------------------------- BLOGS -----------------------------------------------------------------------------------------------------------------
+	*/
 
 	/**
 	* Get Blogs
@@ -34,8 +43,7 @@ class blog_data
 	*/
 	public function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $phpbb_root_path, $phpEx, $auth;
-		global $blog_data, $reply_data, $user_data, $blog_plugins;
+		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_data_start', $selection_data);
 
@@ -195,18 +203,18 @@ class blog_data
 			self::$blog[$row['blog_id']] = $row;
 
 			// add the blog owners' user_ids to the user_queue
-			array_push(user_data::$user_queue, $row['user_id']);
+			array_push(blog_data::$user_queue, $row['user_id']);
 
 			// Add the edit user to the user_queue, if there is one
 			if ($row['blog_edit_count'] != 0)
 			{
-				array_push(user_data::$user_queue, $row['blog_edit_user']);
+				array_push(blog_data::$user_queue, $row['blog_edit_user']);
 			}
 
 			// Add the deleter user to the user_queue, if there is one
 			if ($row['blog_deleted'] != 0)
 			{
-				array_push(user_data::$user_queue, $row['blog_deleted']);
+				array_push(blog_data::$user_queue, $row['blog_deleted']);
 			}
 
 			// make sure we don't record the same blog id in the list that we return more than once
@@ -237,8 +245,7 @@ class blog_data
 	*/
 	public function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $auth;
-		global $reply_data, $user_data, $blog_plugins;
+		global $db, $user, $auth, $blog_plugins;
 
 		$blog_plugins->plugin_do_arg_ref('blog_info_start', $selection_data);
 
@@ -385,7 +392,7 @@ class blog_data
 	public function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_attachment, $reply_data, $user_data, $blog_plugins, $category_id;
+		global $blog_attachment, $blog_plugins, $category_id;
 
 		$blog = &self::$blog[$id];
 		$user_id = $blog['user_id'];
@@ -425,7 +432,7 @@ class blog_data
 			$blog_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $blog_text);
 		}
 
-		$reply_count = $reply_data->get_reply_data('reply_count', $id);
+		$reply_count = $this->get_reply_data('reply_count', $id);
 
 		$blog['blog_read_count'] = ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count'];
 
@@ -444,7 +451,7 @@ class blog_data
 			'PUB_DATE'				=> date('r', $blog['blog_time']),
 			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
-			'USER_FULL'				=> user_data::$user[$user_id]['username_full'],
+			'USER_FULL'				=> blog_data::$user[$user_id]['username_full'],
 			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
 			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 
@@ -469,6 +476,559 @@ class blog_data
 		$blog_plugins->plugin_do_arg_ref('blog_handle_data_end', $blog_row);
 
 		return $blog_row;
+	}
+
+	/**
+	* --------------------------------------------------------------------------------------------------------------------------- REPLIES -----------------------------------------------------------------------------------------------------------------
+	*/
+
+	/**
+	* Get reply data
+	*
+	* To select reply data from the database
+	*
+	* @param string $mode The mode we want
+	* @param int $id To input the wanted blog_id, this may be an array if you want to select more than 1
+	* @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
+	*/
+	public function get_reply_data($mode, $id = 0, $selection_data = array())
+	{
+		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
+
+		$blog_plugins->plugin_do_arg_ref('reply_data_start', $selection_data);
+
+		// input options for selection_data
+		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
+		$limit		= (isset($selection_data['limit'])) ? $selection_data['limit'] :			10;			// the limit on how many blogs we will select
+		$order_by	= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'reply_id';	// the way we want to order the request in the SQL query
+		$order_dir	= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :	'DESC';		// the direction we want to order the request in the SQL query
+		$sort_days	= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] : 	0;			// the sort days selection
+		$custom_sql	= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 	'';			// add your own custom WHERE part to the query
+
+		// Setup some variables...
+		$reply_ids = array();
+
+		// make sure $id is an array for consistency
+		if (!is_array($id))
+		{
+			$id = array(intval($id));
+		}
+
+		$sql_array = array(
+			'SELECT'	=> '*',
+			'FROM'		=> array(
+				BLOGS_REPLY_TABLE	=> array('r'),
+			),
+			'ORDER_BY'	=> $order_by . ' ' . $order_dir
+		);
+		$sql_where = array();
+
+		if (!$auth->acl_get('m_blogreplyapprove'))
+		{
+			$sql_where[] = 'reply_approved = 1';
+		}
+		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
+		{
+			$sql_where[] = 'reply_deleted = 0';
+		}
+		if ($sort_days != 0)
+		{
+			$sql_where[] = 'reply_time >= ' . (time() - $sort_days * 86400);
+		}
+		if ($custom_sql)
+		{
+			$sql_where[] = $custom_sql;
+		}
+
+		switch ($mode)
+		{
+			case 'blog' : // view all replys by a blog_id
+				$sql_where[] = $db->sql_in_set('blog_id', $id);
+				break;
+			case 'reply' : // select replies by reply_id(s)
+				$sql_where[] = $db->sql_in_set('reply_id', $id);
+				$limit = 0;
+				break;
+			case 'reported' : // select reported replies
+				if (!$auth->acl_get('m_blogreplyreport'))
+				{
+					return false;
+				}
+
+				$sql_where[] = 'reply_reported = 1';
+				break;
+			case 'disapproved' : // select disapproved replies
+				if (!$auth->acl_get('m_blogreplyapprove'))
+				{
+					return false;
+				}
+
+				$sql_where[] = 'reply_approved = 0';
+				break;
+			case 'reply_count' : // for counting how many replies there are for a blog
+				if (blog_data::$blog[$id[0]]['blog_real_reply_count'] == 0 || blog_data::$blog[$id[0]]['blog_real_reply_count'] == blog_data::$blog[$id[0]]['blog_reply_count'])
+				{
+					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
+				}
+
+				if ($sort_days == 0 && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
+				{
+					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
+				}
+				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0)
+				{
+					$sql_array['SELECT'] = 'count(reply_id) AS total';
+					$sql_where[] = 'blog_id = ' . $id[0] . '';
+					$sql_array['WHERE'] = implode(' AND ', $sql_where);
+					$sql = $db->sql_build_query('SELECT', $sql_array);
+					$result = $db->sql_query($sql);
+					$total = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+					return $total['total'];
+				}
+				else
+				{
+					return blog_data::$blog[$id[0]]['blog_reply_count'];
+				}
+				break;
+			case 'page' :
+				$cnt = 0;
+				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
+					WHERE blog_id = ' . $id[0] . 
+						(($sort_days != 0) ? ' AND reply_time >= ' . (time() - ($sort_days * 86400)) : '') .
+							' ORDER BY ' . $order_by . ' ' . $order_dir;
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					if ($row['reply_id'] == $id[1])
+					{
+						break;
+					}
+
+					$cnt++;
+				}
+				$db->sql_freeresult($result);
+
+				return $cnt;
+				break;
+			default :
+				return false;
+		}
+
+		$temp = compact('sql_array', 'sql_where');
+		$blog_plugins->plugin_do_arg_ref('reply_data_sql', $temp);
+		extract($temp);
+
+		$sql_array['WHERE'] = implode(' AND ', $sql_where);
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		if ($limit)
+		{
+			$result = $db->sql_query_limit($sql, $limit, $start);
+		}
+		else
+		{
+			$result = $db->sql_query($sql);
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$blog_plugins->plugin_do_arg_ref('reply_data_while', $row);
+
+			// Initialize the attachment data
+			$row['attachment_data'] = array();
+
+			// now put all the data in the reply array
+			self::$reply[$row['reply_id']] = $row;
+
+			// Add this user's ID to the user_queue
+			array_push(blog_data::$user_queue, $row['user_id']);
+
+			// has the reply been edited?  If so add that user to the user_queue
+			if ($row['reply_edit_count'] != 0)
+			{
+				array_push(blog_data::$user_queue, $row['reply_edit_user']);
+			}
+	
+			// has the reply been deleted?  If so add that user to the user_queue
+			if ($row['reply_deleted'] != 0)
+			{
+				array_push(blog_data::$user_queue, $row['reply_deleted']);
+			}
+
+			// make sure we don't record the same ID more than once
+			if (!in_array($row['reply_id'], $reply_ids))
+			{
+				array_push($reply_ids, $row['reply_id']);
+			}
+		}
+		$db->sql_freeresult($result);
+
+		// if there are no replys, return false
+		if (count($reply_ids) == 0)
+		{
+			return false;
+		}
+
+		return $reply_ids;
+	}
+
+	/**
+	* Handle reply data
+	*
+	* To handle the raw data gotten from the database
+	*
+	* @param int $id The id of the reply we want to handle
+	*/
+	public function handle_reply_data($id)
+	{
+		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
+		global $blog_attachment, $blog_plugins, $category_id;
+
+		$reply = &self::$reply[$id];
+		$blog_id = $reply['blog_id'];
+		$user_id = $reply['user_id'];
+
+		$blog_plugins->plugin_do('reply_handle_data_start');
+
+		// censor the text of the subject
+		$reply_subject = censor_text($reply['reply_subject']);
+
+		// Parse BBCode and prepare the message for viewing
+		$bbcode_options = (($reply['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($reply['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($reply['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
+		$reply_text = generate_text_for_display($reply['reply_text'], $reply['bbcode_uid'], $reply['bbcode_bitfield'], $bbcode_options);
+
+		// For Highlighting
+		if ($highlight_match)
+		{
+			$reply_subject = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply_subject);
+			$reply_text = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#is', '<span class="posthilit">\1</span>', $reply_text);
+		}
+
+		// Attachments
+		$update_count = array();
+		$blog_attachment->parse_attachments_for_view($reply_text, $reply['attachment_data'], $update_count);
+
+		$replyrow = array(
+			'ID'					=> $id,
+			'TITLE'					=> $reply_subject,
+			'DATE'					=> $user->format_date($reply['reply_time']),
+			'REPLY_EXTRA'			=> '',
+
+			'REPLY_MESSAGE'			=> $reply_text,
+
+			'EDITED_MESSAGE'		=> $reply['edited_message'],
+			'EDIT_REASON'			=> $reply['edit_reason'],
+			'DELETED_MESSAGE'		=> $reply['deleted_message'],
+
+			'U_VIEW'				=> blog_url($user_id, $blog_id, $id),
+			'U_VIEW_PERMANENT'		=> blog_url($user_id, $blog_id, $id, array(), array(), true),
+
+			'U_APPROVE'				=> ($reply['reply_approved'] == 0) ? blog_url($user_id, $blog_id, $id, array('page' => 'reply', 'mode' => 'approve')) : '',
+			'U_DELETE'				=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
+			'U_EDIT'				=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
+			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPORT'				=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'report')) : '',
+			'U_WARN'				=> (($auth->acl_get('m_warn')) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
+
+			'S_DELETED'				=> ($reply['reply_deleted'] != 0) ? true : false,
+			'S_UNAPPROVED'			=> ($reply['reply_approved'] == 0) ? true : false,
+			'S_REPORTED'			=> ($reply['reply_reported'] && $auth->acl_get('m_blogreplyreport')) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $reply['reply_attachment'] && count($reply['attachment_data'])) ? true : false,
+			'S_HAS_ATTACHMENTS'		=> ($reply['reply_attachment']) ? true : false,
+		);
+
+		$blog_plugins->plugin_do_arg_ref('reply_handle_data_end', $replyrow);
+
+		return $replyrow;
+	}
+
+	/**
+	* --------------------------------------------------------------------------------------------------------------------------- REPLIES -----------------------------------------------------------------------------------------------------------------
+	*/
+
+	/**
+	* Get user data
+	*
+	* grabs the data on the user and places it in the self::$user array
+	*
+	* @param int|bool $id The user_id (or multiple user_ids if given an array) of the user we want to grab the data for
+	* @param bool $user_queue If user_queue is true then we just grab the user_ids from the user_queue, otherwise we select data from $id.
+	*/
+	public function get_user_data($id, $user_queue = false, $username = false)
+	{
+		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp, $blog_plugins;
+
+		// if we are using the user_queue, set $user_id as that for consistency
+		if ($user_queue)
+		{
+			$id = self::$user_queue;
+		}
+
+		$blog_plugins->plugin_do('user_data_start');
+
+		// this holds the user_id's we will query
+		$users_to_query = array();
+
+		if (!$username)
+		{
+			// if the $user_id isn't an array, make it one for consistency
+			if (!is_array($id))
+			{
+				$id = array(intval($id));
+			}
+
+			if (!count($id))
+			{
+				return;
+			}
+
+			$id[] = 1;
+
+			foreach ($id as $i)
+			{
+				if ( (!array_key_exists($i, self::$user)) && (!in_array($i, $users_to_query)) )
+				{
+					$users_to_query[] = $i;
+				}
+			}
+
+			if (!count($users_to_query))
+			{
+				return;
+			}
+
+			// Grab all profile fields from users in id cache for later use - similar to the poster cache
+			if ($config['user_blog_custom_profile_enable'])
+			{
+				if (!class_exists('custom_profile'))
+				{
+					include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+					$cp = new custom_profile();
+				}
+
+				$profile_fields_cache = $cp->generate_profile_fields_template('grab', $users_to_query);
+			}
+
+			// Grab user status information
+			$status_data = array();
+			$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
+				FROM ' . SESSIONS_TABLE . '
+					WHERE ' . $db->sql_in_set('session_user_id', $users_to_query) . '
+						GROUP BY session_user_id';
+			$result = $db->sql_query($sql);
+			while($row = $db->sql_fetchrow($result))
+			{
+				$status_data[$row['session_user_id']] = $row;
+			}
+			$db->sql_freeresult($result);
+			$update_time = $config['load_online_time'] * 60;
+
+			// Get the rest of the data on the users and parse everything we need
+			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
+			$blog_plugins->plugin_do_arg_ref('user_data_sql', $sql);
+			$result = $db->sql_query($sql);
+		}
+		else
+		{
+			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
+			$blog_plugins->plugin_do_arg_ref('user_data_sql', $sql);
+			$result = $db->sql_query($sql);
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$user_id = $row['user_id'];
+
+			$blog_plugins->plugin_do_arg_ref('user_data_while', $row);
+
+			// view profile link
+			$row['view_profile'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=" . $user_id);
+	
+			// Full username, with colour
+			$row['username_full'] = get_username_string('full', $user_id, $row['username'], $row['user_colour']);
+	
+			// format the color correctly
+			$row['user_colour'] = get_username_string('colour', $user_id, $row['username'], $row['user_colour']);
+
+			// Online/Offline Status
+			$row['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
+	
+			// Avatar
+			$row['avatar'] = get_user_avatar($row['user_avatar'], $row['user_avatar_type'], $row['user_avatar_width'], $row['user_avatar_height']);
+	
+			// Rank
+			get_user_rank($row['user_rank'], $row['user_posts'], $row['rank_title'], $row['rank_img'], $row['rank_img_src']);
+	
+			// IM Links
+			$row['aim_url'] = ($row['user_aim']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=aim&amp;u=$user_id") : '';
+			$row['icq_url'] = ($row['user_icq']) ? 'http://www.icq.com/people/webmsg.php?to=' . $row['user_icq'] : '';
+			$row['jabber_url'] = ($row['user_jabber']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=jabber&amp;u=$user_id") : '';
+			$row['msn_url'] = ($row['user_msnm']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=msnm&amp;u=$user_id") : '';
+			$row['yim_url'] = ($row['user_yim']) ? 'http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg' : '';
+	
+			// PM and email links
+			$row['email_url'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id")  : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
+			$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_viewemail'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
+
+			// Signature
+			if ($config['allow_sig'] && $user->optionget('viewsigs') && $row['user_sig'] != '')
+			{
+				$row['user_sig'] = generate_text_for_display($row['user_sig'], $row['user_sig_bbcode_uid'], $row['user_sig_bbcode_bitfield'], 7);
+			}
+			else
+			{
+				$row['user_sig'] = '';
+			}
+
+			// get the custom profile fields if the admin wants them
+			if ($config['user_blog_custom_profile_enable'])
+			{
+				$row['cp_row'] = (isset($profile_fields_cache[$user_id])) ? $cp->generate_profile_fields_template('show', false, $profile_fields_cache[$user_id]) : array();
+			}
+
+			// now lets put everything in the user array
+			self::$user[$user_id] = $row;
+		}
+		$db->sql_freeresult($result);
+		unset($status_data, $row);
+
+		// if we did use the user_queue, reset it
+		if ($user_queue)
+		{
+			self::$user_queue = array();
+		}
+
+		if ($username)
+		{
+			if (isset($user_id))
+			{
+				// Grab user status information
+				$status_data = array();
+				$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
+					FROM ' . SESSIONS_TABLE . '
+						WHERE session_user_id = ' . intval($user_id) . '
+							GROUP BY session_user_id';
+				$result = $db->sql_query($sql);
+				while($row = $db->sql_fetchrow($result))
+				{
+					$status_data[$row['session_user_id']] = $row;
+				}
+				$db->sql_freeresult($result);
+				$update_time = $config['load_online_time'] * 60;
+
+				self::$user[$user_id]['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
+				unset($status_data);
+
+				return $user_id;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// replace any non-existing users with the anonymous user.
+			foreach ($id as $i)
+			{
+				if (!array_key_exists($i, self::$user))
+				{
+					self::$user[$i] = self::$user[1];
+				}
+			}
+		}
+	}
+
+	/**
+	* Get user ID by the Username
+	*/
+	public function get_id_by_username($username)
+	{
+		global $db;
+
+		$sql = 'SELECT user_id FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		return $row['user_id'];
+	}
+	
+	/**
+	* Handle User Data
+	*
+	* @param int $user_id The user_id of the user we will setup data for
+	* @param bool $output_custom True to output the custom profile fields, false to output the other data
+	*/
+	public function handle_user_data($user_id, $output_custom = false)
+	{
+		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
+		global $blog_data, $zebra_list, $blog_plugins;
+
+		if ($output_custom == false)
+		{
+			$output_data = array(
+				'USER_ID'			=> $user_id,
+
+				'AVATAR'			=> self::$user[$user_id]['avatar'],
+				'POSTER_FROM'		=> self::$user[$user_id]['user_from'],
+				'POSTER_JOINED'		=> $user->format_date(self::$user[$user_id]['user_regdate']),
+				'POSTER_POSTS'		=> self::$user[$user_id]['user_posts'],
+				'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, self::$user[$user_id]['rank_img']),
+				'RANK_IMG_SRC'		=> self::$user[$user_id]['rank_img_src'],
+				'RANK_TITLE'		=> self::$user[$user_id]['rank_title'],
+				'SIGNATURE'			=> self::$user[$user_id]['user_sig'],
+				'STATUS_IMG'		=> ((self::$user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE')),
+				'USERNAME'			=> self::$user[$user_id]['username'],
+				'USER_COLOUR'		=> self::$user[$user_id]['user_colour'],
+				'USER_FULL'			=> self::$user[$user_id]['username_full'],
+				'USER_FOE'			=> (isset($zebra_list[$user->data['user_id']]['foe']) && in_array($user_id, $zebra_list[$user->data['user_id']]['foe'])) ? true : false,
+
+				'L_USER_FOE'		=> sprintf($user->lang['POSTED_BY_FOE'], self::$user[$user_id]['username_full']),
+
+				'U_AIM'				=> self::$user[$user_id]['aim_url'],
+				'U_EMAIL'			=> self::$user[$user_id]['email_url'],
+				'U_ICQ'				=> self::$user[$user_id]['icq_url'],
+				'U_JABBER'			=> self::$user[$user_id]['jabber_url'],
+				'U_MSN'				=> self::$user[$user_id]['msn_url'],
+				'U_PM'				=> self::$user[$user_id]['pm_url'],
+				'U_VIEW_PROFILE'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id"),
+				'U_WWW'				=> self::$user[$user_id]['user_website'],
+				'U_YIM'				=> self::$user[$user_id]['yim_url'],
+
+				'S_CUSTOM_FIELDS'	=> (isset(self::$user[$user_id]['cp_row']['blockrow'])) ? true : false,
+				'S_ONLINE'			=> self::$user[$user_id]['status'],
+
+				'USER_EXTRA'		=> '',
+			);
+
+			$blog_plugins->plugin_do_arg_ref('user_handle_data', $output_data);
+
+			return ($output_data);
+		}
+		else 
+		{
+			$args = array('output_custom' => $output_custom, 'user_id' => $user_id);
+			$blog_plugins->plugin_do_arg_ref('user_handle_data_cp', $args);
+
+			if ($config['user_blog_custom_profile_enable'])
+			{	
+				// output the custom profile fields
+				if (isset(self::$user[$user_id]['cp_row']['blockrow']))
+				{
+					foreach (self::$user[$user_id]['cp_row']['blockrow'] as $row)
+					{
+						$template->assign_block_vars($output_custom, array(
+							'PROFILE_FIELD_NAME'	=> $row['PROFILE_FIELD_NAME'],
+							'PROFILE_FIELD_VALUE'	=> $row['PROFILE_FIELD_VALUE'],
+						));
+					}
+				}
+			}
+
+			// add the blog links in the custom fields
+			add_blog_links($user_id, $output_custom, self::$user[$user_id]);
+		}
 	}
 }
 ?>

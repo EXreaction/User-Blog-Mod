@@ -35,7 +35,7 @@ page_header($user->lang['UNDELETE_REPLY']);
 generate_blog_breadcrumbs($user->lang['UNDELETE_REPLY']);
 
 // if someone is trying to un-delete a reply and the reply is not deleted
-if (reply_data::$reply[$reply_id]['reply_deleted'] == 0)
+if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
 {
 	trigger_error('REPLY_NOT_DELETED');
 }
@@ -46,7 +46,7 @@ if (confirm_box(true))
 {
 	$blog_plugins->plugin_do('reply_undelete_confirm');
 
-	$blog_search->index('add', $blog_id, $reply_id, reply_data::$reply[$reply_id]['reply_text'], reply_data::$reply[$reply_id]['reply_subject'], reply_data::$reply[$reply_id]['user_id']);
+	$blog_search->index('add', $blog_id, $reply_id, blog_data::$reply[$reply_id]['reply_text'], blog_data::$reply[$reply_id]['reply_subject'], blog_data::$reply[$reply_id]['user_id']);
 
 	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . ' SET reply_deleted = 0, reply_deleted_time = 0 WHERE reply_id = ' . intval($reply_id);
 	$db->sql_query($sql);
@@ -67,7 +67,7 @@ if (confirm_box(true))
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', blog_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

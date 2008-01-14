@@ -60,7 +60,7 @@ if ($keywords || $author)
 
 	if ($author)
 	{
-		$uid = $user_data->get_id_by_username($author);
+		$uid = $blog_data->get_id_by_username($author);
 		$ids = $blog_search->author_search($uid);
 	}
 	else
@@ -151,9 +151,9 @@ if ($keywords || $author)
 		}
 		if (count($reply_ids))
 		{
-			$reply_data->get_reply_data('reply', $reply_ids);
+			$blog_data->get_reply_data('reply', $reply_ids);
 		}
-		$user_data->get_user_data(false, true);
+		$blog_data->get_user_data(false, true);
 		update_edit_delete();
 
 		$matches = (count($ids));
@@ -163,7 +163,7 @@ if ($keywords || $author)
 			{
 				if (isset(blog_data::$blog[$id['blog_id']]))
 				{
-					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $user_data->handle_user_data(blog_data::$blog[$id['blog_id']]['user_id']));
+					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $blog_data->handle_user_data(blog_data::$blog[$id['blog_id']]['user_id']));
 				}
 				else
 				{
@@ -173,7 +173,7 @@ if ($keywords || $author)
 			}
 			else 
 			{
-				$template->assign_block_vars('searchrow', $reply_data->handle_reply_data($id['reply_id']) + $user_data->handle_user_data(reply_data::$reply[$id['reply_id']]['user_id']));
+				$template->assign_block_vars('searchrow', $blog_data->handle_reply_data($id['reply_id']) + $blog_data->handle_user_data(blog_data::$reply[$id['reply_id']]['user_id']));
 			}
 		}
 	}

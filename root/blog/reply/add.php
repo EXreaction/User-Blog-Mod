@@ -90,15 +90,15 @@ else
 	{
 		if ($reply_id != 0)
 		{
-			$reply_subject = 'RE: ' . reply_data::$reply[$reply_id]['reply_subject'];
-			decode_message(reply_data::$reply[$reply_id]['reply_text'], reply_data::$reply[$reply_id]['bbcode_uid']);
-			$reply_text = '[quote="' . user_data::$user[$reply_user_id]['username'] . '"]' . reply_data::$reply[$reply_id]['reply_text'] . '[/quote]';;
+			$reply_subject = 'RE: ' . blog_data::$reply[$reply_id]['reply_subject'];
+			decode_message(blog_data::$reply[$reply_id]['reply_text'], blog_data::$reply[$reply_id]['bbcode_uid']);
+			$reply_text = '[quote="' . blog_data::$user[$reply_user_id]['username'] . '"]' . blog_data::$reply[$reply_id]['reply_text'] . '[/quote]';;
 		}
 		else
 		{
 			decode_message(blog_data::$blog[$blog_id]['blog_text'], blog_data::$blog[$blog_id]['bbcode_uid']);
 			$reply_subject = 'RE: ' . blog_data::$blog[$blog_id]['blog_subject'];
-			$reply_text = '[quote="' . user_data::$user[$user_id]['username'] . '"]' . blog_data::$blog[$blog_id]['blog_text'] . '[/quote]';;
+			$reply_text = '[quote="' . blog_data::$user[$user_id]['username'] . '"]' . blog_data::$blog[$blog_id]['blog_text'] . '[/quote]';;
 		}
 	}
 	else
@@ -239,7 +239,7 @@ else // user submitted and there are no errors
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', blog_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

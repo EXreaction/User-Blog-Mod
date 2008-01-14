@@ -24,7 +24,7 @@ class mcp_blog
 	{
 		global $auth, $db, $user, $template;
 		global $config, $phpbb_root_path, $phpEx, $action;
-		global $blog_data, $reply_data, $user_data, $blog_plugins, $blog_urls;
+		global $blog_data, $blog_plugins, $blog_urls;
 
 		$user->add_lang(array('mods/blog/common', 'mods/blog/mcp'));
 
@@ -32,13 +32,9 @@ class mcp_blog
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
-		include($phpbb_root_path . 'blog/data/reply_data.' . $phpEx);
-		include($phpbb_root_path . 'blog/data/user_data.' . $phpEx);
 
 		// set some initial variables that we will use
 		$blog_data = new blog_data();
-		$reply_data = new reply_data();
-		$user_data = new user_data();
 
 		// Start loading the plugins
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
@@ -89,13 +85,13 @@ class mcp_blog
 				$ids = $blog_data->get_blog_data('reported', false, $extra_data);
 			break;
 			case 'reported_replies' :
-				$ids = $reply_data->get_reply_data('reported', false, $extra_data);
+				$ids = $blog_data->get_reply_data('reported', false, $extra_data);
 			break;
 			case 'disapproved_blogs' :
 				$ids = $blog_data->get_blog_data('disapproved', false, $extra_data);
 			break;
 			case 'disapproved_replies' :
-				$ids = $reply_data->get_reply_data('reported', false, $extra_data);
+				$ids = $blog_data->get_reply_data('reported', false, $extra_data);
 			break;
 		}
 
@@ -104,7 +100,7 @@ class mcp_blog
 			$ids = array();
 		}
 
-		$user_data->get_user_data(false, true);
+		$blog_data->get_user_data(false, true);
 
 		if ($blog)
 		{
@@ -116,7 +112,7 @@ class mcp_blog
 				$template->assign_block_vars('postrow', array(
 					'U_VIEW'		=> blog_url($user_id, $id),
 					'SUBJECT'		=> $blog_data->blog[$id]['blog_subject'],
-					'AUTHOR'		=> $user_data->user[$user_id]['username_full'],
+					'AUTHOR'		=> blog_data::$user[$user_id]['username_full'],
 					'TIME'			=> $user->format_date($blog_data->blog[$id]['blog_time']),
 				));
 			}
@@ -127,13 +123,13 @@ class mcp_blog
 
 			foreach ($ids as $id)
 			{
-				$user_id = $reply_data->reply[$id]['user_id'];
-				$blog_id = $reply_data->reply[$id]['blog_id'];
+				$user_id = blog_data::$reply[$id]['user_id'];
+				$blog_id = blog_data::$reply[$id]['blog_id'];
 				$template->assign_block_vars('postrow', array(
 					'U_VIEW'		=> blog_url($user_id, $blog_id, $id),
-					'SUBJECT'		=> $reply_data->reply[$id]['reply_subject'],
-					'AUTHOR'		=> $user_data->user[$user_id]['username_full'],
-					'TIME'			=> $user->format_date($reply_data->reply[$id]['reply_time']),
+					'SUBJECT'		=> blog_data::$reply[$id]['reply_subject'],
+					'AUTHOR'		=> blog_data::$user[$user_id]['username_full'],
+					'TIME'			=> $user->format_date(blog_data::$reply[$id]['reply_time']),
 				));
 			}
 		}

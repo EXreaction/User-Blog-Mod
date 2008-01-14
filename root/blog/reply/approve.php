@@ -36,7 +36,7 @@ $blog_plugins->plugin_do('reply_approve');
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['APPROVE_REPLY']);
 
-if (reply_data::$reply[$reply_id]['reply_approved'] == 0)
+if (blog_data::$reply[$reply_id]['reply_approved'] == 0)
 {
 	if (confirm_box(true))
 	{
@@ -51,7 +51,7 @@ if (reply_data::$reply[$reply_id]['reply_approved'] == 0)
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
-		handle_subscription('new_reply',  censor_text(reply_data::$reply[$reply_id]['reply_subject']));
+		handle_subscription('new_reply',  censor_text(blog_data::$reply[$reply_id]['reply_subject']));
 
 		handle_blog_cache('approve_reply', $user_id);
 
@@ -66,7 +66,7 @@ if (reply_data::$reply[$reply_id]['reply_approved'] == 0)
 		}
 		else
 		{
-			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
+			$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', blog_data::$user[$user_id]['username'], '</a>') . '<br/>';
 			$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 		}
 
@@ -88,7 +88,7 @@ else
 	}
 	else
 	{
-		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', user_data::$user[$user_id]['username'], '</a>') . '<br/>';
+		$message .= sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', blog_data::$user[$user_id]['username'], '</a>') . '<br/>';
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 

@@ -26,7 +26,6 @@ function resync_blog($mode)
 	global $cache, $db, $blog_plugins;
 
 	$blog_data = array();
-	$reply_data = array();
 
 	// Start by selecting all blog data that we will use
 	$sql = 'SELECT blog_id, blog_reply_count, blog_real_reply_count FROM ' . BLOGS_TABLE . ' ORDER BY blog_id ASC';

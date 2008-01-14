@@ -208,8 +208,7 @@ function handle_captcha($mode)
 */
 function inform_approve_report($mode, $id)
 {
-	global $phpbb_root_path, $phpEx, $config, $user;
-	global $user_data, $blog_plugins;
+	global $phpbb_root_path, $phpEx, $config, $user, $blog_plugins;
 	
 	if ($config['user_blog_inform'] == '')
 	{

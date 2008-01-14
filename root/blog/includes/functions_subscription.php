@@ -27,7 +27,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 {
 	global $db, $user, $phpbb_root_path, $phpEx, $config;
 	global $user_id, $blog_id, $reply_id;
-	global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
+	global $blog_data, $blog_urls, $blog_plugins;
 
 	// if $uid, $bid, or $rid are not set, use the globals
 	$uid = ($uid != 0) ? $uid : $user_id;
@@ -113,7 +113,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], $view_url, $unsubscribe_url);
 	}
 
-	$user_data->get_user_data('2');
+	$blog_data->get_user_data('2');
 
 	// Send the PM
 	if (count($send_via_pm) > 0)
@@ -142,7 +142,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 		$pm_data = array(
 			'from_user_id'		=> 2,
-			'from_username'		=> user_data::$user[2]['username'],
+			'from_username'		=> blog_data::$user[2]['username'],
 			'address_list'		=> array('u' => $address_list),
 			'icon_id'			=> 10,
 			'from_user_ip'		=> '0.0.0.0',
@@ -169,24 +169,24 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 		$messenger = new messenger(false);
 
-		$user_data->get_user_data($send_via_email);
+		$blog_data->get_user_data($send_via_email);
 		$reply_url_var = ($rid) ? "r={$rid}#r{$rid}" : '';
 
 		foreach ($send_via_email as $uid)
 		{
 			$messenger->template('blog_notify', $config['default_lang']);
 			$messenger->replyto($config['board_contact']);
-			$messenger->to(user_data::$user[$uid]['user_email'], user_data::$user[$uid]['username']);
+			$messenger->to(blog_data::$user[$uid]['user_email'], blog_data::$user[$uid]['username']);
 
 			$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
-			$messenger->headers('X-AntiAbuse: User_id - ' . user_data::$user[2]['user_id']);
-			$messenger->headers('X-AntiAbuse: Username - ' . user_data::$user[2]['username']);
-			$messenger->headers('X-AntiAbuse: User IP - ' . user_data::$user[2]['user_ip']);
+			$messenger->headers('X-AntiAbuse: User_id - ' . blog_data::$user[2]['user_id']);
+			$messenger->headers('X-AntiAbuse: Username - ' . blog_data::$user[2]['username']);
+			$messenger->headers('X-AntiAbuse: User IP - ' . blog_data::$user[2]['user_ip']);
 
 			$messenger->assign_vars(array(
 				'BOARD_CONTACT'	=> $config['board_contact'],
 				'SUBJECT'		=> $user->lang['SUBSCRIPTION_NOTICE'],
-				'TO_USERNAME'	=> user_data::$user[$uid]['username'],
+				'TO_USERNAME'	=> blog_data::$user[$uid]['username'],
 				'TYPE'			=> ($rid) ? $user->lang['REPLY'] : $user->lang['BLOG'],
 				'NAME'			=> $post_subject,
 				'BY_USERNAME'	=> $user->data['username'],

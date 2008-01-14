@@ -123,8 +123,7 @@ class blog_attachment
 	*/
 	public function get_attachment_data($blog_ids, $reply_ids = false)
 	{
-		global $auth, $config, $db;
-		global $blog_data, $reply_data;
+		global $auth, $config, $db, $blog_data;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_download'))
 		{
@@ -152,7 +151,7 @@ class blog_attachment
 		{
 			if ($row['reply_id'] != 0)
 			{
-				reply_data::$reply[$row['reply_id']]['attachment_data'][] = $row;
+				blog_data::$reply[$row['reply_id']]['attachment_data'][] = $row;
 			}
 			else if ($row['blog_id'] != 0)
 			{
@@ -177,10 +176,10 @@ class blog_attachment
 		{
 			foreach ($reply_ids as $reply_id)
 			{
-				if (reply_data::$reply[$reply_id]['reply_attachment'] && !count(reply_data::$reply[$reply_id]['attachment_data']))
+				if (blog_data::$reply[$reply_id]['reply_attachment'] && !count(blog_data::$reply[$reply_id]['attachment_data']))
 				{
 					$remove_att_from_reply[] = $reply_id;
-					reply_data::$reply[$reply_id]['reply_attachment'] = '0';
+					blog_data::$reply[$reply_id]['reply_attachment'] = '0';
 				}
 			}
 		}

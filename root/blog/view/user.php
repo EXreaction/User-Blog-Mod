@@ -35,7 +35,7 @@ else
 
 $blog_plugins->plugin_do('view_user_start');
 
-$user_data->get_user_data(false, true);
+$blog_data->get_user_data(false, true);
 update_edit_delete('blog');
 
 if (!$feed)
@@ -47,12 +47,12 @@ if (!$feed)
 	if ($mode == 'deleted')
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], user_data::$user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], blog_data::$user[$user_id]['username']));
 	}
 	else
 	{
 		generate_blog_breadcrumbs();
-		page_header(sprintf($user->lang['USERNAMES_BLOGS'], user_data::$user[$user_id]['username']));
+		page_header(sprintf($user->lang['USERNAMES_BLOGS'], blog_data::$user[$user_id]['username']));
 	}
 
 	// Output some data

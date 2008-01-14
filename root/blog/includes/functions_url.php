@@ -30,8 +30,7 @@ function url_replace($url)
 */
 function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
 {
-	global $config, $phpbb_root_path, $phpEx, $user, $_SID;
-	global $blog_data, $reply_data, $user_data;
+	global $config, $phpbb_root_path, $phpEx, $user, $_SID, $blog_data;
 
 	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
 	static $start_url = '';
@@ -85,13 +84,13 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				$url_data['page'] = $extra_data['username'];
 			}
-			else if (!empty($user_data))
+			else if (!empty($blog_data))
 			{
-				if (!isset(user_data::$user[$user_id]))
+				if (!isset(blog_data::$user[$user_id]))
 				{
-					$user_data->get_user_data($user_id);
+					$blog_data->get_user_data($user_id);
 				}
-				$url_data['page'] = user_data::$user[$user_id]['username'];
+				$url_data['page'] = blog_data::$user[$user_id]['username'];
 			}
 		}
 		else if (isset($url_data['page']) && $user_id !== false)
@@ -104,9 +103,9 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['r'] = $reply_id;
 			if (!isset($url_data['mode']))
 			{
-				if (!empty($reply_data) && array_key_exists($reply_id, reply_data::$reply))
+				if (!empty($blog_data) && array_key_exists($reply_id, blog_data::$reply))
 				{
-					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', reply_data::$reply[$reply_id]['reply_subject']));
+					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$reply[$reply_id]['reply_subject']));
 				}
 				else if (array_key_exists('reply_subject', $extra_data))
 				{
@@ -221,7 +220,7 @@ function generate_blog_urls()
 {
 	global $phpbb_root_path, $phpEx, $config, $user;
 	global $blog_id, $reply_id, $user_id, $start, $category_id;
-	global $blog_data, $reply_data, $user_data, $blog_urls, $blog_plugins;
+	global $blog_data, $blog_urls, $blog_plugins;
 
 	static $blog_categories = false;
 

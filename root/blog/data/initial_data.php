@@ -70,17 +70,17 @@ else
 // get the replies data if it was requested
 if ($reply_id != 0)
 {
-	if ($reply_data->get_reply_data('reply', $reply_id) === false)
+	if ($blog_data->get_reply_data('reply', $reply_id) === false)
 	{
 		trigger_error('REPLY_NOT_EXIST');
 	}
 
-	$reply_user_id = reply_data::$reply[$reply_id]['user_id'];
-	$blog_id = reply_data::$reply[$reply_id]['blog_id'];
+	$reply_user_id = blog_data::$reply[$reply_id]['user_id'];
+	$blog_id = blog_data::$reply[$reply_id]['blog_id'];
 
 	if (intval(request_var('start', -1)) == -1)
 	{
-		$total_replies = $reply_data->get_reply_data('page', array($blog_id, $reply_id), array('start' => $start, 'limit' => $limit, 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+		$total_replies = $blog_data->get_reply_data('page', array($blog_id, $reply_id), array('start' => $start, 'limit' => $limit, 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 		$start = (intval($total_replies / $limit) * $limit);
 	}
 }
@@ -108,7 +108,7 @@ if ($blog_id != 0)
 
 if ($user_id != 0)
 {
-	array_push(user_data::$user_queue, $user_id);
+	array_push(blog_data::$user_queue, $user_id);
 }
 
 if ($user_id != 0 && $blog_id == 0)
@@ -125,17 +125,17 @@ else
 }
 
 // get the user data for what we have and update the edit and delete info
-$user_data->get_user_data(false, true);
+$blog_data->get_user_data(false, true);
 update_edit_delete();
 
 // make sure they user they requested exists
-if ($user_id != 0 && !array_key_exists($user_id, user_data::$user))
+if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
 {
 	trigger_error('NO_USER');
 }
 
 // now that we got the user data, let us set another variable to shorten things up later
-$username = ($user_id != 0) ? user_data::$user[$user_id]['username'] : '';
+$username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
 
 // generate the blog urls
 generate_blog_urls();
