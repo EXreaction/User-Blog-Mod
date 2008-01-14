@@ -22,12 +22,14 @@ if (!defined('IN_PHPBB'))
 */
 function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false, $category_list = false)
 {
-	global $config, $template, $user;
+	global $config, $template, $user, $blog_plugins;
 
 	if (!is_array($category_list))
 	{
 		$category_list = get_blog_categories('left_id');
 	}
+
+	$blog_plugins->plugin_do('function_handle_categories');
 
 	foreach ($category_list as $left_id => $row)
 	{
@@ -68,12 +70,13 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 */
 function get_blog_categories($order = 'left_id')
 {
-	global $cache, $db;
+	global $cache, $blog_plugins;
 
 	$blog_categories = $cache->get('_blog_categories');
 
 	if ($blog_categories === false)
 	{
+		global $db;
 		$blog_categories = array();
 		$sql = 'SELECT * FROM ' . BLOGS_CATEGORIES_TABLE . "
 			ORDER BY left_id ASC";
@@ -97,6 +100,8 @@ function get_blog_categories($order = 'left_id')
 		}
 	}
 
+	$blog_plugins->plugin_do_ref('function_get_blog_categories', $blog_categories);
+
 	return $blog_categories;
 }
 
@@ -106,7 +111,7 @@ function get_blog_categories($order = 'left_id')
 */
 function make_category_select($select_id = false, $ignore_id = false, $return_array = false)
 {
-	global $db, $user;
+	global $db;
 
 	// This query is identical to the jumpbox one
 	$sql = 'SELECT category_id, category_name, parent_id, left_id, right_id

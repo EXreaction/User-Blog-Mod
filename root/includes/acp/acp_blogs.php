@@ -40,9 +40,7 @@ class acp_blogs
 
 		if ($mode != 'plugins')
 		{
-			$blog_plugins = new blog_plugins();
-			$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-			$blog_plugins->load_plugins();
+			setup_blog_plugins();
 		}
 
 		switch($mode)
@@ -60,8 +58,18 @@ class acp_blogs
 				$this->extensions($id, $mode);
 			break;
 			default :
-				$this->settings($id, $mode);
+				$default = true;
+				$temp = compact('default', 'id', 'mode');
+				$blog_plugins->plugin_do_ref('acp_default', $temp); // make sure to set default to false if you use your own page
+				extract($temp);
+
+				if ($default)
+				{
+					$this->settings($id, $mode);
+				}
 		}
+
+		$blog_plugins->plugin_do('acp_end');
 	}
 
 	function settings($id, $mode)
@@ -109,7 +117,7 @@ class acp_blogs
 			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 		);
 
-		$blog_plugins->plugin_do_arg('acp_main_settings', $settings);
+		$blog_plugins->plugin_do_ref('acp_main_settings', $settings);
 
 		$this->new_config = $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
@@ -256,7 +264,7 @@ class acp_blogs
 	function categories($id, $mode)
 	{
 		global $db, $user, $auth, $template, $cache;
-		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx;
+		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx, $blog_plugins;
 
 		$this->tpl_name = 'acp_blog_categories';
 		$this->page_title = 'ACP_BLOG_CATEGORIES';
@@ -279,13 +287,15 @@ class acp_blogs
 			switch ($action)
 			{
 				case 'delete':
-					$action_subcategories	= request_var('action_subcategories', '');
-					$subcategories_to_id	= request_var('subcategories_to_id', 0);
-					$action_blogs		= request_var('action_blogs', '');
-					$blogs_to_id		= request_var('blogs_to_id', 0);
+					$action_subcategories = request_var('action_subcategories', '');
+					$subcategories_to_id = request_var('subcategories_to_id', 0);
+					$action_blogs = request_var('action_blogs', '');
+					$blogs_to_id = request_var('blogs_to_id', 0);
 					$row = $this->get_category_info($category_id);
 
 					$errors = $this->delete_category($category_id, $action_blogs, $action_subcategories, $blogs_to_id, $subcategories_to_id);
+
+					$blog_plugins->plugin_do_ref('acp_category_delete', $errors);
 
 					if (sizeof($errors))
 					{
@@ -330,6 +340,10 @@ class acp_blogs
 					{
 						generate_text_for_storage($category_data['category_description'], $category_data['category_description_uid'], $category_data['category_description_bitfield'], $category_data['category_description_options'], request_var('desc_parse_bbcode', false), request_var('desc_parse_urls', false), request_var('desc_parse_smilies', false));
 					}
+
+					$temp = compact('action', 'category_data');
+					$blog_plugins->plugin_do_ref('acp_category_add_edit', $temp);
+					extract($temp);
 
 					$errors = $this->update_category_data($category_data);
 
@@ -508,8 +522,10 @@ class acp_blogs
 					'S_DESC_SMILIES_CHECKED'	=> ($category_description_data['allow_smilies']) ? true : false,
 					'S_DESC_URLS_CHECKED'		=> ($category_description_data['allow_urls']) ? true : false,
 
-					'S_CATEGORY_OPTIONS'			=> make_category_select(($action == 'add') ? $category_data['parent_id'] : false, ($action == 'edit') ? $category_data['category_id'] : false),
+					'S_CATEGORY_OPTIONS'		=> make_category_select(($action == 'add') ? $category_data['parent_id'] : false, ($action == 'edit') ? $category_data['category_id'] : false),
 				));
+
+				$blog_plugins->plugin_do('acp_category_add_edit_initial');
 
 				return;
 

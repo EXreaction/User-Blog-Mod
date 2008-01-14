@@ -15,27 +15,22 @@ if (!defined('IN_PHPBB'))
 /**
 * Build the permissions sql
 *
+* Call this function to have it automatically build the user permissions check part of the SQL query
+*
 * @param int $user_id The user id of the user we will build the permissions sql query for
 */
 function build_permission_sql($user_id, $add_where = false)
 {
 	global $auth, $config, $db;
-	global $reverse_zebra_list;
 
-	static $sql = '';
-
-	if (!$config['user_blog_user_permissions'])
-	{
-		return '';
-	}
-
-	// Moderators and administrators can see all.
-	if ($auth->acl_gets('a_', 'm_'))
+	// If user permissions are not allowed or the viewing user has moderator or administrator permissions, nothing will be checked.
+	if (!$config['user_blog_user_permissions'] || $auth->acl_gets('a_', 'm_'))
 	{
 		return '';
 	}
 
 	// We only want to build this query once per session...so if it is build already, don't do it again!
+	static $sql = '';
 	if ($sql != '')
 	{
 		return (($add_where) ? fix_where_sql($sql) : $sql);
@@ -54,6 +49,7 @@ function build_permission_sql($user_id, $add_where = false)
 	$zebra_list = array();
 	if ($config['user_blog_enable_zebra'])
 	{
+		global $reverse_zebra_list;
 		get_zebra_info($user_id, true);
 
 		if (isset($reverse_zebra_list[$user_id]['foe']) && count($reverse_zebra_list[$user_id]['foe']))
@@ -89,6 +85,10 @@ function build_permission_sql($user_id, $add_where = false)
 	}
 
 	$sql .= ')';
+
+	global $blog_plugins;
+	$blog_plugins->plugin_do_ref('function_build_permission_sql', $sql);
+
 	return (($add_where) ? fix_where_sql($sql) : $sql);
 }
 

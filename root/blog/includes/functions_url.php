@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 /**
 * URL Replace
 *
-* Replaces tags and other items that could break the URL's
+* Replaces tags and other items that could break the SEO URL's
 */
 function url_replace($url)
 {
@@ -30,11 +30,13 @@ function url_replace($url)
 */
 function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
 {
-	global $config, $phpbb_root_path, $phpEx, $user, $_SID, $blog_data;
+	global $config, $user, $_SID, $blog_plugins;
+
+	$blog_plugins->plugin_do('function_blog_url');
 
 	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
 	static $start_url = '';
-	$start_url = ($start_url == '') ? generate_board_url() . '/' : $start_url;
+	$start_url = ($start_url == '') ? ((defined('BLOG_USE_ROOT')) ? generate_board_url(true) : generate_board_url()) . '/' : $start_url;
 	$extras = $anchor = '';
 
 	// Add the category stuff if c is in the url
@@ -84,10 +86,11 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				$url_data['page'] = $extra_data['username'];
 			}
-			else if (!empty($blog_data))
+			else if (interface_exists('blog_data'))
 			{
 				if (!isset(blog_data::$user[$user_id]))
 				{
+					global $blog_data;
 					$blog_data->get_user_data($user_id);
 				}
 				$url_data['page'] = blog_data::$user[$user_id]['username'];
@@ -103,7 +106,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['r'] = $reply_id;
 			if (!isset($url_data['mode']))
 			{
-				if (!empty($blog_data) && array_key_exists($reply_id, blog_data::$reply))
+				if (interface_exists('blog_data') && array_key_exists($reply_id, blog_data::$reply))
 				{
 					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$reply[$reply_id]['reply_subject']));
 				}
@@ -118,7 +121,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['b'] = $blog_id;
 			if (!isset($url_data['mode']))
 			{
-				if (!empty($blog_data) && array_key_exists($blog_id, blog_data::$blog))
+				if (interface_exists('blog_data') && array_key_exists($blog_id, blog_data::$blog))
 				{
 					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$blog[$blog_id]['blog_subject']));
 				}
@@ -191,11 +194,19 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		}
 	}
 
+	// No SEO Url's :(
+	global $phpbb_root_path, $phpEx;
+
+	// add this stuff first
+	$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
+	$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
+	$extras .= (($reply_id) ? '&amp;r=' . $reply_id : '');
+
 	if (count($url_data))
 	{
 		foreach ($url_data as $name => $var)
 		{
-			// Do not add the blog/reply/user id to the url string, they get added later
+			// Do not add the blog/reply/user id to the url string, they've already been added
 			if ($name == 'b' || $name == 'u' || $name == 'r' || $var == '*skip*')
 			{
 				continue;
@@ -204,10 +215,6 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$extras .= '&amp;' . $name . '=' . $var;
 		}
 	}
-
-	$extras .= (($user_id) ? '&amp;u=' . $user_id : '');
-	$extras .= (($blog_id) ? '&amp;b=' . $blog_id : '');
-	$extras .= (($reply_id) ? '&amp;r=' . $reply_id : '');
 
 	$extras = substr($extras, 5); // remove the first &amp;
 	return append_sid($phpbb_root_path . 'blog.' . $phpEx, $extras) . $anchor;
@@ -218,48 +225,32 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 */
 function generate_blog_urls()
 {
-	global $phpbb_root_path, $phpEx, $config, $user;
-	global $blog_id, $reply_id, $user_id, $start, $category_id;
-	global $blog_data, $blog_urls, $blog_plugins;
-
-	static $blog_categories = false;
-
-	if (!function_exists('get_blog_categories'))
-	{
-		include("{$phpbb_root_path}blog/includes/functions_categories.$phpEx");
-	}
-
-	if ($blog_categories === false)
-	{
-		$blog_categories = get_blog_categories('category_id');
-	}
+	global $config, $user, $blog_urls, $blog_plugins;
+	global $blog_id, $reply_id, $user_id;
 
 	$self_data = $_GET;
 
 	$blog_urls = array(
 		'main'				=> blog_url(false),
-		'self'				=> blog_url($user_id, $blog_id, $reply_id, $self_data),
-		'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
 		'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
 		'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
 
-		'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))),
-		'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add', 'c' => (($category_id && isset($blog_categories[$category_id])) ? $category_id : '*skip*'))) : '',
+		'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add')),
+		'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')) : false,
 
-		'view_blog'			=> ($blog_id) ? (($category_id && isset($blog_categories[$category_id])) ? blog_url(false, $blog_id, false, array('page' => $blog_categories[$category_id]['category_name'], 'c' => $category_id)) : blog_url($user_id, $blog_id)) : '',
-		'view_reply'		=> ($reply_id) ? (($category_id && isset($blog_categories[$category_id])) ? blog_url(false, $blog_id, $reply_id, array('page' => $blog_categories[$category_id]['category_name'], 'c' => $category_id)) : blog_url($user_id, $blog_id, $reply_id)) : '',
+		'view_blog'			=> ($blog_id) ? blog_url($user_id, $blog_id) : false,
+		'view_reply'		=> ($reply_id) ? blog_url($user_id, $blog_id, $reply_id) : false,
 		'view_user'			=> ($user_id) ? blog_url($user_id) : false,
 		'view_user_deleted'	=> ($user_id) ? blog_url($user_id, false, false, array('mode' => 'deleted')) : false,
 		'view_user_self'	=> blog_url($user->data['user_id']),
+
+		'self'				=> blog_url($user_id, $blog_id, $reply_id, $self_data),
+		'self_minus_print'	=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => '*skip*'))),
+		'self_minus_start'	=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*skip*'))),
+		'start_zero'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*'))),
+		'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
 	);
 
-	$blog_urls['self_minus_print'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => '*skip*')));
-	$blog_urls['self_minus_start'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*skip*')));
-	$blog_urls['start_zero'] = blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*')));
-
-	if (method_exists($blog_plugins, 'plugin_do'))
-	{
-		$blog_plugins->plugin_do('function_generate_blog_urls');
-	}
+	$blog_plugins->plugin_do('function_generate_blog_urls');
 }
 ?>

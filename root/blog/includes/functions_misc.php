@@ -17,9 +17,12 @@ if (!defined('IN_PHPBB'))
 */
 function update_user_blog_settings($user_id, $data, $resync = false)
 {
-	global $cache, $db, $user_settings;
+	global $cache, $db, $user_settings, $blog_plugins;
 
-	get_user_settings($user_id);
+	if (!isset($user_settings[$user_id]))
+	{
+		get_user_settings($user_id);
+	}
 
 	if (!isset($user_settings[$user_id]))
 	{
@@ -36,12 +39,18 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 			'instant_redirect'					=> (isset($data['instant_redirect'])) ? $data['instant_redirect'] : 0,
 		);
 
+		$temp = compact('sql_array', 'user_id', 'data');
+		$blog_plugins->plugin_do_ref('function_get_user_settings_insert', $temp);
+		extract($temp);
+
 		$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
 		$db->sql_query($sql);
 	}
 	else
 	{
-		$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . ' WHERE user_id = \'' . intval($user_id) . '\'';
+		$blog_plugins->plugin_do_ref('function_get_user_settings_update', $data);
+
+		$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . ' WHERE user_id = ' . intval($user_id);
 		$db->sql_query($sql);
 	}
 
@@ -58,7 +67,67 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		$db->sql_query($sql);
 	}
 
+	$blog_plugins->plugin_do('function_get_user_settings', compact('data', 'user_id', 'resync'));
+
 	$cache->destroy('_blog_settings_' . $user_id);
+}
+
+/**
+* Gets user settings
+*
+* @param int $user_ids array of user_ids to get the settings for
+*/
+function get_user_settings($user_ids)
+{
+	global $cache, $config, $user_settings, $blog_plugins;
+
+	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
+	{
+		return;
+	}
+
+	if (!is_array($user_settings))
+	{
+		$user_settings = array();
+	}
+
+	if (!is_array($user_ids))
+	{
+		$user_ids = array($user_ids);
+	}
+
+	$to_query = array();
+	foreach ($user_ids as $id)
+	{
+		if (!array_key_exists($id, $user_settings))
+		{
+			$cache_data = $cache->get('_blog_settings_' . intval($id));
+			if ($cache_data === false)
+			{
+				$to_query[] = (int) $id;
+			}
+			else
+			{
+				$user_settings[$id] = $cache_data;
+			}
+		}
+	}
+
+	if (count($to_query))
+	{
+		global $db;
+		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$cache->put('_blog_settings_' . $row['user_id'], $row);
+
+			$user_settings[$row['user_id']] = $row;
+		}
+		$db->sql_freeresult($result);
+	}
+
+	$blog_plugins->plugin_do('function_get_user_settings');
 }
 
 /**
@@ -68,13 +137,14 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 */
 function get_zebra_info($user_ids, $reverse_lookup = false)
 {
-	global $config, $user, $db;
-	global $zebra_list, $reverse_zebra_list;
+	global $config, $db, $zebra_list, $reverse_zebra_list, $blog_plugins;
 
 	if (!isset($config['user_blog_enable_zebra']) || !$config['user_blog_enable_zebra'])
 	{
 		return;
 	}
+
+	$blog_plugins->plugin_do('function_get_zebra_info', compact('user_ids', 'reverse_lookup'));
 
 	$to_query = array();
 
@@ -144,62 +214,6 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 			}
 		}
 	}
-	$db->sql_freeresult($result);
+	$db->sql_freeresult($result);	
 }
-
-/**
-* Gets user settings
-*
-* @param int $user_ids array of user_ids to get the settings for
-*/
-function get_user_settings($user_ids)
-{
-	global $cache, $config, $db, $user_settings;
-
-	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
-	{
-		return;
-	}
-
-	if (!is_array($user_settings))
-	{
-		$user_settings = array();
-	}
-
-	if (!is_array($user_ids))
-	{
-		$user_ids = array($user_ids);
-	}
-
-	$to_query = array();
-	foreach ($user_ids as $id)
-	{
-		if (!array_key_exists($id, $user_settings))
-		{
-			$cache_data = $cache->get('_blog_settings_' . intval($id));
-			if ($cache_data === false)
-			{
-				$to_query[] = (int) $id;
-			}
-			else
-			{
-				$user_settings[$id] = $cache_data;
-			}
-		}
-	}
-
-	if (count($to_query))
-	{
-		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
-		$result = $db->sql_query($sql);
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$cache->put('_blog_settings_' . $row['user_id'], $row);
-
-			$user_settings[$row['user_id']] = $row;
-		}
-		$db->sql_freeresult($result);
-	}
-}
-
 ?>

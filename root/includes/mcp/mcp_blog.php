@@ -37,10 +37,8 @@ class mcp_blog
 		$blog_data = new blog_data();
 
 		// Start loading the plugins
-		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
-		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-		$blog_plugins->load_plugins();
+		setup_blog_plugins();
+		$blog_plugins->plugin_do('mcp_start');
 
 		$blog = (strpos($mode, 'blogs')) ? true : false;
 		$start = request_var('start', 0);
@@ -93,6 +91,8 @@ class mcp_blog
 			case 'disapproved_replies' :
 				$ids = $blog_data->get_reply_data('reported', false, $extra_data);
 			break;
+			default :
+				$blog_plugins->plugin_do_arg('mcp_default', $mode);
 		}
 
 		if ($ids === false)
@@ -145,6 +145,8 @@ class mcp_blog
 			'S_SELECT_SORT_KEY' 	=> $s_sort_key,
 			'S_SELECT_SORT_DAYS' 	=> $s_limit_days,
 		));
+
+		$blog_plugins->plugin_do('mcp_end');
 	}
 }
 

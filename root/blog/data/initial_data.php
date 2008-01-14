@@ -193,7 +193,7 @@ $initial_data = array(
 	'YIM_IMG'				=> $user->img('icon_contact_yahoo', 'YIM'),
 );
 
-$blog_plugins->plugin_do_arg_ref('initial_output', $initial_data);
+$blog_plugins->plugin_do_ref('initial_output', $initial_data);
 
 $template->assign_vars($initial_data);
 ?>

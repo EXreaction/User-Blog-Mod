@@ -50,7 +50,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function setup_blog_search()
 	{
-		global $config, $user, $phpbb_root_path, $phpEx;
+		global $config, $phpbb_root_path, $phpEx;
 
 		if (file_exists($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx))
 		{
@@ -72,7 +72,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function handle_blog_cache($mode, $user_id = 0)
 	{
-		global $cache, $auth, $user, $db, $blog_plugins;
+		global $cache, $blog_plugins;
 
 		$temp = compact('mode', 'user_id');
 		$blog_plugins->plugin_do_arg('function_handle_blog_cache', $temp);
@@ -117,7 +117,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	*/
 	function blog_meta_refresh($time, $url)
 	{
-		global $config, $template, $user, $user_settings;
+		global $template, $user, $user_settings;
 
 		if ($time == 0 || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
 		{

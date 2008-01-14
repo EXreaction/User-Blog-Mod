@@ -97,7 +97,7 @@ else
 }
 
 $temp = compact('reply_subject', 'reply_text', 'error');
-$blog_plugins->plugin_do_arg_ref('reply_edit_after_setup', $temp);
+$blog_plugins->plugin_do_ref('reply_edit_after_setup', $temp);
 extract($temp);
 unset($temp);
 
@@ -135,7 +135,7 @@ if (!$submit || sizeof($error))
 			unset($attachment_data);
 		}
 
-		$blog_plugins->plugin_do_arg_ref('reply_edit_preview', $preview_message);
+		$blog_plugins->plugin_do_ref('reply_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -195,7 +195,7 @@ else // user submitted and there are no errors
 
 		$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
 
-		$blog_plugins->plugin_do_arg_ref('reply_edit_sql', $sql_data);
+		$blog_plugins->plugin_do_ref('reply_edit_sql', $sql_data);
 
 		// the update query
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '

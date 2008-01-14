@@ -30,15 +30,11 @@ class ucp_blog
 
 		$user->add_lang(array('mods/blog/common', 'mods/blog/ucp'));
 
-		define('IN_BLOG', true); // So the header does not try to reload these files
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 
-		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-		$blog_plugins->load_plugins();
+		setup_blog_plugins();
 
-		$blog_plugins->plugin_do('blog_ucp_start');
+		$blog_plugins->plugin_do('ucp_start');
 
 		get_user_settings($user->data['user_id']);
 
@@ -79,8 +75,6 @@ class ucp_blog
 							'perm_foe'			=> request_var('perm_foe', 0),
 							'perm_friend'		=> request_var('perm_friend', 2),
 						);
-
-						$blog_plugins->plugin_do_arg_ref('blog_ucp_permissions', $sql_ary);
 
 						update_user_blog_settings($user->data['user_id'], $sql_ary, ((isset($_POST['resync'])) ? true : false));
 					}
@@ -169,14 +163,17 @@ class ucp_blog
 				}
 			break;
 			default;
-				$temp = array('mode' => $mode, 'submit' => $submit, 'error' => $error, 'default' => true);
-				$blog_plugins->plugin_do_arg_ref('blog_ucp_mode', $temp);
-				if (!$temp['default'])
+				$default = true;
+				$temp = compact('mode', 'error', 'default');
+				$blog_plugins->plugin_do_ref('ucp_default', $temp); // make sure you set default to false if you use your own page
+				extract($temp);
+				if ($default)
 				{
 					trigger_error('NO_MODE');
 				}
-				$error = $temp['error'];
 		}
+
+		$blog_plugins->plugin_do('ucp_end');
 
 		if ($submit && !count($error))
 		{

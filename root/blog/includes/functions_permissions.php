@@ -13,18 +13,20 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* Handles blog view/reply permissions (those set by users)
+* Checks to see if a user has permission to either read or reply to a blog with the given blog_id
 */
 function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read')
 {
 	global $auth, $config, $db, $user;
-	global $blog_data, $zebra_list, $blog_plugins, $user_settings;
+	global $zebra_list, $blog_plugins;
 
 	if (!$config['user_blog_user_permissions'])
 	{
 		return true;
 	}
 
+	// If we are checking blog permissions for a certain blog, get the permission data on it and set the user_id to the author's id, else get the users permissions of the requested user
+	$var = false;
 	if ($blog_id !== false && isset(blog_data::$blog[$blog_id]))
 	{
 		$var = blog_data::$blog[$blog_id];
@@ -32,10 +34,12 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 	}
 	else if ($user_id !== false)
 	{
-		$var = (isset($user_settings[$user_id])) ? $user_settings[$user_id] : '';
+		global $user_settings;
+		$var = (isset($user_settings[$user_id])) ? $user_settings[$user_id] : false;
 	}
 
-	if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || !isset($user_settings[$user_id]) || $auth->acl_gets('a_', 'm_'))
+	// Anonymous users are not allowed to set per blog permissions, and if the user is viewing their own or is a mod or admin, they can see it.  Also 
+	if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || $auth->acl_gets('a_', 'm_') || !$var)
 	{
 		return true;
 	}
@@ -131,8 +135,9 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 		}
 	}
 
-	$temp = array('blog_id' => $blog_id, 'user_id' => $user_id, 'mode' => $mode, 'return' => false);
-	$blog_plugins->plugin_do_arg_ref('handle_user_blog_permissions', $temp);
+	$return = false;
+	$temp = compact('blog_id', 'user_id', 'mode', 'return');
+	$blog_plugins->plugin_do_ref('handle_user_blog_permissions', $temp);
 	return $temp['return'];
 }
 
@@ -143,8 +148,7 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 */
 function permission_settings_builder($send_to_template = true, $mode = 'add')
 {
-	global $blog_plugins, $config, $template, $user, $user_settings;
-	global $blog_data, $blog_id;
+	global $blog_plugins, $config, $template, $user, $user_settings, $blog_id;
 
 	if (!$config['user_blog_user_permissions'])
 	{
@@ -200,7 +204,9 @@ function permission_settings_builder($send_to_template = true, $mode = 'add')
 		);
 	}
 
-	$blog_plugins->plugin_do_arg_ref('function_permission_settings_builder', $permission_settings);
+	$temp = compact('permission_settings', 'mode');
+	$blog_plugins->plugin_do_ref('function_permission_settings_builder', $temp);
+	extract($temp);
 
 	if ($send_to_template)
 	{
@@ -230,13 +236,9 @@ function permission_settings_builder($send_to_template = true, $mode = 'add')
  */
 function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $reply_id = 0)
 {
-	global $user, $config, $auth;
-	global $blog_data, $blog_plugins;
+	global $user, $config, $auth, $blog_plugins;
 
-	if (method_exists($blog_plugins, 'plugin_do'))
-	{
-		$blog_plugins->plugin_do('permissions_start');
-	}
+	$blog_plugins->plugin_do('function_check_blog_permissions');
 
 	switch ($page)
 	{
@@ -317,10 +319,9 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
 	}
 
-	if (method_exists($blog_plugins, 'plugin_do'))
-	{
-		$blog_plugins->plugin_do_arg_ref('permissions_end', $is_auth);
-	}
+	$temp = compact('is_auth', 'page', 'mode', 'blog_id', 'reply_id');
+	$blog_plugins->plugin_do_ref('permissions_end', $temp);
+	extract($temp);
 
 	if (!$return)
 	{

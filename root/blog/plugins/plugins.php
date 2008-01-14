@@ -123,7 +123,7 @@ class blog_plugins
 		}
 	}
 
-	public function plugin_do_arg_ref($what, &$args)
+	public function plugin_do_ref($what, &$args)
 	{
 		if (isset($this->to_do[$what]))
 		{

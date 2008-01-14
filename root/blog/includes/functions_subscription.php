@@ -46,7 +46,9 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	}
 
 	$subscribe_modes = array(0 => 'send_via_pm', 1 => 'send_via_email', 2 => array('send_via_pm', 'send_via_email'));
-	$blog_plugins->plugin_do_arg_ref('function_handle_subscription', $subscribe_modes);
+	$temp = compact('mode', 'post_subject', 'uid', 'bid', 'rid', 'subscribe_modes');
+	$blog_plugins->plugin_do_ref('function_handle_subscription', $temp);
+	extract($temp);
 
 	// setup the arrays which will hold the to info for PM's/Emails
 	$send_via_pm = array();
@@ -241,7 +243,7 @@ function get_subscription_info($blog_id, $user_id = false)
 
 	if (count($subscription_data))
 	{
-		$blog_plugins->plugin_do('function_get_subscription_info');
+		$blog_plugins->plugin_do_arg('function_get_subscription_info', $subscription_data);
 
 		if ($user_id !== false)
 		{

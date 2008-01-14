@@ -66,12 +66,16 @@ function get_user_blog_rating_data($user_id)
 */
 function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings, $user_rating, $force_average = false)
 {
-	global $auth, $blog_data, $config, $phpbb_root_path, $phpEx, $user;
+	global $auth, $config, $phpbb_root_path, $phpEx, $user, $blog_plugins;
 
 	if (!$config['user_blog_enable_ratings'])
 	{
 		return false;
 	}
+
+	$temp = compact('start_url', 'delete_url', 'average_rating', 'num_ratings', 'user_rating', 'force_average');
+	$blog_plugins->plugin_do_ref('function_get_star_rating', $temp);
+	extract($temp);
 
 	// If it has not had any ratings yet, give it 1/2 the max for the rating
 	if ($num_ratings == 0)

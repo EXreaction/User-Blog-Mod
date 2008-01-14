@@ -37,7 +37,7 @@ if ($blog_id != 0)
 
 	if (confirm_box(true))
 	{
-		$blog_plugins->plugin_do('unsubscribe_blog_confirm');
+		$blog_plugins->plugin_do('unsubscribe_confirm');
 
 		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
 			WHERE sub_user_id = ' . $user->data['user_id'] . '
@@ -70,8 +70,6 @@ if ($blog_id != 0)
 	}
 	else
 	{
-		$blog_plugins->plugin_do('unsubscribe_blog');
-
 		confirm_box(false, 'UNSUBSCRIBE_BLOG');
 	}
 }

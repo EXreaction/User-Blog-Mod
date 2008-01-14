@@ -48,6 +48,8 @@ else if ($delete_id && isset($rating_data[$blog_id]))
 	$did_something = true;
 }
 
+$blog_plugins->plugin_do_ref('rate', $did_something);
+
 if ($did_something)
 {
 	$total_rating = $total_count = 0;

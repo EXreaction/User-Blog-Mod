@@ -96,7 +96,7 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 */
 function build_blog_cfg_template($tpl_type, $name, $default)
 {
-	global $user, $module;
+	global $user, $blog_plugins;
 
 	$tpl = '';
 	$name = 'setting[' . $name . ']';
@@ -130,6 +130,12 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 
 			$tpl = ($tpl_type_cond[0] == 'yes' || $tpl_type_cond[0] == 'enabled') ? $tpl_yes . ' ' . $tpl_no : $tpl_no . ' ' . $tpl_yes;
 		break;
+
+		default :
+			$temp = compact('tpl_type', 'name', 'default', 'tpl');
+			$blog_plugins->plugin_do_ref('function_build_blog_cfg_template', $temp);
+			extract($temp);
+		break;
 	}
 
 	return $tpl;
@@ -142,8 +148,6 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 */
 function validate_config_vars($config_vars, &$cfg_array)
 {
-	global $phpbb_root_path, $user;
-
 	foreach ($config_vars as $config_name => $config_definition)
 	{
 		if (!isset($cfg_array[$config_name]) || strpos($config_name, 'legend') !== false)

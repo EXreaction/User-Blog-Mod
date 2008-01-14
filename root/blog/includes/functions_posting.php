@@ -58,10 +58,6 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 
 	$above_subject = $above_message = $above_submit = $panel_data = '';
 
-	$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
-	$blog_plugins->plugin_do_arg_ref('function_handle_basic_posting_data', $temp);
-	extract($temp);
-
 	if ($mode == 'add')
 	{
 		// setup the captcha
@@ -93,6 +89,10 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 
 	// Build custom bbcodes array
 	display_custom_bbcodes();
+
+	$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
+	$blog_plugins->plugin_do_ref('function_handle_basic_posting_data', $temp);
+	extract($temp);
 
 	$template->assign_vars(array(
 		'EXTRA_ABOVE_SUBJECT'		=> $above_subject,
@@ -126,12 +126,14 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 */
 function handle_captcha($mode)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields;
+	global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields, $blog_plugins;
 
 	if ($user->data['user_id'] != ANONYMOUS || !$config['user_blog_guest_captcha'])
 	{
 		return true;
 	}
+
+	$blog_plugins->plugin_do_arg('function_handle_captcha', $mode);
 
 	if ($mode == 'check')
 	{
@@ -234,7 +236,7 @@ function inform_approve_report($mode, $id)
 			$subject = $user->lang['REPLY_APPROVE_PM_SUBJECT'];
 			break;
 		default:
-			$blog_plugins->plugin_do_arg('function_inform_approve_report', $mode);
+			$blog_plugins->plugin_do_arg('function_inform_approve_report', compact('mode', 'id'));
 	}
 
 	$to = explode(",", $config['user_blog_inform']);

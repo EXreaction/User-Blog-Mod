@@ -225,7 +225,7 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 {
 	global $template, $user;
 	global $page, $username, $blog_id, $reply_id;
-	global $blog_data, $blog_urls, $category_id;
+	global $blog_urls, $category_id;
 
 	$template->assign_block_vars('navlinks', array(
 		'FORUM_NAME'		=> $user->lang['USER_BLOGS'],
@@ -295,7 +295,7 @@ function generate_menu($user_id = false)
 
 	$extra = $user_menu_extra = '';
 	$temp = compact('user_id', 'user_menu_extra', 'extra');
-	$blog_plugins->plugin_do_arg_ref('function_generate_menu', $temp);
+	$blog_plugins->plugin_do_ref('function_generate_menu', $temp);
 	extract($temp);
 
 	if ($user_id)
@@ -495,7 +495,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 */
 function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = false)
 {
-	global $phpbb_root_path, $phpEx, $user, $blog_data;
+	global $phpbb_root_path, $phpEx, $user;
 
 	$bbcode_bitfield = $text_only_message = $text = '';
 
@@ -555,7 +555,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 */
 function update_edit_delete($mode = 'all')
 {
-	global $auth, $user, $phpbb_root_path, $phpEx, $blog_data;
+	global $auth, $user, $phpbb_root_path, $phpEx;
 
 	if (!isset($user->lang['EDITED_TIME_TOTAL']))
 	{

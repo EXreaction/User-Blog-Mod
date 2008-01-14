@@ -108,7 +108,7 @@ else
 }
 
 $temp = compact('reply_subject', 'reply_text', 'error');
-$blog_plugins->plugin_do_arg_ref('reply_add_after_setup', $temp);
+$blog_plugins->plugin_do_ref('reply_add_after_setup', $temp);
 extract($temp);
 unset($temp);
 
@@ -143,7 +143,7 @@ if ( (!$submit) || (sizeof($error)) )
 			unset($attachment_data);
 		}
 
-		$blog_plugins->plugin_do_arg_ref('reply_add_preview', $preview_message);
+		$blog_plugins->plugin_do_ref('reply_add_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -195,7 +195,7 @@ else // user submitted and there are no errors
 		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
-	$blog_plugins->plugin_do_arg_ref('reply_add_sql', $sql_data);
+	$blog_plugins->plugin_do_ref('reply_add_sql', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);

@@ -61,7 +61,7 @@ class blog_attachment
 	*/
 	public function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
-		global $template, $config, $phpbb_root_path, $phpEx, $user;
+		global $template, $config;
 
 		if (!$config['user_blog_enable_attachments'])
 		{
@@ -123,7 +123,7 @@ class blog_attachment
 	*/
 	public function get_attachment_data($blog_ids, $reply_ids = false)
 	{
-		global $auth, $config, $db, $blog_data;
+		global $auth, $config, $db;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_download'))
 		{
@@ -431,7 +431,7 @@ class blog_attachment
 	*/
 	public function get_submitted_attachment_data($check_user_id = false)
 	{
-		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth;
+		global $user, $db, $config, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -746,7 +746,7 @@ class blog_attachment
 	*/
 	public function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
 	{
-		global $template, $user, $config, $phpbb_root_path, $phpEx, $auth;
+		global $template, $user, $config, $phpbb_root_path, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !sizeof($attachments) || !$auth->acl_get('u_download'))
 		{

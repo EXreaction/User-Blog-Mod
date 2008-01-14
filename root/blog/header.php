@@ -19,7 +19,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	{
 		if (isset($config['user_blog_seo']) && $config['user_blog_seo'])
 		{
-			$blog_url = $my_blog_url = generate_board_url() . '/blog/';
+			$blog_url = $my_blog_url = ((defined('BLOG_USE_ROOT')) ? generate_board_url(true) : generate_board_url()) . '/blog/';
 			$my_blog_url .= $user->data['username'] . '/';
 
 			$extras = 'index';

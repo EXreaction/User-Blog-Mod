@@ -39,7 +39,7 @@ $display_vars = array(
 	0					=> array('lang' => 'PRIVATE_MESSAGE',	'validate' => 'bool',	'type' => 'radio:yes_no',	'default' => false,	'explain' => false),
 	1					=> array('lang' => 'EMAIL',				'validate' => 'bool',	'type' => 'radio:yes_no',	'default' => false,	'explain' => false),
 );
-$blog_plugins->plugin_do_arg_ref('subscribe_start', $display_vars);
+$blog_plugins->plugin_do_ref('subscribe', $display_vars);
 
 include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
 
@@ -47,9 +47,9 @@ $settings = blog_confirm('SUBSCRIBE_BLOG_TITLE', 'SUBSCRIBE_BLOG_CONFIRM', $disp
 
 if (is_array($settings))
 {
-	$blog_plugins->plugin_do('subscribe_blog_confirm');
+	$blog_plugins->plugin_do('subscribe_confirm');
 
-	$cache->destroy("_blog_subscription_{$user_id}");
+	$cache->destroy("_blog_subscription_{$user->data['user_id']}");
 
 	foreach ($settings as $mode => $yn)
 	{
@@ -62,7 +62,7 @@ if (is_array($settings))
 				'user_id'		=> (int) $user_id,
 			);
 
-			$blog_plugins->plugin_do_arg_ref('subscription_add', $sql_data);
+			$blog_plugins->plugin_do_ref('subscription_add', $sql_data);
 
 			$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 			$db->sql_query($sql);
@@ -96,8 +96,5 @@ if (is_array($settings))
 
 	trigger_error($message);
 }
-else
-{
-	$blog_plugins->plugin_do('subscribe_blog');
-}
+
 ?>

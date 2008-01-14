@@ -169,7 +169,7 @@ switch ($page)
 if ($default)
 {
 	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-	$blog_plugins->plugin_do_arg_ref('blog_page_switch', $default);
+	$blog_plugins->plugin_do_ref('blog_page_switch', $default);
 }
 
 if ($default)
