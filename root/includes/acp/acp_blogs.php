@@ -2134,6 +2134,22 @@ class acp_blogs
 			$old_allow_pm = $row['allow_in_pm'];
 		}
 		$db->sql_freeresult($result);
+
+		if (sizeof($error))
+		{
+			$template->assign_vars(array(
+				'S_WARNING'		=> true,
+				'WARNING_MSG'	=> implode('<br />', $error))
+			);
+		}
+
+		if (sizeof($notify))
+		{
+			$template->assign_vars(array(
+				'S_NOTIFY'		=> true,
+				'NOTIFY_MSG'	=> implode('<br />', $notify))
+			);
+		}
 	}
 
 	/**
