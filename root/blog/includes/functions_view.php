@@ -522,7 +522,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 	{
 		$text = trim_text($text, $data['bbcode_uid'], $str_limit, $data['bbcode_uid']);
 
-		$text .= "\n \n <a href=";
+		$text .= "\n \n <a href=\"";
 		if ($reply_id !== false)
 		{
 			$text .= blog_url(blog_data::$blog[$blog_id]['user_id'], $blog_id, $reply_id);

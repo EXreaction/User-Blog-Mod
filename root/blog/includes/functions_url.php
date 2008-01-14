@@ -165,28 +165,23 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			if (isset($url_data['mode']) && $url_data['mode'])
 			{
 				$url_data['mode'] = url_replace($url_data['mode']);
-				$return = "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
+				return $start_url . "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
 			}
 			else
 			{
 				if ($extras || $anchor)
 				{
-					$return = "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
+					return $start_url . "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
 				}
 				else
 				{
-					$return = "blog/{$url_data['page']}/";
+					return $start_url . "blog/{$url_data['page']}/";
 				}
 			}
 		}
 		else
 		{
-			$return = "blog/index{$extras}.html{$anchor}";
-		}
-
-		if (isset($return))
-		{
-			return $start_url . $return;
+			return $start_url . "blog/index{$extras}.html{$anchor}";
 		}
 	}
 

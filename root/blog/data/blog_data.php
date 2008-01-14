@@ -411,7 +411,7 @@ class blog_data
 		$bbcode_options = (($blog['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($blog['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($blog['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
 		$blog_text = generate_text_for_display($blog_text, $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options);
 
-		if (!$shortened && $config['user_blog_enable_ratings'])
+		if ($config['user_blog_enable_ratings'])
 		{
 			$rating_data = get_user_blog_rating_data($user->data['user_id']);
 			$rate_url = blog_url($user_id, $id, false, array('page' => 'rate', 'rating' => '*rating*'));
@@ -446,17 +446,17 @@ class blog_data
 			'TITLE'					=> $blog_subject,
 			'USER_FULL'				=> user_data::$user[$user_id]['username_full'],
 			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
-			'RATING_STRING'			=> (!$shortened && $config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
+			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 
 			'U_APPROVE'				=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
-			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id) && !$shortened) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
-			'U_DIGG'				=> (!$shortened) ? 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']) : '',
-			'U_EDIT'				=> (check_blog_permissions('blog', 'edit', true, $id) && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
-			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $id) && !$shortened) ? blog_url(false, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
-			'U_REPORT'				=> (check_blog_permissions('blog', 'report', true, $id) && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
+			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id)) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
+			'U_DIGG'				=> 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']),
+			'U_EDIT'				=> (check_blog_permissions('blog', 'edit', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
+			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $id)) ? blog_url(false, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPORT'				=> (check_blog_permissions('blog', 'report', true, $id) ) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
 			'U_VIEW'				=> blog_url($user_id, $id),
 			'U_VIEW_PERMANENT'		=> blog_url(false, $id, false, array(), array(), true),
-			'U_WARN'				=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS && !$shortened) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
+			'U_WARN'				=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
 			'S_DELETED'				=> ($blog['blog_deleted']) ? true : false,
 			'S_REPORTED'			=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
