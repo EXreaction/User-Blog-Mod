@@ -108,12 +108,12 @@ class mcp_blog
 
 			foreach ($ids as $id)
 			{
-				$user_id = $blog_data->blog[$id]['user_id'];
+				$user_id = blog_data::$blog[$id]['user_id'];
 				$template->assign_block_vars('postrow', array(
 					'U_VIEW'		=> blog_url($user_id, $id),
-					'SUBJECT'		=> $blog_data->blog[$id]['blog_subject'],
+					'SUBJECT'		=> blog_data::$blog[$id]['blog_subject'],
 					'AUTHOR'		=> blog_data::$user[$user_id]['username_full'],
-					'TIME'			=> $user->format_date($blog_data->blog[$id]['blog_time']),
+					'TIME'			=> $user->format_date(blog_data::$blog[$id]['blog_time']),
 				));
 			}
 		}
