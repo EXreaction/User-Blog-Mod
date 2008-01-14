@@ -20,7 +20,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 $sql_ary = array(
 	'plugin_name'		=> 'archive',
 	'plugin_enabled'	=> 1,
-	'plugin_version'	=> '0.7.1',
+	'plugin_version'	=> '0.7.3',
 );
 $sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 $db->sql_query($sql);
@@ -32,8 +32,8 @@ $role_data = array(
 	'ROLE_MOD_STANDARD'		=> array('m_blogapprove', 'm_blogedit', 'm_bloglockedit', 'm_blogdelete', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyedit', 'm_blogreplylockedit', 'm_blogreplydelete', 'm_blogreplyreport'),
 	'ROLE_MOD_QUEUE'		=> array('m_blogapprove', 'm_blogedit', 'm_bloglockedit', 'm_blogreplyapprove', 'm_blogreplyedit', 'm_blogreplylockedit'),
 	'ROLE_MOD_SIMPLE'		=> array('m_blogedit', 'm_bloglockedit', 'm_blogdelete', 'm_blogreplyedit', 'm_blogreplylockedit', 'm_blogreplydelete'),
-	'ROLE_USER_FULL'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogflash', 'u_blogmoderate'),
-	'ROLE_USER_STANDARD'	=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogmoderate'),
+	'ROLE_USER_FULL'		=> array('u_blogattach', 'u_blognolimitattach', 'u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogflash', 'u_blogmoderate'),
+	'ROLE_USER_STANDARD'	=> array('u_blogattach', 'u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogdelete', 'u_blognoapprove', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogreplydelete', 'u_blogreplynoapprove', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl', 'u_blogmoderate'),
 	'ROLE_USER_LIMITED'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
 	'ROLE_USER_NOPM'		=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
 	'ROLE_USER_NOAVATAR'	=> array('u_blogview', 'u_blogpost', 'u_blogedit', 'u_blogreport', 'u_blogreply', 'u_blogreplyedit', 'u_blogbbcode', 'u_blogsmilies', 'u_blogimg', 'u_blogurl'),
