@@ -56,12 +56,6 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		$url_data['c'] = $category_id;
 	}
 
-	// Add style= to the url data if it is in there
-	if (isset($_GET['style']) && !isset($url_data['style']))
-	{
-		$url_data['style'] = $_GET['style'];
-	}
-
 	// Handle the anchor
 	if (isset($url_data['anchor']))
 	{
@@ -136,6 +130,12 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			}
 		}
 
+		// Add style= to the url data if it is in there
+		if (isset($_GET['style']) && !isset($url_data['style']))
+		{
+			$url_data['style'] = $_GET['style'];
+		}
+
 		if (count($url_data))
 		{
 			foreach ($url_data as $name => $value)
@@ -181,7 +181,14 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		}
 		else
 		{
-			return $start_url . "blog/index{$extras}.html{$anchor}";
+			if ($extras || $anchor)
+			{
+				return $start_url . "blog/index{$extras}.html{$anchor}";
+			}
+			else
+			{
+				return $start_url . 'blog/';
+			}
 		}
 	}
 

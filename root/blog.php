@@ -15,11 +15,10 @@
 * Change the system to build schema OTF, like phpBB3 now does.
 * option to hard delete on delete page
 * truncate functions - check if works with DB type
-* super cache - cache entire pages
+* super cache - cache entire pages?
 * add place to allow subscription notices when posting a blog/reply (drop down box?)
 * auto-subscriptions in the UCP (which get selected in the add subscription on add blog/reply page automatically)
-* force style for UCP/MCP
-* option to cut off text at space or endline
+* force style for UCP/MCP?
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
