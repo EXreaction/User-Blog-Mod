@@ -160,7 +160,7 @@ CREATE TABLE phpbb_blogs_reply (
 # Table: 'phpbb_blogs_subscription'
 CREATE TABLE phpbb_blogs_subscription (
 	sub_user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	sub_type tinyint(1) DEFAULT '1' NOT NULL,
+	sub_type int(11) UNSIGNED DEFAULT '0' NOT NULL,
 	blog_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
@@ -179,6 +179,7 @@ CREATE TABLE phpbb_blogs_users (
 	description_bbcode_bitfield varchar(255) DEFAULT '' NOT NULL,
 	description_bbcode_uid varchar(8) DEFAULT '' NOT NULL,
 	instant_redirect tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	blog_subscription_default int(11) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (user_id)
 ) CHARACTER SET `utf8` COLLATE `utf8_bin`;
 

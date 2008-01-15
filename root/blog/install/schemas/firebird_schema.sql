@@ -223,7 +223,7 @@ END;;
 # Table: 'phpbb_blogs_subscription'
 CREATE TABLE phpbb_blogs_subscription (
 	sub_user_id INTEGER DEFAULT 0 NOT NULL,
-	sub_type INTEGER DEFAULT 1 NOT NULL,
+	sub_type INTEGER DEFAULT 0 NOT NULL,
 	blog_id INTEGER DEFAULT 0 NOT NULL,
 	user_id INTEGER DEFAULT 0 NOT NULL
 );;
@@ -242,7 +242,8 @@ CREATE TABLE phpbb_blogs_users (
 	description BLOB SUB_TYPE TEXT CHARACTER SET UTF8 DEFAULT '' NOT NULL,
 	description_bbcode_bitfield VARCHAR(255) CHARACTER SET NONE DEFAULT '' NOT NULL,
 	description_bbcode_uid VARCHAR(8) CHARACTER SET NONE DEFAULT '' NOT NULL,
-	instant_redirect INTEGER DEFAULT 1 NOT NULL
+	instant_redirect INTEGER DEFAULT 1 NOT NULL,
+	blog_subscription_default INTEGER DEFAULT 0 NOT NULL
 );;
 
 ALTER TABLE phpbb_blogs_users ADD PRIMARY KEY (user_id);;

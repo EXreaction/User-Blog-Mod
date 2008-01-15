@@ -191,7 +191,7 @@ CREATE INDEX phpbb_blogs_reply_reply_deleted ON phpbb_blogs_reply (reply_deleted
 */
 CREATE TABLE phpbb_blogs_subscription (
 	sub_user_id INT4 DEFAULT '0' NOT NULL CHECK (sub_user_id >= 0),
-	sub_type INT2 DEFAULT '1' NOT NULL,
+	sub_type INT4 DEFAULT '0' NOT NULL CHECK (sub_type >= 0),
 	blog_id INT4 DEFAULT '0' NOT NULL CHECK (blog_id >= 0),
 	user_id INT4 DEFAULT '0' NOT NULL CHECK (user_id >= 0),
 	PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
@@ -212,6 +212,7 @@ CREATE TABLE phpbb_blogs_users (
 	description_bbcode_bitfield varchar(255) DEFAULT '' NOT NULL,
 	description_bbcode_uid varchar(8) DEFAULT '' NOT NULL,
 	instant_redirect boolean DEFAULT '1' NOT NULL CHECK (instant_redirect >= 0),
+	blog_subscription_default INT4 DEFAULT '0' NOT NULL CHECK (blog_subscription_default >= 0),
 	PRIMARY KEY (user_id)
 );
 

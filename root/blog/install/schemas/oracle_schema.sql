@@ -288,7 +288,7 @@ END;
 */
 CREATE TABLE phpbb_blogs_subscription (
 	sub_user_id number(8) DEFAULT '0' NOT NULL,
-	sub_type number(1) DEFAULT '1' NOT NULL,
+	sub_type number(11) DEFAULT '0' NOT NULL,
 	blog_id number(8) DEFAULT '0' NOT NULL,
 	user_id number(8) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_subscription PRIMARY KEY (sub_user_id, sub_type, blog_id, user_id)
@@ -310,6 +310,7 @@ CREATE TABLE phpbb_blogs_users (
 	description_bbcode_bitfield varchar2(255 char) DEFAULT '' ,
 	description_bbcode_uid varchar2(8 char) DEFAULT '' ,
 	instant_redirect number(1) DEFAULT '1' NOT NULL,
+	blog_subscription_default number(11) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blogs_users PRIMARY KEY (user_id)
 )
 /

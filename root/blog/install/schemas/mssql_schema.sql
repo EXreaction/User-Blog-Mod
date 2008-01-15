@@ -276,7 +276,7 @@ GO
 */
 CREATE TABLE [phpbb_blogs_subscription] (
 	[sub_user_id] [int] DEFAULT (0) NOT NULL ,
-	[sub_type] [int] DEFAULT (1) NOT NULL ,
+	[sub_type] [int] DEFAULT (0) NOT NULL ,
 	[blog_id] [int] DEFAULT (0) NOT NULL ,
 	[user_id] [int] DEFAULT (0) NOT NULL 
 ) ON [PRIMARY]
@@ -303,7 +303,8 @@ CREATE TABLE [phpbb_blogs_users] (
 	[description] [text] DEFAULT ('') NOT NULL ,
 	[description_bbcode_bitfield] [varchar] (255) DEFAULT ('') NOT NULL ,
 	[description_bbcode_uid] [varchar] (8) DEFAULT ('') NOT NULL ,
-	[instant_redirect] [int] DEFAULT (1) NOT NULL 
+	[instant_redirect] [int] DEFAULT (1) NOT NULL ,
+	[blog_subscription_default] [int] DEFAULT (0) NOT NULL 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 

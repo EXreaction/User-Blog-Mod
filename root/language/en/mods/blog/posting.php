@@ -20,8 +20,6 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-'HARD_DELETE' => 'Hard Delete',
-'HARD_DELETE_EXPLAIN' => 'If you select this you will never get the post back!',
 	'ADD_BLOG'							=> 'Add a new blog',
 	'APPROVE_BLOG'						=> 'Approve Blog',
 	'APPROVE_BLOG_CONFIRM'				=> 'Are you sure you want to approve this blog?',
@@ -63,6 +61,9 @@ $lang = array_merge($lang, array(
 	'EDIT_REPLY'						=> 'Edit Reply',
 
 	'FILES_CANT_WRITE'					=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
+
+	'HARD_DELETE'						=> 'Hard Delete',
+	'HARD_DELETE_EXPLAIN'				=> 'If you select this you will never get the post back!',
 
 	'NOT_SUBSCRIBED_BLOG'				=> 'You are not subscribed to this blog.',
 	'NOT_SUBSCRIBED_USER'				=> 'You are not subscribed to this user.',
