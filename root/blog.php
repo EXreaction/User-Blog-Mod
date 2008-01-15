@@ -13,7 +13,6 @@
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * Split up installer?
 * Change the system to build schema OTF, like phpBB3 now does.
-* option to hard delete on delete page
 * truncate functions - check if works with DB type
 * super cache - cache entire pages?
 * add place to allow subscription notices when posting a blog/reply (drop down box?)
