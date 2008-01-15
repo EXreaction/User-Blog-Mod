@@ -49,7 +49,7 @@ $user_blog_version = '0.3.38_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
-$phpbb_root_path = ((isset($phpbb_root_path)) ? $phpbb_root_path : './');
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 
@@ -100,9 +100,6 @@ $blog_plugins->plugin_do('blog_start');
 $default = false;
 switch ($page)
 {
-	case 'send_subscriptions' : // sends out the subscription notices
-		
-	break;
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search
@@ -125,7 +122,7 @@ switch ($page)
 	case 'dev' : // used for developmental purposes
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang('mods/blog/setup');
-		include($phpbb_root_path . "blog/dev/{$page}.$phpEx");
+		include($phpbb_root_path . "blog/dev/dev.$phpEx");
 	break;
 	case 'blog' :
 	case 'reply' :
@@ -163,43 +160,39 @@ switch ($page)
 	break;
 	default :
 		$default = true;
-}
+		// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
+		$blog_plugins->plugin_do_ref('blog_page_switch', $default);
 
-if ($default)
-{
-	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-	$blog_plugins->plugin_do_ref('blog_page_switch', $default);
-}
-
-if ($default)
-{
-	// With SEO urls, we make it so that the page could be the username name of the user we want to view...
-	if ($page != '' && $page != 'index' && !$category_id)
-	{
-		$user_id = $blog_data->get_user_data(false, false, $page);
-
-		if ($user_id === false)
+		if ($default)
 		{
-			unset($user_id);
+			// With SEO urls, we make it so that the page could be the username name of the user we want to view...
+			if ($page != '' && $page != 'index' && !$category_id)
+			{
+				$user_id = $blog_data->get_user_data(false, false, $page);
+
+				if ($user_id === false)
+				{
+					unset($user_id);
+				}
+			}
+
+			include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+			check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+			$user->add_lang('mods/blog/view');
+
+			if ($blog_id || $reply_id)
+			{
+				include($phpbb_root_path . 'blog/view/single.' . $phpEx);
+			}
+			else if ($user_id)
+			{
+				include($phpbb_root_path . 'blog/view/user.' . $phpEx);
+			}
+			else
+			{
+				include($phpbb_root_path . 'blog/view/main.' . $phpEx);
+			}
 		}
-	}
-
-	include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-	check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-	$user->add_lang('mods/blog/view');
-
-	if ($blog_id || $reply_id)
-	{
-		include($phpbb_root_path . 'blog/view/single.' . $phpEx);
-	}
-	else if ($user_id)
-	{
-		include($phpbb_root_path . 'blog/view/user.' . $phpEx);
-	}
-	else
-	{
-		include($phpbb_root_path . 'blog/view/main.' . $phpEx);
-	}
 }
 
 // assign some common variables before the end of the page

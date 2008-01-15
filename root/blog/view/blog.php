@@ -8,6 +8,7 @@
 */
 
 $phpbb_root_path = './../../';
+define('PHPBB_ROOT_PATH', $phpbb_root_path);
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 $page = (isset($_GET['page'])) ? $_GET['page'] : '';

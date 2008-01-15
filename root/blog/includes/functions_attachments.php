@@ -587,7 +587,10 @@ class blog_attachment
 		// Are we uploading an image *and* this image being within the image category? Only then perform additional image checks.
 		$no_image = ($cat_id == ATTACHMENT_CATEGORY_IMAGE) ? false : true;
 
-		$file->move_file($config['upload_path'] . '/blog_mod', false, $no_image);
+		if (!$file->move_file($config['upload_path'] . '/blog_mod', false, $no_image))
+		{
+			$file->error[] = sprintf($user->lang[$file->upload->error_prefix . 'GENERAL_UPLOAD_ERROR'], $config['upload_path'] . '/blog_mod');
+		}
 
 		if (sizeof($file->error))
 		{
