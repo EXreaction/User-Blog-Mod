@@ -11,7 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* add blog_plugins to attachments class
 * Split up installer?
 * Change the system to build schema OTF, like phpBB3 now does.
 * option to hard delete on delete page

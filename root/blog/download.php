@@ -13,6 +13,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+$user->add_lang('viewtopic');
 $download_id = intval(request_var('id', 0));
 $mode = request_var('mode', '');
 
