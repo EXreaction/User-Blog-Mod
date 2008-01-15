@@ -42,26 +42,63 @@ if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogde
 	trigger_error('BLOG_ALREADY_DELETED');
 }
 
-$blog_plugins->plugin_do('blog_delete');
+$display_vars = array();
+if ($auth->acl_get('a_blogdelete') && blog_data::$blog[$blog_id]['blog_deleted'] == 0)
+{
+	$display_vars = array(
+		'legend1'			=> 'Hard Delete',
+		'hard_delete'		=> array('lang' => 'HARD_DELETE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => true),
+	);
+}
+$blog_plugins->plugin_do_ref('blog_delete', $display_vars);
 
-if (confirm_box(true))
+include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
+
+$settings = blog_confirm('DELETE_BLOG', 'DELETE_BLOG_CONFIRM', $display_vars, 'yes/no');
+
+if (is_array($settings))
 {
 	$blog_plugins->plugin_do('blog_delete_confirm');
 
 	// if it has already been soft deleted, and we want to hard delete it
-	if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && $auth->acl_get('a_blogdelete'))
+	if (((isset($settings['hard_delete']) && $settings['hard_delete']) || blog_data::$blog[$blog_id]['blog_deleted'] != 0) && $auth->acl_get('a_blogdelete'))
 	{
-		// Delete the Attachments
-		$blog_attachment->get_attachment_data($blog_id);
-		if (count(blog_data::$blog[$blog_id]['attachment_data']))
+		// They selected the hard delete checkbox...so we must do a few things.
+		if (blog_data::$blog[$blog_id]['blog_deleted'] == 0)
 		{
-			foreach (blog_data::$blog[$blog_id]['attachment_data'] as $null => $data)
+			// Remove the search index
+			$blog_search->index_remove($blog_id);
+
+			// Update the blog_count for the user
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = ' . intval($user_id) . ' AND blog_count > 0';
+			$db->sql_query($sql);
+
+			// Update the blog_count for all the categories it is in.
+			$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
 			{
-				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
-				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
+				$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
 				$db->sql_query($sql);
 			}
 		}
+
+		// Delete the Attachments
+		$rids = array();
+		$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$rids[] = $row['reply_id'];
+		}
+		$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row['physical_filename']);
+		}
+		$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
+		$db->sql_query($sql);
 
 		// delete the blog
 		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
@@ -81,6 +118,7 @@ if (confirm_box(true))
 	}
 	else
 	{
+		// Remove the search index
 		$blog_search->index_remove($blog_id);
 
 		// soft delete the blog
@@ -109,25 +147,15 @@ if (confirm_box(true))
 
 	if ($user->data['user_id'] == $user_id)
 	{
-		$message .= '<br/><br/>' . sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');
 	}
 	else
 	{
-		$message .= '<br/><br/>' . sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $username, '</a>');
+		$message .= '<br /><br />' . sprintf($user->lang['RETURN_BLOG_MAIN'], '<a href="' . $blog_urls['view_user'] . '">', $username, '</a>');
+		$message .= '<br />' . sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
 	trigger_error($message);
 }
-else
-{
-	if (blog_data::$blog[$blog_id]['blog_deleted'] != 0)
-	{
-		confirm_box(false, 'PERMANENTLY_DELETE_BLOG');
-	}
-	else
-	{
-		confirm_box(false, 'DELETE_BLOG');
-	}
-}
-blog_meta_refresh(0, $blog_urls['view_blog']);
+
 ?>

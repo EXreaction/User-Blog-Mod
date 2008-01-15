@@ -15,13 +15,19 @@ if (!defined('IN_PHPBB'))
 
 /**
 * Build Confirm
+*
+* @param string $title The title of the page
+* @param string $explain The explanation of the page
+* @param array $display_vars The array holding all of the settings/information - like how admin_board is setup
+* @param string $submit_type The type of submit buttons you want shown. Currently supported: 'submit/reset' or 'yes/no' 
+* @param string $action The page you want to submit to.  Leave as self to be the current page.
 */
-function blog_confirm($title, $explain, $display_vars, $action = 'self')
+function blog_confirm($title, $explain, $display_vars, $submit_type = 'submit/reset', $action = 'self')
 {
 	global $template, $user;
 
 	$submit = (isset($_POST['submit'])) ? true : false;
-	$error = array();
+	$error = $settings = array();
 
 	if ($submit)
 	{
@@ -68,6 +74,8 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 		'L_TITLE_EXPLAIN'	=> (isset($user->lang[$explain])) ? $user->lang[$explain] : $explain,
 
 		'U_ACTION'			=> $action,
+
+		'S_YES_NO'			=> ($submit_type == 'submit/reset') ? false : true,
 	));
 
 	foreach ($display_vars as $key => $vars)

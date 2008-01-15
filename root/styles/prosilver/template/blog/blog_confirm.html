@@ -34,10 +34,6 @@ fieldset dt {
 }
 </style>
 
-<h2>{L_TITLE}</h2>
-
-<p>{L_TITLE_EXPLAIN}</p>
-
 <!-- IF S_ERROR -->
 	<div class="errorbox">
 		<h3>{L_WARNING}</h3>
@@ -47,6 +43,10 @@ fieldset dt {
 
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
+
+		<h2>{L_TITLE}</h2>
+		<p>{L_TITLE_EXPLAIN}</p>
+
 		<form id="confirm" method="post" action="{U_ACTION}">
 			<!-- BEGIN options -->
 				<!-- IF options.S_LEGEND -->
@@ -61,13 +61,22 @@ fieldset dt {
 						<dd>{options.CONTENT}</dd>
 					</dl>
 				<!-- ENDIF -->
+			<!-- BEGINELSE -->
+				<fieldset><br />
 			<!-- END options -->
 			{S_FORM_TOKEN}
-		</fieldset>
-		<p class="submit-buttons" style="text-align: center;">
-			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
-		</p>
+			</fieldset>
+			<!-- IF S_YES_NO -->
+				<p class="submit-buttons" style="text-align: center;">
+					<input type="submit" name="submit" value="{L_YES}" class="button2" />&nbsp; 
+					<input type="submit" name="cancel" value="{L_NO}" class="button2" />
+				</p>
+			<!-- ELSE -->
+				<p class="submit-buttons" style="text-align: center;">
+					<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+					<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+				</p>
+			<!-- ENDIF -->
 		</form>
 	<span class="corners-bottom"><span></span></span></div>
 </div>

@@ -20,6 +20,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'HARD_DELETE' => 'Hard Delete',
+'HARD_DELETE_EXPLAIN' => 'If you select this you will never get the post back!',
 	'ADD_BLOG'							=> 'Add a new blog',
 	'APPROVE_BLOG'						=> 'Approve Blog',
 	'APPROVE_BLOG_CONFIRM'				=> 'Are you sure you want to approve this blog?',

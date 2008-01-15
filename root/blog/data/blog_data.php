@@ -456,7 +456,7 @@ class blog_data
 			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 
 			'U_APPROVE'				=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
-			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id)) ? blog_url($user_id, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
+			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
 			'U_DIGG'				=> 'http://digg.com/submit?phase=2&amp;url=' . urlencode(generate_board_url() . '/blog.' . $phpEx . '?b=' . $blog['blog_id']),
 			'U_EDIT'				=> (check_blog_permissions('blog', 'edit', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
 			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $id)) ? blog_url(false, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',

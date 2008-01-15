@@ -42,20 +42,45 @@ generate_blog_breadcrumbs($user->lang['DELETE_REPLY']);
 
 $blog_plugins->plugin_do('reply_delete');
 
-if (confirm_box(true))
+$display_vars = array();
+if ($auth->acl_get('a_blogdelete') && blog_data::$reply[$reply_id]['reply_deleted'] == 0)
+{
+	$display_vars = array(
+		'legend1'			=> 'Hard Delete',
+		'hard_delete'		=> array('lang' => 'HARD_DELETE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => true),
+	);
+}
+$blog_plugins->plugin_do_ref('blog_delete', $display_vars);
+
+include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
+
+$settings = blog_confirm('DELETE_REPLY', 'DELETE_REPLY_CONFIRM', $display_vars, 'yes/no');
+
+if (is_array($settings))
 {
 	$blog_plugins->plugin_do('reply_delete_confirm');
 
 	// if it has already been soft deleted
-	if (blog_data::$reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
+	if (((isset($settings['hard_delete']) && $settings['hard_delete']) || blog_data::$reply[$reply_id]['reply_deleted'] != 0) && $auth->acl_get('a_blogreplydelete'))
 	{
+		// If it has not been soft deleted we need to do a few more things...
+		if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
+		{
+			// Remove the search index
+			$blog_search->index_remove($blog_id, $reply_id);
+
+			// update the reply count for the blog
+			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id) . ' AND blog_reply_count > 0';
+			$db->sql_query($sql);
+		}
+
 		// Delete the Attachments
 		$blog_attachment->get_attachment_data(false, $reply_id);
 		if (count(blog_data::$reply[$reply_id]['attachment_data']))
 		{
 			foreach (blog_data::$reply[$reply_id]['attachment_data'] as $null => $data)
 			{
-				@unlink($phpbb_root_path . 'files/blog_mod/' . $data['physical_filename']);
+				@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $data['physical_filename']);
 				$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE attach_id = \'' . $data['attach_id'] . '\'';
 				$db->sql_query($sql);
 			}
@@ -70,6 +95,7 @@ if (confirm_box(true))
 	}
 	else if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
 	{
+		// Remove the search index
 		$blog_search->index_remove($blog_id, $reply_id);
 
 		// soft delete the reply
@@ -99,19 +125,5 @@ if (confirm_box(true))
 
 	trigger_error($message);
 }
-else
-{
-	// if it has already been soft deleted
-	if (blog_data::$reply[$reply_id]['reply_deleted'] != 0 && $auth->acl_get('a_blogreplydelete'))
-	{
-		confirm_box(false, 'PERMANENTLY_DELETE_REPLY');
-	}
-	else if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
-	{
-		confirm_box(false, 'DELETE_REPLY');
-	}
-}
 
-// they pressed No, so redirect them
-blog_meta_refresh(0, $blog_urls['view_reply']);
 ?>

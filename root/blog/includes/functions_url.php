@@ -86,7 +86,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				$url_data['page'] = $extra_data['username'];
 			}
-			else if (interface_exists('blog_data'))
+			else if (class_exists('blog_data'))
 			{
 				if (!isset(blog_data::$user[$user_id]))
 				{
@@ -94,6 +94,10 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 					$blog_data->get_user_data($user_id);
 				}
 				$url_data['page'] = blog_data::$user[$user_id]['username'];
+			}
+			else
+			{
+				$url_data['u'] = $user_id;
 			}
 		}
 		else if (isset($url_data['page']) && $user_id !== false)
@@ -106,7 +110,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['r'] = $reply_id;
 			if (!isset($url_data['mode']))
 			{
-				if (interface_exists('blog_data') && array_key_exists($reply_id, blog_data::$reply))
+				if (class_exists('blog_data') && array_key_exists($reply_id, blog_data::$reply))
 				{
 					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$reply[$reply_id]['reply_subject']));
 				}
@@ -121,7 +125,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['b'] = $blog_id;
 			if (!isset($url_data['mode']))
 			{
-				if (interface_exists('blog_data') && array_key_exists($blog_id, blog_data::$blog))
+				if (class_exists('blog_data') && array_key_exists($blog_id, blog_data::$blog))
 				{
 					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$blog[$blog_id]['blog_subject']));
 				}

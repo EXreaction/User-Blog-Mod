@@ -256,9 +256,13 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 					{
 						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogdelete') && $user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_get('m_blogdelete') || $auth->acl_get('a_blogdelete'))) ? true : false;
 					}
+					else
+					{
+						$is_auth = false;
+					}
 				break;
 				case 'undelete' :
-					$is_auth = ($auth->acl_gets('m_blogdelete', 'a_blogdelete')) ? true : false;
+					$is_auth = ($auth->acl_gets('m_blogdelete', 'a_blogdelete') || blog_data::$blog[$blog_id]['blog_deleted'] == $user->data['user_id']) ? true : false;
 				break;
 				case 'report' :
 					$is_auth = ($auth->acl_get('u_blogreport')) ? true : false;
@@ -282,9 +286,13 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 					{
 						$is_auth = ($user->data['user_id'] != ANONYMOUS && (($auth->acl_get('u_blogreplydelete') && $user->data['user_id'] == blog_data::$reply[$reply_id]['user_id']) || ($auth->acl_get('u_blogmoderate') && $user->data['user_id'] == blog_data::$blog[$blog_id]['user_id']) || $auth->acl_gets('a_blogreplydelete', 'm_blogreplydelete'))) ? true : false;
 					}
+					else
+					{
+						$is_auth = false;
+					}
 				break;
 				case 'undelete' :
-					$is_auth = ($auth->acl_get('m_blogreplydelete') || $auth->acl_get('a_blogreplydelete')) ? true : false;
+					$is_auth = ($auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || blog_data::$reply[$reply_id]['reply_deleted'] == $user->data['user_id']) ? true : false;
 				break;
 				case 'report' :
 					$is_auth = ($auth->acl_get('u_blogreport')) ? true : false;
