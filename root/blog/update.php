@@ -407,7 +407,7 @@ if (confirm_box(true))
 						$dbms_schema = '' . $dbms . '_schema.sql';
 				}
 
-				if (!file_exists($phpbb_root_path . 'blog/update/0338/' . $dbms_schema))
+				if (!file_exists($phpbb_root_path . 'blog/update/0337/' . $dbms_schema))
 				{
 					trigger_error('SCHEMA_NOT_EXIST');
 				}
@@ -415,7 +415,7 @@ if (confirm_box(true))
 				$remove_remarks = $dbmd[$dbms]['COMMENTS'];
 				$delimiter = $dbmd[$dbms]['DELIM'];
 
-				$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0338/' . $dbms_schema);
+				$sql_query = @file_get_contents($phpbb_root_path . 'blog/update/0337/' . $dbms_schema);
 
 				$sql_query = preg_replace('#phpbb_#i', $table_prefix, $sql_query);
 
@@ -452,6 +452,18 @@ if (confirm_box(true))
 				);
 				$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 			}
+
+			// The subscription type 2 (which was email and PM) has been removed.
+			$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE sub_type = 2';
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$row['sub_type'] = 0;
+				$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $row);
+				$db->sql_query($sql);
+			}
+			$sql = 'UPDATE ' . BLOGS_SUBSCRIPTION_TABLE . ' SET sub_type = 1 WHERE sub_type = 2';
+			$db->sql_query($sql);
 	}
 
 	// update the version

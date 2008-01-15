@@ -45,7 +45,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$user->add_lang('mods/blog/posting');
 	}
 
-	$subscribe_modes = array(0 => 'send_via_pm', 1 => 'send_via_email', 2 => array('send_via_pm', 'send_via_email'));
+	$subscribe_modes = array(0 => 'send_via_pm', 1 => 'send_via_email');
 	$temp = compact('mode', 'post_subject', 'uid', 'bid', 'rid', 'subscribe_modes');
 	$blog_plugins->plugin_do_ref('function_handle_subscription', $temp);
 	extract($temp);

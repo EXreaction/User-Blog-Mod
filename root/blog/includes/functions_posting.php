@@ -14,6 +14,8 @@ if (!defined('IN_PHPBB'))
 
 /**
 * Handle basic posting setup
+*
+* Make sure you check the stuff if required, like the captcha, and form key after submit.
 */
 function handle_basic_posting_data($page = 'blog', $mode = 'add')
 {
@@ -31,7 +33,6 @@ function handle_basic_posting_data($page = 'blog', $mode = 'add')
 		{
 			$category = request_var('c', 0);
 		}
-
 		$category_list = make_category_select($category);
 
 		if ($category_list)
