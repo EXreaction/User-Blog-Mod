@@ -82,6 +82,9 @@ $lang = array_merge($lang, array(
 	'SUBSCRIBE'						=> 'Subscribe',
 	'SUBSCRIBE_BLOG'				=> 'Subscribe to this Blog',
 	'SUBSCRIBE_USER'				=> 'Subscribe to this user\'s Blogs',
+	'SUBSCRIPTION'					=> 'Subscription',
+	'SUBSCRIPTION_EXPLAIN'			=> 'Select how you would like to be notified of future replies made to this blog.',
+	'SUBSCRIPTION_EXPLAIN_REPLY'	=> 'If you\'ve already subscribed to this blog, your current subscription options are shown (and whatever you select will be your new subscription selection).',
 
 	'UNSUBSCRIBE'					=> 'Unsubscribe',
 	'UNSUBSCRIBE_BLOG'				=> 'Unsubscribe from this Blog',

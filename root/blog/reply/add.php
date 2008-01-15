@@ -47,17 +47,8 @@ if ($submit || $preview || $refresh)
 	$message_parser->message = $reply_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
-	// check the captcha if required
-	if (!handle_captcha('check'))
-	{
-		$error[] = $user->lang['CONFIRM_CODE_WRONG'];
-	}
-
-	// check the form key
-	if (!check_form_key('postform'))
-	{
-		$error[] = $user->lang['FORM_INVALID'];
-	}
+	// Check the basic posting data
+	$error = handle_basic_posting_data(true, 'reply');
 
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
@@ -157,7 +148,7 @@ if ( (!$submit) || (sizeof($error)) )
 	$blog_plugins->plugin_do('reply_add_after_preview');
 
 	// handles the basic data we need to output for posting
-	handle_basic_posting_data('reply');
+	handle_basic_posting_data(false, 'reply');
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
@@ -211,6 +202,9 @@ else // user submitted and there are no errors
 	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
 
 	unset($message_parser, $sql_data);
+
+	// Handle the subscriptions
+	add_blog_subscriptions($blog_id, 'subscription_');
 
 	handle_blog_cache('add_reply', $user_id);
 

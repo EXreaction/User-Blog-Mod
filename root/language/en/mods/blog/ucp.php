@@ -15,6 +15,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'SUBSCRIPTION_DEFAULT'	=> 'Default Subscription',
+'SUBSCRIPTION_DEFAULT_EXPLAIN' => 'Select which subscription types you would like to recieve by default when someone replies to a blog you posted or replied to.  You can set this on each post you make as well.',
 	'BLOG_INSTANT_REDIRECT'					=> 'Instant Redirect',
 	'BLOG_INSTANT_REDIRECT_EXPLAIN'			=> 'This will set the User Blog Mod to instantly redirect to the next page instead of displaying the Information page.',
 

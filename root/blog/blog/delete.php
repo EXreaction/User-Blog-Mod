@@ -115,6 +115,10 @@ if (is_array($settings))
 		// delete from the blogs_ratings
 		$sql = 'DELETE FROM ' . BLOGS_RATINGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
+
+		// Delete the subscriptions
+		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		$db->sql_query($sql);
 	}
 	else
 	{

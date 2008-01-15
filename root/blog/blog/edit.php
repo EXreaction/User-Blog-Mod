@@ -73,11 +73,8 @@ else
 	$message_parser->message = $blog_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
-	// check the form key
-	if (!check_form_key('postform'))
-	{
-		$error[] = $user->lang['FORM_INVALID'];
-	}
+	// Check the basic posting data
+	$error = handle_basic_posting_data(true, 'blog', 'edit');
 
 	// If they did not include a subject, give them the empty subject error
 	if ($blog_subject == '' && !$refresh)
@@ -153,7 +150,7 @@ if (!$submit || sizeof($error))
 	$blog_plugins->plugin_do('blog_edit_after_preview');
 
 	// handles the basic data we need to output for posting
-	handle_basic_posting_data('blog', 'edit');
+	handle_basic_posting_data(false, 'blog', 'edit');
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
@@ -214,6 +211,9 @@ else // user submitted and there are no errors
 	$blog_plugins->plugin_do_arg('blog_edit_after_sql', $blog_id);
 
 	unset($message_parser, $sql_data);
+
+	// Handle the subscriptions
+	add_blog_subscriptions($blog_id, 'subscription_');
 
 	// First, delete the category in record for this blog
 	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);

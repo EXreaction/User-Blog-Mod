@@ -37,6 +37,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 			'description_bbcode_bitfield'		=> (isset($data['description_bbcode_bitfield'])) ? $data['description_bbcode_bitfield'] : '',
 			'description_bbcode_uid'			=> (isset($data['description_bbcode_uid'])) ? $data['description_bbcode_uid'] : '',
 			'instant_redirect'					=> (isset($data['instant_redirect'])) ? $data['instant_redirect'] : 0,
+			'blog_subscription_default'			=> (isset($data['blog_subscription_default'])) ? $data['blog_subscription_default'] : 0,
 		);
 
 		$temp = compact('sql_array', 'user_id', 'data');

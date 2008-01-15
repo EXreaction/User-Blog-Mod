@@ -453,8 +453,8 @@ if (confirm_box(true))
 				$eami->add_module('acp', 'ACP_BLOGS', $sql_ary);
 			}
 
-			// The subscription type 2 (which was email and PM) has been removed.
-			$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE sub_type = 2';
+			// The subscription type now goes to the bitwise type, so 1,2,4,8,16,32,64,etc.  Also, the old 2 was removed.
+			$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE sub_type = 2'; // First we will do what is needed to get rid of the old type 2
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -464,6 +464,14 @@ if (confirm_box(true))
 			}
 			$sql = 'UPDATE ' . BLOGS_SUBSCRIPTION_TABLE . ' SET sub_type = 1 WHERE sub_type = 2';
 			$db->sql_query($sql);
+
+			// Now we update it for the bitwise stuff.  If anyone has made a custom subscription type for a plugin make sure you update yours correctly.
+			$sql = 'UPDATE ' . BLOGS_SUBSCRIPTION_TABLE . ' SET sub_type = sub_type + 1';
+			$db->sql_query($sql);
+
+			// New blog subscription default for the blogs users table.  This uses the bitwise stuff like options does for posting.
+			$db_tool->sql_column_add(BLOGS_USERS_TABLE, 'blog_subscription_default', array('UINT:11', 0));
+			$db_tool->sql_column_change(BLOGS_SUBSCRIPTION_TABLE, 'sub_type', array('UINT:11', 0));
 	}
 
 	// update the version

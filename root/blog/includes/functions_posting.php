@@ -13,106 +13,188 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* Handle basic posting setup
-*
-* Make sure you check the stuff if required, like the captcha, and form key after submit.
+* Handle basic posting setup and some basic checks
 */
-function handle_basic_posting_data($page = 'blog', $mode = 'add')
+function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add')
 {
-	global $auth, $blog_attachment, $blog_plugins, $config, $template, $user, $phpbb_root_path, $phpEx;
+	global $auth, $blog_attachment, $blog_id, $blog_plugins, $config, $db, $template, $user, $phpbb_root_path, $phpEx;
 
-	$panels = array(
-		'options-panel'			=> $user->lang['OPTIONS'],
-	);
+	$submit = (isset($_POST['submit'])) ? true : false;
+	$preview = (isset($_POST['preview'])) ? true : false;
+	$refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($_POST['cancel_unglobalise'])) ? true : false;
+	$submitted = ($submit || $preview || $refresh) ? true : false; // shortcut for any of the 3 above
 
-	if ($page == 'blog')
+	if ($check)
 	{
-		// The category display box
-		$category = request_var('category', array('' => ''));
-		if (!count($category))
-		{
-			$category = request_var('c', 0);
-		}
-		$category_list = make_category_select($category);
+		$error = array();
 
-		if ($category_list)
+		// check the captcha
+		if ($mode == 'add')
 		{
-			$panels['categories-panel'] = $user->lang['CATEGORIES'];
+			if (!handle_captcha('check'))
+			{
+				$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+			}
 		}
 
-		if ($user->data['is_registered'])
+		// check the form key
+		if (!check_form_key('postform'))
 		{
-			// Build permissions box
-			permission_settings_builder(true, $mode);
-			$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+			$error[] = $user->lang['FORM_INVALID'];
 		}
 
-		// Some variables
+		return $error;
+	}
+	else
+	{
+		$above_subject = $above_message = $above_submit = $panel_data = '';
+
+		$panels = array(
+			'options-panel'			=> $user->lang['OPTIONS'],
+		);
+
+		if ($page == 'blog')
+		{
+			// The category display box
+			$category = request_var('category', array('' => ''));
+			if (!count($category))
+			{
+				$category = request_var('c', 0);
+			}
+			$category_list = make_category_select($category);
+
+			if ($category_list)
+			{
+				$panels['categories-panel'] = $user->lang['CATEGORIES'];
+			}
+
+			if ($user->data['is_registered'])
+			{
+				// Build permissions box
+				permission_settings_builder(true, $mode);
+				$panels['permissions-panel'] = $user->lang['PERMISSIONS'];
+			}
+
+			// Some variables
+			$template->assign_vars(array(
+				'CATEGORY_LIST'				=> $category_list,
+
+				'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
+				'S_SHOW_CATEGORY_BOX'		=> ($category_list) ? true : false,
+				'S_SHOW_PERMISSIONS_BOX'	=> true,
+			));
+		}
+
+		if ($mode == 'add')
+		{
+			// setup the captcha
+			handle_captcha('build');
+		}
+
+		// Subscriptions
+		if ($config['user_blog_subscription_enabled'])
+		{
+			$panels['subscriptions-panel'] = $user->lang['SUBSCRIPTION'];
+
+			$subscription_types = get_blog_subscription_types();
+			$subscribed = array();
+
+			if ($page == 'blog' && $mode == 'add' && !$submitted)
+			{
+				// check default subscription settings from user_settings
+				global $user_settings;
+				get_user_settings($user->data['user_id']);
+
+				if (isset($user_settings[$user->data['user_id']]))
+				{
+					foreach ($subscription_types as $type => $name)
+					{
+						// Bitwise check
+						if ($user_settings[$user->data['user_id']]['blog_subscription_default'] & $type)
+						{
+							$subscribed[$type] = true;
+						}
+					}
+				}
+			}
+			else if (!$submitted)
+			{
+				// check set subscription settings
+				$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+					WHERE sub_user_id = ' . $user->data['user_id'] . '
+						AND blog_id = ' . intval($blog_id);
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$subscribed[$row['sub_type']] = true;
+				}
+			}
+
+			foreach ($subscription_types as $type => $name)
+			{
+				$template->assign_block_vars('subscriptions', array(
+					'TYPE'		=> 'subscription_' . $type,
+					'NAME'		=> ((isset($user->lang[$name])) ? $user->lang[$name] : $name),
+					'S_CHECKED'	=> ((($submitted && request_var('subscription_' . $type, false)) || isset($subscribed[$type])) ? true : false),
+				));
+			}
+		}
+
+		// Attachments
+		$attachment_data = $blog_attachment->attachment_data;
+		$filename_data = $blog_attachment->filename_data;
+		$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
+		posting_gen_inline_attachments($attachment_data);
+		if (($auth->acl_get('u_blogattach')) && $config['allow_attachments'] && $form_enctype)
+		{
+			$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
+
+			if (count($allowed_extensions['_allowed_']))
+			{
+				$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
+
+				$panels['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
+			}
+		}
+
+		// Add the forum key
+		add_form_key('postform');
+
+		// Generate smiley listing
+		generate_smilies('inline', false);
+
+		// Build custom bbcodes array
+		display_custom_bbcodes();
+
+		$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
+		$blog_plugins->plugin_do_ref('function_handle_basic_posting_data', $temp);
+		extract($temp);
+
 		$template->assign_vars(array(
-			'CATEGORY_LIST'				=> $category_list,
+			'EXTRA_ABOVE_SUBJECT'		=> $above_subject,
+			'EXTRA_ABOVE_MESSAGE'		=> $above_message,
+			'EXTRA_ABOVE_SUBMIT'		=> $above_submit,
+			'EXTRA_PANELS'				=> $panel_data,
+			'JS_PANELS_LIST'			=> "'" . implode("', '", array_keys($panels)) . "'",
 
-			'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
-			'S_SHOW_CATEGORY_BOX'		=> ($category_list) ? true : false,
-			'S_SHOW_PERMISSIONS_BOX'	=> true,
+			'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
+
+			'S_BLOG'					=> ($page == 'blog') ? true : false,
+			'S_REPLY'					=> ($page == 'reply') ? true : false,
+			'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
+			'S_FORM_ENCTYPE'			=> $form_enctype,
 		));
-	}
 
-	$above_subject = $above_message = $above_submit = $panel_data = '';
-
-	if ($mode == 'add')
-	{
-		// setup the captcha
-		handle_captcha('build');
-	}
-
-	// Attachments
-	$attachment_data = $blog_attachment->attachment_data;
-	$filename_data = $blog_attachment->filename_data;
-	$form_enctype = (@ini_get('file_uploads') == '0' || strtolower(@ini_get('file_uploads')) == 'off' || @ini_get('file_uploads') == '0' || !$config['allow_attachments'] || !$auth->acl_get('u_attach')) ? '' : ' enctype="multipart/form-data"';
-	posting_gen_inline_attachments($attachment_data);
-	if (($auth->acl_get('u_blogattach')) && $config['allow_attachments'] && $form_enctype)
-	{
-		$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
-
-		if (count($allowed_extensions['_allowed_']))
+		foreach ($panels as $name => $title)
 		{
-			$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
-
-			$panels['attach-panel'] = $user->lang['ADD_ATTACHMENT'];
+			$template->assign_vars(array(
+				'S_' . strtoupper(str_replace('-', '_', $name))		=> true,
+			));
+			$template->assign_block_vars('panel_list', array(
+				'NAME'		=> $name,
+				'TITLE'		=> $title,
+			));
 		}
-	}
-
-	// Add the forum key
-	add_form_key('postform');
-
-	// Generate smiley listing
-	generate_smilies('inline', false);
-
-	// Build custom bbcodes array
-	display_custom_bbcodes();
-
-	$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
-	$blog_plugins->plugin_do_ref('function_handle_basic_posting_data', $temp);
-	extract($temp);
-
-	$template->assign_vars(array(
-		'EXTRA_ABOVE_SUBJECT'		=> $above_subject,
-		'EXTRA_ABOVE_MESSAGE'		=> $above_message,
-		'EXTRA_ABOVE_SUBMIT'		=> $above_submit,
-		'EXTRA_PANELS'				=> $panel_data,
-		'JS_PANELS_LIST'			=> "'" . implode("', '", array_keys($panels)) . "'",
-
-		'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
-		'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
-		'S_FORM_ENCTYPE'			=> $form_enctype,
-	));
-
-	foreach ($panels as $name => $title)
-	{
-		$template->assign_block_vars('panel_list', array(
-			'NAME'		=> $name,
-			'TITLE'		=> $title,
-		));
 	}
 }
 

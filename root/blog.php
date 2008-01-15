@@ -11,12 +11,11 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* Use options instead of enabled for bbcode/etc
 * Split up installer?
 * Change the system to build schema OTF, like phpBB3 now does.
 * truncate functions - check if works with DB type
 * super cache - cache entire pages?
-* add place to allow subscription notices when posting a blog/reply (drop down box?)
-* auto-subscriptions in the UCP (which get selected in the add subscription on add blog/reply page automatically)
 * force style for UCP/MCP?
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------

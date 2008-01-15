@@ -41,17 +41,8 @@ if ($submit || $preview || $refresh)
 	$message_parser->message = $blog_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
-	// check the captcha if required
-	if (!handle_captcha('check'))
-	{
-		$error[] = $user->lang['CONFIRM_CODE_WRONG'];
-	}
-
-	// check the form key
-	if (!check_form_key('postform'))
-	{
-		$error[] = $user->lang['FORM_INVALID'];
-	}
+	// Check the basic posting data
+	$error = handle_basic_posting_data(true);
 
 	// If they did not include a subject, give them the empty subject error
 	if ($blog_subject == '' && !$refresh)
@@ -177,6 +168,9 @@ else // user submitted and there are no errors
 	$blog_id = $db->sql_nextid();
 
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
+
+	// Handle the subscriptions
+	add_blog_subscriptions($blog_id, 'subscription_');
 
 	// Insert into the categories list
 	if (count($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))

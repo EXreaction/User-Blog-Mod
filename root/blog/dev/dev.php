@@ -639,7 +639,7 @@ function get_blog_schema_struct()
 	$schema_data['phpbb_blogs_subscription'] = array(
 		'COLUMNS'		=> array(
 			'sub_user_id'			=> array('UINT', 0),
-			'sub_type'				=> array('TINT:1', 1),
+			'sub_type'				=> array('UINT:11', 0),
 			'blog_id'				=> array('UINT', 0),
 			'user_id'				=> array('UINT', 0),
 		),
@@ -658,6 +658,7 @@ function get_blog_schema_struct()
 			'description_bbcode_bitfield'	=> array('VCHAR:255', ''),
 			'description_bbcode_uid'		=> array('VCHAR:8', ''),
 			'instant_redirect'		=> array('BOOL', 1),
+			'blog_subscription_default'		=> array('UINT:11', 0),
 		),
 		'PRIMARY_KEY'	=> 'user_id',
 	);

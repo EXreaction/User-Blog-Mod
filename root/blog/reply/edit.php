@@ -69,11 +69,8 @@ else
 	$message_parser->message = $reply_text;
 	$message_parser->parse($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, $post_options->img_status, $post_options->flash_status, $post_options->bbcode_status, $post_options->url_status);
 
-	// check the form key
-	if (!check_form_key('postform'))
-	{
-		$error[] = $user->lang['FORM_INVALID'];
-	}
+	// Check the basic posting data
+	$error = handle_basic_posting_data(true, 'reply', 'edit');
 
 	// If they did not include a subject, give them the empty subject error
 	if ($reply_subject == '' && !$refresh)
@@ -149,7 +146,7 @@ if (!$submit || sizeof($error))
 	$blog_plugins->plugin_do('reply_edit_after_preview');
 
 	// handles the basic data we need to output for posting
-	handle_basic_posting_data('reply', 'edit');
+	handle_basic_posting_data(false, 'reply', 'edit');
 
 	// Assign some variables to the template parser
 	$template->assign_vars(array(
@@ -171,45 +168,44 @@ if (!$submit || sizeof($error))
 }
 else // user submitted and there are no errors
 {
-	// lets check if they actually edited the text.  If they did not, don't do any SQL queries to update it.
-	if ($original_subject != $reply_subject || $original_text != $reply_text || (request_var('edit_reason', '', true) != ''))
-	{
-		$sql_data = array(
-			'user_ip'				=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : blog_data::$reply[$reply_id]['user_ip'],
-			'reply_subject'			=> $reply_subject,
-			'reply_text'			=> $message_parser->message,
-			'reply_checksum'		=> md5($message_parser->message),
-			'reply_approved' 		=> (blog_data::$reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0 : 1,
-			'enable_bbcode' 		=> $post_options->enable_bbcode,
-			'enable_smilies'		=> $post_options->enable_smilies,
-			'enable_magic_url'		=> $post_options->enable_magic_url,
-			'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
-			'bbcode_uid'			=> $message_parser->bbcode_uid,
-			'reply_edit_time'		=> time(),
-			'reply_edit_reason'		=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
-			'reply_edit_user'		=> $user->data['user_id'],
-			'reply_edit_count'		=> blog_data::$reply[$reply_id]['reply_edit_count'] + 1,
-			'reply_edit_locked'		=> ($auth->acl_get('m_blogreplylockedit') && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
-			'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
-		);
+	$sql_data = array(
+		'user_ip'				=> ($user->data['user_id'] == $reply_user_id) ? $user->data['user_ip'] : blog_data::$reply[$reply_id]['user_ip'],
+		'reply_subject'			=> $reply_subject,
+		'reply_text'			=> $message_parser->message,
+		'reply_checksum'		=> md5($message_parser->message),
+		'reply_approved' 		=> (blog_data::$reply[$reply_id]['reply_approved'] == 0) ? ($auth->acl_get('u_blogreplynoapprove')) ? 1 : 0 : 1,
+		'enable_bbcode' 		=> $post_options->enable_bbcode,
+		'enable_smilies'		=> $post_options->enable_smilies,
+		'enable_magic_url'		=> $post_options->enable_magic_url,
+		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
+		'bbcode_uid'			=> $message_parser->bbcode_uid,
+		'reply_edit_time'		=> time(),
+		'reply_edit_reason'		=> utf8_normalize_nfc(request_var('edit_reason', '', true)),
+		'reply_edit_user'		=> $user->data['user_id'],
+		'reply_edit_count'		=> blog_data::$reply[$reply_id]['reply_edit_count'] + 1,
+		'reply_edit_locked'		=> ($auth->acl_get('m_blogreplylockedit') && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
+		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+	);
 
-		$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
+	$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
 
-		$blog_plugins->plugin_do_ref('reply_edit_sql', $sql_data);
+	$blog_plugins->plugin_do_ref('reply_edit_sql', $sql_data);
 
-		// the update query
-		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
-			SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
-			WHERE reply_id = \'' . $reply_id . '\'';
+	// the update query
+	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
+		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
+		WHERE reply_id = \'' . $reply_id . '\'';
 
-		$db->sql_query($sql);
-	}
+	$db->sql_query($sql);
 
 	$blog_attachment->update_attachment_data($blog_id);
 
 	$blog_plugins->plugin_do_arg('reply_edit_after_sql', $reply_id);
 
 	unset($message_parser, $sql_data, $blog_search);
+
+	// Handle the subscriptions
+	add_blog_subscriptions($blog_id, 'subscription_');
 
 	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_EDIT_SUCCESS']) . '<br /><br />'; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';

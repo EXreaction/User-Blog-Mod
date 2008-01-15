@@ -148,7 +148,7 @@
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
 
-	<!-- IF S_SHOW_CATEGORY_BOX -->
+	<!-- IF S_CATEGORIES_PANEL -->
 		<div class="panel bg3" id="categories-panel">
 			<div class="inner"><span class="corners-top"><span></span></span>
 
@@ -167,7 +167,7 @@
 		</div>
 	<!-- ENDIF -->
 
-	<!-- IF S_SHOW_PERMISSIONS_BOX -->
+	<!-- IF S_PERMISSIONS_PANEL -->
 		<fieldset>
 			<div class="panel bg3" id="permissions-panel">
 				<div class="inner"><span class="corners-top"><span></span></span>
@@ -188,7 +188,26 @@
 		</fieldset>
 	<!-- ENDIF -->
 
-	<!-- IF S_SHOW_ATTACH_BOX --><!-- INCLUDE posting_attach_body.html --><!-- ENDIF -->
+	<!-- IF S_ATTACH_PANEL --><!-- INCLUDE posting_attach_body.html --><!-- ENDIF -->
+
+	<!-- IF S_SUBSCRIPTIONS_PANEL -->
+		<fieldset>
+			<div class="panel bg3" id="subscriptions-panel">
+				<div class="inner"><span class="corners-top"><span></span></span>
+
+				<dl>
+					<dt>{L_SUBSCRIPTION_EXPLAIN}<!-- IF S_REPLY --><br />{L_SUBSCRIPTION_EXPLAIN_REPLY}<!-- ENDIF --></dt>
+					
+						<!-- BEGIN subscriptions -->
+							<dd><label for="{subscriptions.SUB_TYPE}"><input type="checkbox" name="{subscriptions.TYPE}" id="{subscriptions.TYPE}" <!-- IF subscriptions.S_CHECKED -->checked="checked"<!-- ENDIF --> /> {subscriptions.NAME}</label></dd>
+						<!-- END subscriptions -->
+				</dl>
+
+				<span class="corners-bottom"><span></span></span></div>
+			</div>
+		</fieldset>
+	<!-- ENDIF -->
+
 
 	{EXTRA_PANELS}
 

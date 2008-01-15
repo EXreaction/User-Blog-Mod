@@ -34,11 +34,18 @@ if (!$user_id && !$blog_id)
 	trigger_error($user->lang['BLOG_USER_NOT_PROVIDED']);
 }
 
+$subscription_types = get_blog_subscription_types();
+
 $display_vars = array(
 	'legend1'			=> 'SUBSCRIBE',
-	0					=> array('lang' => 'PRIVATE_MESSAGE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => false),
-	1					=> array('lang' => 'EMAIL',				'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => false),
 );
+
+foreach ($subscription_types as $type => $name)
+{
+	$display_vars[$type] = array('lang' => $name, 'validate' => 'bool', 'type' => 'checkbox', 'default' => false, 'explain' => false);
+}
+
+// Do not add subscription types here.  Add them with the function_get_subscription_types hook.
 $blog_plugins->plugin_do_ref('subscribe', $display_vars);
 
 include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");

@@ -13,6 +13,75 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Get subscription types
+*/
+function get_blog_subscription_types()
+{
+	global $config, $blog_plugins;
+
+	if (!$config['user_blog_subscription_enabled'])
+	{
+		return;
+	}
+
+	// First is the subscription ID (which will use the bitwise operator), the second is the language variable.
+	$subscription_types = array(1 => 'PRIVATE_MESSAGE', 2 => 'EMAIL');
+
+	/* Remember, we use the bitwise operator to find out what subscription type is the users default, like the bbcode options.
+	So if you add more, use 1,2,4,8,16,32,64,etc and make sure to use the next available number, don't assume 4 is available! */
+	$blog_plugins->plugin_do_ref('function_get_subscription_types', $subscription_types);
+
+	return $subscription_types;
+}
+
+/**
+* Add Blog Subscriptions
+* 
+* Automatically adds subscriptions for a blog depending on what settings were sent
+* 
+* @param int $blog_id The blog_id this is for
+* @param string $prefix The prefix for the $_POST setting
+*/
+function add_blog_subscriptions($blog_id, $prefix = '')
+{
+	global $cache, $config, $db, $user;
+
+	if (!$config['user_blog_subscription_enabled'])
+	{
+		return;
+	}
+
+	// First delete any existing subscription for this blog
+	$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+		WHERE sub_user_id = ' . $user->data['user_id'] . '
+			AND blog_id = ' . intval($blog_id) . '
+			AND user_id = 0';
+	$db->sql_query($sql);
+
+	// Then get the subscription types
+	$subscription_types = get_blog_subscription_types();
+
+	// Go through each subscription type and see if it is set...
+	foreach ($subscription_types as $type => $name)
+	{
+		if (request_var($prefix . $type, false))
+		{
+			$sql_ary = array(
+				'sub_user_id'	=> $user->data['user_id'],
+				'sub_type'		=> $type,
+				'blog_id'		=> intval($blog_id),
+				'user_id'		=> 0,
+			);
+
+			$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+		}
+	}
+
+	$cache->destroy('_blog_subscription_' . $user->data['user_id']);
+}
+
+/**
 * handles sending subscription notices for blogs or replies
 *
 * Sends a PM or Email to each user in the subscription list, depending on what they want
@@ -45,14 +114,13 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$user->add_lang('mods/blog/posting');
 	}
 
-	$subscribe_modes = array(0 => 'send_via_pm', 1 => 'send_via_email');
-	$temp = compact('mode', 'post_subject', 'uid', 'bid', 'rid', 'subscribe_modes');
+	// This will hold all the send info, all ones that will be sent via PM would be $send[1], or Email would be $send[2], next would be $send[4], etc.
+	$send = array();
+
+	$subscribe_modes = get_blog_subscription_types();
+	$temp = compact('mode', 'post_subject', 'uid', 'bid', 'rid', 'send');
 	$blog_plugins->plugin_do_ref('function_handle_subscription', $temp);
 	extract($temp);
-
-	// setup the arrays which will hold the to info for PM's/Emails
-	$send_via_pm = array();
-	$send_via_email = array();
 
 	// Fix the URL's...
 	if (isset($config['user_blog_seo']) && $config['user_blog_seo'])
@@ -74,16 +142,13 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
-			if (is_array($subscribe_modes[$row['sub_type']]))
+			if (!array_key_exists($row['sub_type'], $send))
 			{
-				foreach ($subscribe_modes[$row['sub_type']] as $var)
-				{
-					array_push($$var, $row['sub_user_id']);
-				}
+				$send[$row['sub_type']] = array($row['sub_user_id']);
 			}
 			else
 			{
-				array_push($$subscribe_modes[$row['sub_type']], $row['sub_user_id']);
+				$send[$row['sub_type']][] = $row['sub_user_id'];
 			}
 		}
 		$db->sql_freeresult($result);
@@ -92,22 +157,19 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	}
 	else if ($mode == 'new_blog' && $uid != 0)
 	{
-		$sql = 'SELECT* FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+		$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
 			WHERE user_id = ' . intval($uid) . '
 			AND sub_user_id != ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))
 		{
-			if (is_array($subscribe_modes[$row['sub_type']]))
+			if (!array_key_exists($row['sub_type'], $send))
 			{
-				foreach ($subscribe_modes[$row['sub_type']] as $var)
-				{
-					array_push($$var, $row['sub_user_id']);
-				}
+				$send[$row['sub_type']] = array($row['sub_user_id']);
 			}
 			else
 			{
-				array_push($$subscribe_modes[$row['sub_type']], $row['sub_user_id']);
+				$send[$row['sub_type']][] = $row['sub_user_id'];
 			}
 		}
 		$db->sql_freeresult($result);
@@ -118,7 +180,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	$blog_data->get_user_data('2');
 
 	// Send the PM
-	if (count($send_via_pm) > 0)
+	if (isset($send[1]) && count($send[1]))
 	{
 		if (!function_exists('submit_pm'))
 		{
@@ -137,7 +199,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$message_parser->parse(true, true, true);
 
 		// setup out to address list
-		foreach ($send_via_pm as $id)
+		foreach ($send[1] as $id)
 		{
 			$address_list[$id] = 'to';
 		}
@@ -162,7 +224,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	}
 
 	// Send the email
-	if (count($send_via_email) > 0 && $config['email_enable'])
+	if (isset($send[2]) && count($send[2]) && $config['email_enable'])
 	{
 		if (!class_exists('messenger'))
 		{
@@ -171,10 +233,10 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 		$messenger = new messenger(false);
 
-		$blog_data->get_user_data($send_via_email);
+		$blog_data->get_user_data($send[2]);
 		$reply_url_var = ($rid) ? "r={$rid}#r{$rid}" : '';
 
-		foreach ($send_via_email as $uid)
+		foreach ($send[2] as $uid)
 		{
 			$messenger->template('blog_notify', $config['default_lang']);
 			$messenger->replyto($config['board_contact']);

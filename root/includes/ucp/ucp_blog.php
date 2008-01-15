@@ -41,18 +41,57 @@ class ucp_blog
 		switch ($mode)
 		{
 			case 'ucp_blog_settings' :
+				$subscription_types = get_blog_subscription_types();
+
 				if ($submit)
 				{
 					$sql_ary = array(
 						'instant_redirect'	=> request_var('instant_redirect', 0),
+						'blog_subscription_default'		=> 0,
 					);
+
+					if ($config['user_blog_subscription_enabled'])
+					{
+						foreach ($subscription_types as $type => $name)
+						{
+							if (request_var('subscription_' . $type, false))
+							{
+								$sql_ary['blog_subscription_default'] += $type;
+							}
+						}
+					}
 
 					update_user_blog_settings($user->data['user_id'], $sql_ary);
 				}
 				else
 				{
+					if ($config['user_blog_subscription_enabled'])
+					{
+						$subscribed = array();
+						if (isset($user_settings[$user->data['user_id']]))
+						{
+							foreach ($subscription_types as $type => $name)
+							{
+								// Bitwise check
+								if ($user_settings[$user->data['user_id']]['blog_subscription_default'] & $type)
+								{
+									$subscribed[$type] = true;
+								}
+							}
+						}
+						foreach ($subscription_types as $type => $name)
+						{
+							$template->assign_block_vars('subscriptions', array(
+								'TYPE'		=> 'subscription_' . $type,
+								'NAME'		=> ((isset($user->lang[$name])) ? $user->lang[$name] : $name),
+								'S_CHECKED'	=> ((isset($subscribed[$type])) ? true : false),
+							));
+						}
+					}
+
 					$template->assign_vars(array(
-						'S_BLOG_INSTANT_REDIRECT' => (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['instant_redirect'] : 0,
+						'S_BLOG_INSTANT_REDIRECT'	=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['instant_redirect'] : 0,
+						'S_SUBSCRIPTIONS'			=> ($config['user_blog_subscription_enabled']) ? true : false,
 					));
 				}
 			break;
