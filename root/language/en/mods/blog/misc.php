@@ -20,6 +20,10 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+	'ALREADY_SUBSCRIBED'		=> 'You are already subscribed.',
+
+	'NOT_SUBSCRIBED'			=> 'You are not subscribed.',
+
 	'PM_AND_EMAIL'				=> 'Private message and E-mail',
 
 	'RESYNC_BLOG'				=> 'Synchronise Blog',

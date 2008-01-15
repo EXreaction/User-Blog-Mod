@@ -36,8 +36,8 @@ if (!$user_id && !$blog_id)
 
 $display_vars = array(
 	'legend1'			=> 'SUBSCRIBE',
-	0					=> array('lang' => 'PRIVATE_MESSAGE',	'validate' => 'bool',	'type' => 'radio:yes_no',	'default' => false,	'explain' => false),
-	1					=> array('lang' => 'EMAIL',				'validate' => 'bool',	'type' => 'radio:yes_no',	'default' => false,	'explain' => false),
+	0					=> array('lang' => 'PRIVATE_MESSAGE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => false),
+	1					=> array('lang' => 'EMAIL',				'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => false),
 );
 $blog_plugins->plugin_do_ref('subscribe', $display_vars);
 

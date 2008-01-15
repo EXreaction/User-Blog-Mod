@@ -32,7 +32,7 @@ if ($blog_id != 0)
 {
 	if (!$subscribed)
 	{
-		trigger_error('NOT_SUBSCRIBED_BLOG');
+		trigger_error('NOT_SUBSCRIBED');
 	}
 
 	if (confirm_box(true))
@@ -77,7 +77,7 @@ else if ($user_id != 0)
 {
 	if (!$subscribed)
 	{
-		trigger_error('NOT_SUBSCRIBED_USER');
+		trigger_error('NOT_SUBSCRIBED');
 	}
 
 	if (confirm_box(true))

@@ -96,6 +96,8 @@ $lang = array_merge($lang, array(
 	'VIEW_BLOGS'					=> 'View Blogs',
 	'VIEW_DELETED_BLOGS'			=> 'View Deleted Blogs',
 	'VIEW_REPLY'					=> 'View Reply',
+
+	'WARNING'						=> 'Warning',
 ));
 
 ?>

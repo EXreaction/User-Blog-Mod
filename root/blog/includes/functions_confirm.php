@@ -21,19 +21,38 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 	global $template, $user;
 
 	$submit = (isset($_POST['submit'])) ? true : false;
+	$error = array();
 
 	if ($submit)
 	{
-		$settings = request_var('setting', array('' => ''));
-		validate_config_vars($display_vars, $settings);
+		// check the form key
+		if (!check_form_key('confirm'))
+		{
+			$error[] = $user->lang['FORM_INVALID'];
+		}
 
-		return $settings;
+		$settings = request_var('setting', array('' => ''));
+		validate_config_vars($display_vars, $settings, $error);
+
+		if (!sizeof($error))
+		{
+			return $settings;
+		}
+		else
+		{
+			$template->assign_vars(array(
+				'S_ERROR'		=> true,
+				'ERROR_MSG'		=> implode($error, '<br />'),
+			));
+		}
 	}
+
+	// Add the form key
+	add_form_key('confirm');
 
 	if ($action === 'self')
 	{
 		global $blog_urls;
-
 		if (isset($blog_urls['self']))
 		{
 			$action = $blog_urls['self'];
@@ -63,6 +82,8 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 			continue;
 		}
 
+		$default = (isset($settings[$key])) ? $settings[$key] : $vars['default'];
+
 		$type = explode(':', $vars['type']);
 		$l_explain = '';
 		if ($vars['explain'] && isset($vars['lang_explain']))
@@ -78,7 +99,7 @@ function blog_confirm($title, $explain, $display_vars, $action = 'self')
 			'TITLE'			=> (isset($user->lang[$vars['lang']])) ? $user->lang[$vars['lang']] : $vars['lang'],
 			'S_EXPLAIN'		=> $vars['explain'],
 			'TITLE_EXPLAIN'	=> $l_explain,
-			'CONTENT'		=> build_blog_cfg_template($type, $key, $vars['default']),
+			'CONTENT'		=> build_blog_cfg_template($type, $key, $default),
 		));
 	}
 
@@ -103,22 +124,22 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 
 	switch ($tpl_type[0])
 	{
-		case 'text':
-		case 'password':
+		case 'text' :
+		case 'password' :
 			$size = (int) $tpl_type[1];
 			$maxlength = (int) $tpl_type[2];
 
 			$tpl = '<input id="' . $name . '" type="' . $tpl_type[0] . '"' . (($size) ? ' size="' . $size . '"' : '') . ' maxlength="' . (($maxlength) ? $maxlength : 255) . '" name="' . $name . '" value="' . $default . '" />';
 		break;
 
-		case 'textarea':
+		case 'textarea' :
 			$rows = (int) $tpl_type[1];
 			$cols = (int) $tpl_type[2];
 
 			$tpl = '<textarea id="' . $name . '" name="' . $name . '" rows="' . $rows . '" cols="' . $cols . '">' . $default . '</textarea>';
 		break;
 
-		case 'radio':
+		case 'radio' :
 			$name_yes	= ($default) ? ' checked="checked"' : '';
 			$name_no		= (!$default) ? ' checked="checked"' : '';
 
@@ -129,6 +150,10 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 			$tpl_yes = '<label><input type="radio" id="' . $name . '" name="' . $name . '" value="1"' . $name_yes . ' class="radio" /> ' . (($type_no) ? $user->lang['YES'] : $user->lang['ENABLED']) . '</label>';
 
 			$tpl = ($tpl_type_cond[0] == 'yes' || $tpl_type_cond[0] == 'enabled') ? $tpl_yes . ' ' . $tpl_no : $tpl_no . ' ' . $tpl_yes;
+		break;
+
+		case 'checkbox' :
+			$tpl = '<input type="checkbox" name="' . $name . '"  id="' . $name . '"' . (($default) ? ' checked="checked"' : '') . ' />';
 		break;
 
 		default :
@@ -146,30 +171,29 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 *
 * From adm/index.php
 */
-function validate_config_vars($config_vars, &$cfg_array)
+function validate_config_vars($config_vars, &$cfg_array, &$error)
 {
 	foreach ($config_vars as $config_name => $config_definition)
 	{
-		if (!isset($cfg_array[$config_name]) || strpos($config_name, 'legend') !== false)
+		if (!isset($config_definition['validate']) || strpos($config_name, 'legend') !== false)
 		{
 			continue;
 		}
 
-		if (!isset($config_definition['validate']))
-		{
-			continue;
-		}
-
-		// Validate a bit. ;) String is already checked through request_var(), therefore we do not check this again
+		// Validate a bit. ;) String is already checked through request_var(), therefore we do not check this again.  Also, if the variables are not set, set them to their default setting (or, for bool, false)
 		switch ($config_definition['validate'])
 		{
 			case 'bool':
-				$cfg_array[$config_name] = ($cfg_array[$config_name]) ? true : false;
+				$cfg_array[$config_name] = ((isset($cfg_array[$config_name])) ? (($cfg_array[$config_name]) ? true : false) : false);
 			break;
-
 			case 'int':
-				$cfg_array[$config_name] = (int) $cfg_array[$config_name];
+				$cfg_array[$config_name] = ((isset($cfg_array[$config_name])) ? intval($cfg_array[$config_name]) : $config_definition['default']);
 			break;
+			default :
+				if (!isset($cfg_array[$config_name]))
+				{
+					$cfg_array[$config_name] = $config_definition['default'];
+				}
 		}
 	}
 }
