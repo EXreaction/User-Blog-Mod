@@ -11,9 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Use options instead of enabled for bbcode/etc
-* Split up installer?
-* Change the system to build schema OTF, like phpBB3 now does.
 * truncate functions - check if works with DB type
 * super cache - cache entire pages?
 * force style for UCP/MCP?
