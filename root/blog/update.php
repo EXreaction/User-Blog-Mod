@@ -163,6 +163,9 @@ if (confirm_box(true))
 			phpbb_db_tools::$return_statements = false;
 			phpbb_db_tools::sql_column_add(BLOGS_USERS_TABLE, 'blog_subscription_default', array('UINT:11', 0));
 			phpbb_db_tools::sql_column_change(BLOGS_SUBSCRIPTION_TABLE, 'sub_type', array('UINT:11', 0));
+
+			// changing the ratings to decimal
+			phpbb_db_tools::sql_column_change(BLOGS_TABLE, 'rating', array('DECIMAL:6', 0));
 	}
 
 	// update the version

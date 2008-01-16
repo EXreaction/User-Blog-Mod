@@ -62,7 +62,7 @@ if ($did_something)
 	}
 	$db->sql_freeresult($result);
 
-	$average_rating = ($total_count) ? ceil($total_rating / $total_count) : 0;
+	$average_rating = ($total_count) ? round($total_rating / $total_count, 2) : 0;
 
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array('rating' => $average_rating, 'num_ratings' => $total_count)) . ' WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);

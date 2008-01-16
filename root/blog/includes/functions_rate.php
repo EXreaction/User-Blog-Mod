@@ -98,7 +98,7 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	$unique_str = md5(microtime());
 	$unique_str = "u_{$unique_str}_s_";
 
-	// If the user has rated this already, and we are not just getting the average, get the average as well.
+	// If the user has rated this already and we are not just getting the average, get the average as well.
 	if ($user_rating !== false && !$force_average)
 	{
 		$final_code = get_star_rating($start_url, $delete_url, $average_rating, $num_ratings, $user_rating, true) . '';
@@ -110,6 +110,8 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	$final_code .= '<div>';
 	for ($i = $config['user_blog_min_rating']; $i <= $config['user_blog_max_rating']; $i++)
 	{
+		$title = ($user_rating !== false && !$force_average) ? sprintf($user->lang['RATE_ME'], $i, $config['user_blog_max_rating']) : sprintf($user->lang['RATE_ME'], $average_rating, $config['user_blog_max_rating']);
+
 		$final_code .= ($can_rate) ? '<a href="' . str_replace('*rating*', $i, $start_url) . '">' : '';
 		$final_code .= '<img id="' . $unique_str . $i . '" ';
 		if ($user_rating !== false && $i <= $user_rating && !$force_average)
@@ -125,7 +127,7 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 			$final_code .= 'src="' . $star_grey . '" ';
 		}
 		$final_code .= ($can_rate) ? "onmouseover=\"ratingHover('{$i}', '{$unique_str}')\"  onmouseout=\"ratingUnHover('{$average_rating}', '{$unique_str}')\"  onmousedown=\"ratingDown('{$i}', '{$unique_str}')\"" : '';
-		$final_code .= ' alt="' . sprintf($user->lang['RATE_ME'], $i, $config['user_blog_max_rating']) . '" title="' . sprintf($user->lang['RATE_ME'], $i, $config['user_blog_max_rating']) . '" />';
+		$final_code .= ' alt="' . $title . '" title="' . $title . '" />';
 		$final_code .= ($can_rate) ? '</a>' : '';
 	}
 

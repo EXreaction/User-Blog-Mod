@@ -83,7 +83,7 @@ function get_blog_schema_struct()
 			'perm_registered'		=> array('TINT:1', 2),
 			'perm_foe'				=> array('TINT:1', 0),
 			'perm_friend'			=> array('TINT:1', 2),
-			'rating'				=> array('UINT', 0),
+			'rating'				=> array('DECIMAL:6', 0),
 			'num_ratings'			=> array('UINT', 0),
 		),
 		'PRIMARY_KEY'	=> 'blog_id',
