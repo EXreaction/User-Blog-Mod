@@ -30,9 +30,7 @@ if (confirm_box(true))
 	if (!isset($table_prefix))
 	{
 		include($phpbb_root_path . 'config.' . $phpEx);
-		unset($dbpasswd);
-		unset($dbuser);
-		unset($dbname);
+		unset($dbpasswd, $dbuser, $dbname);
 	}
 
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);

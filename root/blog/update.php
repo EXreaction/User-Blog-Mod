@@ -45,6 +45,7 @@ if (confirm_box(true))
 				'PRIMARY_KEY'	=> array('blog_id', 'user_id'),
 			);
 
+			phpbb_db_tools::$return_statements = true;
 			$table_name = preg_replace('#phpbb_#i', $table_prefix, 'phpbb_blogs_ratings');
 			$statements = phpbb_db_tools::sql_create_table($table_name, $table_data);
 			foreach ($statements as $sql)
@@ -53,6 +54,7 @@ if (confirm_box(true))
 			}
 			unset($table_name, $table_data);
 
+			phpbb_db_tools::$return_statements = false;
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'rating', array('UINT', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'num_ratings', array('UINT', 0));
 
@@ -106,6 +108,7 @@ if (confirm_box(true))
 					),
 				);
 
+				phpbb_db_tools::$return_statements = true;
 				$table_name = preg_replace('#phpbb_#i', $table_prefix, 'phpbb_blogs_attachment');
 				$statements = phpbb_db_tools::sql_create_table($table_name, $table_data);
 				foreach ($statements as $sql)
@@ -114,6 +117,7 @@ if (confirm_box(true))
 				}
 				unset($table_name, $table_data);
 
+				phpbb_db_tools::$return_statements = false;
 				phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'blog_attachment', array('BOOL', 0));
 				phpbb_db_tools::sql_column_add(BLOGS_REPLY_TABLE, 'reply_attachment', array('BOOL', 0));
 				phpbb_db_tools::sql_column_add(EXTENSION_GROUPS_TABLE, 'allow_in_blog', array('BOOL', 0));
@@ -156,6 +160,7 @@ if (confirm_box(true))
 			$db->sql_query($sql);
 
 			// New blog subscription default for the blogs users table.  This uses the bitwise stuff like options does for posting.
+			phpbb_db_tools::$return_statements = false;
 			phpbb_db_tools::sql_column_add(BLOGS_USERS_TABLE, 'blog_subscription_default', array('UINT:11', 0));
 			phpbb_db_tools::sql_column_change(BLOGS_SUBSCRIPTION_TABLE, 'sub_type', array('UINT:11', 0));
 	}
