@@ -15,6 +15,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 /*
 * Add New Tables ----------------------------------------------------------------------------------
 */
+phpbb_db_tools::$return_statements = true;
 $schema_data = get_blog_schema_struct();
 foreach ($schema_data as $table_name => $table_data)
 {
@@ -32,6 +33,7 @@ foreach ($schema_data as $table_name => $table_data)
 /*
 * Alter Existing Tables -----------------------------------------------------------------------
 */
+phpbb_db_tools::$return_statements = false;
 phpbb_db_tools::sql_column_add(USERS_TABLE, 'blog_count', array('UINT', 0));
 phpbb_db_tools::sql_column_add(EXTENSION_GROUPS_TABLE, 'allow_in_blog', array('BOOL', 0));
 

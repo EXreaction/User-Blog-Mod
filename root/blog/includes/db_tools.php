@@ -404,9 +404,9 @@ class phpbb_db_tools
 	*/
 	public static function sql_column_exists($table, $column_name)
 	{
-		global $db;
+		global $db, $dbms;
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'mysql':
 
@@ -602,16 +602,16 @@ class phpbb_db_tools
 	*/
 	private static function sql_prepare_column_data($table_name, $column_name, $column_data)
 	{
-		global $db;
+		global $db, $dbms;
 
 		// Get type
 		if (strpos($column_data[0], ':') !== false)
 		{
 			list($orig_column_type, $column_length) = explode(':', $column_data[0]);
 
-			if (!is_array(self::$dbms_type_map[$db->dbms_type][$orig_column_type . ':']))
+			if (!is_array(self::$dbms_type_map[$dbms][$orig_column_type . ':']))
 			{
-				$column_type = sprintf(self::$dbms_type_map[$db->dbms_type][$orig_column_type . ':'], $column_length);
+				$column_type = sprintf(self::$dbms_type_map[$dbms][$orig_column_type . ':'], $column_length);
 			}
 
 			$orig_column_type .= ':';
@@ -619,20 +619,20 @@ class phpbb_db_tools
 		else
 		{
 			$orig_column_type = $column_data[0];
-			$column_type = self::$dbms_type_map[$db->dbms_type][$column_data[0]];
+			$column_type = self::$dbms_type_map[$dbms][$column_data[0]];
 		}
 
 		// Adjust default value if db-dependant specified
 		if (is_array($column_data[1]))
 		{
-			$column_data[1] = (isset($column_data[1][$db->dbms_type])) ? $column_data[1][$db->dbms_type] : $column_data[1]['default'];
+			$column_data[1] = (isset($column_data[1][$dbms])) ? $column_data[1][$dbms] : $column_data[1]['default'];
 		}
 
 		$sql = '';
 
 		$return_array = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				$sql .= " {$column_type} ";
@@ -801,7 +801,7 @@ class phpbb_db_tools
 
 	public static function sql_create_table($table_name, $table_data)
 	{
-		global $db;
+		global $db, $dbms;
 
 		// holds the DDL for a column
 		$columns = array();
@@ -848,7 +848,7 @@ class phpbb_db_tools
 		// this makes up all the columns in the create table statement
 		$table_sql .= implode(",\n", $columns);
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				$table_sql .= "\n);";
@@ -873,7 +873,7 @@ class phpbb_db_tools
 					$table_data['PRIMARY_KEY'] = array($table_data['PRIMARY_KEY']);
 				}
 
-				switch ($db->dbms_type)
+				switch ($dbms)
 				{
 					case 'mysql':
 					case 'postgres':
@@ -900,7 +900,7 @@ class phpbb_db_tools
 
 
 		// close the table
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'mysql':
 				// make sure the table is in UTF-8 mode
@@ -985,10 +985,12 @@ class phpbb_db_tools
 	*/
 	public static function sql_column_add($table_name, $column_name, $column_data)
 	{
+		global $dbms;
+
 		$column_data = self::sql_prepare_column_data($table_name, $column_name, $column_data);
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				$statements[] = 'ALTER TABLE "' . $table_name . '" ADD "' . $column_name . '" ' . $column_data['column_type_sql'];
@@ -1076,11 +1078,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_column_remove($table_name, $column_name)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				$statements[] = 'ALTER TABLE "' . $table_name . '" DROP "' . $column_name . '"';
@@ -1168,11 +1170,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_index_drop($table_name, $index_name)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'mssql':
 				$statements[] = 'DROP INDEX ' . $table_name . '.' . $index_name;
@@ -1199,14 +1201,14 @@ class phpbb_db_tools
 	*/
 	public static function sql_table_drop($table_name)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
 		// the most basic operation, get rid of the table
 		$statements[] = 'DROP TABLE ' . $table_name;
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				$sql = 'SELECT RDB$GENERATOR_NAME as gen
@@ -1263,11 +1265,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_create_primary_key($table_name, $column)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 			case 'postgres':
@@ -1349,11 +1351,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_create_unique_index($table_name, $index_name, $column)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 			case 'postgres':
@@ -1380,11 +1382,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_create_index($table_name, $index_name, $column)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 			case 'postgres':
@@ -1414,11 +1416,11 @@ class phpbb_db_tools
 	*/
 	public static function sql_list_index($table_name)
 	{
-		global $db;
+		global $db, $dbms;
 
 		$index_array = array();
 
-		if ($db->dbms_type == 'mssql')
+		if ($dbms == 'mssql')
 		{
 			$sql = "EXEC sp_statistics '$table_name'";
 			$result = $db->sql_query($sql);
@@ -1433,7 +1435,7 @@ class phpbb_db_tools
 		}
 		else
 		{
-			switch ($db->dbms_type)
+			switch ($dbms)
 			{
 				case 'firebird':
 					$sql = "SELECT LOWER(RDB\$INDEX_NAME) as index_name
@@ -1484,12 +1486,12 @@ class phpbb_db_tools
 			$result = $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				if ($db->dbms_type == 'mysql' && !$row['Non_unique'])
+				if ($dbms == 'mysql' && !$row['Non_unique'])
 				{
 					continue;
 				}
 
-				switch ($db->dbms_type)
+				switch ($dbms)
 				{
 					case 'firebird':
 					case 'oracle':
@@ -1513,10 +1515,12 @@ class phpbb_db_tools
 	*/
 	public static function sql_column_change($table_name, $column_name, $column_data)
 	{
+		global $dbms;
+
 		$column_data = self::sql_prepare_column_data($table_name, $column_name, $column_data);
 		$statements = array();
 
-		switch ($db->dbms_type)
+		switch ($dbms)
 		{
 			case 'firebird':
 				// Change type...
