@@ -11,9 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* truncate functions - check if works with DB type
-* super cache - cache entire pages?
-* force style for UCP/MCP?
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
