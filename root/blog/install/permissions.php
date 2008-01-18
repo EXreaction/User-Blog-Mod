@@ -49,7 +49,11 @@ $blog_permissions = array(
 		'a_blogmanage',
 		'a_blogdelete',
 		'a_blogreplydelete',
-		)
+
+		'u_blog_vote',
+		'u_blog_vote_change',
+		'u_blog_create_poll',
+	)
 );
 $auth_admin->acl_add_option($blog_permissions);
 ?>

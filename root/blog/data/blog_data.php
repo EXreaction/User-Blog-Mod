@@ -196,6 +196,9 @@ class blog_data
 		{
 			blog_plugins::plugin_do_ref('blog_data_while', $row);
 
+			// Initialize the poll data
+			$row['poll_options'] = $row['poll_votes'] = array();
+
 			// Initialize the attachment data
 			$row['attachment_data'] = array();
 
@@ -436,24 +439,67 @@ class blog_data
 
 		$blog['blog_read_count'] = ($user->data['user_id'] != $user_id) ? $blog['blog_read_count'] + 1 : $blog['blog_read_count'];
 
-		// Attachments
-		$update_count = array();
-		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
+		// Polls
+		$poll_options = $my_vote = array();
+		$total_votes = 0;
+		$poll_end = $blog['poll_length'] + $blog['poll_start'];
+		foreach ($blog['poll_votes'] as $option_id => $poll_row)
+		{
+			if ($option_id != 'my_vote')
+			{
+				$total_votes += $poll_row['votes'];
+			}
+			else
+			{
+				$my_vote = $poll_row;
+			}
+		}
+		foreach ($blog['poll_options'] as $option_id => $poll_row)
+		{
+			$option_pct = ($total_votes > 0 && isset($blog['poll_votes'][$option_id]['votes'])) ? $blog['poll_votes'][$option_id]['votes'] / $total_votes : 0;
+			$option_pct_txt = sprintf("%.1d%%", ($option_pct * 100));
 
-		$blog_row = array(	
+			$poll_options[] = array(
+				'POLL_OPTION_ID' 		=> $option_id,
+				'POLL_OPTION_CAPTION' 	=> $poll_row['poll_option_text'],
+				'POLL_OPTION_RESULT' 	=> (isset($blog['poll_votes'][$option_id]['votes'])) ? $blog['poll_votes'][$option_id]['votes'] : 0,
+				'POLL_OPTION_PERCENT' 	=> $option_pct_txt,
+				'POLL_OPTION_PCT'		=> round($option_pct * 100),
+				'POLL_OPTION_IMG' 		=> $user->img('poll_center', $option_pct_txt, round($option_pct * 250)),
+				'POLL_OPTION_VOTED'		=> (in_array($option_id, $my_vote)) ? true : false,
+			);
+		}
+		$s_can_vote = (((!sizeof($my_vote) && check_blog_permissions('blog', 'vote', true, $id)) ||
+			($auth->acl_get('u_blog_vote_change') && $blog['poll_vote_change'])) &&
+			(($blog['poll_length'] != 0 && $blog['poll_start'] + $blog['poll_length'] > time()) || $blog['poll_length'] == 0)) ? true : false;
+
+		// Attachments
+		$update_count = $attachments = array();
+		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
+		foreach ($blog['attachment_data'] as $i => $attachment)
+		{
+			$attachments[]['DISPLAY_ATTACHMENT'] = $attachment;
+		}
+
+		$blog_row = array(
+			'BLOG_EXTRA'			=> '',
 			'BLOG_ID'				=> $id,
 			'BLOG_MESSAGE'			=> $blog_text,
 			'DATE'					=> $user->format_date($blog['blog_time']),
 			'DELETED_MESSAGE'		=> $blog['deleted_message'],
 			'EDIT_REASON'			=> $blog['edit_reason'],
 			'EDITED_MESSAGE'		=> $blog['edited_message'],
-			'BLOG_EXTRA'			=> '',
+			'POLL_QUESTION'			=> censor_text($blog['poll_title']),
+			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 			'PUB_DATE'				=> date('r', $blog['blog_time']),
 			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
+			'TOTAL_VOTES'			=> $total_votes,
 			'USER_FULL'				=> blog_data::$user[$user_id]['username_full'],
 			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
-			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
+
+			'L_MAX_VOTES'			=> ($blog['poll_max_options'] == 1) ? $user->lang['MAX_OPTION_SELECT'] : sprintf($user->lang['MAX_OPTIONS_SELECT'], $blog['poll_max_options']),
+			'L_POLL_LENGTH'			=> ($blog['poll_length']) ? sprintf($user->lang[($poll_end > time()) ? 'POLL_RUN_TILL' : 'POLL_ENDED_AT'], $user->format_date($poll_end)) : '',
 
 			'U_APPROVE'				=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
 			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
@@ -465,17 +511,93 @@ class blog_data
 			'U_VIEW_PERMANENT'		=> blog_url(false, $id, false, array(), array(), true),
 			'U_WARN'				=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
 
+			'S_CAN_VOTE'			=> $s_can_vote,
 			'S_DELETED'				=> ($blog['blog_deleted']) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog['blog_attachment'] && count($blog['attachment_data'])) ? true : false,
+			'S_DISPLAY_RESULTS'		=> (!$s_can_vote || ($s_can_vote && sizeof($my_vote)) || (isset($_GET['view']) && $_GET['view'] == 'viewpoll')) ? true : false,
+			'S_HAS_ATTACHMENTS'		=> ($blog['blog_attachment']) ? true : false,
+			'S_HAS_POLL'			=> ($blog['poll_title']) ? true : false,
+			'S_IS_MULTI_CHOICE'		=> ($blog['poll_max_options'] > 1) ? true : false,
 			'S_REPORTED'			=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
 			'S_SHORTENED'			=> $shortened,
 			'S_UNAPPROVED'			=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove'))) ? true : false,
-			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog['blog_attachment'] && count($blog['attachment_data'])) ? true : false,
-			'S_HAS_ATTACHMENTS'		=> ($blog['blog_attachment']) ? true : false,
+	
+			'attachment'			=> $attachments,
+			'poll_option'			=> $poll_options,
 		);
 
 		blog_plugins::plugin_do_ref('blog_handle_data_end', $blog_row);
 
 		return $blog_row;
+	}
+
+	/**
+	* --------------------------------------------------------------------------------------------------------------------------- POLLS -----------------------------------------------------------------------------------------------------------------
+	*/
+
+	/**
+	* Get polls
+	* 
+	* The gotten data will be put in $blog['poll_options'] and $blog['poll_votes']
+	* 
+	* @param array $blog_ids The blog ID's you would like to look up.
+	*/
+	public function get_polls($blog_ids)
+	{
+		global $config, $db, $user;
+
+		if (!is_array($blog_ids))
+		{
+			$blog_ids = array($blog_ids);
+		}
+
+		// Get the options and store it in $blog[$blog_id]['poll_options'][$poll_option_id]
+		$sql = 'SELECT * FROM ' . BLOGS_POLL_OPTIONS_TABLE . ' WHERE ' . $db->sql_in_set('blog_id', $blog_ids);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			self::$blog[$row['blog_id']]['poll_options'][$row['poll_option_id']] = $row;
+		}
+
+		// Get the votes and store it in $blog[$blog_id]['poll_votes'][$poll_option_id]
+		// votes are in ['votes'], voter info is in ['voters']
+		$sql = 'SELECT * FROM ' . BLOGS_POLL_VOTES_TABLE . ' WHERE ' . $db->sql_in_set('blog_id', $blog_ids);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if ($row['vote_user_id'] == $user->data['user_id'] && $user->data['is_registered'])
+			{
+				self::$blog[$row['blog_id']]['poll_votes']['my_vote'][] = $row['poll_option_id'];
+			}
+
+			if (!isset(self::$blog[$row['blog_id']]['poll_votes'][$row['poll_option_id']]['votes']))
+			{
+				self::$blog[$row['blog_id']]['poll_votes'][$row['poll_option_id']] = array(
+					'votes' => 1,
+					'voters' => array('vote_user_id' => $row['vote_user_id'], 'vote_user_ip' => $row['vote_user_ip']),
+				);
+			}
+			else
+			{
+				self::$blog[$row['blog_id']]['poll_votes'][$row['poll_option_id']]['votes']++;
+				self::$blog[$row['blog_id']]['poll_votes'][$row['poll_option_id']]['voters'][] = array('vote_user_id' => $row['vote_user_id'], 'vote_user_ip' => $row['vote_user_ip']);
+			}
+		}
+
+		if (!$user->data['is_registered'])
+		{
+			foreach ($blog_ids as $blog_id)
+			{
+				// Cookie based guest tracking ... I don't like this but hum ho
+				// it's oft requested. This relies on "nice" users who don't feel
+				// the need to delete cookies to mess with results.
+				if (isset($_COOKIE[$config['cookie_name'] . '_poll_' . $blog_id]))
+				{
+					self::$blog[$blog_id]['poll_votes']['my_vote'] = explode(',', $_COOKIE[$config['cookie_name'] . '_poll_' . $blog_id]);
+					self::$blog[$blog_id]['poll_votes']['my_vote'] = array_map('intval', self::$blog[$blog_id]['poll_votes']['my_vote']);
+				}
+			}
+		}
 	}
 
 	/**

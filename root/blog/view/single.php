@@ -56,6 +56,9 @@ else
 	$reply_ids = false;
 }
 
+// Get the Poll Data
+$blog_data->get_polls($blog_id);
+
 // Get the Attachment Data
 $blog_attachment->get_attachment_data($blog_id, $reply_ids);
 
@@ -73,7 +76,6 @@ $template->assign_vars(array(
 // Parse the blog data and output it to the template
 $template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $blog_data->handle_user_data($user_id));
 $blog_data->handle_user_data($user_id, 'blogrow.custom_fields');
-$blog_attachment->output_attachment_data(blog_data::$blog[$blog_id]['attachment_data'], 'blogrow');
 
 blog_plugins::plugin_do('view_blog_after_blogrow');
 

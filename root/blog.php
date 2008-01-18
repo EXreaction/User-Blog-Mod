@@ -15,8 +15,6 @@
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
 *
-* Polls
-*
 * In Blog ACP -> add option to remove orphan blog attachments
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
@@ -90,6 +88,8 @@ blog_plugins::plugin_do('blog_start');
 $default = false;
 switch ($page)
 {
+	case 'vote'	: // Vote in a poll
+		$default = true; // Setting default to true so that the blog is shown again after voting.
 	case 'subscribe' : // subscribe to users/blogs
 	case 'unsubscribe' : // unsubscribe from users/blogs
 	case 'search' : // blogs search
@@ -140,10 +140,10 @@ switch ($page)
 			case 'report' :
 			case 'approve' :
 				include($phpbb_root_path . "blog/{$page}/{$mode}.$phpEx");
-				break;
+			break;
 			case 'quote' :
 				include($phpbb_root_path . "blog/reply/add.$phpEx");
-				break;
+			break;
 			default :
 				$default = true;
 		}

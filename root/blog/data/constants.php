@@ -32,6 +32,8 @@ if (!defined('BLOGS_TABLE'))
 	define('BLOGS_CATEGORIES_TABLE',		$table_prefix . 'blogs_categories');
 	define('BLOGS_IN_CATEGORIES_TABLE',		$table_prefix . 'blogs_in_categories');
 	define('BLOGS_PLUGINS_TABLE',			$table_prefix . 'blogs_plugins');
+	define('BLOGS_POLL_OPTIONS_TABLE',		$table_prefix . 'blogs_poll_options');
+	define('BLOGS_POLL_VOTES_TABLE',		$table_prefix . 'blogs_poll_votes');
 	define('BLOGS_RATINGS_TABLE',			$table_prefix . 'blogs_ratings');
 	define('BLOGS_REPLY_TABLE',				$table_prefix . 'blogs_reply');
 	define('BLOGS_SUBSCRIPTION_TABLE',		$table_prefix . 'blogs_subscription');

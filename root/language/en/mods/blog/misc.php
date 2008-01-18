@@ -20,6 +20,7 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'NOT_ALLOWED_CHANGE_VOTE' => 'You are not allowed to change your vote.',
 	'ALREADY_SUBSCRIBED'		=> 'You are already subscribed.',
 
 	'NOT_SUBSCRIBED'			=> 'You are not subscribed.',

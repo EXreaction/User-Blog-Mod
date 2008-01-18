@@ -269,6 +269,10 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 				break;
 				case 'approve' :
 					$is_auth = ($auth->acl_get('m_blogapprove')) ? true : false;
+				break;
+				case 'vote' :
+					$is_auth = ($auth->acl_get('u_blog_vote') && handle_user_blog_permissions($blog_id)) ? true : false;
+				break;
 			}
 		break;
 		case 'reply' :
@@ -299,6 +303,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 				break;
 				case 'approve' :
 					$is_auth = ($auth->acl_get('m_blogreplyapprove')) ? true : false;
+				break;
 			}
 			break;
 		case 'mcp' :
@@ -314,7 +319,12 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		case 'resync' :
 			$is_auth = ($user->data['user_type'] == USER_FOUNDER) ? true : false;
 			$founder = true;
+		break;
 	}
+
+	$temp = compact('is_auth', 'page', 'mode', 'blog_id', 'reply_id');
+	blog_plugins::plugin_do_ref('permissions_end', $temp);
+	extract($temp);
 
 	// if $is_auth hasn't been set yet they are just viewing a blog/user/etc, if it has been set also check to make sure they can view blogs
 	if (!isset($is_auth))
@@ -326,10 +336,6 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 		// if it is the install page they will not have viewing permissions, but they already need to be a founder :P
 		$is_auth = (!$auth->acl_get('u_blogview') && $page != 'install') ? false : $is_auth;
 	}
-
-	$temp = compact('is_auth', 'page', 'mode', 'blog_id', 'reply_id');
-	blog_plugins::plugin_do_ref('permissions_end', $temp);
-	extract($temp);
 
 	if (!$return)
 	{

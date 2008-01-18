@@ -56,6 +56,38 @@ if ($submit || $preview || $refresh)
 		$error[] = implode('<br />', $message_parser->warn_msg);
 	}
 
+	// Polls
+	$poll_title			= utf8_normalize_nfc(request_var('poll_title', '', true));
+	$poll_length		= request_var('poll_length', 0);
+	$poll_option_text	= utf8_normalize_nfc(request_var('poll_option_text', '', true));
+	$poll_max_options	= request_var('poll_max_options', 1);
+	$poll_vote_change	= isset($_POST['poll_vote_change']) ? 1 : 0;
+	if ($poll_option_text)
+	{
+		$poll = array(
+			'poll_title'		=> $poll_title,
+			'poll_length'		=> $poll_length,
+			'poll_max_options'	=> $poll_max_options,
+			'poll_option_text'	=> $poll_option_text,
+			'poll_start'		=> time(),
+			'poll_last_vote'	=> 0,
+			'poll_vote_change'	=> $poll_vote_change,
+			'enable_bbcode'		=> $post_options->enable_bbcode,
+			'enable_urls'		=> $post_options->enable_magic_url,
+			'enable_smilies'	=> $post_options->enable_smilies,
+			'img_status'		=> $post_options->img_status,
+		);
+
+		$message_parser->parse_poll($poll);
+
+		$poll_options = (isset($poll['poll_options'])) ? $poll['poll_options'] : '';
+		$poll_title = (isset($poll['poll_title'])) ? $poll['poll_title'] : '';
+	}
+	else
+	{
+		$poll = array();
+	}
+
 	// Attachments
 	$blog_attachment->get_submitted_attachment_data();
 	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $blog_text);
@@ -82,6 +114,45 @@ if (!$submit || sizeof($error))
 	if ($preview && !sizeof($error))
 	{
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
+
+		// Poll Preview
+		if (true)//!$poll_delete && $auth->acl_get('f_poll', $forum_id))
+		{
+			$parse_poll = new parse_message($poll_title);
+			$parse_poll->bbcode_uid = $message_parser->bbcode_uid;
+			$parse_poll->bbcode_bitfield = $message_parser->bbcode_bitfield;
+
+			$parse_poll->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies);
+
+			if ($poll_length)
+			{
+				$poll_end = ($poll_length * 86400) + (($poll_start) ? $poll_start : time());
+			}
+
+			$template->assign_vars(array(
+				'S_HAS_POLL_OPTIONS'	=> (sizeof($poll_options)),
+				'S_IS_MULTI_CHOICE'		=> ($poll_max_options > 1) ? true : false,
+
+				'POLL_QUESTION'		=> $parse_poll->message,
+				
+				'L_POLL_LENGTH'		=> ($poll_length) ? sprintf($user->lang['POLL_RUN_TILL'], $user->format_date($poll_end)) : '',
+				'L_MAX_VOTES'		=> ($poll_max_options == 1) ? $user->lang['MAX_OPTION_SELECT'] : sprintf($user->lang['MAX_OPTIONS_SELECT'], $poll_max_options))
+			);
+
+			$parse_poll->message = implode("\n", $poll_options);
+			$parse_poll->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies);
+			$preview_poll_options = explode('<br />', $parse_poll->message);
+			unset($parse_poll);
+
+			foreach ($preview_poll_options as $key => $option)
+			{
+				$template->assign_block_vars('poll_option', array(
+					'POLL_OPTION_CAPTION'	=> $option,
+					'POLL_OPTION_ID'		=> $key + 1)
+				);
+			}
+			unset($preview_poll_options);
+		}
 
 		// Attachments
 		if (sizeof($blog_attachment->attachment_data))
@@ -126,10 +197,17 @@ if (!$submit || sizeof($error))
 	$template->assign_vars(array(
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
 		'MESSAGE'					=> $blog_text,
+		'POLL_TITLE'				=> (isset($poll_title)) ? $poll_title : '',
+		'POLL_OPTIONS'				=> (!empty($poll_options)) ? implode("\n", $poll_options) : '',
+		'POLL_MAX_OPTIONS'			=> (isset($poll_max_options)) ? $poll_max_options : 1,
+		'POLL_LENGTH'				=> (isset($poll_length)) ? $poll_length : 0,
 		'SUBJECT'					=> $blog_subject,
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['POST_A_NEW_BLOG'],
+		'L_POLL_OPTIONS_EXPLAIN'	=> sprintf($user->lang['POLL_OPTIONS_EXPLAIN'], $config['max_poll_options']),
+
+		'S_POLL_VOTE_CHANGE'		=> true,
 	));
 
 	// Tell the template parser what template file to use
@@ -159,6 +237,11 @@ else // user submitted and there are no errors
 		'perm_foe'					=> request_var('perm_foe', 0),
 		'perm_friend'				=> request_var('perm_friend', 2),
 		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+		'poll_title'				=> $poll_title,
+		'poll_start'				=> time(),
+		'poll_length'				=> (time() + ($poll_length * 86400)),
+		'poll_max_options'			=> $poll_max_options,
+		'poll_vote_change'			=> $poll_vote_change,
 	);
 
 	blog_plugins::plugin_do_ref('blog_add_sql', $sql_data);
@@ -168,6 +251,9 @@ else // user submitted and there are no errors
 	$blog_id = $db->sql_nextid();
 
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
+
+	// Submit the poll
+	submit_blog_poll($poll, $blog_id);
 
 	// Handle the subscriptions
 	add_blog_subscriptions($blog_id, 'subscription_');

@@ -91,8 +91,6 @@ if (!$feed)
 
 			if (!$blogrow['S_SHORTENED'])
 			{
-				$blog_attachment->output_attachment_data(blog_data::$blog[$id]['attachment_data'], 'blogrow');		
-
 				// for updating the read count later
 				array_push($read_blogs, $id);
 			}

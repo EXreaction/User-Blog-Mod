@@ -85,6 +85,12 @@ function get_blog_schema_struct()
 			'perm_friend'			=> array('TINT:1', 2),
 			'rating'				=> array('DECIMAL:6', 0),
 			'num_ratings'			=> array('UINT', 0),
+			'poll_title'			=> array('STEXT_UNI', ''),
+			'poll_start'			=> array('TIMESTAMP', 0),
+			'poll_length'			=> array('TIMESTAMP', 0),
+			'poll_max_options'		=> array('TINT:4', 1),
+			'poll_last_vote'		=> array('TIMESTAMP', 0),
+			'poll_vote_change'		=> array('BOOL', 0),
 		),
 		'PRIMARY_KEY'	=> 'blog_id',
 		'KEYS'			=> array(
@@ -170,6 +176,33 @@ function get_blog_schema_struct()
 		'KEYS'			=> array(
 			'plugin_name'			=> array('INDEX', 'plugin_name'),
 			'plugin_enabled'		=> array('INDEX', 'plugin_enabled'),
+		),
+	);
+
+	$schema_data['phpbb_blogs_poll_options'] = array(
+		'COLUMNS'		=> array(
+			'poll_option_id'		=> array('TINT:4', 0),
+			'blog_id'				=> array('UINT', 0),
+			'poll_option_text'		=> array('TEXT_UNI', ''),
+			'poll_option_total'		=> array('UINT', 0),
+		),
+		'KEYS'			=> array(
+			'poll_opt_id'			=> array('INDEX', 'poll_option_id'),
+			'blog_id'				=> array('INDEX', 'blog_id'),
+		),
+	);
+
+	$schema_data['phpbb_blogs_poll_votes'] = array(
+		'COLUMNS'		=> array(
+			'blog_id'				=> array('UINT', 0),
+			'poll_option_id'		=> array('TINT:4', 0),
+			'vote_user_id'			=> array('UINT', 0),
+			'vote_user_ip'			=> array('VCHAR:40', ''),
+		),
+		'KEYS'			=> array(
+			'blog_id'				=> array('INDEX', 'blog_id'),
+			'vote_user_id'			=> array('INDEX', 'vote_user_id'),
+			'vote_user_ip'			=> array('INDEX', 'vote_user_ip'),
 		),
 	);
 

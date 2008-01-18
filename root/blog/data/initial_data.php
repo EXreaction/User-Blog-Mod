@@ -157,8 +157,10 @@ $initial_data = array(
 	'U_BLOG'				=> $blog_urls['self_minus_print'],
 	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=blog') : '',
  	'U_REPLY_BLOG'			=> ($blog_id != 0 && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
+	'U_VIEW_RESULTS'		=> $blog_urls['viewpoll'],
 
 	'S_POST_ACTION'			=> $blog_urls['self'],
+	'S_POLL_ACTION'			=> $blog_urls['vote'],
 	'S_PRINT_MODE'			=> $print,
 	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
 	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : (($user->data['user_id'] != $user_id || $blog_id) ? $blog_urls['subscribe'] : ''),

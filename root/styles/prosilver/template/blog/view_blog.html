@@ -77,6 +77,59 @@
 	<!-- ENDIF -->
 
 	<!-- BEGIN blogrow -->
+		<!-- IF blogrow.S_HAS_POLL and S_SINGLE -->
+			<form method="post" action="{S_POLL_ACTION}">
+
+			<div class="panel">
+				<div class="inner"><span class="corners-top"><span></span></span>
+
+				<div class="content">
+					<h2>{blogrow.POLL_QUESTION}</h2>
+					<p class="author">{blogrow.L_POLL_LENGTH}<!-- IF blogrow.S_CAN_VOTE and blogrow.L_POLL_LENGTH --><br /><!-- ENDIF --><!-- IF blogrow.S_CAN_VOTE -->{blogrow.L_MAX_VOTES}<!-- ENDIF --></p>
+
+					<fieldset class="polls">
+					<!-- BEGIN poll_option -->
+						<dl class="<!-- IF blogrow.poll_option.POLL_OPTION_VOTED -->voted<!-- ENDIF -->"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> title="{L_POLL_VOTED_OPTION}"<!-- ENDIF -->>
+							<dt><!-- IF blogrow.S_CAN_VOTE --><label for="vote_{blogrow.poll_option.POLL_OPTION_ID}">{blogrow.poll_option.POLL_OPTION_CAPTION}</label><!-- ELSE -->{blogrow.poll_option.POLL_OPTION_CAPTION}<!-- ENDIF --></dt>
+							<!-- IF blogrow.S_CAN_VOTE --><dd style="width: auto;"><!-- IF blogrow.S_IS_MULTI_CHOICE --><input type="checkbox" name="vote_id[]" id="vote_{blogrow.poll_option.POLL_OPTION_ID}" value="{blogrow.poll_option.POLL_OPTION_ID}"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /><!-- ELSE --><input type="radio" name="vote_id[]" id="vote_{blogrow.poll_option.POLL_OPTION_ID}" value="{blogrow.poll_option.POLL_OPTION_ID}"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /><!-- ENDIF --></dd><!-- ENDIF -->
+							<!-- IF blogrow.S_DISPLAY_RESULTS --><dd class="resultbar"><div class="<!-- IF blogrow.poll_option.POLL_OPTION_PCT < 20 -->pollbar1<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 40 -->pollbar2<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 60 -->pollbar3<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 80 -->pollbar4<!-- ELSE -->pollbar5<!-- ENDIF -->" style="width:{blogrow.poll_option.POLL_OPTION_PERCENT};">{blogrow.poll_option.POLL_OPTION_RESULT}</div></dd>
+							<dd><!-- IF blogrow.poll_option.POLL_OPTION_RESULT == 0 -->{L_NO_VOTES}<!-- ELSE -->{blogrow.poll_option.POLL_OPTION_PERCENT}<!-- ENDIF --></dd><!-- ENDIF -->
+						</dl>
+					<!-- END poll_option -->
+
+					<!-- IF blogrow.S_DISPLAY_RESULTS -->
+						<dl>
+							<dt>&nbsp;</dt>
+							<dd class="resultbar">{L_TOTAL_VOTES} : {blogrow.TOTAL_VOTES}</dd>
+						</dl>
+					<!-- ENDIF -->
+
+					<!-- IF blogrow.S_CAN_VOTE -->
+						<dl style="border-top: none;">
+							<dt>&nbsp;</dt>
+							<dd class="resultbar"><input type="submit" name="update" value="{L_SUBMIT_VOTE}" class="button1" /></dd>
+						</dl>
+					<!-- ENDIF -->
+
+					<!-- IF not blogrow.S_DISPLAY_RESULTS -->
+						<dl style="border-top: none;">
+							<dt>&nbsp;</dt>
+							<dd class="resultbar"><a href="{U_VIEW_RESULTS}">{L_VIEW_RESULTS}</a></dd>
+						</dl>
+					<!-- ENDIF -->
+					</fieldset>
+				</div>
+
+				<span class="corners-bottom"><span></span></span></div>
+				{S_FORM_TOKEN}
+				{S_HIDDEN_FIELDS}
+			</div>
+
+
+			</form>
+			<hr />
+		<!-- ENDIF -->
+
 		<div id="b{blogrow.BLOG_ID}" class="post <!-- IF blogrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF blogrow.S_ONLINE and S_CATEGORY_MODE --> online<!-- ENDIF -->">
 			<div class="inner"><span class="corners-top"><span></span></span>
 				<div class="postbody" style="width: <!-- IF S_CATEGORY_MODE -->70<!-- ELSE -->100<!-- ENDIF -->%;">

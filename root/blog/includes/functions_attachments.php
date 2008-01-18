@@ -382,27 +382,6 @@ class blog_attachment
 	}
 
 	/**
-	* Output Attachment Data to Template
-	*/
-	public function output_attachment_data($attachment_data, $prefix = 0)
-	{
-		global $auth, $config, $template;
-
-		if (!$config['user_blog_enable_attachments'] || !count($attachment_data) || !$auth->acl_get('u_download'))
-		{
-			return;
-		}
-
-		blog_plugins::plugin_do_ref('function_output_attachment_data', $attachment_data);
-
-		$current = key($template->_tpldata[$prefix]);
-		foreach ($attachment_data as $i => $attachment)
-		{
-			$template->_tpldata[$prefix][$current]['attachment'][]['DISPLAY_ATTACHMENT'] = $attachment;
-		}
-	}
-	
-	/**
 	* Get Attachment Data
 	*/
 	public function get_submitted_attachment_data($check_user_id = false)

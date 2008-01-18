@@ -67,7 +67,7 @@ if (confirm_box(true))
 			{
 				trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
 			}
-
+/*
 			set_config('user_blog_enable_attachments', 1);
 
 			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'attachments\'';
@@ -166,6 +166,68 @@ if (confirm_box(true))
 
 			// changing the ratings to decimal
 			phpbb_db_tools::sql_column_change(BLOGS_TABLE, 'rating', array('DECIMAL:6', 0));
+
+			// New poll tables
+			$schema_data = array();
+			$schema_data['phpbb_blogs_poll_options'] = array(
+				'COLUMNS'		=> array(
+					'poll_option_id'		=> array('TINT:4', 0),
+					'blog_id'				=> array('UINT', 0),
+					'poll_option_text'		=> array('TEXT_UNI', ''),
+					'poll_option_total'		=> array('UINT', 0),
+				),
+				'KEYS'			=> array(
+					'poll_opt_id'			=> array('INDEX', 'poll_option_id'),
+					'blog_id'				=> array('INDEX', 'blog_id'),
+				),
+			);
+
+			$schema_data['phpbb_blogs_poll_votes'] = array(
+				'COLUMNS'		=> array(
+					'blog_id'				=> array('UINT', 0),
+					'poll_option_id'		=> array('TINT:4', 0),
+					'vote_user_id'			=> array('UINT', 0),
+					'vote_user_ip'			=> array('VCHAR:40', ''),
+				),
+				'KEYS'			=> array(
+					'blog_id'				=> array('INDEX', 'blog_id'),
+					'vote_user_id'			=> array('INDEX', 'vote_user_id'),
+					'vote_user_ip'			=> array('INDEX', 'vote_user_ip'),
+				),
+			);
+
+			phpbb_db_tools::$return_statements = true;
+			foreach ($schema_data as $table_name => $table_data)
+			{
+				// Change prefix
+				$table_name = preg_replace('#phpbb_#i', $table_prefix, $table_name);
+
+				$statements = phpbb_db_tools::sql_create_table($table_name, $table_data);
+
+				foreach ($statements as $sql)
+				{
+					$db->sql_query($sql);
+				}
+			}
+
+			// Need to add polls to the blogs table
+			phpbb_db_tools::$return_statements = false;
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_title', array('STEXT_UNI', ''));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_start', array('TIMESTAMP', 0));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_length', array('TIMESTAMP', 0));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_max_options', array('TINT:4', 1));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_last_vote', array('TIMESTAMP', 0));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_vote_change', array('BOOL', 0));
+*/
+		$blog_permissions = array(
+			'local'      => array(),
+			'global'   => array(
+				'u_blog_vote',
+				'u_blog_vote_change',
+				'u_blog_create_poll',
+				)
+		);
+		$auth_admin->acl_add_option($blog_permissions);
 	}
 
 	// update the version

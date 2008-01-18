@@ -97,28 +97,26 @@ if (is_array($settings))
 		{
 			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row['physical_filename']);
 		}
-		$sql = 'DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids));
 
 		// delete the blog
-		$sql = 'DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 
 		// delete the replies
-		$sql = 'DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 
 		// delete from the blogs_in_categories
-		$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 
 		// delete from the blogs_ratings
-		$sql = 'DELETE FROM ' . BLOGS_RATINGS_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_RATINGS_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 
 		// Delete the subscriptions
-		$sql = 'DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-		$db->sql_query($sql);
+		$db->sql_query('DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE blog_id = ' . intval($blog_id));
+
+		// Delete the Polls
+		$db->sql_query('DELETE FROM ' . BLOGS_POLL_OPTIONS_TABLE . ' WHERE blog_id = ' . intval($blog_id));
+		$db->sql_query('DELETE FROM ' . BLOGS_POLL_VOTES_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 	}
 	else
 	{

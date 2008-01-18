@@ -34,6 +34,10 @@ $lang = array_merge($lang, array(
 	'acl_u_blogmoderate'		=> array('lang' => 'Can moderate (edit and delete) replies in own blog.', 'cat' => 'blog'),
 	'acl_u_blogattach'			=> array('lang' => 'Can post attachments in blogs and replies', 'cat' => 'blog'),
 	'acl_u_blognolimitattach'	=> array('lang' => 'Can ignore attachment size and amount limits', 'cat' => 'blog'),
+
+	'acl_u_blog_create_poll'	=> array('lang' => 'Can create polls', 'cat' => 'blog'),
+	'acl_u_blog_vote'			=> array('lang' => 'Can vote in polls', 'cat' => 'blog'),
+	'acl_u_blog_vote_change'	=> array('lang' => 'Can change existing vote', 'cat' => 'blog'),
 ));
 
 // Moderator Permissions
