@@ -289,11 +289,12 @@ viewtopic.php
 
 // Start Add User Blog Mod ------------------
 include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 $user->add_lang('mods/blog/common');
-setup_blog_plugins();
+new blog_plugins();
 get_zebra_info($user->data['user_id'], true);
 get_user_settings($id_cache);
 // End Add User Blog Mod --------------------
