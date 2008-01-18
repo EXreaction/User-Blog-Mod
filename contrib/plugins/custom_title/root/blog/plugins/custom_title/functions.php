@@ -9,20 +9,20 @@
 
 function custom_title_user_handle_data(&$args)
 {	
-	global $config, $user_data;
+	global $config;
 
-	if ($user_data->user[$args['USER_ID']]['user_custom_title'] != '')
+	if (blog_data::$user[$args['USER_ID']]['user_custom_title'] != '')
 	{
 		switch ($config['custom_title_mode'])
 		{
 			case CUSTOM_TITLE_MODE_INDEPENDENT:
-				$args['CUSTOM_TITLE'] = $user_data->user[$args['USER_ID']]['user_custom_title'];
+				$args['CUSTOM_TITLE'] = blog_data::$user[$args['USER_ID']]['user_custom_title'];
 				break;
 			case CUSTOM_TITLE_MODE_REPLACE_RANK:
-				$args['RANK_TITLE'] = $user_data->user[$args['USER_ID']]['user_custom_title'];
+				$args['RANK_TITLE'] = blog_data::$user[$args['USER_ID']]['user_custom_title'];
 				break;
 			case CUSTOM_TITLE_MODE_REPLACE_BOTH:
-				$args['RANK_TITLE'] = $user_data->user[$args['USER_ID']]['user_custom_title'];
+				$args['RANK_TITLE'] = blog_data::$user[$args['USER_ID']]['user_custom_title'];
 				$args['RANK_IMG'] = '';
 				$args['RANK_IMG_SRC'] = '';
 				break;

@@ -3,7 +3,6 @@
 	blog_add_after_setup
 	blog_add_preview
 	blog_add_after_preview
-	blog_add_permissions
 	blog_add_sql
 	blog_add_after_sql
 
@@ -20,10 +19,8 @@
 	blog_edit_after_setup
 	blog_edit_preview
 	blog_edit_after_preview
-	blog_edit_permissions
 	blog_edit_sql
 	blog_edit_after_sql
-	blog_edit_delete
 
 /blog/blog/report.php
 	blog_report_start
@@ -33,8 +30,6 @@
 	blog_undelete_start
 	blog_undelete_confirm
 
-/blog/blog.php
-
 /blog/data/blog_data.php
 	blog_data_start
 	blog_data_sql
@@ -43,25 +38,11 @@
 	blog_info_sql
 	blog_handle_data_start
 	blog_handle_data_end
-
-/blog/data/constants.php
-
-/blog/data/handle_data.php
-	function_handle_subscription
-	function_handle_subscription_end
-	function_resync_blog
-
-/blog/data/initial_data.php
-	initial_output
-
-/blog/data/reply_data.php
 	reply_data_start
 	reply_data_sql
 	reply_data_while
 	reply_handle_data_start
 	reply_handle_data_end
-
-/blog/data/user_data.php
 	user_data_start
 	user_data_sql
 	user_data_sql
@@ -69,56 +50,84 @@
 	user_handle_data
 	user_handle_data_cp
 
+/blog/data/initial_data.php
+	initial_output
+
+/blog/download.php
+	download_start
+	download_before_send
+	download_end
+
 /blog/functions.php
-	function_generate_menu
-	function_permission_settings_builder
-	function_generate_blog_urls
-	handle_user_blog_permissions
+
+/blog/header.php
+
+/blog/includes/functions.php
 	function_handle_blog_cache
 	function_handle_blog_cache_mode
-	function_get_subscription_info
-	permissions_start
+
+/blog/includes/functions_admin.php
+	function_resync_blog
+
+/blog/includes/functions_attachments.php
+	function_posting_gen_attachment_entry
+	function_get_attachment_data
+	function_parse_attachments
+	function_output_attachment_data
+	get_submitted_attachment_data
+	function_upload_attachment
+	function_obtain_blog_attach_extensions
+	function_parse_attachments_for_view
+
+/blog/includes/functions_categories.php
+	function_handle_categories
+	function_get_blog_categories
+
+/blog/includes/functions_confirm.php
+	function_build_blog_cfg_template
+
+/blog/includes/functions_misc.php
+	function_get_user_settings_insert
+	function_get_user_settings_update
+	function_get_user_settings
+	function_get_user_settings
+	function_get_zebra_info
+
+/blog/includes/functions_permissions.php
+	handle_user_blog_permissions
+	function_permission_settings_builder
+	function_check_blog_permissions
 	permissions_end
 
-/blog/functions_posting.php
+/blog/includes/functions_posting.php
 	function_handle_basic_posting_data
+	function_handle_captcha
 	function_inform_approve_report
 	post_options
 	post_options_set_status
 	post_options_set_in_template
 
-/blog/functions_sql.php
+/blog/includes/functions_rate.php
+	function_get_star_rating
 
-/blog/header.php
-	blog_header
+/blog/includes/functions_sql.php
+	function_build_permission_sql
 
-/blog/install/config.php
+/blog/includes/functions_subscription.php
+	function_get_subscription_types
+	function_handle_subscription
+	function_handle_subscription_end
+	function_get_subscription_info
 
-/blog/install/data.php
+/blog/includes/functions_url.php
+	function_blog_url
+	function_generate_blog_urls
 
-/blog/install/modules.php
+/blog/includes/functions_view.php
+	function_generate_menu
 
-/blog/install/permissions.php
-
-/blog/install/tables.php
-
-/blog/install.php
-
-/blog/permissions.php
-	permissions_start
-	permissions_end
-
-/blog/plugins/archive/functions.php
-
-/blog/plugins/archive/install.php
-
-/blog/plugins/archive/uninstall.php
-
-/blog/plugins/archive/update.php
-
-/blog/plugins/info/info_archive.php
-
-/blog/plugins/plugins.php
+/blog/rate.php
+	rate
 
 /blog/reply/add.php
 	reply_add_start
@@ -134,6 +143,7 @@
 
 /blog/reply/delete.php
 	reply_delete
+	blog_delete
 	reply_delete_confirm
 
 /blog/reply/edit.php
@@ -143,7 +153,6 @@
 	reply_edit_after_preview
 	reply_edit_sql
 	reply_edit_after_sql
-	reply_edit_delete
 
 /blog/reply/report.php
 	reply_report
@@ -153,43 +162,30 @@
 	reply_undelete
 	reply_undelete_confirm
 
-/blog/resync.php
-
 /blog/search/fulltext_native.php
 
 /blog/search/search.php
 
 /blog/search.php
+	search
+	search_end
 
 /blog/subscribe.php
-	subscribe_start
-	subscribe_blog_confirm
-	subscribe_blog_confirm_end
-	subscribe_blog
-	subscribe_user_confirm
-	subscribe_user_confirm_end
-	subscribe_user
+	subscribe
+	subscribe_confirm
 	subscription_add
+	subscribe_user_confirm_end
 
 /blog/unsubscribe.php
 	unsubscribe_start
-	unsubscribe_blog_confirm
-	unsubscribe_blog
+	unsubscribe_confirm
 	unsubscribe_user_confirm
 	unsubscribe_user
-
-/blog/update.php
-
-/blog/upgrade.php
-
-/blog/view/blog.php
 
 /blog/view/main.php
 	view_main_start
 	view_main_end
 	view_main_feed_end
-
-/blog/view/mcp.php
 
 /blog/view/single.php
 	view_blog_start
@@ -203,21 +199,23 @@
 	view_user_feed_end
 
 /includes/acp/acp_blogs.php
+	acp_default
+	acp_end
 	acp_main_start
 	acp_main_settings
+	acp_category_delete
+	acp_category_add_edit
+	acp_category_add_edit_initial
 
-/includes/acp/acp_blog_plugins.php
-
-/includes/acp/info/acp_blogs.php
-
-/includes/acp/info/acp_blog_plugins.php
-
-/includes/ucp/info/ucp_blog.php
+/includes/mcp/mcp_blog.php
+	mcp_start
+	mcp_default
+	mcp_end
 
 /includes/ucp/ucp_blog.php
-	blog_ucp_start
-	blog_ucp_permissions
-	blog_ucp_mode
+	ucp_start
+	ucp_default
+	ucp_end
 
 /blog.php
 	blog_start
