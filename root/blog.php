@@ -150,39 +150,46 @@ switch ($page)
 	break;
 	default :
 		$default = true;
-		// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-		blog_plugins::plugin_do_ref('blog_page_switch', $default);
+}
 
-		if ($default)
+if ($default)
+{
+	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
+	$temp = compact('page', 'mode', 'default');
+	blog_plugins::plugin_do_ref('blog_page_switch', $default);
+	extract($temp);
+
+	// Check again since a plugin could have used it's own page.
+	if ($default)
+	{
+		// With SEO urls, we make it so that the page could be the username name of the user we want to view...
+		if ($page != '' && $page != 'index' && !$category_id)
 		{
-			// With SEO urls, we make it so that the page could be the username name of the user we want to view...
-			if ($page != '' && $page != 'index' && !$category_id)
-			{
-				$user_id = $blog_data->get_user_data(false, false, $page);
+			$user_id = $blog_data->get_user_data(false, false, $page);
 
-				if ($user_id === false)
-				{
-					unset($user_id);
-				}
-			}
-
-			include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
-			check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-			$user->add_lang('mods/blog/view');
-
-			if ($blog_id || $reply_id)
+			if ($user_id === false)
 			{
-				include($phpbb_root_path . 'blog/view/single.' . $phpEx);
-			}
-			else if ($user_id)
-			{
-				include($phpbb_root_path . 'blog/view/user.' . $phpEx);
-			}
-			else
-			{
-				include($phpbb_root_path . 'blog/view/main.' . $phpEx);
+				unset($user_id);
 			}
 		}
+
+		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+		$user->add_lang('mods/blog/view');
+
+		if ($blog_id || $reply_id)
+		{
+			include($phpbb_root_path . 'blog/view/single.' . $phpEx);
+		}
+		else if ($user_id)
+		{
+			include($phpbb_root_path . 'blog/view/user.' . $phpEx);
+		}
+		else
+		{
+			include($phpbb_root_path . 'blog/view/main.' . $phpEx);
+		}
+	}
 }
 
 // assign some common variables before the end of the page
