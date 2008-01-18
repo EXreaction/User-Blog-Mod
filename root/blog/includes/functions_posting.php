@@ -167,7 +167,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 		display_custom_bbcodes();
 
 		$temp = compact('page', 'mode', 'panels', 'panel_data', 'above_subject', 'above_message', 'above_submit');
-		$blog_plugins->plugin_do_ref('function_handle_basic_posting_data', $temp);
+		blog_plugins::plugin_do_ref('function_handle_basic_posting_data', $temp);
 		extract($temp);
 
 		$template->assign_vars(array(
@@ -216,7 +216,7 @@ function handle_captcha($mode)
 		return true;
 	}
 
-	$blog_plugins->plugin_do_arg('function_handle_captcha', $mode);
+	blog_plugins::plugin_do_arg('function_handle_captcha', $mode);
 
 	if ($mode == 'check')
 	{
@@ -319,7 +319,7 @@ function inform_approve_report($mode, $id)
 			$subject = $user->lang['REPLY_APPROVE_PM_SUBJECT'];
 			break;
 		default:
-			$blog_plugins->plugin_do_arg('function_inform_approve_report', compact('mode', 'id'));
+			blog_plugins::plugin_do_arg('function_inform_approve_report', compact('mode', 'id'));
 	}
 
 	$to = explode(",", $config['user_blog_inform']);
@@ -401,7 +401,7 @@ class post_options
 		$this->auth_url = ($auth->acl_get('u_blogurl')) ? true : false;
 		$this->auth_flash = ($auth->acl_get('u_blogflash')) ? true : false;
 
-		$blog_plugins->plugin_do('post_options');
+		blog_plugins::plugin_do('post_options');
 	}
 
 	/**
@@ -421,7 +421,7 @@ class post_options
 		$this->enable_smilies = ($this->smilies_status && $smilies) ? true : false;
 		$this->enable_magic_url = ($this->url_status && $url) ? true : false;
 
-		$blog_plugins->plugin_do('post_options_set_status');
+		blog_plugins::plugin_do('post_options_set_status');
 	}
 
 	/**
@@ -429,7 +429,7 @@ class post_options
 	 */
 	function set_in_template()
 	{
-		global $template, $user, $phpbb_root_path, $phpEx, $blog_plugins;
+		global $template, $user, $phpbb_root_path, $phpEx;
 
 		// Assign some variables to the template parser
 		$template->assign_vars(array(
@@ -456,7 +456,7 @@ class post_options
 			'S_BBCODE_FLASH'			=> $this->flash_status,
 		));
 
-		$blog_plugins->plugin_do('post_options_set_in_template');
+		blog_plugins::plugin_do('post_options_set_in_template');
 	}
 }
 ?>

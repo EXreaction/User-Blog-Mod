@@ -30,9 +30,9 @@ function url_replace($url)
 */
 function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
 {
-	global $config, $user, $_SID, $blog_plugins;
+	global $config, $user, $_SID;
 
-	$blog_plugins->plugin_do('function_blog_url');
+	blog_plugins::plugin_do('function_blog_url');
 
 	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
 	static $start_url = '';
@@ -229,7 +229,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 */
 function generate_blog_urls()
 {
-	global $config, $user, $blog_urls, $blog_plugins;
+	global $config, $user, $blog_urls;
 	global $blog_id, $reply_id, $user_id;
 
 	$self_data = $_GET;
@@ -255,6 +255,6 @@ function generate_blog_urls()
 		'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
 	);
 
-	$blog_plugins->plugin_do('function_generate_blog_urls');
+	blog_plugins::plugin_do('function_generate_blog_urls');
 }
 ?>

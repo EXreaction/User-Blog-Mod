@@ -37,7 +37,7 @@ generate_blog_breadcrumbs($user->lang['EDIT_BLOG']);
 // Posting permissions
 $post_options = new post_options;
 
-$blog_plugins->plugin_do('blog_edit_start');
+blog_plugins::plugin_do('blog_edit_start');
 
 $category_ary = request_var('category', array(0));
 
@@ -98,7 +98,7 @@ else
 }
 
 $temp = compact('blog_subject', 'blog_text', 'error');
-$blog_plugins->plugin_do_ref('blog_edit_after_setup', $temp);
+blog_plugins::plugin_do_ref('blog_edit_after_setup', $temp);
 extract($temp);
 unset($temp);
 
@@ -136,7 +136,7 @@ if (!$submit || sizeof($error))
 			unset($attachment_data);
 		}
 
-		$blog_plugins->plugin_do_ref('blog_edit_preview', $preview_message);
+		blog_plugins::plugin_do_ref('blog_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -147,7 +147,7 @@ if (!$submit || sizeof($error))
 		));
 	}
 
-	$blog_plugins->plugin_do('blog_edit_after_preview');
+	blog_plugins::plugin_do('blog_edit_after_preview');
 
 	// handles the basic data we need to output for posting
 	handle_basic_posting_data(false, 'blog', 'edit');
@@ -199,7 +199,7 @@ else // user submitted and there are no errors
 
 	$blog_search->index('edit', $blog_id, 0, $message_parser->message, $blog_subject, $user_id);
 
-	$blog_plugins->plugin_do_ref('blog_edit_sql', $sql_data);
+	blog_plugins::plugin_do_ref('blog_edit_sql', $sql_data);
 
 	$sql = 'UPDATE ' . BLOGS_TABLE . '
 		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
@@ -208,7 +208,7 @@ else // user submitted and there are no errors
 
 	$blog_attachment->update_attachment_data($blog_id);
 
-	$blog_plugins->plugin_do_arg('blog_edit_after_sql', $blog_id);
+	blog_plugins::plugin_do_arg('blog_edit_after_sql', $blog_id);
 
 	unset($message_parser, $sql_data);
 

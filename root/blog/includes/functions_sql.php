@@ -86,8 +86,7 @@ function build_permission_sql($user_id, $add_where = false)
 
 	$sql .= ')';
 
-	global $blog_plugins;
-	$blog_plugins->plugin_do_ref('function_build_permission_sql', $sql);
+	blog_plugins::plugin_do_ref('function_build_permission_sql', $sql);
 
 	return (($add_where) ? fix_where_sql($sql) : $sql);
 }

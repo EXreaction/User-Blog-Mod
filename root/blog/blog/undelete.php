@@ -37,11 +37,11 @@ page_header($user->lang['UNDELETE_BLOG']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['UNDELETE_BLOG']);
 
-$blog_plugins->plugin_do('blog_undelete_start');
+blog_plugins::plugin_do('blog_undelete_start');
 
 if (confirm_box(true))
 {
-	$blog_plugins->plugin_do('blog_undelete_confirm');
+	blog_plugins::plugin_do('blog_undelete_confirm');
 
 	$blog_search->index('add', $blog_id, 0, blog_data::$blog[$blog_id]['blog_text'], blog_data::$blog[$blog_id]['blog_subject'], $user_id);
 

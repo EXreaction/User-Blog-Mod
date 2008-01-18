@@ -291,11 +291,11 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 */
 function generate_menu($user_id = false)
 {
-	global $config, $db, $template, $blog_data, $blog_plugins;
+	global $config, $db, $template, $blog_data;
 
 	$extra = $user_menu_extra = '';
 	$temp = compact('user_id', 'user_menu_extra', 'extra');
-	$blog_plugins->plugin_do_ref('function_generate_menu', $temp);
+	blog_plugins::plugin_do_ref('function_generate_menu', $temp);
 	extract($temp);
 
 	if ($user_id)

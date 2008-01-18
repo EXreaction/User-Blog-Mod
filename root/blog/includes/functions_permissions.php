@@ -137,7 +137,7 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 
 	$return = false;
 	$temp = compact('blog_id', 'user_id', 'mode', 'return');
-	$blog_plugins->plugin_do_ref('handle_user_blog_permissions', $temp);
+	blog_plugins::plugin_do_ref('handle_user_blog_permissions', $temp);
 	return $temp['return'];
 }
 
@@ -205,7 +205,7 @@ function permission_settings_builder($send_to_template = true, $mode = 'add')
 	}
 
 	$temp = compact('permission_settings', 'mode');
-	$blog_plugins->plugin_do_ref('function_permission_settings_builder', $temp);
+	blog_plugins::plugin_do_ref('function_permission_settings_builder', $temp);
 	extract($temp);
 
 	if ($send_to_template)
@@ -238,7 +238,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 {
 	global $user, $config, $auth, $blog_plugins;
 
-	$blog_plugins->plugin_do('function_check_blog_permissions');
+	blog_plugins::plugin_do('function_check_blog_permissions');
 
 	switch ($page)
 	{
@@ -328,7 +328,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 	}
 
 	$temp = compact('is_auth', 'page', 'mode', 'blog_id', 'reply_id');
-	$blog_plugins->plugin_do_ref('permissions_end', $temp);
+	blog_plugins::plugin_do_ref('permissions_end', $temp);
 	extract($temp);
 
 	if (!$return)

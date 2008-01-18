@@ -34,14 +34,14 @@ page_header($user->lang['REPORT_REPLY']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['REPORT_REPLY']);
 
-$blog_plugins->plugin_do('reply_report');
+blog_plugins::plugin_do('reply_report');
 
 // To close the reports
 if (blog_data::$reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogreplyreport'))
 {
 	if (confirm_box(true))
 	{
-		$blog_plugins->plugin_do('reply_report_confirm');
+		blog_plugins::plugin_do('reply_report_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
 			SET reply_reported = 0

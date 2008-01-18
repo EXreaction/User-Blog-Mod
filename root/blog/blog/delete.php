@@ -50,7 +50,7 @@ if ($auth->acl_get('a_blogdelete') && blog_data::$blog[$blog_id]['blog_deleted']
 		'hard_delete'		=> array('lang' => 'HARD_DELETE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => true),
 	);
 }
-$blog_plugins->plugin_do_ref('blog_delete', $display_vars);
+blog_plugins::plugin_do_ref('blog_delete', $display_vars);
 
 include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
 
@@ -58,7 +58,7 @@ $settings = blog_confirm('DELETE_BLOG', 'DELETE_BLOG_CONFIRM', $display_vars, 'y
 
 if (is_array($settings))
 {
-	$blog_plugins->plugin_do('blog_delete_confirm');
+	blog_plugins::plugin_do('blog_delete_confirm');
 
 	// if it has already been soft deleted, and we want to hard delete it
 	if (((isset($settings['hard_delete']) && $settings['hard_delete']) || blog_data::$blog[$blog_id]['blog_deleted'] != 0) && $auth->acl_get('a_blogdelete'))

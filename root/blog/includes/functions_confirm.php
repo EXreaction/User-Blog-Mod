@@ -125,7 +125,7 @@ function blog_confirm($title, $explain, $display_vars, $submit_type = 'submit/re
 */
 function build_blog_cfg_template($tpl_type, $name, $default)
 {
-	global $user, $blog_plugins;
+	global $user;
 
 	$tpl = '';
 	$name = 'setting[' . $name . ']';
@@ -166,7 +166,7 @@ function build_blog_cfg_template($tpl_type, $name, $default)
 
 		default :
 			$temp = compact('tpl_type', 'name', 'default', 'tpl');
-			$blog_plugins->plugin_do_ref('function_build_blog_cfg_template', $temp);
+			blog_plugins::plugin_do_ref('function_build_blog_cfg_template', $temp);
 			extract($temp);
 		break;
 	}

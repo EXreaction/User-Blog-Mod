@@ -20,7 +20,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 $sql_ary = array(
 	'plugin_name'		=> 'archive',
 	'plugin_enabled'	=> 1,
-	'plugin_version'	=> '0.7.3',
+	'plugin_version'	=> '0.7.4',
 );
 $sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 $db->sql_query($sql);

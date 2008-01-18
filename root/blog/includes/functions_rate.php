@@ -74,7 +74,7 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	}
 
 	$temp = compact('start_url', 'delete_url', 'average_rating', 'num_ratings', 'user_rating', 'force_average');
-	$blog_plugins->plugin_do_ref('function_get_star_rating', $temp);
+	blog_plugins::plugin_do_ref('function_get_star_rating', $temp);
 	extract($temp);
 
 	// If it has not had any ratings yet, give it 1/2 the max for the rating

@@ -23,7 +23,6 @@ class acp_blogs
 	function main($id, $mode)
 	{
 		global $phpbb_root_path, $phpEx, $user;
-		global $blog_plugins, $blog_plugins_path;
 
 		$submit = (isset($_POST['submit'])) ? true : false;
 
@@ -35,13 +34,7 @@ class acp_blogs
 		}
 
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 		$user->add_lang(array('mods/blog/common', 'mods/blog/acp', 'mods/blog/setup'));
-
-		if ($mode != 'plugins')
-		{
-			setup_blog_plugins();
-		}
 
 		switch($mode)
 		{
@@ -60,7 +53,7 @@ class acp_blogs
 			default :
 				$default = true;
 				$temp = compact('default', 'id', 'mode');
-				$blog_plugins->plugin_do_ref('acp_default', $temp); // make sure to set default to false if you use your own page
+				blog_plugins::plugin_do_ref('acp_default', $temp); // make sure to set default to false if you use your own page
 				extract($temp);
 
 				if ($default)
@@ -69,14 +62,13 @@ class acp_blogs
 				}
 		}
 
-		$blog_plugins->plugin_do('acp_end');
+		blog_plugins::plugin_do('acp_end');
 	}
 
 	function settings($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
-		global $blog_plugins, $blog_plugins_path;
 
 		$submit = (isset($_POST['submit'])) ? true : false;
 		$action = request_var('action', '');
@@ -84,7 +76,7 @@ class acp_blogs
 		$this->tpl_name = 'acp_board';
 		$this->page_title = $user->lang['ACP_BLOGS'];
 
-		$blog_plugins->plugin_do('acp_main_start');
+		blog_plugins::plugin_do('acp_main_start');
 
 		$settings = array(
 			'legend0'							=> 'VERSION',
@@ -117,7 +109,7 @@ class acp_blogs
 			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 		);
 
-		$blog_plugins->plugin_do_ref('acp_main_settings', $settings);
+		blog_plugins::plugin_do_ref('acp_main_settings', $settings);
 
 		$this->new_config = $config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
@@ -264,7 +256,7 @@ class acp_blogs
 	function categories($id, $mode)
 	{
 		global $db, $user, $auth, $template, $cache;
-		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx, $blog_plugins;
+		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx;
 
 		$this->tpl_name = 'acp_blog_categories';
 		$this->page_title = 'ACP_BLOG_CATEGORIES';
@@ -295,7 +287,7 @@ class acp_blogs
 
 					$errors = $this->delete_category($category_id, $action_blogs, $action_subcategories, $blogs_to_id, $subcategories_to_id);
 
-					$blog_plugins->plugin_do_ref('acp_category_delete', $errors);
+					blog_plugins::plugin_do_ref('acp_category_delete', $errors);
 
 					if (sizeof($errors))
 					{
@@ -342,7 +334,7 @@ class acp_blogs
 					}
 
 					$temp = compact('action', 'category_data');
-					$blog_plugins->plugin_do_ref('acp_category_add_edit', $temp);
+					blog_plugins::plugin_do_ref('acp_category_add_edit', $temp);
 					extract($temp);
 
 					$errors = $this->update_category_data($category_data);
@@ -525,7 +517,7 @@ class acp_blogs
 					'S_CATEGORY_OPTIONS'		=> make_category_select(($action == 'add') ? $category_data['parent_id'] : false, ($action == 'edit') ? $category_data['category_id'] : false),
 				));
 
-				$blog_plugins->plugin_do('acp_category_add_edit_initial');
+				blog_plugins::plugin_do('acp_category_add_edit_initial');
 
 				return;
 
@@ -661,11 +653,8 @@ class acp_blogs
 	{
 		global $config, $db, $user, $auth, $template;
 		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $table_prefix;
-		global $blog_plugins_path, $blog_plugins;
 
-		$blog_plugins = new blog_plugins();
-		$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-		if ($blog_plugins->load_plugins(true) === false)
+		if (blog_plugins::load_all_plugins() === false)
 		{
 			trigger_error('PLUGINS_DISABLED');
 		}
@@ -684,18 +673,18 @@ class acp_blogs
 		switch ($action)
 		{
 			case 'activate' :
-				$blog_plugins->plugin_enable($action_to);
+				blog_plugins::plugin_enable($action_to);
 			break;
 			case 'deactivate' :
-				$blog_plugins->plugin_disable($action_to);
+				blog_plugins::plugin_disable($action_to);
 			break;
 			case 'install' :
-				$blog_plugins->plugin_install($action_to);
+				blog_plugins::plugin_install($action_to);
 			break;
 			case 'uninstall' :
 				if (confirm_box(true))
 				{
-					$blog_plugins->plugin_uninstall($action_to);
+					blog_plugins::plugin_uninstall($action_to);
 				}
 				else
 				{
@@ -703,14 +692,14 @@ class acp_blogs
 				}
 			break;
 			case 'update' :
-				$blog_plugins->plugin_update($action_to);
+				blog_plugins::plugin_update($action_to);
 			break;
 		}
 
-		foreach ($blog_plugins->available_plugins as $name => $data)
+		foreach (blog_plugins::$available_plugins as $name => $data)
 		{
-			$installed = (array_key_exists($name, $blog_plugins->plugins)) ? true : false;
-			$active = ($installed && $blog_plugins->plugins[$name]['plugin_enabled']) ? true : false;
+			$installed = (array_key_exists($name, blog_plugins::$plugins)) ? true : false;
+			$active = ($installed && blog_plugins::$plugins[$name]['plugin_enabled']) ? true : false;
 
 			$s_actions = array();
 			if ($installed)
@@ -726,9 +715,9 @@ class acp_blogs
 					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=uninstall&amp;name=" . $name . '">' . $user->lang['PLUGIN_UNINSTALL'] . '</a>';
 				}
 
-				if ($data['plugin_version'] != $blog_plugins->plugins[$name]['plugin_version'])
+				if ($data['plugin_version'] != blog_plugins::$plugins[$name]['plugin_version'])
 				{
-					$version = array('files' => explode('.', $data['plugin_version']), 'db' => explode('.', $blog_plugins->plugins[$name]['plugin_version']));
+					$version = array('files' => explode('.', $data['plugin_version']), 'db' => explode('.', blog_plugins::$plugins[$name]['plugin_version']));
 
 					$i = 0;
 					$newer_files = false;
@@ -761,7 +750,7 @@ class acp_blogs
 				'DESCRIPTION'		=> (isset($data['plugin_description'])) ? $data['plugin_description'] : '',
 				'S_ACTIONS'			=> implode(' | ', $s_actions),
 				'COPYRIGHT'			=> (isset($data['plugin_copyright'])) ? $data['plugin_copyright'] : '',
-				'DATABASE_VERSION'	=> ($installed) ? $blog_plugins->plugins[$name]['plugin_version'] : false,
+				'DATABASE_VERSION'	=> ($installed) ? blog_plugins::$plugins[$name]['plugin_version'] : false,
 				'FILES_VERSION'		=> (isset($data['plugin_version'])) ? $data['plugin_version'] : '',
 			));
 		}

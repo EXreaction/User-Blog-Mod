@@ -40,11 +40,11 @@ if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
 	trigger_error('REPLY_NOT_DELETED');
 }
 
-$blog_plugins->plugin_do('reply_undelete');
+blog_plugins::plugin_do('reply_undelete');
 
 if (confirm_box(true))
 {
-	$blog_plugins->plugin_do('reply_undelete_confirm');
+	blog_plugins::plugin_do('reply_undelete_confirm');
 
 	$blog_search->index('add', $blog_id, $reply_id, blog_data::$reply[$reply_id]['reply_text'], blog_data::$reply[$reply_id]['reply_subject'], blog_data::$reply[$reply_id]['user_id']);
 

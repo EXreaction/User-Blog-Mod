@@ -29,7 +29,7 @@ function get_blog_subscription_types()
 
 	/* Remember, we use the bitwise operator to find out what subscription type is the users default, like the bbcode options.
 	So if you add more, use 1,2,4,8,16,32,64,etc and make sure to use the next available number, don't assume 4 is available! */
-	$blog_plugins->plugin_do_ref('function_get_subscription_types', $subscription_types);
+	blog_plugins::plugin_do_ref('function_get_subscription_types', $subscription_types);
 
 	return $subscription_types;
 }
@@ -96,7 +96,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 {
 	global $db, $user, $phpbb_root_path, $phpEx, $config;
 	global $user_id, $blog_id, $reply_id;
-	global $blog_data, $blog_urls, $blog_plugins;
+	global $blog_data, $blog_urls;
 
 	// if $uid, $bid, or $rid are not set, use the globals
 	$uid = ($uid != 0) ? $uid : $user_id;
@@ -119,7 +119,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 
 	$subscribe_modes = get_blog_subscription_types();
 	$temp = compact('mode', 'post_subject', 'uid', 'bid', 'rid', 'send');
-	$blog_plugins->plugin_do_ref('function_handle_subscription', $temp);
+	blog_plugins::plugin_do_ref('function_handle_subscription', $temp);
 	extract($temp);
 
 	// Fix the URL's...
@@ -267,7 +267,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		unset($messenger);
 	}
 
-	$blog_plugins->plugin_do('function_handle_subscription_end');
+	blog_plugins::plugin_do('function_handle_subscription_end');
 }
 
 /**
@@ -282,7 +282,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 */
 function get_subscription_info($blog_id, $user_id = false)
 {
-	global $db, $user, $cache, $config, $blog_plugins;
+	global $db, $user, $cache, $config;
 
 	if (!$config['user_blog_subscription_enabled'])
 	{
@@ -305,7 +305,7 @@ function get_subscription_info($blog_id, $user_id = false)
 
 	if (count($subscription_data))
 	{
-		$blog_plugins->plugin_do_arg('function_get_subscription_info', $subscription_data);
+		blog_plugins::plugin_do_arg('function_get_subscription_info', $subscription_data);
 
 		if ($user_id !== false)
 		{

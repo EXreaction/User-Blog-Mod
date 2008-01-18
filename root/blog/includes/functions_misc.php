@@ -41,7 +41,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		);
 
 		$temp = compact('sql_array', 'user_id', 'data');
-		$blog_plugins->plugin_do_ref('function_get_user_settings_insert', $temp);
+		blog_plugins::plugin_do_ref('function_get_user_settings_insert', $temp);
 		extract($temp);
 
 		$sql = 'INSERT INTO ' . BLOGS_USERS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
@@ -49,7 +49,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 	}
 	else
 	{
-		$blog_plugins->plugin_do_ref('function_get_user_settings_update', $data);
+		blog_plugins::plugin_do_ref('function_get_user_settings_update', $data);
 
 		$sql = 'UPDATE ' . BLOGS_USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . ' WHERE user_id = ' . intval($user_id);
 		$db->sql_query($sql);
@@ -68,7 +68,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		$db->sql_query($sql);
 	}
 
-	$blog_plugins->plugin_do('function_get_user_settings', compact('data', 'user_id', 'resync'));
+	blog_plugins::plugin_do('function_get_user_settings', compact('data', 'user_id', 'resync'));
 
 	$cache->destroy('_blog_settings_' . $user_id);
 }
@@ -80,7 +80,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 */
 function get_user_settings($user_ids)
 {
-	global $cache, $config, $user_settings, $blog_plugins;
+	global $cache, $config, $user_settings;
 
 	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
 	{
@@ -128,7 +128,7 @@ function get_user_settings($user_ids)
 		$db->sql_freeresult($result);
 	}
 
-	$blog_plugins->plugin_do('function_get_user_settings');
+	blog_plugins::plugin_do('function_get_user_settings');
 }
 
 /**
@@ -138,14 +138,14 @@ function get_user_settings($user_ids)
 */
 function get_zebra_info($user_ids, $reverse_lookup = false)
 {
-	global $config, $db, $zebra_list, $reverse_zebra_list, $blog_plugins;
+	global $config, $db, $zebra_list, $reverse_zebra_list;
 
 	if (!isset($config['user_blog_enable_zebra']) || !$config['user_blog_enable_zebra'])
 	{
 		return;
 	}
 
-	$blog_plugins->plugin_do('function_get_zebra_info', compact('user_ids', 'reverse_lookup'));
+	blog_plugins::plugin_do('function_get_zebra_info', compact('user_ids', 'reverse_lookup'));
 
 	$to_query = array();
 

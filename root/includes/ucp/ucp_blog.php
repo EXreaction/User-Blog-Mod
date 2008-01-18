@@ -32,9 +32,7 @@ class ucp_blog
 
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
 
-		setup_blog_plugins();
-
-		$blog_plugins->plugin_do('ucp_start');
+		blog_plugins::plugin_do('ucp_start');
 
 		get_user_settings($user->data['user_id']);
 
@@ -204,7 +202,7 @@ class ucp_blog
 			default;
 				$default = true;
 				$temp = compact('mode', 'error', 'default');
-				$blog_plugins->plugin_do_ref('ucp_default', $temp); // make sure you set default to false if you use your own page
+				blog_plugins::plugin_do_ref('ucp_default', $temp); // make sure you set default to false if you use your own page
 				extract($temp);
 				if ($default)
 				{
@@ -212,7 +210,7 @@ class ucp_blog
 				}
 		}
 
-		$blog_plugins->plugin_do('ucp_end');
+		blog_plugins::plugin_do('ucp_end');
 
 		if ($submit && !count($error))
 		{

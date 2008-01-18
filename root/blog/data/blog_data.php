@@ -45,7 +45,7 @@ class blog_data
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
 
-		$blog_plugins->plugin_do_ref('blog_data_start', $selection_data);
+		blog_plugins::plugin_do_ref('blog_data_start', $selection_data);
 
 		// input options for selection_data
 		$category_id	= (isset($selection_data['category_id'])) ? $selection_data['category_id'] : 	0;			// The category ID
@@ -177,7 +177,7 @@ class blog_data
 		}
 
 		$temp = compact('sql_array', 'sql_where');
-		$blog_plugins->plugin_do_ref('blog_data_sql', $temp);
+		blog_plugins::plugin_do_ref('blog_data_sql', $temp);
 		extract($temp);
 		unset($temp);
 
@@ -194,7 +194,7 @@ class blog_data
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$blog_plugins->plugin_do_ref('blog_data_while', $row);
+			blog_plugins::plugin_do_ref('blog_data_while', $row);
 
 			// Initialize the attachment data
 			$row['attachment_data'] = array();
@@ -247,7 +247,7 @@ class blog_data
 	{
 		global $db, $user, $auth, $blog_plugins;
 
-		$blog_plugins->plugin_do_ref('blog_info_start', $selection_data);
+		blog_plugins::plugin_do_ref('blog_info_start', $selection_data);
 
 		// input options for selection_data
 		$category_id	= (isset($selection_data['category_id'])) ? $selection_data['category_id'] : 	0;			// The category ID
@@ -305,7 +305,7 @@ class blog_data
 		}
 
 		$temp = compact('sql_array', 'sql_where');
-		$blog_plugins->plugin_do_ref('blog_info_sql', $temp);
+		blog_plugins::plugin_do_ref('blog_info_sql', $temp);
 		extract($temp);
 
 		// Switch for the modes
@@ -397,7 +397,7 @@ class blog_data
 		$blog = &self::$blog[$id];
 		$user_id = $blog['user_id'];
 
-		$blog_plugins->plugin_do('blog_handle_data_start');
+		blog_plugins::plugin_do('blog_handle_data_start');
 
 		if ($trim_text !== false)
 		{
@@ -473,7 +473,7 @@ class blog_data
 			'S_HAS_ATTACHMENTS'		=> ($blog['blog_attachment']) ? true : false,
 		);
 
-		$blog_plugins->plugin_do_ref('blog_handle_data_end', $blog_row);
+		blog_plugins::plugin_do_ref('blog_handle_data_end', $blog_row);
 
 		return $blog_row;
 	}
@@ -495,7 +495,7 @@ class blog_data
 	{
 		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
 
-		$blog_plugins->plugin_do_ref('reply_data_start', $selection_data);
+		blog_plugins::plugin_do_ref('reply_data_start', $selection_data);
 
 		// input options for selection_data
 		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
@@ -616,7 +616,7 @@ class blog_data
 		}
 
 		$temp = compact('sql_array', 'sql_where');
-		$blog_plugins->plugin_do_ref('reply_data_sql', $temp);
+		blog_plugins::plugin_do_ref('reply_data_sql', $temp);
 		extract($temp);
 
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
@@ -632,7 +632,7 @@ class blog_data
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$blog_plugins->plugin_do_ref('reply_data_while', $row);
+			blog_plugins::plugin_do_ref('reply_data_while', $row);
 
 			// Initialize the attachment data
 			$row['attachment_data'] = array();
@@ -688,7 +688,7 @@ class blog_data
 		$blog_id = $reply['blog_id'];
 		$user_id = $reply['user_id'];
 
-		$blog_plugins->plugin_do('reply_handle_data_start');
+		blog_plugins::plugin_do('reply_handle_data_start');
 
 		// censor the text of the subject
 		$reply_subject = censor_text($reply['reply_subject']);
@@ -737,7 +737,7 @@ class blog_data
 			'S_HAS_ATTACHMENTS'		=> ($reply['reply_attachment']) ? true : false,
 		);
 
-		$blog_plugins->plugin_do_ref('reply_handle_data_end', $replyrow);
+		blog_plugins::plugin_do_ref('reply_handle_data_end', $replyrow);
 
 		return $replyrow;
 	}
@@ -764,7 +764,7 @@ class blog_data
 			$id = self::$user_queue;
 		}
 
-		$blog_plugins->plugin_do('user_data_start');
+		blog_plugins::plugin_do('user_data_start');
 
 		// this holds the user_id's we will query
 		$users_to_query = array();
@@ -825,13 +825,13 @@ class blog_data
 
 			// Get the rest of the data on the users and parse everything we need
 			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
-			$blog_plugins->plugin_do_ref('user_data_sql', $sql);
+			blog_plugins::plugin_do_ref('user_data_sql', $sql);
 			$result = $db->sql_query($sql);
 		}
 		else
 		{
 			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
-			$blog_plugins->plugin_do_ref('user_data_sql', $sql);
+			blog_plugins::plugin_do_ref('user_data_sql', $sql);
 			$result = $db->sql_query($sql);
 		}
 
@@ -839,7 +839,7 @@ class blog_data
 		{
 			$user_id = $row['user_id'];
 
-			$blog_plugins->plugin_do_ref('user_data_while', $row);
+			blog_plugins::plugin_do_ref('user_data_while', $row);
 
 			// view profile link
 			$row['view_profile'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=" . $user_id);
@@ -1002,14 +1002,14 @@ class blog_data
 				'USER_EXTRA'		=> '',
 			);
 
-			$blog_plugins->plugin_do_ref('user_handle_data', $output_data);
+			blog_plugins::plugin_do_ref('user_handle_data', $output_data);
 
 			return ($output_data);
 		}
 		else 
 		{
 			$args = array('output_custom' => $output_custom, 'user_id' => $user_id);
-			$blog_plugins->plugin_do_ref('user_handle_data_cp', $args);
+			blog_plugins::plugin_do_ref('user_handle_data_cp', $args);
 
 			if ($config['user_blog_custom_profile_enable'])
 			{	

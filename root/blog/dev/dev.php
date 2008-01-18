@@ -157,7 +157,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 			{
 				$line = fgets($handle, 4096);
 
-				if (strpos($line, '$blog_plugins->plugin_do') !== false)
+				if (strpos($line, 'blog_plugins::plugin_do') !== false)
 				{
 					$start_pos = strpos($line, "('") + 2;
 					$hook_list .= "\t" . substr($line, $start_pos, strpos($line, "'", $start_pos) - $start_pos) . "\n";

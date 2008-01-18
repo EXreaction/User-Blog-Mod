@@ -33,7 +33,7 @@ $post_options = new post_options;
 $post_options->set_status(!isset($_POST['disable_bbcode']), !isset($_POST['disable_smilies']), !isset($_POST['disable_magic_url']));
 $post_options->set_in_template();
 
-$blog_plugins->plugin_do('reply_add_start');
+blog_plugins::plugin_do('reply_add_start');
 
 // If they did submit or hit preview
 if ($submit || $preview || $refresh)
@@ -99,7 +99,7 @@ else
 }
 
 $temp = compact('reply_subject', 'reply_text', 'error');
-$blog_plugins->plugin_do_ref('reply_add_after_setup', $temp);
+blog_plugins::plugin_do_ref('reply_add_after_setup', $temp);
 extract($temp);
 unset($temp);
 
@@ -134,7 +134,7 @@ if ( (!$submit) || (sizeof($error)) )
 			unset($attachment_data);
 		}
 
-		$blog_plugins->plugin_do_ref('reply_add_preview', $preview_message);
+		blog_plugins::plugin_do_ref('reply_add_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -145,7 +145,7 @@ if ( (!$submit) || (sizeof($error)) )
 		));
 	}
 
-	$blog_plugins->plugin_do('reply_add_after_preview');
+	blog_plugins::plugin_do('reply_add_after_preview');
 
 	// handles the basic data we need to output for posting
 	handle_basic_posting_data(false, 'reply');
@@ -186,7 +186,7 @@ else // user submitted and there are no errors
 		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
-	$blog_plugins->plugin_do_ref('reply_add_sql', $sql_data);
+	blog_plugins::plugin_do_ref('reply_add_sql', $sql_data);
 
 	$sql = 'INSERT INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 	$db->sql_query($sql);
@@ -199,7 +199,7 @@ else // user submitted and there are no errors
 
 	$blog_attachment->update_attachment_data(false, $reply_id);
 
-	$blog_plugins->plugin_do_arg('reply_add_after_sql', $reply_id);
+	blog_plugins::plugin_do_arg('reply_add_after_sql', $reply_id);
 
 	unset($message_parser, $sql_data);
 

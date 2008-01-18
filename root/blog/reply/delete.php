@@ -40,7 +40,7 @@ page_header($user->lang['DELETE_REPLY']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['DELETE_REPLY']);
 
-$blog_plugins->plugin_do('reply_delete');
+blog_plugins::plugin_do('reply_delete');
 
 $display_vars = array();
 if ($auth->acl_get('a_blogdelete') && blog_data::$reply[$reply_id]['reply_deleted'] == 0)
@@ -50,7 +50,7 @@ if ($auth->acl_get('a_blogdelete') && blog_data::$reply[$reply_id]['reply_delete
 		'hard_delete'		=> array('lang' => 'HARD_DELETE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => true),
 	);
 }
-$blog_plugins->plugin_do_ref('blog_delete', $display_vars);
+blog_plugins::plugin_do_ref('blog_delete', $display_vars);
 
 include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
 
@@ -58,7 +58,7 @@ $settings = blog_confirm('DELETE_REPLY', 'DELETE_REPLY_CONFIRM', $display_vars, 
 
 if (is_array($settings))
 {
-	$blog_plugins->plugin_do('reply_delete_confirm');
+	blog_plugins::plugin_do('reply_delete_confirm');
 
 	// if it has already been soft deleted
 	if (((isset($settings['hard_delete']) && $settings['hard_delete']) || blog_data::$reply[$reply_id]['reply_deleted'] != 0) && $auth->acl_get('a_blogreplydelete'))

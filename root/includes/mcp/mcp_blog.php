@@ -31,14 +31,11 @@ class mcp_blog
 		// include some files
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
-		include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
 
 		// set some initial variables that we will use
 		$blog_data = new blog_data();
 
-		// Start loading the plugins
-		setup_blog_plugins();
-		$blog_plugins->plugin_do('mcp_start');
+		blog_plugins::plugin_do('mcp_start');
 
 		$blog = (strpos($mode, 'blogs')) ? true : false;
 		$start = request_var('start', 0);
@@ -92,7 +89,7 @@ class mcp_blog
 				$ids = $blog_data->get_reply_data('reported', false, $extra_data);
 			break;
 			default :
-				$blog_plugins->plugin_do_arg('mcp_default', $mode);
+				blog_plugins::plugin_do_arg('mcp_default', $mode);
 		}
 
 		if ($ids === false)
@@ -146,7 +143,7 @@ class mcp_blog
 			'S_SELECT_SORT_DAYS' 	=> $s_limit_days,
 		));
 
-		$blog_plugins->plugin_do('mcp_end');
+		blog_plugins::plugin_do('mcp_end');
 	}
 }
 

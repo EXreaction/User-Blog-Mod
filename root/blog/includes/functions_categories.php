@@ -22,14 +22,14 @@ if (!defined('IN_PHPBB'))
 */
 function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subcats = false, $category_list = false)
 {
-	global $config, $template, $user, $blog_plugins;
+	global $config, $template, $user;
 
 	if (!is_array($category_list))
 	{
 		$category_list = get_blog_categories('left_id');
 	}
 
-	$blog_plugins->plugin_do('function_handle_categories');
+	blog_plugins::plugin_do('function_handle_categories');
 
 	foreach ($category_list as $left_id => $row)
 	{
@@ -70,7 +70,7 @@ function handle_categories($parent_id = 0, $block = 'category_row', $ignore_subc
 */
 function get_blog_categories($order = 'left_id')
 {
-	global $cache, $blog_plugins;
+	global $cache;
 
 	$blog_categories = $cache->get('_blog_categories');
 
@@ -100,7 +100,7 @@ function get_blog_categories($order = 'left_id')
 		}
 	}
 
-	$blog_plugins->plugin_do_ref('function_get_blog_categories', $blog_categories);
+	blog_plugins::plugin_do_ref('function_get_blog_categories', $blog_categories);
 
 	return $blog_categories;
 }

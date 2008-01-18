@@ -13,27 +13,6 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* Setup the blog plugin system
-*/
-function setup_blog_plugins($load_plugins = true)
-{
-	global $blog_plugins, $blog_plugins_path, $phpbb_root_path, $phpEx;
-
-	if (!class_exists('blog_plugins'))
-	{
-		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
-	}
-
-	$blog_plugins = new blog_plugins();
-	$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
-
-	if ($load_plugins)
-	{
-		$blog_plugins->load_plugins();
-	}
-}
-
-/**
 * Setup the blog search system
 */
 function setup_blog_search()
@@ -60,10 +39,10 @@ function setup_blog_search()
 */
 function handle_blog_cache($mode, $user_id = 0)
 {
-	global $cache, $blog_plugins;
+	global $cache;
 
 	$temp = compact('mode', 'user_id');
-	$blog_plugins->plugin_do_arg('function_handle_blog_cache', $temp);
+	blog_plugins::plugin_do_arg('function_handle_blog_cache', $temp);
 
 	if (!$mode && $user_id)
 	{
@@ -96,7 +75,7 @@ function handle_blog_cache($mode, $user_id = 0)
 			$cache->destroy('_blog_categories');
 		break;
 		default :
-			$blog_plugins->plugin_do_arg('function_handle_blog_cache_mode', $mode);
+			blog_plugins::plugin_do_arg('function_handle_blog_cache_mode', $mode);
 	}
 }
 

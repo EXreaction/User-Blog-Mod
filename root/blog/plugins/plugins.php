@@ -18,16 +18,68 @@ if (!defined('IN_PHPBB'))
 */
 class blog_plugins
 {
-	public $plugins = array();
-	public $available_plugins = array();
-	private $to_do = array();
+	public static $plugins = array();
+	public static $available_plugins = array();
+	private static $to_do = array();
 
 	/**
-	* Load the required plugins
-	*
-	* @param bool $load_all - set to yes to load all plugins (including uninstalled).  This should only be used when displaying a list of available plugins (it is more intensive on the server and makes the page take longer to load).
+	* Constructor
+	* 
+	* Load all installed and enabled plugins
 	*/
-	public function load_plugins($load_all = false)
+	public function __construct()
+	{
+		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $user;
+
+		if (!isset($config['user_blog_enable_plugins']) || !$config['user_blog_enable_plugins'])
+		{
+			return false;
+		}
+
+		// Just in case it is not set we will use the default.
+		if (!$blog_plugins_path)
+		{
+			$blog_plugins_path = $phpbb_root_path . 'blog/plugins/';
+		}
+
+		if (($cache_data = $cache->get('_blog_plugins')) === false)
+		{
+			if (!defined('BLOGS_PLUGINS_TABLE'))
+			{
+				include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+			}
+			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE;
+			$result = $db->sql_query($sql);
+			while($row = $db->sql_fetchrow($result))
+			{
+				self::$plugins[$row['plugin_name']] = $row;
+			}
+
+			$cache->put('_blog_plugins', self::$plugins);
+		}
+		else
+		{
+			self::$plugins = $cache_data;
+		}
+		unset($cache_data);
+
+		foreach (self::$plugins as $row)
+		{
+			$name = $row['plugin_name']; // this is checked in the plugin file
+
+			if ($row['plugin_enabled'] && file_exists($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx))
+			{
+				include($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	* Load all available plugins
+	*/
+	public static function load_all_plugins()
 	{
 		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
 
@@ -36,114 +88,74 @@ class blog_plugins
 			return false;
 		}
 
-		if (!defined('BLOGS_PLUGINS_TABLE'))
-		{
-			include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
-		}
+		$dh = @opendir($blog_plugins_path . 'info/');
 
-		$cache_data = $cache->get('_blog_plugins');
-
-		if ($cache_data === false)
+		if ($dh)
 		{
-			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE;
-			$result = $db->sql_query($sql);
-			while($row = $db->sql_fetchrow($result))
+			while (($file = readdir($dh)) !== false)
 			{
-				$this->plugins[$row['plugin_name']] = $row;
-			}
-
-			$cache->put('_blog_plugins', $this->plugins);
-		}
-		else
-		{
-			$this->plugins = $cache_data;
-		}
-		unset($cache_data);
-
-		if ($load_all)
-		{
-			$dh = @opendir($blog_plugins_path . 'info/');
-
-			if ($dh)
-			{
-				while (($file = readdir($dh)) !== false)
+				if (strpos($file, 'info_') === 0 && substr($file, -(strlen($phpEx) + 1)) === '.' . $phpEx)
 				{
-					if (strpos($file, 'info_') === 0 && substr($file, -(strlen($phpEx) + 1)) === '.' . $phpEx)
+					$name = substr($file, 5, -(strlen($phpEx) + 1));
+
+					if (!array_key_exists($name, self::$available_plugins))
 					{
-						$name = substr($file, 5, -(strlen($phpEx) + 1));
-
-						$this->available_plugins[$name] = array();
-
-						// this will be checked in each plugin file
-						$plugin_enabled = (array_key_exists($name, $this->plugins) && $this->plugins[$name]['plugin_enabled']) ? true : false;
+						self::$available_plugins[$name] = array();
 
 						include($blog_plugins_path . 'info/' . substr($file, 0, -(strlen($phpEx) + 1)) . '.' . $phpEx);
 					}
 				}
-
-				closedir($dh);
 			}
-		}
-		else
-		{
-			foreach ($this->plugins as $row)
-			{
-				$plugin_enabled = $row['plugin_enabled']; // this is checked in the plugin file
-				$name = $row['plugin_name']; // this is also checked in the plugin file
 
-				if ($plugin_enabled && file_exists($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx))
-				{
-					include($blog_plugins_path . 'info/info_' . $name . '.' . $phpEx);
-				}
-			}
+			closedir($dh);
 		}
 
 		return true;
 	}
 
-	public function plugin_do($what)
+	public static function plugin_do($what)
 	{
-		if (isset($this->to_do[$what]))
+		if (isset(self::$to_do[$what]))
 		{
-			foreach ($this->to_do[$what] as $function_name)
+			foreach (self::$to_do[$what] as $function_name)
 			{
 				$function_name();
 			}
 		}
 	}
 
-	public function plugin_do_arg($what, $args)
+	public static function plugin_do_arg($what, $args)
 	{
-		if (isset($this->to_do[$what]))
+		if (isset(self::$to_do[$what]))
 		{
-			foreach ($this->to_do[$what] as $function_name)
+			foreach (self::$to_do[$what] as $function_name)
 			{
 				$function_name($args);
 			}
 		}
 	}
 
-	public function plugin_do_ref($what, &$args)
+	public static function plugin_do_ref($what, &$args)
 	{
-		if (isset($this->to_do[$what]))
+		if (isset(self::$to_do[$what]))
 		{
-			foreach ($this->to_do[$what] as $function_name)
+			foreach (self::$to_do[$what] as $function_name)
 			{
 				$function_name($args);
 			}
 		}
 	}
 
-	public function plugin_install($which)
+	public static function plugin_install($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
 
-		if (!array_key_exists($which, $this->available_plugins))
+		if (!array_key_exists($which, self::$available_plugins))
 		{
 			trigger_error('PLUGIN_NOT_EXIST');
 		}
 
-		if (array_key_exists($which, $this->plugins))
+		if (array_key_exists($which, self::$plugins))
 		{
 			trigger_error('PLUGIN_ALREADY_INSTALLED');
 		}
@@ -161,22 +173,22 @@ class blog_plugins
 		$sql_data = array(
 			'plugin_name'		=> $which,
 			'plugin_enabled'	=> 1,
-			'plugin_version'	=> $this->available_plugins[$which]['plugin_version'],
+			'plugin_version'	=> self::$available_plugins[$which]['plugin_version'],
 		);
 
 		$sql = 'INSERT INTO ' . BLOGS_PLUGINS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 		$db->sql_query($sql);
-		$this->plugins[$which] = $sql_data;
+		self::$plugins[$which] = $sql_data;
 
 		add_log('admin', 'LOG_BLOG_PLUGIN_INSTALLED', $which);
 
 		$cache->purge();
 	}
 
-	public function plugin_uninstall($which)
+	public static function plugin_uninstall($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
-		if (!array_key_exists($which, $this->plugins))
+		if (!array_key_exists($which, self::$plugins))
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
 		}
@@ -194,25 +206,25 @@ class blog_plugins
 		$sql = 'DELETE FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
 
-		unset($this->plugins[$which]);
+		unset(self::$plugins[$which]);
 
 		add_log('admin', 'LOG_BLOG_PLUGIN_UNINSTALLED', $which);
 
 		$cache->purge();
 	}
 
-	public function plugin_update($which)
+	public static function plugin_update($which)
 	{
 		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
-		if (!array_key_exists($which, $this->plugins))
+		if (!array_key_exists($which, self::$plugins))
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
 		}
 
 		$newer_files = false;
-		if ($this->available_plugins[$which]['plugin_version'] != $this->plugins[$which]['plugin_version'])
+		if (self::$available_plugins[$which]['plugin_version'] != self::$plugins[$which]['plugin_version'])
 		{
-			$version = array('files' => explode('.', $this->available_plugins[$which]['plugin_version']), 'db' => explode('.', $this->plugins[$which]['plugin_version']));
+			$version = array('files' => explode('.', self::$available_plugins[$which]['plugin_version']), 'db' => explode('.', self::$plugins[$which]['plugin_version']));
 
 			$i = 0;
 			foreach ($version['files'] as $v)
@@ -242,10 +254,10 @@ class blog_plugins
 
 			include($blog_plugins_path . $which . '/update.' . $phpEx);
 
-			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . $this->available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
+			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . self::$available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 			$db->sql_query($sql);
 
-			$this->plugins[$which]['plugin_version'] = $this->available_plugins[$which]['plugin_version'];
+			self::$plugins[$which]['plugin_version'] = self::$available_plugins[$which]['plugin_version'];
 
 			add_log('admin', 'LOG_BLOG_PLUGIN_UPDATED', $which);
 
@@ -253,39 +265,39 @@ class blog_plugins
 		}
 	}
 
-	public function plugin_enable($which)
+	public static function plugin_enable($which)
 	{
 		global $db;
 
-		if (!array_key_exists($which, $this->plugins))
+		if (!array_key_exists($which, self::$plugins))
 		{
-			$this->plugin_install($which);
+			self::plugin_install($which);
 			return;
 		}
 
 		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = 1 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
 
-		$this->plugins[$which]['plugin_enabled'] = 1;
+		self::$plugins[$which]['plugin_enabled'] = 1;
 
 		add_log('admin', 'LOG_BLOG_PLUGIN_ENABLED', $which);
 
 		handle_blog_cache('plugins');
 	}
 
-	public function plugin_disable($which)
+	public static function plugin_disable($which)
 	{
 		global $db;
 
-		if (!array_key_exists($which, $this->plugins))
+		if (!array_key_exists($which, self::$plugins))
 		{
-			$this->plugin_install($which);
+			self::plugin_install($which);
 		}
 
 		$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_enabled = 0 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
 
-		$this->plugins[$which]['plugin_enabled'] = 0;
+		self::$plugins[$which]['plugin_enabled'] = 0;
 
 		add_log('admin', 'LOG_BLOG_PLUGIN_DISABLED', $which);
 

@@ -40,7 +40,7 @@ $sf = request_var('sf', '');
 
 $search_url = blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf), array(), true);
 
-$blog_plugins->plugin_do('search');
+blog_plugins::plugin_do('search');
 
 if ($keywords || $author)
 {
@@ -210,5 +210,5 @@ else
 	));
 }
 
-$blog_plugins->plugin_do('search_end');
+blog_plugins::plugin_do('search_end');
 ?>

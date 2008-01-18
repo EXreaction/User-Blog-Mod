@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
 *
 * @package phpBB3 User Blog

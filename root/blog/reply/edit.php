@@ -37,7 +37,7 @@ generate_blog_breadcrumbs($user->lang['EDIT_REPLY']);
 // Posting permissions
 $post_options = new post_options;
 
-$blog_plugins->plugin_do('reply_edit_start');
+blog_plugins::plugin_do('reply_edit_start');
 
 // If they select edit mode and didn't submit or hit preview(means they came directly from the view reply page)
 if (!$submit && !$preview && !$refresh)
@@ -94,7 +94,7 @@ else
 }
 
 $temp = compact('reply_subject', 'reply_text', 'error');
-$blog_plugins->plugin_do_ref('reply_edit_after_setup', $temp);
+blog_plugins::plugin_do_ref('reply_edit_after_setup', $temp);
 extract($temp);
 unset($temp);
 
@@ -132,7 +132,7 @@ if (!$submit || sizeof($error))
 			unset($attachment_data);
 		}
 
-		$blog_plugins->plugin_do_ref('reply_edit_preview', $preview_message);
+		blog_plugins::plugin_do_ref('reply_edit_preview', $preview_message);
 
 		// output some data to the template parser
 		$template->assign_vars(array(
@@ -143,7 +143,7 @@ if (!$submit || sizeof($error))
 		));
 	}
 
-	$blog_plugins->plugin_do('reply_edit_after_preview');
+	blog_plugins::plugin_do('reply_edit_after_preview');
 
 	// handles the basic data we need to output for posting
 	handle_basic_posting_data(false, 'reply', 'edit');
@@ -189,7 +189,7 @@ else // user submitted and there are no errors
 
 	$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
 
-	$blog_plugins->plugin_do_ref('reply_edit_sql', $sql_data);
+	blog_plugins::plugin_do_ref('reply_edit_sql', $sql_data);
 
 	// the update query
 	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
@@ -200,7 +200,7 @@ else // user submitted and there are no errors
 
 	$blog_attachment->update_attachment_data($blog_id);
 
-	$blog_plugins->plugin_do_arg('reply_edit_after_sql', $reply_id);
+	blog_plugins::plugin_do_arg('reply_edit_after_sql', $reply_id);
 
 	unset($message_parser, $sql_data, $blog_search);
 

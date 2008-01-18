@@ -46,7 +46,7 @@ foreach ($subscription_types as $type => $name)
 }
 
 // Do not add subscription types here.  Add them with the function_get_subscription_types hook.
-$blog_plugins->plugin_do_ref('subscribe', $display_vars);
+blog_plugins::plugin_do_ref('subscribe', $display_vars);
 
 include("{$phpbb_root_path}blog/includes/functions_confirm.$phpEx");
 
@@ -54,7 +54,7 @@ $settings = blog_confirm('SUBSCRIBE_BLOG_TITLE', 'SUBSCRIBE_BLOG_CONFIRM', $disp
 
 if (is_array($settings))
 {
-	$blog_plugins->plugin_do('subscribe_confirm');
+	blog_plugins::plugin_do('subscribe_confirm');
 
 	$cache->destroy("_blog_subscription_{$user->data['user_id']}");
 
@@ -69,7 +69,7 @@ if (is_array($settings))
 				'user_id'		=> (int) $user_id,
 			);
 
-			$blog_plugins->plugin_do_ref('subscription_add', $sql_data);
+			blog_plugins::plugin_do_ref('subscription_add', $sql_data);
 
 			$sql = 'INSERT INTO ' . BLOGS_SUBSCRIPTION_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 			$db->sql_query($sql);
@@ -97,7 +97,7 @@ if (is_array($settings))
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
-	$blog_plugins->plugin_do('subscribe_user_confirm_end');
+	blog_plugins::plugin_do('subscribe_user_confirm_end');
 
 	blog_meta_refresh(3, $redirect);
 

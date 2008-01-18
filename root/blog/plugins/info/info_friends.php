@@ -9,30 +9,28 @@
 
 $user->add_lang('mods/blog/plugins/' . $name);
 
-$this->available_plugins[$name]['plugin_title'] = $user->lang['BLOG_FRIENDS_TITLE'];
-$this->available_plugins[$name]['plugin_description'] = $user->lang['BLOG_FRIENDS_DESCRIPTION'];
+self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_FRIENDS_TITLE'];
+self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_FRIENDS_DESCRIPTION'];
 
-$this->available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-$this->available_plugins[$name]['plugin_version'] = '0.7.1';
+self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
+self::$available_plugins[$name]['plugin_version'] = '0.7.2';
 
-if ($plugin_enabled)
+$to_do = array(
+	'function_generate_menu'	=> array('friends_function_generate_menu'),
+);
+
+foreach($to_do as $do => $what)
 {
-	$to_do = array(
-		'function_generate_menu'	=> array('friends_function_generate_menu'),
-	);
-
-	foreach($to_do as $do => $what)
+	if (!array_key_exists($do, self::$to_do))
 	{
-		if (!array_key_exists($do, $this->to_do))
-		{
-			$this->to_do[$do] = $what;
-		}
-		else
-		{
-			$this->to_do[$do] = array_merge($this->to_do[$do], $what);
-		}
+		self::$to_do[$do] = $what;
 	}
-
-	include($blog_plugins_path . $name . '/functions.' . $phpEx);
+	else
+	{
+		self::$to_do[$do] = array_merge(self::$to_do[$do], $what);
+	}
 }
+
+include($blog_plugins_path . $name . '/functions.' . $phpEx);
+
 ?>

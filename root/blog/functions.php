@@ -20,6 +20,7 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	// This is just a mass include file...it includes everything we could need
 	include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
 	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+
 	include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_categories.' . $phpEx);
@@ -30,5 +31,8 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	include($phpbb_root_path . 'blog/includes/functions_subscription.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
+
+	include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+	new blog_plugins();
 }
 ?>

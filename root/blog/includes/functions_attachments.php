@@ -61,7 +61,7 @@ class blog_attachment
 	*/
 	public function posting_gen_attachment_entry($attachment_data, &$filename_data)
 	{
-		global $template, $config, $blog_plugins;
+		global $template, $config;
 
 		if (!$config['user_blog_enable_attachments'])
 		{
@@ -69,7 +69,7 @@ class blog_attachment
 		}
 
 		$temp = compact('attachment_data', 'filename_data');
-		$blog_plugins->plugin_do_ref('function_posting_gen_attachment_entry', $temp);
+		blog_plugins::plugin_do_ref('function_posting_gen_attachment_entry', $temp);
 		extract($temp);
 
 		$template->assign_vars(array(
@@ -127,7 +127,7 @@ class blog_attachment
 	*/
 	public function get_attachment_data($blog_ids, $reply_ids = false)
 	{
-		global $auth, $config, $db, $blog_plugins;
+		global $auth, $config, $db;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_download'))
 		{
@@ -145,7 +145,7 @@ class blog_attachment
 		}
 
 		$temp = compact('blog_ids', 'reply_ids');
-		$blog_plugins->plugin_do_ref('function_get_attachment_data', $temp);
+		blog_plugins::plugin_do_ref('function_get_attachment_data', $temp);
 		extract($temp);
 
 		$reply_sql = ($reply_ids !== false) ? ' OR ' . $db->sql_in_set('reply_id', $reply_ids) : '';
@@ -174,7 +174,7 @@ class blog_attachment
 	*/
 	public function parse_attachments($form_name, $submit, $preview, $refresh, &$text)
 	{
-		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser, $blog_plugins;
+		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $message_parser;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -184,7 +184,7 @@ class blog_attachment
 		$error = array();
 
 		$temp = compact('form_name', 'submit', 'preview', 'refresh', 'text');
-		$blog_plugins->plugin_do_ref('function_parse_attachments', $temp);
+		blog_plugins::plugin_do_ref('function_parse_attachments', $temp);
 		extract($temp);
 
 		$num_attachments = sizeof($this->attachment_data);
@@ -386,14 +386,14 @@ class blog_attachment
 	*/
 	public function output_attachment_data($attachment_data, $prefix = 0)
 	{
-		global $auth, $config, $template, $blog_plugins;
+		global $auth, $config, $template;
 
 		if (!$config['user_blog_enable_attachments'] || !count($attachment_data) || !$auth->acl_get('u_download'))
 		{
 			return;
 		}
 
-		$blog_plugins->plugin_do_ref('function_output_attachment_data', $attachment_data);
+		blog_plugins::plugin_do_ref('function_output_attachment_data', $attachment_data);
 
 		$current = key($template->_tpldata[$prefix]);
 		foreach ($attachment_data as $i => $attachment)
@@ -407,14 +407,14 @@ class blog_attachment
 	*/
 	public function get_submitted_attachment_data($check_user_id = false)
 	{
-		global $user, $db, $config, $auth, $blog_plugins;
+		global $user, $db, $config, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
 			return;
 		}
 
-		$blog_plugins->plugin_do('get_submitted_attachment_data');
+		blog_plugins::plugin_do('get_submitted_attachment_data');
 
 		$this->filename_data['filecomment'] = utf8_normalize_nfc(request_var('filecomment', '', true));
 		$attachment_data = (isset($_POST['attachment_data'])) ? $_POST['attachment_data'] : array();
@@ -502,7 +502,7 @@ class blog_attachment
 	*/
 	public function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
 	{
-		global $auth, $user, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins;
+		global $auth, $user, $config, $db, $phpbb_root_path, $phpEx;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -649,7 +649,7 @@ class blog_attachment
 		}
 
 		$temp = compact('form_name', 'local', 'local_storage', 'local_filedata', 'filedata');
-		$blog_plugins->plugin_do_ref('function_upload_attachment', $temp);
+		blog_plugins::plugin_do_ref('function_upload_attachment', $temp);
 		extract($temp);
 
 		return $filedata;
@@ -662,7 +662,7 @@ class blog_attachment
 	*/
 	public function obtain_blog_attach_extensions()
 	{
-		global $cache, $config, $blog_plugins;
+		global $cache, $config;
 
 		if (!$config['user_blog_enable_attachments'])
 		{
@@ -715,7 +715,7 @@ class blog_attachment
 			$return[$extension] = $extensions[$extension];
 		}
 
-		$blog_plugins->plugin_do_ref('function_obtain_blog_attach_extensions', $return);
+		blog_plugins::plugin_do_ref('function_obtain_blog_attach_extensions', $return);
 
 		return $return;
 	}
@@ -730,7 +730,7 @@ class blog_attachment
 	*/
 	public function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
 	{
-		global $template, $user, $config, $phpbb_root_path, $auth, $blog_plugins;
+		global $template, $user, $config, $phpbb_root_path, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !sizeof($attachments) || !$auth->acl_get('u_download'))
 		{
@@ -740,7 +740,7 @@ class blog_attachment
 		$compiled_attachments = array();
 
 		$temp = compact('message', 'attachments', 'update_count', 'preview', 'compiled_attachments');
-		$blog_plugins->plugin_do_ref('function_parse_attachments_for_view', $temp);
+		blog_plugins::plugin_do_ref('function_parse_attachments_for_view', $temp);
 		extract($temp);
 
 		if (!isset($template->filename['attachment_tpl']))

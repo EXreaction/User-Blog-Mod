@@ -34,14 +34,14 @@ page_header($user->lang['REPORT_BLOG']);
 // Generate the breadcrumbs
 generate_blog_breadcrumbs($user->lang['REPORT_BLOG']);
 
-$blog_plugins->plugin_do('blog_report_start');
+blog_plugins::plugin_do('blog_report_start');
 
 // To close the reports
 if (blog_data::$blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'))
 {
 	if (confirm_box(true))
 	{
-		$blog_plugins->plugin_do('blog_report_confirm');
+		blog_plugins::plugin_do('blog_report_confirm');
 
 		$sql = 'UPDATE ' . BLOGS_TABLE . '
 			SET blog_reported = 0

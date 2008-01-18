@@ -80,6 +80,8 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	if ( (request_var('mode', '') == 'viewprofile') && (request_var('u', '') != '') )
 	{
 		include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
+		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+		new blog_plugins();
 		add_blog_links(request_var('u', ''), 'custom_fields', false, true);
 	}
 }

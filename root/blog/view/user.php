@@ -33,7 +33,7 @@ else
 	$blog_ids = $blog_data->get_blog_data('user', $user_id, array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 }
 
-$blog_plugins->plugin_do('view_user_start');
+blog_plugins::plugin_do('view_user_start');
 
 $blog_data->get_user_data(false, true);
 update_edit_delete('blog');
@@ -107,7 +107,7 @@ if (!$feed)
 		unset($read_blogs);
 	}
 
-	$blog_plugins->plugin_do('view_user_end');
+	blog_plugins::plugin_do('view_user_end');
 
 	// tell the template parser what template file to use
 	$template->set_filenames(array(
@@ -118,6 +118,6 @@ else // if $feed
 {
 	feed_output($blog_ids, $feed);
 
-	$blog_plugins->plugin_do('view_user_feed_end');
+	blog_plugins::plugin_do('view_user_feed_end');
 }
 ?>

@@ -59,7 +59,7 @@ else
 // Get the Attachment Data
 $blog_attachment->get_attachment_data($blog_id, $reply_ids);
 
-$blog_plugins->plugin_do('view_blog_start');
+blog_plugins::plugin_do('view_blog_start');
 
 // Output some data
 $template->assign_vars(array(
@@ -75,7 +75,7 @@ $template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) +
 $blog_data->handle_user_data($user_id, 'blogrow.custom_fields');
 $blog_attachment->output_attachment_data(blog_data::$blog[$blog_id]['attachment_data'], 'blogrow');
 
-$blog_plugins->plugin_do('view_blog_after_blogrow');
+blog_plugins::plugin_do('view_blog_after_blogrow');
 
 // to update the read count, we are only doing this if the user is not the owner, and the user doesn't view the shortened version, and we are not viewing the deleted blogs page
 if ($user->data['user_id'] != $user_id)
@@ -112,7 +112,7 @@ if ($total_replies > 0 || $sort_days != 0)
 		{
 			$data = $blog_data->handle_reply_data($id) + $blog_data->handle_user_data(blog_data::$reply[$id]['user_id']);
 
-			$blog_plugins->plugin_do_ref('view_blog_reply_while', $data);
+			blog_plugins::plugin_do_ref('view_blog_reply_while', $data);
 
 			// send the data to the template
 			$template->assign_block_vars('replyrow', $data);
@@ -127,7 +127,7 @@ if ($total_replies > 0 || $sort_days != 0)
 	}
 }
 
-$blog_plugins->plugin_do('view_blog_end');
+blog_plugins::plugin_do('view_blog_end');
 
 // tell the template parser what template file to use
 $template->set_filenames(array(

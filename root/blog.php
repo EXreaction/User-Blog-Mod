@@ -85,9 +85,7 @@ $error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
 
-// Start loading the plugins
-setup_blog_plugins();
-$blog_plugins->plugin_do('blog_start');
+blog_plugins::plugin_do('blog_start');
 
 $default = false;
 switch ($page)
@@ -153,7 +151,7 @@ switch ($page)
 	default :
 		$default = true;
 		// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-		$blog_plugins->plugin_do_ref('blog_page_switch', $default);
+		blog_plugins::plugin_do_ref('blog_page_switch', $default);
 
 		if ($default)
 		{
@@ -192,7 +190,7 @@ $template->assign_vars(array(
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 ));
 
-$blog_plugins->plugin_do('blog_end');
+blog_plugins::plugin_do('blog_end');
 
 //$db->sql_report('display');
 
