@@ -104,9 +104,10 @@
 ##				- Added DB2 support.
 ##				- Re-integrated the Attachments plugin and created a new module for managing blog attachment extensions.
 ##				- Simplified getting the blog/reply/user data by putting all 3 classes into the blog_data class.
-##				- Lots of code cleanup and a bunch more hooks for the plugins system (some old hooks were renamed).
+##				- Lots of code cleanup and a bunch more hooks for the plugins system (some old hooks were renamed/removed).
 ##				- Added easier access for subscriptions by putting it in as you add a reply + default setting for it in UCP.
 ##				- Added a hard delete option on the first delete page for deleting blogs/replies for users who can hard delete.
+##				- Added Polls for blogs.
 ##			+ The upgrade script no longer supports upgrades from versions older than Alpha 33 (0.3.33).
 ##				- If you must upgrade from earlier than Alpha 33, rename the update.php file in blog/, then copy update_old.php from blog/update/ to blog/
 ##				- Then rename update_old.php to update.php, then go to blog.php?page=update in your web browser.  After that, remove the update.php file you
