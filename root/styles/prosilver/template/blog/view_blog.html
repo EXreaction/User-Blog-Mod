@@ -174,18 +174,23 @@
 
 					{blogrow.BLOG_EXTRA}
 
-					<div style="clear: both; float: right; vertical-align: bottom;">{blogrow.REPLIES}</div>
-
 					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
-						<div class="notice">{blogrow.EDITED_MESSAGE}
+						<div class="notice">
+							<!-- IF not blogrow.DELETED_MESSAGE and not blogrow.SIGNATURE--><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
+							{blogrow.EDITED_MESSAGE}
 							<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
 						</div>
 					<!-- ENDIF -->
 					<!-- IF blogrow.DELETED_MESSAGE -->
-						<div class="notice">{blogrow.DELETED_MESSAGE}</div>
+						<div class="notice">
+							<!-- IF not blogrow.SIGNATURE --><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
+							{blogrow.DELETED_MESSAGE}
+						</div>
 					<!-- ENDIF -->
 
 					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
+
+					<!-- IF (not blogrow.DELETED_MESSAGE and not blogrow.EDITED_MESSAGE and not blogrow.EDIT_REASON) or blogrow.SIGNATURE --><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
 				</div>
 
 				<!-- IF S_CATEGORY_MODE -->

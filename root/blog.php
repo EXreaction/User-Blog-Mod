@@ -20,6 +20,8 @@
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
 * OTHER -------------------------------------------------------------------------------------------
+* Rename all the permissions to have more descriptive names?
+* 
 * Memorable entry (like a sticky)?
 * Left Menu Order
 *

@@ -122,8 +122,6 @@ if ($total_replies > 0 || $sort_days != 0)
 			// output the custom fields
 			$blog_data->handle_user_data(blog_data::$reply[$id]['user_id'], 'replyrow.custom_fields');
 
-			$blog_attachment->output_attachment_data(blog_data::$reply[$id]['attachment_data'], 'replyrow');
-
 			unset($data);
 		}
 	}

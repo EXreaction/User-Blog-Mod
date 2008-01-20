@@ -651,7 +651,7 @@ class blog_data
 		}
 		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
 		{
-			$sql_where[] = 'reply_deleted = 0';
+			$sql_where[] = '(reply_deleted = 0 OR reply_deleted = ' . $user->data['user_id'] . ')';
 		}
 		if ($sort_days != 0)
 		{
@@ -697,7 +697,7 @@ class blog_data
 				{
 					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
 				}
-				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0)
+				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0 || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
 					$sql_array['SELECT'] = 'count(reply_id) AS total';
 					$sql_where[] = 'blog_id = ' . $id[0] . '';
