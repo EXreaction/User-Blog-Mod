@@ -206,18 +206,18 @@ class blog_data
 			self::$blog[$row['blog_id']] = $row;
 
 			// add the blog owners' user_ids to the user_queue
-			array_push(blog_data::$user_queue, $row['user_id']);
+			array_push(self::$user_queue, $row['user_id']);
 
 			// Add the edit user to the user_queue, if there is one
 			if ($row['blog_edit_count'] != 0)
 			{
-				array_push(blog_data::$user_queue, $row['blog_edit_user']);
+				array_push(self::$user_queue, $row['blog_edit_user']);
 			}
 
 			// Add the deleter user to the user_queue, if there is one
 			if ($row['blog_deleted'] != 0)
 			{
-				array_push(blog_data::$user_queue, $row['blog_deleted']);
+				array_push(self::$user_queue, $row['blog_deleted']);
 			}
 
 			// make sure we don't record the same blog id in the list that we return more than once
@@ -442,7 +442,6 @@ class blog_data
 		// Polls
 		$poll_options = $my_vote = array();
 		$total_votes = 0;
-		$poll_end = $blog['poll_length'] + $blog['poll_start'];
 		foreach ($blog['poll_votes'] as $option_id => $poll_row)
 		{
 			if ($option_id != 'my_vote')
@@ -461,7 +460,7 @@ class blog_data
 
 			$poll_options[] = array(
 				'POLL_OPTION_ID' 		=> $option_id,
-				'POLL_OPTION_CAPTION' 	=> $poll_row['poll_option_text'],
+				'POLL_OPTION_CAPTION' 	=> generate_text_for_display($poll_row['poll_option_text'], $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options),
 				'POLL_OPTION_RESULT' 	=> (isset($blog['poll_votes'][$option_id]['votes'])) ? $blog['poll_votes'][$option_id]['votes'] : 0,
 				'POLL_OPTION_PERCENT' 	=> $option_pct_txt,
 				'POLL_OPTION_PCT'		=> round($option_pct * 100),
@@ -489,17 +488,17 @@ class blog_data
 			'DELETED_MESSAGE'		=> $blog['deleted_message'],
 			'EDIT_REASON'			=> $blog['edit_reason'],
 			'EDITED_MESSAGE'		=> $blog['edited_message'],
-			'POLL_QUESTION'			=> censor_text($blog['poll_title']),
+			'POLL_QUESTION'			=> generate_text_for_display($blog['poll_title'], $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options),
 			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
 			'PUB_DATE'				=> date('r', $blog['blog_time']),
 			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
 			'TOTAL_VOTES'			=> $total_votes,
-			'USER_FULL'				=> blog_data::$user[$user_id]['username_full'],
+			'USER_FULL'				=> self::$user[$user_id]['username_full'],
 			'VIEWS'					=> ($blog['blog_read_count'] == 1) ? $user->lang['ONE_VIEW'] : sprintf($user->lang['CNT_VIEWS'], $blog['blog_read_count']),
 
 			'L_MAX_VOTES'			=> ($blog['poll_max_options'] == 1) ? $user->lang['MAX_OPTION_SELECT'] : sprintf($user->lang['MAX_OPTIONS_SELECT'], $blog['poll_max_options']),
-			'L_POLL_LENGTH'			=> ($blog['poll_length']) ? sprintf($user->lang[($poll_end > time()) ? 'POLL_RUN_TILL' : 'POLL_ENDED_AT'], $user->format_date($poll_end)) : '',
+			'L_POLL_LENGTH'			=> ($blog['poll_length']) ? sprintf($user->lang[($blog['poll_length'] > time()) ? 'POLL_RUN_TILL' : 'POLL_ENDED_AT'], $user->format_date($blog['poll_length'])) : '',
 
 			'U_APPROVE'				=> (check_blog_permissions('blog', 'approve', true, $id) && $blog['blog_approved'] == 0 && !$shortened) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'approve')) : '',
 			'U_DELETE'				=> (check_blog_permissions('blog', 'delete', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'delete')) : '',
@@ -688,14 +687,14 @@ class blog_data
 				$sql_where[] = 'reply_approved = 0';
 				break;
 			case 'reply_count' : // for counting how many replies there are for a blog
-				if (blog_data::$blog[$id[0]]['blog_real_reply_count'] == 0 || blog_data::$blog[$id[0]]['blog_real_reply_count'] == blog_data::$blog[$id[0]]['blog_reply_count'])
+				if (self::$blog[$id[0]]['blog_real_reply_count'] == 0 || self::$blog[$id[0]]['blog_real_reply_count'] == self::$blog[$id[0]]['blog_reply_count'])
 				{
-					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
+					return self::$blog[$id[0]]['blog_real_reply_count'];
 				}
 
 				if ($sort_days == 0 && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
 				{
-					return blog_data::$blog[$id[0]]['blog_real_reply_count'];
+					return self::$blog[$id[0]]['blog_real_reply_count'];
 				}
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0 || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
@@ -710,7 +709,7 @@ class blog_data
 				}
 				else
 				{
-					return blog_data::$blog[$id[0]]['blog_reply_count'];
+					return self::$blog[$id[0]]['blog_reply_count'];
 				}
 				break;
 			case 'page' :
@@ -763,18 +762,18 @@ class blog_data
 			self::$reply[$row['reply_id']] = $row;
 
 			// Add this user's ID to the user_queue
-			array_push(blog_data::$user_queue, $row['user_id']);
+			array_push(self::$user_queue, $row['user_id']);
 
 			// has the reply been edited?  If so add that user to the user_queue
 			if ($row['reply_edit_count'] != 0)
 			{
-				array_push(blog_data::$user_queue, $row['reply_edit_user']);
+				array_push(self::$user_queue, $row['reply_edit_user']);
 			}
 	
 			// has the reply been deleted?  If so add that user to the user_queue
 			if ($row['reply_deleted'] != 0)
 			{
-				array_push(blog_data::$user_queue, $row['reply_deleted']);
+				array_push(self::$user_queue, $row['reply_deleted']);
 			}
 
 			// make sure we don't record the same ID more than once

@@ -41,6 +41,18 @@ blog_plugins::plugin_do('blog_edit_start');
 
 $category_ary = request_var('category', array(0));
 
+// Polls
+$blog_data->get_polls($blog_id);
+$poll_option_text = $original_poll_text = '';
+$poll_options = array();
+foreach (blog_data::$blog[$blog_id]['poll_options'] as $row)
+{
+	$poll_option_text .= $row['poll_option_text'] . "\n";
+	$poll_options[] = $row['poll_option_text'];
+}
+decode_message($poll_option_text, blog_data::$blog[$blog_id]['bbcode_uid']);
+$original_poll_text = $poll_option_text;
+
 if ($submit || $preview || $refresh)
 {
 	$blog_subject = utf8_normalize_nfc(request_var('subject', '', true));
@@ -74,7 +86,7 @@ if ($submit || $preview || $refresh)
 	$poll_option_text	= utf8_normalize_nfc(request_var('poll_option_text', '', true));
 	$poll_max_options	= request_var('poll_max_options', 1);
 	$poll_vote_change	= isset($_POST['poll_vote_change']) ? 1 : 0;
-	if ($poll_option_text && $auth->acl_get('u_blog_create_poll'))
+	if ($poll_option_text && $auth->acl_get('u_blog_create_poll') && !isset($_POST['poll_delete']))
 	{
 		$poll = array(
 			'poll_title'		=> $poll_title,
@@ -97,7 +109,13 @@ if ($submit || $preview || $refresh)
 	}
 	else
 	{
-		$poll = array();
+		$poll = $poll_options = array();
+	}
+
+	if (isset($_POST['poll_delete']))
+	{
+		$poll_title = $poll_option_text = '';
+		$poll_start = $poll_length = $poll_max_options = $poll_vote_change = false;
 	}
 
 	// Attachments
@@ -124,20 +142,12 @@ else
 	}
 
 	// Polls
-	$blog_data->get_polls($blog_id);
 	$poll_title			= blog_data::$blog[$blog_id]['poll_title'];
 	$poll_start			= blog_data::$blog[$blog_id]['poll_start'];
-	$poll_length		= blog_data::$blog[$blog_id]['poll_length'];
-	$poll_option_text	= '';
+	$poll_length		= ((blog_data::$blog[$blog_id]['poll_length'] - $poll_start) / 86400);
 	$poll_max_options	= blog_data::$blog[$blog_id]['poll_max_options'];
 	$poll_vote_change	= blog_data::$blog[$blog_id]['poll_vote_change'];
-	$poll_options		= array();
-
-	foreach (blog_data::$blog[$blog_id]['poll_options'] as $row)
-	{
-		$poll_option_text .= $row['poll_option_text'] . "\n";
-		$poll_options[] = $row['poll_option_text'];
-	}
+	decode_message($poll_title, blog_data::$blog[$blog_id]['bbcode_uid']);
 
 	// Attachments
 	$blog_attachment->get_attachment_data($blog_id);
@@ -242,18 +252,20 @@ if (!$submit || sizeof($error))
 	$template->assign_vars(array(
 		'ERROR'						=> (sizeof($error)) ? implode('<br />', $error) : '',
 		'MESSAGE'					=> $blog_text,
-		'POLL_TITLE'				=> (isset($poll_title)) ? $poll_title : '',
-		'POLL_OPTIONS'				=> (!empty($poll_options)) ? implode("\n", $poll_options) : '',
-		'POLL_MAX_OPTIONS'			=> (isset($poll_max_options)) ? $poll_max_options : 1,
-		'POLL_LENGTH'				=> (isset($poll_length)) ? $poll_length : 0,
+		'POLL_TITLE'				=> $poll_title,
+		'POLL_OPTIONS'				=> ($poll_option_text) ? $poll_option_text : '',
+		'POLL_MAX_OPTIONS'			=> $poll_max_options,
+		'POLL_LENGTH'				=> $poll_length,
 		'SUBJECT'					=> $blog_subject,
 		'VOTE_CHANGE_CHECKED'		=> ($poll_vote_change) ? 'checked="checked"' : '',
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['EDIT_A_BLOG'],
+		'L_POLL_OPTIONS_EXPLAIN'	=> sprintf($user->lang['POLL_OPTIONS_EXPLAIN'], $config['max_poll_options']),
 
 		'S_EDIT_REASON'				=> true,
 		'S_LOCK_POST_ALLOWED'		=> (($auth->acl_get('m_bloglockedit')) && $user->data['user_id'] != blog_data::$blog[$blog_id]['user_id']) ? true : false,
+		'S_POLL_DELETE'				=> ($poll_title) ? true : false,
 		'S_POLL_VOTE_CHANGE'		=> true,
 	));
 
@@ -292,7 +304,10 @@ else // user submitted and there are no errors
 		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
 
-	$blog_search->index('edit', $blog_id, 0, $message_parser->message, $blog_subject, $user_id);
+	if ($original_poll_text != $poll_option_text)
+	{
+		$sql_data['poll_start'] = (empty($poll)) ? 0 : time();
+	}
 
 	blog_plugins::plugin_do_ref('blog_edit_sql', $sql_data);
 
@@ -301,6 +316,10 @@ else // user submitted and there are no errors
 			WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
+	// Reindex the blog
+	$blog_search->index('edit', $blog_id, 0, $message_parser->message, $blog_subject, $user_id);
+
+	// Update the attachments
 	$blog_attachment->update_attachment_data($blog_id);
 
 	blog_plugins::plugin_do_arg('blog_edit_after_sql', $blog_id);

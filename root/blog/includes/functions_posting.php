@@ -368,7 +368,7 @@ function inform_approve_report($mode, $id)
 /**
 * Submit Poll
 * 
-* @param array $poll_data All of the poll data required to submit it.
+* @param array $poll All of the poll data required to submit it.
 * @param int $blog_id The ID of the blog this is for
 * @param string $mode The mode (edit or add)
 */
@@ -416,7 +416,7 @@ function submit_blog_poll($poll, $blog_id, $mode = 'add')
 			{
 				// If we add options we need to put them to the end to be able to preserve votes...
 				$sql_insert_ary[] = array(
-					'poll_option_id'	=> (int) sizeof($cur_poll_options) + 1 + sizeof($sql_insert_ary),
+					'poll_option_id'	=> (int) sizeof($sql_insert_ary) + 1,
 					'blog_id'			=> (int) $blog_id,
 					'poll_option_text'	=> (string) $poll['poll_options'][$i]
 				);

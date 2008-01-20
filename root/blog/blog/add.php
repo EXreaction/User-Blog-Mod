@@ -202,7 +202,7 @@ if (!$submit || sizeof($error))
 		'POLL_MAX_OPTIONS'			=> (isset($poll_max_options)) ? $poll_max_options : 1,
 		'POLL_LENGTH'				=> (isset($poll_length)) ? $poll_length : 0,
 		'SUBJECT'					=> $blog_subject,
-		'VOTE_CHANGE_CHECKED'		=> ($poll_vote_change) ? 'checked="checked"' : '',
+		'VOTE_CHANGE_CHECKED'		=> (isset($poll_vote_change) && $poll_vote_change) ? 'checked="checked"' : '',
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['POST_A_NEW_BLOG'],
@@ -240,7 +240,7 @@ else // user submitted and there are no errors
 		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
 		'poll_start'				=> (!empty($poll)) ? time() : '',
-		'poll_length'				=> (!empty($poll)) ? (time() + ($poll_length * 86400)) : '',
+		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : '',
 		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 0,
 		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
@@ -251,7 +251,11 @@ else // user submitted and there are no errors
 	$db->sql_query($sql);
 	$blog_id = $db->sql_nextid();
 
+	// Index the blog
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
+
+	// Update the attachments
+	$blog_attachment->update_attachment_data($blog_id);
 
 	// Submit the poll
 	if ($auth->acl_get('u_blog_create_poll'))
@@ -286,8 +290,6 @@ else // user submitted and there are no errors
 
 	// regenerate the urls to include the blog_id
 	generate_blog_urls();
-
-	$blog_attachment->update_attachment_data($blog_id);
 
 	blog_plugins::plugin_do_arg('blog_add_after_sql', $blog_id);
 

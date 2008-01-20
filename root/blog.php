@@ -11,8 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* in the blog data file there are instances of blog_data:: -> should be self::
-* option to delete poll on edit
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP
@@ -100,7 +98,7 @@ switch ($page)
 	case 'resync' : // to resync the blog data
 	case 'rate' : // to rate a blog
 		$user->add_lang('mods/blog/misc');
-		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
 	// no break
 	case 'download' : // to download an attachment
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
@@ -120,7 +118,7 @@ switch ($page)
 	break;
 	case 'blog' :
 	case 'reply' :
-		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang(array('posting', 'mods/blog/posting'));
 
@@ -177,7 +175,7 @@ if ($default)
 			}
 		}
 
-		include($phpbb_root_path . 'blog/data/initial_data.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang('mods/blog/view');
 

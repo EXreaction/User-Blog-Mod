@@ -18,8 +18,8 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	define('BLOG_FUNCTIONS_INCLUDED', true);
 
 	// This is just a mass include file...it includes everything we could need
-	include($phpbb_root_path . 'blog/data/blog_data.' . $phpEx);
-	include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/blog_data.' . $phpEx);
+	include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 
 	include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);

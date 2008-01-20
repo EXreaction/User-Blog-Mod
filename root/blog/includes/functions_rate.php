@@ -77,9 +77,17 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	blog_plugins::plugin_do_ref('function_get_star_rating', $temp);
 	extract($temp);
 
+	$can_rate = ($user->data['is_registered'] && !$force_average && $user_rating === false) ? true : false;
+
 	// If it has not had any ratings yet, give it 1/2 the max for the rating
 	if ($num_ratings == 0)
 	{
+		// If they can not rate the item and there are no ratings, do not show it at all.
+		if (!$can_rate)
+		{
+			return '';
+		}
+
 		$average_rating = ceil($config['user_blog_max_rating'] / 2);
 	}
 
@@ -89,8 +97,6 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	$star_orange = $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_orange.gif';
 	$star_red = $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_red.gif';
 	$star_remove = $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/blog/star_remove.gif';
-
-	$can_rate = ($user->data['is_registered'] && !$force_average && $user_rating === false) ? true : false;
 
 	$final_code = ($force_average) ? sprintf((($num_ratings == 1) ? $user->lang['AVERAGE_OF_RATING'] : $user->lang['AVERAGE_OF_RATINGS']), $num_ratings) . ':' : '';
 
