@@ -11,27 +11,27 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-*
-* LOW PRIORITY ------------------------------------------------------------------------------------
+* Rebuild template/style system
+* 
 * Information section - MCP
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
 * Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
 *
-* OTHER -------------------------------------------------------------------------------------------
 * Rename all the permissions to have more descriptive names?
+*
+* cash mod plugin
+* 
+* LOW PRIORITY ------------------------------------------------------------------------------------
+*
+* OTHER -------------------------------------------------------------------------------------------
 * 
 * Memorable entry (like a sticky)?
 * Left Menu Order
 *
 * UCP
 *	custom CSS coding allowed?
-*	External blog link? (so if the user has a blog somewhere else they can put the URL in to it and it will direct the users there to view the blog).
-*
-* cash mod plugin
-* Integrate with phpbb search - plugin
-*
 */
 
 define('IN_BLOG', true);
