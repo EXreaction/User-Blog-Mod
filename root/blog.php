@@ -11,6 +11,8 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* in the blog data file there are instances of blog_data:: -> should be self::
+* option to delete poll on edit
 *
 * LOW PRIORITY ------------------------------------------------------------------------------------
 * Information section - MCP

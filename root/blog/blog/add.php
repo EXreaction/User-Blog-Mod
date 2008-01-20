@@ -62,7 +62,7 @@ if ($submit || $preview || $refresh)
 	$poll_option_text	= utf8_normalize_nfc(request_var('poll_option_text', '', true));
 	$poll_max_options	= request_var('poll_max_options', 1);
 	$poll_vote_change	= isset($_POST['poll_vote_change']) ? 1 : 0;
-	if ($poll_option_text)
+	if ($poll_option_text && $auth->acl_get('u_blog_create_poll'))
 	{
 		$poll = array(
 			'poll_title'		=> $poll_title,
@@ -116,7 +116,7 @@ if (!$submit || sizeof($error))
 		$preview_message = $message_parser->format_display($post_options->enable_bbcode, $post_options->enable_magic_url, $post_options->enable_smilies, false);
 
 		// Poll Preview
-		if (true)//!$poll_delete && $auth->acl_get('f_poll', $forum_id))
+		if (!empty($poll))
 		{
 			$parse_poll = new parse_message($poll_title);
 			$parse_poll->bbcode_uid = $message_parser->bbcode_uid;
@@ -126,7 +126,7 @@ if (!$submit || sizeof($error))
 
 			if ($poll_length)
 			{
-				$poll_end = ($poll_length * 86400) + (($poll_start) ? $poll_start : time());
+				$poll_end = ($poll_length * 86400) + time();
 			}
 
 			$template->assign_vars(array(
@@ -202,6 +202,7 @@ if (!$submit || sizeof($error))
 		'POLL_MAX_OPTIONS'			=> (isset($poll_max_options)) ? $poll_max_options : 1,
 		'POLL_LENGTH'				=> (isset($poll_length)) ? $poll_length : 0,
 		'SUBJECT'					=> $blog_subject,
+		'VOTE_CHANGE_CHECKED'		=> ($poll_vote_change) ? 'checked="checked"' : '',
 
 		'L_MESSAGE_BODY_EXPLAIN'	=> (intval($config['max_post_chars'])) ? sprintf($user->lang['MESSAGE_BODY_EXPLAIN'], intval($config['max_post_chars'])) : '',
 		'L_POST_A'					=> $user->lang['POST_A_NEW_BLOG'],
@@ -237,11 +238,11 @@ else // user submitted and there are no errors
 		'perm_foe'					=> request_var('perm_foe', 0),
 		'perm_friend'				=> request_var('perm_friend', 2),
 		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
-		'poll_title'				=> $poll_title,
-		'poll_start'				=> time(),
-		'poll_length'				=> (time() + ($poll_length * 86400)),
-		'poll_max_options'			=> $poll_max_options,
-		'poll_vote_change'			=> $poll_vote_change,
+		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
+		'poll_start'				=> (!empty($poll)) ? time() : '',
+		'poll_length'				=> (!empty($poll)) ? (time() + ($poll_length * 86400)) : '',
+		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 0,
+		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
 
 	blog_plugins::plugin_do_ref('blog_add_sql', $sql_data);
@@ -253,7 +254,10 @@ else // user submitted and there are no errors
 	$blog_search->index('add', $blog_id, 0, $message_parser->message, $blog_subject, $user->data['user_id']);
 
 	// Submit the poll
-	submit_blog_poll($poll, $blog_id);
+	if ($auth->acl_get('u_blog_create_poll'))
+	{
+		submit_blog_poll($poll, $blog_id);
+	}
 
 	// Handle the subscriptions
 	add_blog_subscriptions($blog_id, 'subscription_');
