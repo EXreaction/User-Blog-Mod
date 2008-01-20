@@ -289,7 +289,7 @@ viewtopic.php
 #
 
 // Start Add User Blog Mod ------------------
-include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
