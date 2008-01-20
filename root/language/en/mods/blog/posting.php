@@ -72,8 +72,6 @@ $lang = array_merge($lang, array(
 	'PERMANENTLY_DELETE_BLOG_CONFIRM'	=> 'Are you sure you want to permanently delete this blog?  This can not be un-done.',
 	'PERMANENTLY_DELETE_REPLY_CONFIRM'	=> 'Are you sure you want to permanently delete this reply?  This can not be un-done.',
 	'PERMISSIONS'						=> 'Permissions',
-	'POST_A_NEW_BLOG'					=> 'Post a new blog',
-	'POST_A_NEW_REPLY'					=> 'Post a new reply',
 
 	'REPLY_ALREADY_APPROVED'			=> 'This reply is already approved.',
 	'REPLY_ALREADY_DELETED'				=> 'This reply has already been deleted.',

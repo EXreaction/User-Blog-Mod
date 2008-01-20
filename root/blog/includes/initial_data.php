@@ -173,8 +173,6 @@ $initial_data = array(
 	'UA_MAX_RATING'			=> $config['user_blog_max_rating'],
 	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
 
-	'ADD_BLOG_IMG'			=> $phpbb_root_path . 'styles/' . $user->theme['imageset_path'] . '/imageset/' . $user->data['user_lang'] . '/button_blog_new.gif',
-	'DIGG_IMG'				=> $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_digg.png',
 	'AIM_IMG'				=> $user->img('icon_contact_aim', 'AIM'),
 	'DELETE_IMG'			=> $user->img('icon_post_delete', 'DELETE_POST'),
 	'EDIT_IMG'				=> $user->img('icon_post_edit', 'EDIT_POST'),

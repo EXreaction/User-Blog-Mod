@@ -1,25 +1,15 @@
-<style type="text/css">
-<!--
-	.menu_title {
-		font-weight: bold;
-		text-align: center;
-	}
--->
-</style>
-
 <!-- IF S_USER_BLOG_MENU -->
 	<div class="post bg1<!-- IF S_ONLINE --> online<!-- ENDIF -->">
 		<div class="inner">
 			<span class="corners-top"><span></span></span>
-			<dl>
+			<dl class="user_menu">
 				<dt>
-					<strong>{USER_FULL}</strong><br/>
-					<!-- IF RANK_TITLE -->{RANK_TITLE}<br/><!-- ENDIF -->
-					<!-- IF RANK_IMG -->{RANK_IMG}<br/><!-- ENDIF -->
-					<!-- IF AVATAR -->{AVATAR}<!-- ENDIF -->
+					<strong>{USER_FULL}</strong><br />
+					<!-- IF RANK_TITLE -->{RANK_TITLE}<br /><!-- ENDIF -->
+					<!-- IF RANK_IMG -->{RANK_IMG}<br /><!-- ENDIF -->
+					<!-- IF AVATAR -->{AVATAR}<br /><!-- ENDIF -->
+					<br />
 				</dt>
-				
-				<dd>&nbsp;</dd>
 				
 				<!-- IF POSTER_POSTS != '' --><dd><strong>{L_POSTS}:</strong> {POSTER_POSTS}</dd><!-- ENDIF -->
 				<!-- IF POSTER_JOINED --><dd><strong>{L_JOINED}:</strong> {POSTER_JOINED}</dd><!-- ENDIF -->
@@ -54,19 +44,17 @@
 <!-- ENDIF -->
 
 <!-- IF S_DISPLAY_BLOG_SEARCH -->
-	<div class="post bg1" style="margin-top: 7px;">
+	<div class="post bg1">
 		<div class="inner">
 			<span class="corners-top"><span></span></span>
-			<div style="font-weight: bold; text-align: center;">{L_SEARCH_BLOGS}</div>
-			<div style="color: #FFFFFF; margin-top: 5px; white-space: nowrap;">
-				<form id="searchform" method="post" action="{U_BLOG_SEARCH}">
-					<fieldset>
-						<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" /> 
-						<input class="button2" value="{L_SEARCH}" type="submit" /><br />
-						<a href="{U_BLOG_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a> {S_HIDDEN_FIELDS}
-					</fieldset>
-				</form>
-			</div>
+			<div class="left_menu_title">{L_SEARCH_BLOGS}</div>
+			<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
+				<fieldset>
+					<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" /> 
+					<input class="button2" value="{L_SEARCH}" type="submit" /><br />
+					<a href="{U_BLOG_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a> {S_HIDDEN_FIELDS}
+				</fieldset>
+			</form>
 			<span class="corners-bottom"><span></span></span>
 		</div>
 	</div>

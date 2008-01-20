@@ -1,21 +1,3 @@
-<style type="text/css">
-<!--
-	.archive_sdmenu .archive_title, .archive_sdmenu .archive_titlehidden {
-		display: block;
-		padding: 5px 0;
-	}
-
-	.archive_sdmenu .archive_arrow {
-		margin-left: 1px;
-		margin-right: 3px;
-	}
-
-	.archive_sdmenu .archive_submenu {
-		overflow: hidden;
-	}
--->
-</style>
-
 <script type="text/javascript">
 // <![CDATA[
 	function toggle_month(month)
@@ -41,13 +23,13 @@
 </script>
 
 <!-- IF S_ARCHIVES -->
-	<div class="post bg1" style="margin-top: 7px;">
+	<div class="post bg1">
 		<div class="inner">
 			<span class="corners-top"><span></span></span>
 			<dl>
-				<dt class="menu_title">{L_ARCHIVES}</dt>
+				<dt class="left_menu_title">{L_ARCHIVES}</dt>
 				<dd>
-					<div class="archive_sdmenu">
+					<div style="padding: 5px 0; overflow: hidden;">
 						<!-- BEGIN archiverow -->
 							<span onclick="toggle_month({archiverow.S_ROW_COUNT});" style="cursor: pointer;"><strong><img id="month_image_{archiverow.S_ROW_COUNT}" src="<!-- IF archiverow.S_ROW_COUNT > 0 -->{T_THEME_PATH}/images/plus.gif<!-- ELSE -->{T_THEME_PATH}/images/minus.gif<!-- ENDIF -->" alt="-" /> {archiverow.MONTH} {archiverow.YEAR}</strong></span>
 							<div id="month_{archiverow.S_ROW_COUNT}" <!-- IF archiverow.S_ROW_COUNT > 0 -->style="display: none;"<!-- ENDIF -->>

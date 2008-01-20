@@ -2,28 +2,6 @@
 
 	<!-- INCLUDE overall_header.html -->
 
-	<style type="text/css">
-	<!--
-		.blog-icon span {
-			background: transparent none 0 0 no-repeat;
-			background-image: url("{ADD_BLOG_IMG}");
-		}
-
-		.buttons div.blog-icon {
-			width: 96px;
-			height: 25px;
-		}
-
-		.deleted {
-			background-color: #33FF00;
-		}
-
-		.foe {
-			background-color: #FF6600;
-		}
-	-->
-	</style>
-
 	<!-- INCLUDE blog/blog.js -->
 
 	<!-- IF U_BLOG_MCP -->
@@ -50,7 +28,7 @@
 	<!-- IF not S_CATEGORY_MODE -->
 	<table style="width: 100%">
 		<tr>
-			<td style="width: 240px; vertical-align: top;">
+			<td id="left_menu">
 				<!-- INCLUDE blog/left_menu.html -->
 			</td>
 			<td style="vertical-align: top; padding-left: 10px;">
@@ -59,7 +37,7 @@
 	<!-- IF U_ADD_BLOG or U_REPLY_BLOG -->
 	<div class="topic-actions">
 		<div class="buttons">
-			<!-- IF U_ADD_BLOG --><div class="blog-icon"><a href="{U_ADD_BLOG}"><span></span>{L_POST_REPLY}</a></div><!-- ENDIF -->
+			<!-- IF U_ADD_BLOG --><div class="blog-icon"><a href="{U_ADD_BLOG}"><span></span>{L_POST_A_NEW_BLOG}</a></div><!-- ENDIF -->
 			<!-- IF U_REPLY_BLOG --><div class="reply-icon"><a href="{U_REPLY_BLOG}"><span></span>{L_POST_REPLY}</a></div><!-- ENDIF -->
 		</div>
 	</div>
@@ -132,7 +110,7 @@
 
 		<div id="b{blogrow.BLOG_ID}" class="post <!-- IF blogrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF blogrow.S_ONLINE and S_CATEGORY_MODE --> online<!-- ENDIF -->">
 			<div class="inner"><span class="corners-top"><span></span></span>
-				<div class="postbody" style="width: <!-- IF S_CATEGORY_MODE -->70<!-- ELSE -->100<!-- ENDIF -->%;">
+				<div class="postbody" <!-- IF not S_CATEGORY_MODE -->style="width: 100%;"<!-- ENDIF -->>
 					<!-- IF not blogrow.S_SHORTENED and (blogrow.U_EDIT or blogrow.U_DELETE or blogrow.U_REPORT or blogrow.U_WARN or blogrow.U_QUOTE) -->
 						<ul class="profile-icons">
 							<!-- IF blogrow.U_EDIT --><li class="edit-icon"><a href="{blogrow.U_EDIT}" title="{L_EDIT_POST}"><span>{L_EDIT_POST}</span></a></li><!-- ENDIF -->
@@ -176,25 +154,25 @@
 
 					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 						<div class="notice">
-							<!-- IF not blogrow.DELETED_MESSAGE and not blogrow.SIGNATURE--><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
+							<!-- IF not blogrow.DELETED_MESSAGE and not blogrow.SIGNATURE--><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
 							{blogrow.EDITED_MESSAGE}
 							<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
 						</div>
 					<!-- ENDIF -->
 					<!-- IF blogrow.DELETED_MESSAGE -->
 						<div class="notice">
-							<!-- IF not blogrow.SIGNATURE --><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
+							<!-- IF not blogrow.SIGNATURE --><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
 							{blogrow.DELETED_MESSAGE}
 						</div>
 					<!-- ENDIF -->
 
 					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
 
-					<!-- IF (not blogrow.DELETED_MESSAGE and not blogrow.EDITED_MESSAGE and not blogrow.EDIT_REASON) or blogrow.SIGNATURE --><span style="float: right;">{blogrow.REPLIES}</span><!-- ENDIF -->
+					<!-- IF (not blogrow.DELETED_MESSAGE and not blogrow.EDITED_MESSAGE and not blogrow.EDIT_REASON) or blogrow.SIGNATURE --><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
 				</div>
 
 				<!-- IF S_CATEGORY_MODE -->
-					<dl class="postprofile" style="width: 28%;">
+					<dl class="postprofile">
 						<dt>
 							<!-- IF blogrow.AVATAR -->
 								{blogrow.AVATAR}<br />
@@ -238,7 +216,7 @@
 			<div class="inner"><span class="corners-top"><span></span></span>
 
 				<div class="postbody" style="width: 100%;">
-					<div style="text-align: center; font-size: 1.3em; font-weight: bold;"><!-- IF MODE == 'deleted' -->{L_NO_DELETED_BLOGS}<!-- ELSE -->{L_NO_BLOGS_USER}<!-- ENDIF --></div>
+					<div class="no_blogs"><!-- IF MODE == 'deleted' -->{L_NO_DELETED_BLOGS}<!-- ELSE -->{L_NO_BLOGS_USER}<!-- ENDIF --></div>
 				</div>
 			<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
 
@@ -247,9 +225,9 @@
 	<!-- END blogrow -->
 
 	<!-- IF S_REPLIES -->
-		<div class="post bg3" style="text-align: center; margin-top: 15px;">
+		<div id="replies" class="post bg3">
 			<div class="inner"><span class="corners-top"><span></span></span>
-				<strong id="replies">{L_COMMENTS}</strong>
+				<strong>{L_COMMENTS}</strong>
 			<span class="corners-bottom"><span></span></span></div>
 		</div>
 		<!-- IF S_SORT_REPLY -->
@@ -378,7 +356,7 @@
 	<!-- IF U_ADD_BLOG or U_REPLY_BLOG -->
 	<div class="topic-actions">
 		<div class="buttons">
-			<!-- IF U_ADD_BLOG --><div class="blog-icon"><a href="{U_ADD_BLOG}"><span></span>{L_POST_REPLY}</a></div><!-- ENDIF -->
+			<!-- IF U_ADD_BLOG --><div class="blog-icon"><a href="{U_ADD_BLOG}"><span></span>{L_POST_A_NEW_BLOG}</a></div><!-- ENDIF -->
 			<!-- IF U_REPLY_BLOG --><div class="reply-icon"><a href="{U_REPLY_BLOG}"><span></span>{L_POST_REPLY}</a></div><!-- ENDIF -->
 		</div>
 	</div>

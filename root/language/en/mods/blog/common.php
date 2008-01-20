@@ -65,6 +65,8 @@ $lang = array_merge($lang, array(
 
 	'PERMANENT_LINK'				=> 'Permanent Link',
 	'POPULAR_BLOGS'					=> 'Popular Blogs',
+	'POST_A_NEW_BLOG'				=> 'Post a new blog',
+	'POST_A_NEW_REPLY'				=> 'Post a new reply',
 
 	'RANDOM_BLOGS'					=> 'Random Blogs',
 	'RECENT_BLOGS'					=> 'Recent Blogs',
