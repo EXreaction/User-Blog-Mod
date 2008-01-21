@@ -107,10 +107,10 @@ if (!$feed)
 
 	blog_plugins::plugin_do('view_user_end');
 
-	// tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'blog/view_blog.html'
+		'view_blog'		=> 'view_blog.html',
 	));
+	$blog_content = $template->assign_display('view_blog');
 }
 else // if $feed
 {

@@ -34,6 +34,9 @@
 *	custom CSS coding allowed?
 */
 
+// This will be moved into an option for each user soon...
+$blog_template = 'prosilver';
+
 define('IN_BLOG', true);
 
 // The Version #
@@ -48,14 +51,12 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-if (isset($config['user_blog_force_style']) && $config['user_blog_force_style'] != 0)
-{
-	$user->setup('mods/blog/common', $config['user_blog_force_style']);
-}
-else
-{
-	$user->setup('mods/blog/common');
-}
+$user->setup('mods/blog/common');
+
+// Lets use our own custom template path so we can have our own templates
+$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
+$blog_content = ''; // Put all of what you want displayed on the page in this.  Make sure it is pre-parsed and all ready to be shown.
+$blog_stylesheet = ''; // Put any extra stylesheet information you require in here.
 
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
@@ -202,6 +203,30 @@ $template->assign_vars(array(
 blog_plugins::plugin_do('blog_end');
 
 //$db->sql_report('display');
+
+// Some template links we will need...
+$template->assign_vars(array(
+	'T_BLOG_TEMPLATE_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/template",
+	'T_BLOG_IMAGESET_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
+	'T_BLOG_IMAGESET_LANG_PATH'	=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
+));
+
+// Set up the stylesheet
+$template->set_filenames(array(
+	'stylesheet'		=> 'stylesheet.css',
+));
+$blog_stylesheet .= $template->assign_display('stylesheet');
+
+// Ok now, anything you want outputted needs to be put in the $blog_content variable.  Should be the entire already parsed page.
+$template->set_template();
+$template->set_filenames(array(
+	'body' => 'blog.html',
+));
+$template->assign_vars(array(
+	'BLOG_CONTENT'		=> $blog_content,
+	'BLOG_STYLESHEET'	=> $blog_stylesheet,
+));
+unset($blog_content, $blog_stylesheet);
 
 // setup the page footer
 page_footer();

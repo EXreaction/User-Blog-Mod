@@ -160,10 +160,10 @@ if ( (!$submit) || (sizeof($error)) )
 		'L_POST_A'					=> $user->lang['POST_A_NEW_REPLY'],
 	));
 
-	// Tell the template parser what template file to use
 	$template->set_filenames(array(
-		'body' => 'blog/blog_posting_layout.html'
+		'posting_layout'		=> 'blog_posting_layout.html',
 	));
+	$blog_content = $template->assign_display('posting_layout');
 }
 else // user submitted and there are no errors
 {

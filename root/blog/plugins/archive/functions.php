@@ -70,7 +70,7 @@ function archive_function_generate_menu(&$arg)
 	));
 
 	$template->set_filenames(array(
-		'archive_body'		=> 'blog/plugins/archive/archive_body.html',
+		'archive_body'		=> 'plugins/archive/archive_body.html',
 	));
 
 	$arg['user_menu_extra'] .= $template->assign_display('archive_body');

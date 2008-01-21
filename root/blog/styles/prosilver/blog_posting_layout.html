@@ -1,5 +1,3 @@
-<!-- INCLUDE overall_header.html -->
-
 <br/>
 
 <form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);"{S_FORM_ENCTYPE}>
@@ -218,10 +216,47 @@
 
 <script type="text/javascript">
 // <![CDATA[
+	/**
+	* Alternate display of subPanels
+	*/
+	function subPanels(p)
+	{
+		var i, e, t;
+
+		if (typeof(p) == 'string')
+		{
+			show_panel = p;
+		}
+
+		for (i = 0; i < panels.length; i++)
+		{
+			e = document.getElementById(panels[i]);
+			t = document.getElementById(panels[i] + '-tab');
+
+			if (e)
+			{
+				if (panels[i] == show_panel)
+				{
+					e.style.display = 'block';
+					if (t)
+					{
+						t.className = 'activetab';
+					}
+				}
+				else
+				{
+					e.style.display = 'none';
+					if (t)
+					{
+						t.className = '';
+					}
+				}
+			}
+		}
+	}
+
 	var panels = new Array({JS_PANELS_LIST});
 
 	subPanels(show_panel);
 // ]]>
 </script>
-
-<!-- INCLUDE overall_footer.html -->

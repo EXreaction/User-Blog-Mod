@@ -91,7 +91,7 @@ function friends_function_generate_menu(&$arg)
 	));
 
 	$template->set_filenames(array(
-		'friends_body'		=> 'blog/plugins/friends/friends_body.html',
+		'friends_body'		=> 'plugins/friends/friends_body.html',
 	));
 
 	$arg['user_menu_extra'] .= $template->assign_display('friends_body');
