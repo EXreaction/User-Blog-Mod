@@ -58,6 +58,13 @@ $template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_templat
 $blog_content = ''; // Put all of what you want displayed on the page in this.  Make sure it is pre-parsed and all ready to be shown.
 $blog_stylesheet = ''; // Put any extra stylesheet information you require in here.
 
+// Some template links we will need...
+$template->assign_vars(array(
+	'T_BLOG_TEMPLATE_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}",
+	'T_BLOG_IMAGESET_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
+	'T_BLOG_IMAGESET_LANG_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
+));
+
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
@@ -203,13 +210,6 @@ $template->assign_vars(array(
 blog_plugins::plugin_do('blog_end');
 
 //$db->sql_report('display');
-
-// Some template links we will need...
-$template->assign_vars(array(
-	'T_BLOG_TEMPLATE_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/template",
-	'T_BLOG_IMAGESET_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
-	'T_BLOG_IMAGESET_LANG_PATH'	=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
-));
 
 // Set up the stylesheet
 $template->set_filenames(array(
