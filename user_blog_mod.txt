@@ -13,7 +13,6 @@
 ##					includes/acp/acp_users.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
-##					styles/prosilver/theme/stylesheet.css
 ##					.htaccess
 ##					viewtopic.php
 ##
@@ -109,11 +108,13 @@
 ##				- Added easier access for subscriptions by putting it in as you add a reply + default setting for it in UCP.
 ##				- Added a hard delete option on the first delete page for deleting blogs/replies for users who can hard delete.
 ##				- Added Polls for blogs.
+##				- Now there is a new setup on the templating system!  Each user can easily select what template they want to be displayed for their blog,
+##					+ and you can easily add more templates for the blog without installing new templates for the forums.
 ##			+ The upgrade script no longer supports upgrades from versions older than Alpha 33 (0.3.33).
 ##				- If you must upgrade from earlier than Alpha 33, rename the update.php file in blog/, then copy update_old.php from blog/update/ to blog/
 ##				- Then rename update_old.php to update.php, then go to blog.php?page=update in your web browser.  After that, remove the update.php file you
 ##				- copied from blog/update/, and rename the original update.php that was in blog/ back to update.php, and then go to blog.php?page=update again.
-##			+ To update, update the edits in viewtopic.php, add the edits to the stylesheet, copy the new files over, and then run the upgrade script by going to blog.php?page=update
+##			+ To update, update the edits in viewtopic.php and overall_header.html, copy the new files over, and then run the upgrade script by going to blog.php?page=update
 ##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
@@ -219,25 +220,23 @@ includes/functions.php
 #-----[ OPEN ]---------------------------------------------
 # do this for all styles
 
-styles/prosilver/theme/stylesheet.css
+styles/prosilver/template/overall_header.html
 
 #
 #-----[ FIND ]---------------------------------------------
 #
 
-@import url("colours.css");
+</head>
 
 #
-#-----[ AFTER, ADD ]---------------------------------------
+#-----[ BEFORE, ADD ]--------------------------------------
 #
 
-@import url("blog.css");
-
-#
-#-----[ OPEN ]---------------------------------------------
-# do this for all styles
-
-styles/prosilver/template/overall_header.html
+<!-- IF BLOG_STYLESHEET -->
+	<style type="text/css">
+		{BLOG_STYLESHEET}
+	</style>
+<!-- ENDIF -->
 
 #
 #-----[ FIND ]---------------------------------------------
