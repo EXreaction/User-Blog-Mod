@@ -10,13 +10,13 @@
 function friends_function_generate_menu(&$arg)
 {
 	global $auth, $cache, $config, $db, $user, $template, $phpbb_root_path;
-	global $user_id;
+	global $user_id, $blog_template;
 
 	$limit = 4;
 
 	$template->assign_vars(array(
 		'ZEBRA_LIST_LIMIT'			=> $limit,
-		'IMG_PORTAL_MEMBER'			=> $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_friend.gif',
+		'IMG_PORTAL_MEMBER'			=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/icon_friend.gif',
 		'S_CONTENT_FLOW_BEGIN'		=> ($user->lang['DIRECTION'] == 'ltr') ? 'left' : 'right',
 		'S_CONTENT_FLOW_END'		=> ($user->lang['DIRECTION'] == 'ltr') ? 'right' : 'left',
 	));
