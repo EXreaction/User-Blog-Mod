@@ -220,7 +220,7 @@ $blog_stylesheet .= $template->assign_display('stylesheet');
 // Ok now, anything you want outputted needs to be put in the $blog_content variable.  Should be the entire already parsed page.
 $template->set_template();
 $template->set_filenames(array(
-	'body' => 'blog.html',
+	'body' => 'blog/blog.html',
 ));
 $template->assign_vars(array(
 	'BLOG_CONTENT'		=> $blog_content,
