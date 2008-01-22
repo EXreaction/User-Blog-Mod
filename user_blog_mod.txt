@@ -13,6 +13,7 @@
 ##					includes/acp/acp_users.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
+##					styles/subsilver2/templates/overall_header.html
 ##					.htaccess
 ##					viewtopic.php
 ##
@@ -218,7 +219,7 @@ includes/functions.php
 
 #
 #-----[ OPEN ]---------------------------------------------
-# do this for all styles
+#
 
 styles/prosilver/template/overall_header.html
 
@@ -250,6 +251,42 @@ styles/prosilver/template/overall_header.html
 
 				<!-- BEGIN blog_links -->
 					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
+				<!-- END blog_links -->
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+styles/subsilver2/template/overall_header.html
+
+#
+#-----[ FIND ]---------------------------------------------
+#
+
+</head>
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+<!-- IF BLOG_STYLESHEET -->
+	<style type="text/css">
+		{BLOG_STYLESHEET}
+	</style>
+<!-- ENDIF -->
+
+#
+#-----[ FIND ]---------------------------------------------
+# Note: This is not the whole line
+
+{U_FAQ}
+
+#
+#-----[ BEFORE, ADD ]--------------------------------------
+#
+
+				<!-- BEGIN blog_links -->
+					<a href="{blog_links.URL}">{blog_links.IMG} {blog_links.TEXT}</a>&nbsp; &nbsp;
 				<!-- END blog_links -->
 
 #
