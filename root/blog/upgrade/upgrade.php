@@ -75,6 +75,11 @@ class blog_upgrade
 		if ($this->selected_options['truncate'])
 		{
 			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_ATTACHMENT_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_IN_CATEGORIES_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_POLL_OPTIONS_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_POLL_VOTES_TABLE;
+			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_RATINGS_TABLE;
 			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_REPLY_TABLE;
 			$sql_array[] = 'TRUNCATE TABLE ' . BLOGS_SUBSCRIPTION_TABLE;
 			$sql_array[] = 'TRUNCATE TABLE ' . BLOG_SEARCH_WORDLIST_TABLE;

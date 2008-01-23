@@ -18,6 +18,7 @@ if ($user_blog_version == $config['user_blog_version'])
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
+$template->set_template();
 if (confirm_box(true))
 {
 	$sql_array = array();

@@ -23,6 +23,7 @@ if (version_compare(PHP_VERSION, '5.1.0') < 0)
 	trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
 }
 
+$template->set_template();
 if (confirm_box(true))
 {
 	$error = array();
