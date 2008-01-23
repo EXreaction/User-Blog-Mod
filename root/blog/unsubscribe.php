@@ -35,6 +35,7 @@ if ($blog_id != 0)
 		trigger_error('NOT_SUBSCRIBED');
 	}
 
+	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('unsubscribe_confirm');
@@ -80,6 +81,7 @@ else if ($user_id != 0)
 		trigger_error('NOT_SUBSCRIBED');
 	}
 
+	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('unsubscribe_user_confirm');
