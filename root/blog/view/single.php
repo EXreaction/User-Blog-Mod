@@ -20,7 +20,6 @@ if ($category_id)
 
 	if (!isset($category_list[$category_id]))
 	{
-		$template->set_template();
 		trigger_error('NO_CATEGORY');
 	}
 }
@@ -33,7 +32,6 @@ else
 // if the blog was deleted and the person trying to view the blog is not a moderator that can view deleted blogs, give them a nice error. :P
 if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && blog_data::$blog[$blog_id]['blog_deleted'] != $user->data['user_id'] && !$auth->acl_get('m_blogdelete') && !$auth->acl_get('a_blogdelete'))
 {
-	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 

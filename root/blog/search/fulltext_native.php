@@ -334,8 +334,6 @@ class blog_fulltext_native extends blog_search
 				// throw an error if we shall not ignore unexistant words
 				else if (!$ignore_no_id && sizeof($non_common_words))
 				{
-					global $template;
-					$template->set_template();
 					trigger_error(sprintf($user->lang['WORDS_IN_NO_POST'], implode(', ', $non_common_words)));
 				}
 				unset($non_common_words);
@@ -368,8 +366,6 @@ class blog_fulltext_native extends blog_search
 					$len = utf8_strlen($word);
 					if ($len >= $this->word_length['min'] && $len <= $this->word_length['max'])
 					{
-						global $template;
-						$template->set_template();
 						trigger_error(sprintf($user->lang['WORD_IN_NO_POST'], $word));
 					}
 					else
@@ -427,8 +423,6 @@ class blog_fulltext_native extends blog_search
 		if (!count($this->must_contain_ids) && !count($this->must_not_contain_ids) && !count($this->must_exclude_one_ids))
 		{
 			$ignored = (sizeof($this->common_words)) ? sprintf($user->lang['IGNORED_TERMS_EXPLAIN'], implode(' ', $this->common_words)) . '<br />' : '';
-			global $template;
-			$template->set_template();
 			trigger_error($ignored . sprintf($user->lang['NO_KEYWORDS'], $this->word_length['min'], $this->word_length['max']));
 		}
 

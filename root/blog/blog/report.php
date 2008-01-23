@@ -13,9 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Use the board template here
-$template->set_template();
-
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
@@ -42,6 +39,7 @@ blog_plugins::plugin_do('blog_report_start');
 // To close the reports
 if (blog_data::$blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'))
 {
+	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('blog_report_confirm');
@@ -66,6 +64,7 @@ if (blog_data::$blog[$blog_id]['blog_reported'] && $auth->acl_get('m_blogreport'
 }
 else
 {
+	$template->set_template();
 	if (confirm_box(true))
 	{
 		if (!blog_data::$blog[$blog_id]['blog_reported'])

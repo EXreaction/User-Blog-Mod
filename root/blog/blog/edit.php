@@ -16,7 +16,6 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
-	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 
@@ -26,7 +25,6 @@ $user->add_lang('posting');
 // check to see if editing this message is locked, or if the one editing it has mod powers
 if (blog_data::$blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
 {
-	$template->set_template();
 	trigger_error('BLOG_EDIT_LOCKED');
 }
 
@@ -385,7 +383,6 @@ else // user submitted and there are no errors
 
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 
-	$template->set_template();
 	trigger_error($message);
 }
 ?>

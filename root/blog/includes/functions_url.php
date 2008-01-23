@@ -155,8 +155,8 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			}
 		}
 
-		// Add the Session ID if required, do not add it for bots.  Used to remove it for guests, but once in a while the session_id is required for guests, like for the captcha
-		if ($_SID && !$user->data['is_bot'])
+		// Add the Session ID if required.
+		if ($_SID)
 		{
 			$extras .= "_sid-{$_SID}";
 		}

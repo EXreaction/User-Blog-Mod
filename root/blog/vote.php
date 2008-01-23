@@ -16,7 +16,6 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
-	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 
@@ -25,7 +24,6 @@ $blog_data->get_polls($blog_id);
 
 if (sizeof($voted_id) > blog_data::$blog[$blog_id]['poll_max_options'])
 {
-	$template->set_template();
 	trigger_error('TOO_MANY_VOTE_OPTIONS');
 }
 
@@ -34,7 +32,6 @@ if (isset(blog_data::$blog[$blog_id]['poll_votes']['my_vote']) && sizeof(blog_da
 {
 	if (!$auth->acl_get('u_blog_vote_change') || !blog_data::$blog[$blog_id]['poll_vote_change'])
 	{
-		$template->set_template();
 		trigger_error('NOT_ALLOWED_CHANGE_VOTE');
 	}
 

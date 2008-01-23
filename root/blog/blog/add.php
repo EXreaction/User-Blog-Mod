@@ -317,7 +317,6 @@ else // user submitted and there are no errors
 
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 
-	$template->set_template();
 	trigger_error($message);
 }
 ?>

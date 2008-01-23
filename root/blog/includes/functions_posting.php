@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 */
 function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add')
 {
-	global $auth, $blog_attachment, $blog_id, $blog_plugins, $config, $db, $template, $user, $phpbb_root_path, $phpEx, $s_hidden_fields;
+	global $auth, $blog_attachment, $blog_id, $blog_plugins, $config, $db, $template, $user, $phpbb_root_path, $phpEx;
 
 	$submit = (isset($_POST['submit'])) ? true : false;
 	$preview = (isset($_POST['preview'])) ? true : false;
@@ -93,7 +93,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 		}
 
 		// Subscriptions
-		if ($config['user_blog_subscription_enabled'] && $user->data['user_type'] != USER_IGNORE)
+		if ($config['user_blog_subscription_enabled'] && $user->data['is_registered'])
 		{
 			$panels['subscriptions-panel'] = $user->lang['SUBSCRIPTION'];
 
@@ -181,10 +181,9 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 			'UA_PROGRESS_BAR'			=> append_sid("{$phpbb_root_path}posting.$phpEx", "mode=popup", false),
 
 			'S_BLOG'					=> ($page == 'blog') ? true : false,
+			'S_REPLY'					=> ($page == 'reply') ? true : false,
 			'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
 			'S_FORM_ENCTYPE'			=> $form_enctype,
-			'S_HIDDEN_FIELDS'			=> $s_hidden_fields,
-			'S_REPLY'					=> ($page == 'reply') ? true : false,
 		));
 
 		foreach ($panels as $name => $title)

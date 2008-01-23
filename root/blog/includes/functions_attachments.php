@@ -386,7 +386,7 @@ class blog_attachment
 	*/
 	public function get_submitted_attachment_data($check_user_id = false)
 	{
-		global $user, $db, $config, $auth, $template;
+		global $user, $db, $config, $auth;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -443,7 +443,6 @@ class blog_attachment
 
 		if (sizeof($not_orphan))
 		{
-			$template->set_template();
 			trigger_error('NO_ACCESS_ATTACHMENT', E_USER_ERROR);
 		}
 
@@ -470,7 +469,6 @@ class blog_attachment
 
 		if (sizeof($orphan))
 		{
-			$template->set_template();
 			trigger_error('NO_ACCESS_ATTACHMENT', E_USER_ERROR);
 		}
 
@@ -483,7 +481,7 @@ class blog_attachment
 	*/
 	public function upload_attachment($form_name, $local = false, $local_storage = '', $local_filedata = false)
 	{
-		global $auth, $user, $config, $db, $phpbb_root_path, $phpEx, $template;
+		global $auth, $user, $config, $db, $phpbb_root_path, $phpEx;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -536,7 +534,6 @@ class blog_attachment
 
 			// If this error occurs a user tried to exploit an IE Bug by renaming extensions
 			// Since the image category is displaying content inline we need to catch this.
-			$template->set_template();
 			trigger_error($user->lang['ATTACHED_IMAGE_NOT_IMAGE']);
 		}
 

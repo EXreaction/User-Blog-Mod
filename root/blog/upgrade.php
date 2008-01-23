@@ -13,9 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Use the board template here
-$template->set_template();
-
 $user->add_lang('install');
 $user->add_lang('posting');
 

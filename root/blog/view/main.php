@@ -34,7 +34,6 @@ if ($category_id)
 	}
 	else
 	{
-		$template->set_template();
 		trigger_error('NO_CATEGORY');
 	}
 	unset($category_list);

@@ -13,9 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Use the board template here
-$template->set_template();
-
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
@@ -42,6 +39,7 @@ generate_blog_breadcrumbs($user->lang['UNDELETE_BLOG']);
 
 blog_plugins::plugin_do('blog_undelete_start');
 
+$template->set_template();
 if (confirm_box(true))
 {
 	blog_plugins::plugin_do('blog_undelete_confirm');

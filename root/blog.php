@@ -11,8 +11,6 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* MCP not showing unapprove blogs/replies?
-* 
 * Rebuild template/style system
 * 
 * Information section - MCP
@@ -55,18 +53,6 @@ $user->session_begin();
 $auth->acl($user->data);
 $user->setup('mods/blog/common');
 
-// Lets use our own custom template path so we can have our own templates
-$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
-$blog_content = ''; // Put all of what you want displayed on the page in this.  Make sure it is pre-parsed and all ready to be shown.
-$blog_stylesheet = ''; // Put any extra stylesheet information you require in here.
-
-// Some template links we will need...
-$template->assign_vars(array(
-	'T_BLOG_TEMPLATE_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}",
-	'T_BLOG_IMAGESET_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
-	'T_BLOG_IMAGESET_LANG_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
-));
-
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
@@ -87,6 +73,21 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
+
+// We need to use our own error handler which resets the template when trigger_error is called.
+set_error_handler('blog_error_handler');
+
+// Lets use our own custom template path so we can have our own templates
+$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
+$blog_content = ''; // Put all of what you want displayed on the page in this.  Make sure it is pre-parsed and all ready to be shown.
+$blog_stylesheet = ''; // Put any extra stylesheet information you require in here.
+
+// Some template links we will need...
+$template->assign_vars(array(
+	'T_BLOG_TEMPLATE_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}",
+	'T_BLOG_IMAGESET_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
+	'T_BLOG_IMAGESET_LANG_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
+));
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
@@ -211,8 +212,6 @@ $template->assign_vars(array(
 
 blog_plugins::plugin_do('blog_end');
 
-//$db->sql_report('display');
-
 // Set up the stylesheet
 $template->set_filenames(array(
 	'stylesheet'		=> 'stylesheet.css',
@@ -229,6 +228,8 @@ $template->assign_vars(array(
 	'BLOG_STYLESHEET'	=> $blog_stylesheet,
 ));
 unset($blog_content, $blog_stylesheet);
+
+//$db->sql_report('display');
 
 // setup the page footer
 page_footer();

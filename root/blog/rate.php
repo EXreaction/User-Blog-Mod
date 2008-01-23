@@ -14,13 +14,11 @@ if (!defined('IN_PHPBB'))
 
 if (!$config['user_blog_enable_ratings'])
 {
-	$template->set_template();
 	trigger_error('USER_BLOG_RATINGS_DISABLED');
 }
 
 if ($blog_id == 0)
 {
-	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 

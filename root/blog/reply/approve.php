@@ -13,9 +13,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Use the board template here
-$template->set_template();
-
 // If they did not include the $reply_id give them an error...
 if ($reply_id == 0)
 {
@@ -41,6 +38,7 @@ generate_blog_breadcrumbs($user->lang['APPROVE_REPLY']);
 
 if (blog_data::$reply[$reply_id]['reply_approved'] == 0)
 {
+	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('reply_approve_confirm');

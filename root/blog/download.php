@@ -17,9 +17,6 @@ $user->add_lang('viewtopic');
 $download_id = intval(request_var('id', 0));
 $mode = request_var('mode', '');
 
-// Use the board template here
-$template->set_template();
-
 if (!$download_id)
 {
 	trigger_error('NO_ATTACHMENT_SELECTED');

@@ -13,11 +13,25 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Blog Error Handler
+*/
+function blog_error_handler($errno, $msg_text, $errfile, $errline)
+{
+	if ($errno == E_USER_NOTICE)
+	{
+		global $template;
+		$template->set_template();
+	}
+
+	msg_handler($errno, $msg_text, $errfile, $errline);
+}
+
+/**
 * Setup the blog search system
 */
 function setup_blog_search()
 {
-	global $config, $phpbb_root_path, $phpEx, $template;
+	global $config, $phpbb_root_path, $phpEx;
 
 	if (file_exists($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx))
 	{
@@ -27,7 +41,6 @@ function setup_blog_search()
 	}
 	else
 	{
-		$template->set_template();
 		trigger_error('BLOG_SEARCH_BACKEND_NOT_EXIST');
 	}
 }
