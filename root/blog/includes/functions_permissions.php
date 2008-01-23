@@ -341,6 +341,9 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 	{
 		if (!$is_auth)
 		{
+			global $template;
+			$template->set_template();
+
 			if (!$user->data['is_registered'])
 			{
 				login_box();

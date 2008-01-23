@@ -23,6 +23,7 @@ $user->add_lang(array('search', 'mods/blog/view'));
 if (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$config['load_search'])
 {
 	$template->assign_var('S_NO_SEARCH', true);
+	$template->set_template();
 	trigger_error('NO_SEARCH');
 }
 
@@ -30,6 +31,7 @@ if (!$auth->acl_get('u_search') || !$auth->acl_getf_global('f_search') || !$conf
 if ($user->load && $config['limit_search_load'] && ($user->load > doubleval($config['limit_search_load'])))
 {
 	$template->assign_var('S_NO_SEARCH', true);
+	$template->set_template();
 	trigger_error('NO_SEARCH_TIME');
 }
 

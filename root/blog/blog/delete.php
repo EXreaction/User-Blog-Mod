@@ -16,6 +16,7 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {
+	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 
@@ -28,6 +29,7 @@ if ($cancel)
 // check to see if editing this message is locked, or if the one editing it has mod powers
 if (blog_data::$blog[$blog_id]['blog_edit_locked'] && !$auth->acl_get('m_blogedit'))
 {
+	$template->set_template();
 	trigger_error('BLOG_EDIT_LOCKED');
 }
 
@@ -39,6 +41,7 @@ generate_blog_breadcrumbs($user->lang['DELETE_BLOG']);
 
 if (blog_data::$blog[$blog_id]['blog_deleted'] != 0 && !$auth->acl_get('a_blogdelete'))
 {
+	$template->set_template();
 	trigger_error('BLOG_ALREADY_DELETED');
 }
 
@@ -157,6 +160,7 @@ if (is_array($settings))
 		$message .= '<br />' . sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
+	$template->set_template();
 	trigger_error($message);
 }
 

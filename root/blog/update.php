@@ -13,6 +13,9 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Use the board template here
+$template->set_template();
+
 if ($user_blog_version == $config['user_blog_version'])
 {
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));

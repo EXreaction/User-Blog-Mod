@@ -13,6 +13,9 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Use the board template here
+$template->set_template();
+
 if (!$config['user_blog_subscription_enabled'])
 {
 	blog_meta_refresh(0, $blog_urls['main'], true);

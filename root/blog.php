@@ -11,6 +11,8 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* MCP not showing unapprove blogs/replies?
+* 
 * Rebuild template/style system
 * 
 * Information section - MCP

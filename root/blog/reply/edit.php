@@ -16,6 +16,7 @@ if (!defined('IN_PHPBB'))
 // If they did not include the $reply_id give them an error...
 if ($reply_id == 0)
 {
+	$template->set_template();
 	trigger_error('REPLY_NOT_EXIST');
 }
 
@@ -25,6 +26,7 @@ $user->add_lang('posting');
 // check to see if editing this message is locked, or if the one editing it has mod powers
 if (blog_data::$reply[$reply_id]['reply_edit_locked'] && !$auth->acl_get('m_blogreplyedit'))
 {
+	$template->set_template();
 	trigger_error('REPLY_EDIT_LOCKED');
 }
 
@@ -226,6 +228,7 @@ else // user submitted and there are no errors
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
+	$template->set_template();
 	trigger_error($message);
 }
 ?>

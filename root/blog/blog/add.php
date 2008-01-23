@@ -239,8 +239,8 @@ else // user submitted and there are no errors
 		'perm_friend'				=> request_var('perm_friend', 2),
 		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
 		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
-		'poll_start'				=> (!empty($poll)) ? time() : '',
-		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : '',
+		'poll_start'				=> (!empty($poll)) ? time() : 0,
+		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : 0,
 		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 0,
 		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
@@ -317,6 +317,7 @@ else // user submitted and there are no errors
 
 	blog_meta_refresh(3, $blog_urls['view_blog']);
 
+	$template->set_template();
 	trigger_error($message);
 }
 ?>

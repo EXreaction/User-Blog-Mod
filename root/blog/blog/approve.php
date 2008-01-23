@@ -13,6 +13,9 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Use the board template here
+$template->set_template();
+
 // If they did not include the $blog_id give them an error...
 if ($blog_id == 0)
 {

@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 */
 function setup_blog_search()
 {
-	global $config, $phpbb_root_path, $phpEx;
+	global $config, $phpbb_root_path, $phpEx, $template;
 
 	if (file_exists($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx))
 	{
@@ -27,6 +27,7 @@ function setup_blog_search()
 	}
 	else
 	{
+		$template->set_template();
 		trigger_error('BLOG_SEARCH_BACKEND_NOT_EXIST');
 	}
 }

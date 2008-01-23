@@ -16,6 +16,7 @@ if (!defined('IN_PHPBB'))
 // get some data on the blog and user
 if ($blog_id == 0)
 {
+	$template->set_template();
 	trigger_error('BLOG_NOT_EXIST');
 }
 
@@ -239,6 +240,7 @@ else // user submitted and there are no errors
 
 	blog_meta_refresh(3, $blog_urls['view_reply']);
 
+	$template->set_template();
 	trigger_error($message);
 }
 ?>

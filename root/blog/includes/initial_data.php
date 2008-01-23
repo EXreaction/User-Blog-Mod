@@ -72,6 +72,7 @@ if ($reply_id != 0)
 {
 	if ($blog_data->get_reply_data('reply', $reply_id) === false)
 	{
+		$template->set_template();
 		trigger_error('REPLY_NOT_EXIST');
 	}
 
@@ -90,6 +91,7 @@ if ($blog_id != 0)
 {
 	if ($blog_data->get_blog_data('blog', $blog_id) === false)
 	{
+		$template->set_template();
 		trigger_error('BLOG_NOT_EXIST');
 	}
 
@@ -99,6 +101,7 @@ if ($blog_id != 0)
 
 	if (!handle_user_blog_permissions($blog_id))
 	{
+		$template->set_template();
 		trigger_error('NO_PERMISSIONS_READ');
 	}
 
@@ -131,6 +134,7 @@ update_edit_delete();
 // make sure they user they requested exists
 if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
 {
+	$template->set_template();
 	trigger_error('NO_USER');
 }
 

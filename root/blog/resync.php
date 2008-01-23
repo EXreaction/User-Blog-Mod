@@ -13,6 +13,9 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+// Use the board template here
+$template->set_template();
+
 // Setup the page header and sent the title of the page that will go into the browser header
 page_header($user->lang['RESYNC_BLOG']);
 

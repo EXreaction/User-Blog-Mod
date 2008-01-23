@@ -26,11 +26,13 @@ generate_blog_breadcrumbs($user->lang['SUBSCRIBE']);
 
 if ($subscribed)
 {
+	$template->set_template();
 	trigger_error('ALREADY_SUBSCRIBED');
 }
 
 if (!$user_id && !$blog_id)
 {
+	$template->set_template();
 	trigger_error($user->lang['BLOG_USER_NOT_PROVIDED']);
 }
 
@@ -101,6 +103,7 @@ if (is_array($settings))
 
 	blog_meta_refresh(3, $redirect);
 
+	$template->set_template();
 	trigger_error($message);
 }
 
