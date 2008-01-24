@@ -111,6 +111,7 @@
 ##				- Added Polls for blogs.
 ##				- Now there is a new setup on the templating system!  Each user can easily select what template they want to be displayed for their blog,
 ##					+ and you can easily add more templates for the blog without installing new templates for the forums.
+##				- The Javascript output feed has been finished and there is a feed icon on supporting pages to bring you to a page with the available feed options.
 ##			+ The upgrade script no longer supports upgrades from versions older than Alpha 33 (0.3.33).
 ##				- If you must upgrade from earlier than Alpha 33, rename the update.php file in blog/, then copy update_old.php from blog/update/ to blog/
 ##				- Then rename update_old.php to update.php, then go to blog.php?page=update in your web browser.  After that, remove the update.php file you
@@ -347,7 +348,6 @@ viewtopic.php
 include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
-include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
 include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 $user->add_lang('mods/blog/common');
 new blog_plugins();
