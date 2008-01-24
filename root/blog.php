@@ -17,7 +17,7 @@
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
-* Finish Javascript Output Feed & icons - perhaps use the blog_confirm page for the confirm feed page
+* Finish Feed icons - have a trigger_error just display all of the available options and examples for the javascript.
 *
 * Rename all the permissions to have more descriptive names?
 *
