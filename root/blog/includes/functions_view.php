@@ -978,11 +978,13 @@ function feed_output($blog_ids, $feed_type)
 		$blog_ids = array(intval($blog_ids));
 	}
 
+	$title = str_replace("'", "\\'", $template->_tpldata['navlinks'][(sizeof($template->_tpldata['navlinks']) - 1)]['FORUM_NAME']);
+
 	$template->assign_vars(array(
 		'FEED'				=> $feed_type,
 		'SELF_URL'			=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode)),
 		'SELF_FULL_URL'		=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode, 'feed' => $feed_type, 'limit' => $limit)),
-		'TITLE'				=> $config['sitename'] . ' ' . $user->lang['FEED'],
+		'TITLE'				=> $config['sitename'] . ' ' . $title . ' ' . $user->lang['FEED'],
 		'SITE_URL'			=> generate_board_url(),
 		'SITE_DESC'			=> $config['site_desc'],
 		'SITE_LANG'			=> $config['default_lang'],

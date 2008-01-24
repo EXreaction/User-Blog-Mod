@@ -81,7 +81,7 @@
 	</feed>
 <!-- ELSEIF FEED == 'JAVASCRIPT' -->
 	<!-- IF S_OUTPUT -->
-		document.write('<div style="border: 1px solid #C5D7EF;"><h2 style="margin: 0px; padding: 2px; color: #3366CC; font-family: arial,sans-serif; font-size: 1.1em; font-weight: normal; background-color: #E5ECF9; text-align: center;"><a href="{URL}">{TITLE}</a></h2>');
+		document.write('<div style="border: 1px solid #C5D7EF;"><h2 style="margin: 0px; padding: 2px; color: #3366CC; font-family: arial,sans-serif; font-size: 1.1em; font-weight: normal; background-color: #E5ECF9; text-align: center;"><a href="{SELF_URL}">{TITLE}</a></h2>');
 		<!-- BEGIN item -->
 		document.write('<div style="font-size: 1.1em;"><a href="javascript:void(0)" onclick="if(document.getElementById(\'b_{item.BLOG_ID}\').style.display == \'none\'){document.getElementById(\'b_{item.BLOG_ID}\').style.display=\'block\';}else{document.getElementById(\'b_{item.BLOG_ID}\').style.display=\'none\';}if(this.style.background.search(\'{IMG_MIN}\') != -1){this.style.background = \'url({IMG_MAX})\'; this.style.backgroundPosition = \'0px 12px\';}else{this.style.background = \'url({IMG_MIN})\'; this.style.backgroundPosition = \'0px 12px\';}" onmouseover="this.style.backgroundPosition = \'0px 12px\';" onmouseout="this.style.backgroundPosition = \'0px 0px\';" style="margin: 5px 3px 0 3px; float: left; background-image: url({IMG_MAX}); background-position: 0px, 0px; width: 12px; height: 12px;" /><a href="{item.URL}">{item.TITLE}</a></div><div id="b_{item.BLOG_ID}" style="display: none; padding: 5px 5px 2px 15px; font-size: 0.9em;<!-- IF not item.S_LAST_ROW --> border-bottom: 1px dotted #DDDDDD;<!-- ENDIF -->">{item.BLOG_MESSAGE}</div>');
 		<!-- END item -->

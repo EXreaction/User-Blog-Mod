@@ -38,7 +38,7 @@ $lang = array_merge($lang, array(
 	'CONTINUE'						=> 'Continue',
 	'CONTINUED'						=> 'Continued',
 
-	'FEED'							=> 'Blog Feed',
+	'FEED'							=> 'Feed',
 	'FOE_PERMISSIONS'				=> 'Foe Permissions',
 	'FRIEND_PERMISSIONS'			=> 'Friend Permissions',
 

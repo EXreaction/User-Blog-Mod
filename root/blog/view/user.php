@@ -38,20 +38,18 @@ blog_plugins::plugin_do('view_user_start');
 $blog_data->get_user_data(false, true);
 update_edit_delete('blog');
 
+generate_blog_breadcrumbs();
 if (!$feed)
 {
 	// Generate the left menu
 	generate_menu($user_id);
 
-	// output the header and breadcrumbs
 	if ($mode == 'deleted')
 	{
-		generate_blog_breadcrumbs();
 		page_header(sprintf($user->lang['USERNAMES_DELETED_BLOGS'], blog_data::$user[$user_id]['username']));
 	}
 	else
 	{
-		generate_blog_breadcrumbs();
 		page_header(sprintf($user->lang['USERNAMES_BLOGS'], blog_data::$user[$user_id]['username']));
 	}
 
