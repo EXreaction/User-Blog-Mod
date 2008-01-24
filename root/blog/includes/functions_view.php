@@ -716,16 +716,18 @@ function feed_output($blog_ids, $feed_type)
 		$blog_ids = array(intval($blog_ids));
 	}
 
-	$board_url = generate_board_url();
-
 	$template->assign_vars(array(
 		'FEED'				=> $feed_type,
 		'SELF_URL'			=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode, 'feed' => $feed_type, 'limit' => $limit)),
 		'TITLE'				=> $config['sitename'] . ' ' . $user->lang['FEED'],
-		'SITE_URL'			=> $board_url,
+		'SITE_URL'			=> generate_board_url(),
 		'SITE_DESC'			=> $config['site_desc'],
 		'SITE_LANG'			=> $config['default_lang'],
 		'CURRENT_TIME'		=> date('r'),
+
+		'IMG_MIN'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/min_dark_blue.gif',
+		'IMG_MAX'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/max_dark_blue.gif',
+		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false, // used for Javascript output feeds.
 	));
 
 	// the items section is only used in RSS 1.0
@@ -735,7 +737,7 @@ function feed_output($blog_ids, $feed_type)
 		foreach ($blog_ids as $id)
 		{
 			$template->assign_block_vars('items', array(
-				'URL'	=> "{$board_url}/blog.{$phpEx}?b=$id",
+				'URL'	=> blog_url(blog_data::$blog[$id]['user_id'], $id),
 			));
 		}
 	}
