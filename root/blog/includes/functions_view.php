@@ -718,16 +718,18 @@ function feed_output($blog_ids, $feed_type)
 
 	$template->assign_vars(array(
 		'FEED'				=> $feed_type,
-		'SELF_URL'			=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode, 'feed' => $feed_type, 'limit' => $limit)),
+		'SELF_URL'			=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode)),
+		'SELF_FULL_URL'		=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode, 'feed' => $feed_type, 'limit' => $limit)),
 		'TITLE'				=> $config['sitename'] . ' ' . $user->lang['FEED'],
 		'SITE_URL'			=> generate_board_url(),
 		'SITE_DESC'			=> $config['site_desc'],
 		'SITE_LANG'			=> $config['default_lang'],
 		'CURRENT_TIME'		=> date('r'),
 
+		// used for Javascript output feeds
 		'IMG_MIN'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/min_dark_blue.gif',
 		'IMG_MAX'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/max_dark_blue.gif',
-		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false, // used for Javascript output feeds.
+		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false,
 	));
 
 	// the items section is only used in RSS 1.0

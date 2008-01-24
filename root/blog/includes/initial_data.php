@@ -141,7 +141,7 @@ $username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
 generate_blog_urls();
 
 // check to see if they are trying to view a feed, and make sure they used a variable that we accept for the format
-$feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT') || ($feed == 'JAVASCRIPT_BARE')) && $config['user_blog_enable_feeds']) ? $feed : false;
+$feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT')) && $config['user_blog_enable_feeds']) ? $feed : false;
 
 // Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
