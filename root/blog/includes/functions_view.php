@@ -720,7 +720,7 @@ function feed_output($blog_ids, $feed_type)
 
 	$template->assign_vars(array(
 		'FEED'				=> $feed_type,
-		'SELF_URL'			=> "{$board_url}/blog.{$phpEx}?page={$page}&amp;mode={$mode}&amp;feed={$feed_type}&amp;limit={$limit}",
+		'SELF_URL'			=> blog_url(false, false, false, array('page' => $page, 'mode' => $mode, 'feed' => $feed_type, 'limit' => $limit)),
 		'TITLE'				=> $config['sitename'] . ' ' . $user->lang['FEED'],
 		'SITE_URL'			=> $board_url,
 		'SITE_DESC'			=> $config['site_desc'],
@@ -746,17 +746,19 @@ function feed_output($blog_ids, $feed_type)
 		$blog_row = $blog_data->handle_blog_data($id, true);
 
 		$row = array(
-			'URL'		=> $board_url . "/blog.{$phpEx}?b=$id",
+			'URL'		=> blog_url(blog_data::$blog[$id]['user_id'], $id),
 			'USERNAME'	=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
 		);
 
 		$template->assign_block_vars('item', $blog_row + $row);
 	}
 
-	// tell the template parser what template file to use
+	// Ok, now use the main template for this and immediately call page_footer.
+	$template->set_template();
 	$template->set_filenames(array(
 		'body' => 'blog/blog_feed.xml'
 	));
+	page_footer();
 }
 
 ?>

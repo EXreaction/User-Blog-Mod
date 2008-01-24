@@ -18,18 +18,23 @@ $_GET['mode'] = $_REQUEST['mode'] = $mode = array_shift($extras);
 
 if (count($extras))
 {
+	$last = array();
 	foreach ($extras as $extra)
 	{
-		$var = explode('-', $extra);
+		$var = explode('-', $extra, 2);
 
-		if (count($var) != 2 || isset($_REQUEST[$var[0]]))
+		if (count($var) == 1 && !empty($last))
 		{
-			continue;
+			$var[1] = $last[1] . '_' . $var[0];
+			$var[0] = $last[0];
 		}
 
 		$_GET[$var[0]] = $var[1];
 		$_REQUEST[$var[0]] = $var[1];
+
+		$last = $var;
 	}
+	unset($last, $var);
 }
 
 include("{$phpbb_root_path}blog.$phpEx");
