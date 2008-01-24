@@ -79,7 +79,7 @@ if (!$feed)
 	if ($blog_ids !== false)
 	{
 		// Get the Attachment Data
-		$blog_attachment->get_attachment_data($blog_ids, false);
+		get_attachment_data($blog_ids, false);
 
 		// read blogs, for updating the read count
 		$read_blogs = array();

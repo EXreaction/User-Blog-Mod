@@ -13,6 +13,268 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Get Attachment Data
+*
+* Grabs attachment data for blogs and replies.
+*
+* @param int|array $blog_ids An array of blog_ids to look up
+* @param int|array|bool $reply_ids An array of reply_ids to look up
+*/
+function get_attachment_data($blog_ids, $reply_ids = false)
+{
+	global $auth, $config, $db;
+
+	if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_download'))
+	{
+		return;
+	}
+
+	if (!is_array($blog_ids))
+	{
+		$blog_ids = array($blog_ids);
+	}
+
+	if (!is_array($reply_ids) && $reply_ids !== false)
+	{
+		$reply_ids = array($reply_ids);
+	}
+
+	$temp = compact('blog_ids', 'reply_ids');
+	blog_plugins::plugin_do_ref('function_get_attachment_data', $temp);
+	extract($temp);
+
+	$reply_sql = ($reply_ids !== false) ? ' OR ' . $db->sql_in_set('reply_id', $reply_ids) : '';
+
+	$sql = 'SELECT * FROM ' . BLOGS_ATTACHMENT_TABLE . '
+		WHERE ' . $db->sql_in_set('blog_id', $blog_ids) .
+			$reply_sql . '
+				ORDER BY attach_id DESC';
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		if ($row['reply_id'] != 0)
+		{
+			blog_data::$reply[$row['reply_id']]['attachment_data'][] = $row;
+		}
+		else if ($row['blog_id'] != 0)
+		{
+			blog_data::$blog[$row['blog_id']]['attachment_data'][] = $row;
+		}
+	}
+	$db->sql_freeresult($result);
+}
+
+/**
+* Get subscription info
+*
+* Grabs subscription info from the DB if not already in the cache and finds out if the user is subscribed to the blog/user.
+*
+* @param int|bool $blog_id The blog_id to check, set to false if we are checking a user_id.
+* @param int|bool $user_id The user_id to check, set to false if we are checking a blog_id.
+*
+* @return Returns true if the user is subscribed to the blog or user, false if not.
+*/
+function get_subscription_info($blog_id, $user_id = false)
+{
+	global $db, $user, $cache, $config;
+
+	if (!$config['user_blog_subscription_enabled'])
+	{
+		return false;
+	}
+
+	// attempt to get the data from the cache
+	$subscription_data = $cache->get('_blog_subscription_' . $user->data['user_id']);
+
+	// grab data from the db if it isn't cached
+	if ($subscription_data === false)
+	{
+		$sql = 'SELECT * FROM ' . BLOGS_SUBSCRIPTION_TABLE . '
+				WHERE sub_user_id = ' . $user->data['user_id'];
+		$result = $db->sql_query($sql);
+		$subscription_data = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+		$cache->put('_blog_subscription_' . $user->data['user_id'], $subscription_data);
+	}
+
+	if (count($subscription_data))
+	{
+		blog_plugins::plugin_do_arg('function_get_subscription_info', $subscription_data);
+
+		if ($user_id !== false)
+		{
+			foreach ($subscription_data as $row)
+			{
+				if ($row['user_id'] == $user_id)
+				{
+					unset($subscription_data);
+					return true;
+				}
+			}
+		}
+		else if ($blog_id !== false)
+		{
+			foreach ($subscription_data as $row)
+			{
+				if ($row['blog_id'] == $blog_id)
+				{
+					unset($subscription_data);
+					return true;
+				}
+			}
+		}
+	}
+
+	unset($subscription_data);
+	return false;
+}
+
+/**
+* Gets user settings
+*
+* @param int $user_ids array of user_ids to get the settings for
+*/
+function get_user_settings($user_ids)
+{
+	global $cache, $config, $user_settings;
+
+	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
+	{
+		return;
+	}
+
+	if (!is_array($user_settings))
+	{
+		$user_settings = array();
+	}
+
+	if (!is_array($user_ids))
+	{
+		$user_ids = array($user_ids);
+	}
+
+	$to_query = array();
+	foreach ($user_ids as $id)
+	{
+		if (!array_key_exists($id, $user_settings))
+		{
+			$cache_data = $cache->get('_blog_settings_' . intval($id));
+			if ($cache_data === false)
+			{
+				$to_query[] = (int) $id;
+			}
+			else
+			{
+				$user_settings[$id] = $cache_data;
+			}
+		}
+	}
+
+	if (count($to_query))
+	{
+		global $db;
+		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$cache->put('_blog_settings_' . $row['user_id'], $row);
+
+			$user_settings[$row['user_id']] = $row;
+		}
+		$db->sql_freeresult($result);
+	}
+
+	blog_plugins::plugin_do('function_get_user_settings');
+}
+
+/**
+* Gets Zebra (friend/foe)  info
+*
+* @param int|bool $uid The user_id we will grab the zebra data for.  If this is false we will use $user->data['user_id']
+*/
+function get_zebra_info($user_ids, $reverse_lookup = false)
+{
+	global $config, $db, $zebra_list, $reverse_zebra_list;
+
+	if (!isset($config['user_blog_enable_zebra']) || !$config['user_blog_enable_zebra'])
+	{
+		return;
+	}
+
+	blog_plugins::plugin_do('function_get_zebra_info', compact('user_ids', 'reverse_lookup'));
+
+	$to_query = array();
+
+	if (!is_array($user_ids))
+	{
+		$user_ids = array($user_ids);
+	}
+
+	if (!$reverse_lookup)
+	{
+		foreach ($user_ids as $user_id)
+		{
+			if (!is_array($zebra_list) || !array_key_exists($user_id, $zebra_list))
+			{
+				$to_query[] = $user_id;
+			}
+		}
+
+		if (!count($to_query))
+		{
+			return;
+		}
+	}
+	else
+	{
+		foreach ($user_ids as $user_id)
+		{
+			if (!is_array($reverse_zebra_list) || !array_key_exists($user_id, $reverse_zebra_list))
+			{
+				$to_query[] = $user_id;
+			}
+		}
+
+		if (!count($to_query))
+		{
+			return;
+		}
+	}
+
+	$sql = 'SELECT * FROM ' . ZEBRA_TABLE . '
+		WHERE ' . $db->sql_in_set((($reverse_lookup) ? 'zebra_id' : 'user_id'), $to_query);
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		if ($reverse_lookup)
+		{
+			if ($row['foe'])
+			{
+				$reverse_zebra_list[$row['zebra_id']]['foe'][] = $row['user_id'];
+				$zebra_list[$row['user_id']]['foe'][] = $row['zebra_id'];
+			}
+			else if ($row['friend'])
+			{
+				$reverse_zebra_list[$row['zebra_id']]['friend'][] = $row['user_id'];
+				$zebra_list[$row['user_id']]['friend'][] = $row['zebra_id'];
+			}
+		}
+		else
+		{
+			if ($row['foe'])
+			{
+				$zebra_list[$row['user_id']]['foe'][] = $row['zebra_id'];
+			}
+			else if ($row['friend'])
+			{
+				$zebra_list[$row['user_id']]['friend'][] = $row['zebra_id'];
+			}
+		}
+	}
+	$db->sql_freeresult($result);	
+}
+
+/**
 * Pagination routine, generates page number sequence
 * tpl_prefix is for using different pagination blocks at one page
 */
@@ -765,4 +1027,389 @@ function feed_output($blog_ids, $feed_type)
 	page_footer();
 }
 
+/**
+* General attachment parsing
+*
+* @param string &$message The post/private message
+* @param array &$attachments The attachments to parse for (inline) display. The attachments array will hold templated data after parsing.
+* @param array &$update_count The attachment counts to be updated - will be filled
+* @param bool $preview If set to true the attachments are parsed for preview. Within preview mode the comments are fetched from the given $attachments array and not fetched from the database.
+*/
+function parse_attachments_for_view(&$message, &$attachments, &$update_count, $preview = false)
+{
+	global $template, $user, $config, $phpbb_root_path, $auth;
+
+	if (!$config['user_blog_enable_attachments'] || !sizeof($attachments) || !$auth->acl_get('u_download'))
+	{
+		return;
+	}
+
+	$compiled_attachments = array();
+
+	$temp = compact('message', 'attachments', 'update_count', 'preview', 'compiled_attachments');
+	blog_plugins::plugin_do_ref('function_parse_attachments_for_view', $temp);
+	extract($temp);
+
+	if (!isset($template->filename['attachment_tpl']))
+	{
+		$template->set_filenames(array(
+			'attachment_tpl'	=> 'attachment.html')
+		);
+	}
+
+	$extensions = obtain_blog_attach_extensions();
+
+	// Look for missing attachment information...
+	$attach_ids = array();
+	foreach ($attachments as $pos => $attachment)
+	{
+		// If is_orphan is set, we need to retrieve the attachments again...
+		if (!isset($attachment['extension']) && !isset($attachment['physical_filename']))
+		{
+			$attach_ids[(int) $attachment['attach_id']] = $pos;
+		}
+	}
+
+	// Grab attachments (security precaution)
+	if (sizeof($attach_ids))
+	{
+		global $db;
+
+		$new_attachment_data = array();
+
+		$sql = 'SELECT *
+			FROM ' . BLOGS_ATTACHMENT_TABLE . '
+			WHERE ' . $db->sql_in_set('attach_id', array_keys($attach_ids));
+		$result = $db->sql_query($sql);
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if (!isset($attach_ids[$row['attach_id']]))
+			{
+				continue;
+			}
+
+			// If we preview attachments we will set some retrieved values here
+			if ($preview)
+			{
+				$row['attach_comment'] = $attachments[$attach_ids[$row['attach_id']]]['attach_comment'];
+			}
+
+			$new_attachment_data[$attach_ids[$row['attach_id']]] = $row;
+		}
+		$db->sql_freeresult($result);
+
+		$attachments = $new_attachment_data;
+		unset($new_attachment_data);
+	}
+
+	ksort($attachments);
+
+
+	foreach ($attachments as $attachment)
+	{
+		if (!sizeof($attachment))
+		{
+			continue;
+		}
+
+		// We need to reset/empty the _file block var, because this function might be called more than once
+		$template->destroy_block_vars('_file');
+
+		$block_array = array();
+		
+		// Some basics...
+		$attachment['extension'] = strtolower(trim($attachment['extension']));
+		$filename = $phpbb_root_path . $config['upload_path'] . '/blog_mod/' . basename($attachment['physical_filename']);
+		$thumbnail_filename = $phpbb_root_path . $config['upload_path'] . '/blog_mod/thumb_' . basename($attachment['physical_filename']);
+
+		$upload_icon = '';
+
+		if (isset($extensions[$attachment['extension']]))
+		{
+			if ($user->img('icon_topic_attach', '') && !$extensions[$attachment['extension']]['upload_icon'])
+			{
+				$upload_icon = $user->img('icon_topic_attach', '');
+			}
+			else if ($extensions[$attachment['extension']]['upload_icon'])
+			{
+				$upload_icon = '<img src="' . $phpbb_root_path . $config['upload_icons_path'] . '/' . trim($extensions[$attachment['extension']]['upload_icon']) . '" alt="" />';
+			}
+		}
+
+		$filesize = $attachment['filesize'];
+		$size_lang = ($filesize >= 1048576) ? $user->lang['MB'] : ( ($filesize >= 1024) ? $user->lang['KB'] : $user->lang['BYTES'] );
+		$filesize = ($filesize >= 1048576) ? round((round($filesize / 1048576 * 100) / 100), 2) : (($filesize >= 1024) ? round((round($filesize / 1024 * 100) / 100), 2) : $filesize);
+
+		$comment = str_replace("\n", '<br />', censor_text($attachment['attach_comment']));
+
+		$block_array += array(
+			'UPLOAD_ICON'		=> $upload_icon,
+			'FILESIZE'			=> $filesize,
+			'SIZE_LANG'			=> $size_lang,
+			'DOWNLOAD_NAME'		=> basename($attachment['real_filename']),
+			'COMMENT'			=> $comment,
+		);
+
+		$denied = false;
+
+		if (!isset($extensions['_allowed_'][$attachment['extension']]))
+		{
+			$denied = true;
+
+			$block_array += array(
+				'S_DENIED'			=> true,
+				'DENIED_MESSAGE'	=> sprintf($user->lang['EXTENSION_DISABLED_AFTER_POSTING'], $attachment['extension'])
+			);
+		}
+
+		if (!$denied)
+		{
+			$l_downloaded_viewed = $download_link = '';
+			$display_cat = $extensions[$attachment['extension']]['display_cat'];
+
+			if ($display_cat == ATTACHMENT_CATEGORY_IMAGE)
+			{
+				if ($attachment['thumbnail'])
+				{
+					$display_cat = ATTACHMENT_CATEGORY_THUMB;
+				}
+				else
+				{
+					if ($config['img_display_inlined'])
+					{
+						if ($config['img_link_width'] || $config['img_link_height'])
+						{
+							$dimension = @getimagesize($filename);
+
+							// If the dimensions could not be determined or the image being 0x0 we display it as a link for safety purposes
+							if ($dimension === false || empty($dimension[0]) || empty($dimension[1]))
+							{
+								$display_cat = ATTACHMENT_CATEGORY_NONE;
+							}
+							else
+							{
+								$display_cat = ($dimension[0] <= $config['img_link_width'] && $dimension[1] <= $config['img_link_height']) ? ATTACHMENT_CATEGORY_IMAGE : ATTACHMENT_CATEGORY_NONE;
+							}
+						}
+					}
+					else
+					{
+						$display_cat = ATTACHMENT_CATEGORY_NONE;
+					}
+				}
+			}
+
+			// Make some descisions based on user options being set.
+			if (($display_cat == ATTACHMENT_CATEGORY_IMAGE || $display_cat == ATTACHMENT_CATEGORY_THUMB) && !$user->optionget('viewimg'))
+			{
+				$display_cat = ATTACHMENT_CATEGORY_NONE;
+			}
+
+			if ($display_cat == ATTACHMENT_CATEGORY_FLASH && !$user->optionget('viewflash'))
+			{
+				$display_cat = ATTACHMENT_CATEGORY_NONE;
+			}
+
+			$download_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
+
+			switch ($display_cat)
+			{
+				// Images
+				case ATTACHMENT_CATEGORY_IMAGE:
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					$inline_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'download', 'id' => $attachment['attach_id']));
+
+					$block_array += array(
+						'S_IMAGE'		=> true,
+						'U_INLINE_LINK'		=> $inline_link,
+					);
+
+					$update_count[] = $attachment['attach_id'];
+				break;
+
+				// Images, but display Thumbnail
+				case ATTACHMENT_CATEGORY_THUMB:
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					$thumbnail_link = blog_url(false, false, false, array('page' => 'download', 'mode' => 'thumbnail', 'id' => $attachment['attach_id']));
+
+					$block_array += array(
+						'S_THUMBNAIL'		=> true,
+						'THUMB_IMAGE'		=> $thumbnail_link,
+					);
+				break;
+
+				// Windows Media Streams
+				case ATTACHMENT_CATEGORY_WM:
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					// Giving the filename directly because within the wm object all variables are in local context making it impossible
+					// to validate against a valid session (all params can differ)
+					// $download_link = $filename;
+
+					$block_array += array(
+						'U_FORUM'		=> generate_board_url(),
+						'ATTACH_ID'		=> $attachment['attach_id'],
+						'S_WM_FILE'		=> true,
+					);
+
+					// Viewed/Heared File ... update the download count
+					$update_count[] = $attachment['attach_id'];
+				break;
+
+				// Real Media Streams
+				case ATTACHMENT_CATEGORY_RM:
+				case ATTACHMENT_CATEGORY_QUICKTIME:
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					$block_array += array(
+						'S_RM_FILE'			=> ($display_cat == ATTACHMENT_CATEGORY_RM) ? true : false,
+						'S_QUICKTIME_FILE'	=> ($display_cat == ATTACHMENT_CATEGORY_QUICKTIME) ? true : false,
+						'U_FORUM'			=> generate_board_url(),
+						'ATTACH_ID'			=> $attachment['attach_id'],
+					);
+
+					// Viewed/Heared File ... update the download count
+					$update_count[] = $attachment['attach_id'];
+				break;
+
+				// Macromedia Flash Files
+				case ATTACHMENT_CATEGORY_FLASH:
+					list($width, $height) = @getimagesize($filename);
+
+					$l_downloaded_viewed = 'VIEWED_COUNT';
+
+					$block_array += array(
+						'S_FLASH_FILE'	=> true,
+						'WIDTH'			=> $width,
+						'HEIGHT'		=> $height,
+					);
+
+					// Viewed/Heared File ... update the download count
+					$update_count[] = $attachment['attach_id'];
+				break;
+
+				default:
+					$l_downloaded_viewed = 'DOWNLOAD_COUNT';
+
+					$block_array += array(
+						'S_FILE'		=> true,
+					);
+				break;
+			}
+
+			$l_download_count = (!isset($attachment['download_count']) || $attachment['download_count'] == 0) ? $user->lang[$l_downloaded_viewed . '_NONE'] : (($attachment['download_count'] == 1) ? sprintf($user->lang[$l_downloaded_viewed], $attachment['download_count']) : sprintf($user->lang[$l_downloaded_viewed . 'S'], $attachment['download_count']));
+
+			$block_array += array(
+				'U_DOWNLOAD_LINK'		=> $download_link,
+				'L_DOWNLOAD_COUNT'		=> $l_download_count
+			);
+		}
+
+		$template->assign_block_vars('_file', $block_array);
+
+		$compiled_attachments[] = $template->assign_display('attachment_tpl');
+	}
+
+	$attachments = $compiled_attachments;
+	unset($compiled_attachments);
+
+	$tpl_size = sizeof($attachments);
+
+	$unset_tpl = array();
+
+	preg_match_all('#<!\-\- ia([0-9]+) \-\->(.*?)<!\-\- ia\1 \-\->#', $message, $matches, PREG_PATTERN_ORDER);
+
+	$replace = array();
+	foreach ($matches[0] as $num => $capture)
+	{
+		// Flip index if we are displaying the reverse way
+		$index = ($config['display_order']) ? ($tpl_size-($matches[1][$num] + 1)) : $matches[1][$num];
+
+		$replace['from'][] = $matches[0][$num];
+		$replace['to'][] = (isset($attachments[$index])) ? $attachments[$index] : sprintf($user->lang['MISSING_INLINE_ATTACHMENT'], $matches[2][array_search($index, $matches[1])]);
+
+		$unset_tpl[] = $index;
+	}
+
+	if (isset($replace['from']))
+	{
+		$message = str_replace($replace['from'], $replace['to'], $message);
+	}
+
+	$unset_tpl = array_unique($unset_tpl);
+
+	// Needed to let not display the inlined attachments at the end of the post again
+	foreach ($unset_tpl as $index)
+	{
+		unset($attachments[$index]);
+	}
+}
+
+/**
+* Obtain allowed extensions
+*
+* @return array allowed extensions array.
+*/
+function obtain_blog_attach_extensions()
+{
+	global $cache, $config;
+
+	if (!$config['user_blog_enable_attachments'])
+	{
+		return;
+	}
+
+	if (($extensions = $cache->get('_blog_extensions')) === false)
+	{
+		global $db;
+
+		$extensions = array(
+			'_allowed_blog'	=> array(),
+		);
+
+		// The rule is to only allow those extensions defined. ;)
+		$sql = 'SELECT e.extension, g.*
+			FROM ' . EXTENSIONS_TABLE . ' e, ' . EXTENSION_GROUPS_TABLE . ' g
+			WHERE e.group_id = g.group_id
+				AND (g.allow_group = 1 OR g.allow_in_blog = 1)';
+		$result = $db->sql_query($sql);
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$extension = strtolower(trim($row['extension']));
+
+			$extensions[$extension] = array(
+				'display_cat'	=> (int) $row['cat_id'],
+				'download_mode'	=> (int) $row['download_mode'],
+				'upload_icon'	=> trim($row['upload_icon']),
+				'max_filesize'	=> (int) $row['max_filesize'],
+				'allow_group'	=> $row['allow_group'],
+				'allow_in_blog'	=> $row['allow_in_blog'],
+			);
+
+			if ($row['allow_in_blog'])
+			{
+				$extensions['_allowed_blog'][$extension] = 0;
+			}
+		}
+		$db->sql_freeresult($result);
+
+		$cache->put('_blog_extensions', $extensions);
+	}
+
+	$return = array('_allowed_' => array());
+
+	foreach ($extensions['_allowed_blog'] as $extension => $check)
+	{
+		$return['_allowed_'][$extension] = 0;
+		$return[$extension] = $extensions[$extension];
+	}
+
+	blog_plugins::plugin_do_ref('function_obtain_blog_attach_extensions', $return);
+
+	return $return;
+}
 ?>

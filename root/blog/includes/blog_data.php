@@ -481,7 +481,7 @@ class blog_data
 
 		// Attachments
 		$update_count = $attachments = array();
-		$blog_attachment->parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
+		parse_attachments_for_view($blog_text, $blog['attachment_data'], $update_count);
 		foreach ($blog['attachment_data'] as $i => $attachment)
 		{
 			$attachments[]['DISPLAY_ATTACHMENT'] = $attachment;

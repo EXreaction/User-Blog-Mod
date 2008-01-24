@@ -13,6 +13,9 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
+$blog_attachment = new blog_attachment();
+
 $user->add_lang('viewtopic');
 $download_id = intval(request_var('id', 0));
 $mode = request_var('mode', '');

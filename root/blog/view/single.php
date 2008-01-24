@@ -60,7 +60,7 @@ else
 $blog_data->get_polls($blog_id);
 
 // Get the Attachment Data
-$blog_attachment->get_attachment_data($blog_id, $reply_ids);
+get_attachment_data($blog_id, $reply_ids);
 
 blog_plugins::plugin_do('view_blog_start');
 

@@ -22,14 +22,9 @@ if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 	include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 
 	include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_categories.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/functions_misc.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_permissions.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_rate.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/functions_sql.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/functions_subscription.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 
 	include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);

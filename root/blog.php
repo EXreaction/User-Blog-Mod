@@ -70,6 +70,8 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
 
+//$db->sql_query('SELECT blog_id FROM phpbb_blogs');
+
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
@@ -91,7 +93,6 @@ $template->assign_vars(array(
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
-$blog_attachment = new blog_attachment();
 $error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
 $subscribed = false;
@@ -129,6 +130,8 @@ switch ($page)
 	break;
 	case 'blog' :
 	case 'reply' :
+		include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
+		$blog_attachment = new blog_attachment();
 		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
 		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang(array('posting', 'mods/blog/posting'));
