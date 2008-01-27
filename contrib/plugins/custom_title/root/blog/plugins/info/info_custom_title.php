@@ -12,7 +12,7 @@ $user->add_lang('mods/blog/plugins/' . $name);
 self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_CUSTOM_TITLE_TITLE'];
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_CUSTOM_TITLE_DESCRIPTION'];
 
-self::$available_plugins[$name]['plugin_copyright'] = '2007 EXreaction';
+self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
 self::$available_plugins[$name]['plugin_version'] = '0.7.3';
 
 $to_do = array(
