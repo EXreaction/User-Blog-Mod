@@ -221,7 +221,7 @@ includes/functions.php
 
 #
 #-----[ OPEN ]---------------------------------------------
-#
+# Do this for all prosilver based styles
 
 styles/prosilver/template/overall_header.html
 
@@ -241,7 +241,7 @@ styles/prosilver/template/overall_header.html
 
 #
 #-----[ OPEN ]---------------------------------------------
-# do this for all styles
+# Do this for all prosilver based styles
 
 styles/prosilver/theme/stylesheet.css
 
@@ -259,7 +259,7 @@ styles/prosilver/theme/stylesheet.css
 
 #
 #-----[ OPEN ]---------------------------------------------
-#
+# Do this for all subsilver based styles
 
 styles/subsilver2/template/overall_header.html
 
@@ -279,7 +279,7 @@ styles/subsilver2/template/overall_header.html
 
 #
 #-----[ OPEN ]----------------------
-#
+# Only add this if your server has mod_rewrite enabled, otherwise skip editing this file.
 
 .htaccess
 
@@ -294,7 +294,7 @@ Deny from All
 
 #
 #-----[ AFTER, ADD ]----------------------
-# Note: Only add this if your server has mod_rewrite enabled, otherwise skip this step.
+#
 
 RewriteEngine on
 
@@ -305,7 +305,7 @@ Rewriterule ^blog/$						./blog/blog.php
 
 #
 #-----[ OPEN ]---------------------------------------------
-#
+# If you do not want the blog count or link for each user shown on viewtopic you may skip editing this file.
 
 viewtopic.php
 
@@ -361,7 +361,9 @@ get_user_settings($id_cache);
 #-----[ DIY ]---------------------------------------------
 #
 
-Go to blog.php?page=install in your web browser to install the database.
+Go to blog.php?page=install in your web browser to install the database parts for the mod.
+
+Go to ACP->Styles->Style components->Theme->prosilver->Refresh
 
 Set the user/group permissions.
 
