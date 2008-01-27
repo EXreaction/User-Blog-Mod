@@ -7,12 +7,13 @@
 ## MOD Version: 0.3.38_dev
 ##
 ## Installation Level:	Easy
-## Installation Time:	~5 Minutes
+## Installation Time:	~7 Minutes
 ##
 ## Files To Edit:	adm/style/acp_users_profile.html
 ##					includes/acp/acp_users.php
 ##					includes/functions.php
 ##					styles/prosilver/templates/overall_header.html
+##					styles/prosilver/theme/stylesheet.css
 ##					styles/subsilver2/templates/overall_header.html
 ##					.htaccess
 ##					viewtopic.php
@@ -116,7 +117,7 @@
 ##				- If you must upgrade from earlier than Alpha 33, rename the update.php file in blog/, then copy update_old.php from blog/update/ to blog/
 ##				- Then rename update_old.php to update.php, then go to blog.php?page=update in your web browser.  After that, remove the update.php file you
 ##				- copied from blog/update/, and rename the original update.php that was in blog/ back to update.php, and then go to blog.php?page=update again.
-##			+ To update, update the edits in viewtopic.php and overall_header.html, copy the new files over, and then run the upgrade script by going to blog.php?page=update
+##			+ To update, update the edits in viewtopic.php and the stylesheet.css, copy the new files over, and then run the upgrade script by going to blog.php?page=update
 ##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
@@ -226,22 +227,6 @@ styles/prosilver/template/overall_header.html
 
 #
 #-----[ FIND ]---------------------------------------------
-#
-
-</head>
-
-#
-#-----[ BEFORE, ADD ]--------------------------------------
-#
-
-<!-- IF BLOG_STYLESHEET -->
-	<style type="text/css">
-		{BLOG_STYLESHEET}
-	</style>
-<!-- ENDIF -->
-
-#
-#-----[ FIND ]---------------------------------------------
 # Note: This is not the whole line
 
 {U_FAQ}
@@ -256,25 +241,27 @@ styles/prosilver/template/overall_header.html
 
 #
 #-----[ OPEN ]---------------------------------------------
-#
+# do this for all styles
 
-styles/subsilver2/template/overall_header.html
+styles/prosilver/theme/stylesheet.css
 
 #
 #-----[ FIND ]---------------------------------------------
 #
 
-</head>
+@import url("colours.css");
 
 #
-#-----[ BEFORE, ADD ]--------------------------------------
+#-----[ AFTER, ADD ]---------------------------------------
 #
 
-<!-- IF BLOG_STYLESHEET -->
-	<style type="text/css">
-		{BLOG_STYLESHEET}
-	</style>
-<!-- ENDIF -->
+@import url("blog.css");
+
+#
+#-----[ OPEN ]---------------------------------------------
+#
+
+styles/subsilver2/template/overall_header.html
 
 #
 #-----[ FIND ]---------------------------------------------
