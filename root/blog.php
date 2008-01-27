@@ -74,10 +74,12 @@ $limit = request_var('limit', (($page == 'search') ? 20 : (($blog_id || $reply_i
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
 {
+	$user->setup('mods/blog/common');
 	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
 }
 else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $page != 'update' && $page != 'install' && $user->data['user_type'] != USER_FOUNDER)
 {
+	$user->setup('mods/blog/common');
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
 

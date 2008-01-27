@@ -21,7 +21,6 @@ set_config('user_blog_text_limit', 200);
 set_config('user_blog_user_text_limit', 1000);
 set_config('user_blog_inform', '2');
 set_config('user_blog_always_show_blog_url', 0);
-set_config('user_blog_force_style', 0);
 set_config('user_blog_subscription_enabled', 1);
 set_config('user_blog_enable_zebra', 1);
 set_config('user_blog_enable_feeds', 1);

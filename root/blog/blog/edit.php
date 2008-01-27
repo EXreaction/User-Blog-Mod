@@ -270,9 +270,8 @@ if (!$submit || sizeof($error))
 	));
 
 	$template->set_filenames(array(
-		'posting_layout'		=> 'blog_posting_layout.html',
+		'body'		=> 'blog/blog_posting_layout.html',
 	));
-	$blog_content = $template->assign_display('posting_layout');
 }
 else // user submitted and there are no errors
 {

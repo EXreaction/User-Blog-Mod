@@ -92,12 +92,11 @@ class acp_blogs
 			'user_blog_user_permissions'		=> array('lang' => 'BLOG_ENABLE_USER_PERMISSIONS',	'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_ratings'			=> array('lang' => 'BLOG_ENABLE_RATINGS',			'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
 			'user_blog_enable_attachments'		=> array('lang' => 'BLOG_ENABLE_ATTACHMENTS',		'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => true),
+			'user_blog_enable_feeds'			=> array('lang' => 'BLOG_ENABLE_FEEDS',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 
 			'legend2'							=> 'BLOG_POST_VIEW_SETTINGS',
-			'user_blog_force_style'				=> array('lang' => 'BLOG_FORCE_STYLE',				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_guest_captcha'			=> array('lang' => 'BLOG_GUEST_CAPTCHA',			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
 			'user_blog_custom_profile_enable'	=> array('lang' => 'ENABLE_BLOG_CUSTOM_PROFILES',	'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => false),
-//			'user_blog_enable_feeds'			=> array('lang' => 'BLOG_ENABLE_FEEDS',				'validate' => 'bool',	'type' => 'radio:enabled_disabled',		'explain' => false),
 			'user_blog_always_show_blog_url'	=> array('lang' => 'BLOG_ALWAYS_SHOW_URL', 			'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 			'user_blog_text_limit'				=> array('lang' => 'DEFAULT_TEXT_LIMIT', 			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_user_text_limit'			=> array('lang' => 'USER_TEXT_LIMIT', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),

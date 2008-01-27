@@ -35,10 +35,13 @@ if (count($extras))
 			$var[0] = $last[0];
 		}
 
-		$_GET[$var[0]] = $var[1];
-		$_REQUEST[$var[0]] = $var[1];
+		if (count($var) > 1)
+		{
+			$_GET[$var[0]] = $var[1];
+			$_REQUEST[$var[0]] = $var[1];
 
-		$last = $var;
+			$last = $var;
+		}
 	}
 	unset($last, $var);
 }

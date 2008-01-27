@@ -111,11 +111,9 @@ function blog_confirm($title, $explain, $display_vars, $submit_type = 'submit/re
 		));
 	}
 
-	global $blog_content;
 	$template->set_filenames(array(
-		'confirm'		=> 'blog_confirm.html',
+		'body'		=> 'blog/blog_confirm.html',
 	));
-	$blog_content = $template->assign_display('confirm');
 
 	return 'build';
 }
