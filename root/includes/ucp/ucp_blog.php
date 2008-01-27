@@ -21,7 +21,7 @@ class ucp_blog
 
 	function main($id, $mode)
 	{
-		global $cache, $template, $user, $db, $config, $phpEx, $phpbb_root_path;
+		global $auth, $cache, $template, $user, $db, $config, $phpEx, $phpbb_root_path;
 		global $blog_plugins, $blog_plugins_path, $user_settings;
 
 		$preview = (isset($_POST['preview'])) ? true : false;
@@ -44,8 +44,9 @@ class ucp_blog
 				if ($submit)
 				{
 					$sql_ary = array(
-						'instant_redirect'	=> request_var('instant_redirect', 0),
+						'instant_redirect'				=> request_var('instant_redirect', 0),
 						'blog_subscription_default'		=> 0,
+						'blog_style'					=> ($auth->acl_get('u_blog_style')) ? request_var('blog_style', '') : '',
 					);
 
 					if ($config['user_blog_subscription_enabled'])
@@ -87,9 +88,46 @@ class ucp_blog
 						}
 					}
 
+					if ($auth->acl_get('u_blog_style'))
+					{
+						$available_styles = array();
+						$sql = 'SELECT * FROM ' . STYLES_TABLE . ' WHERE style_active = 1';
+						$result = $db->sql_query($sql);
+						while ($row = $db->sql_fetchrow($result))
+						{
+							$available_styles[] = array('name' => $row['style_name'], 'value' => $row['style_id']);
+						}
+
+						$dh = @opendir($phpbb_root_path . 'blog/styles/');
+
+						if ($dh)
+						{
+							while (($file = readdir($dh)) !== false)
+							{
+								if (file_exists($phpbb_root_path . 'blog/styles/' . $file . '/style.' . $phpEx))
+								{
+									// Inside of the style.php file, add to the $available_styles array
+									include($phpbb_root_path . 'blog/styles/' . $file . '/style.' . $phpEx);
+								}
+							}
+
+							closedir($dh);
+						}
+
+						foreach ($available_styles as $row)
+						{
+							$template->assign_block_vars('blog_styles', array(
+								'VALUE'			=> $row['value'],
+								'SELECTED'		=> ($user_settings[$user->data['user_id']]['blog_style'] == $row['value']) ? true : false,
+								'NAME'			=> $row['name'],
+							));
+						}
+					}
+
 					$template->assign_vars(array(
 						'S_BLOG_INSTANT_REDIRECT'	=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['instant_redirect'] : 0,
 						'S_SUBSCRIPTIONS'			=> ($config['user_blog_subscription_enabled']) ? true : false,
+						'S_BLOG_STYLE'				=> (isset($available_styles) && sizeof($available_styles) > 1) ? true : false,
 					));
 				}
 			break;

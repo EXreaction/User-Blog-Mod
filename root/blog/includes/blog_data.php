@@ -834,7 +834,7 @@ class blog_data
 
 		// Attachments
 		$update_count = array();
-		$blog_attachment->parse_attachments_for_view($reply_text, $reply['attachment_data'], $update_count);
+		parse_attachments_for_view($reply_text, $reply['attachment_data'], $update_count);
 
 		$replyrow = array(
 			'ID'					=> $id,

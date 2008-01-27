@@ -12,6 +12,20 @@
 	<fieldset>
 		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
 		<!-- IF MODE == 'ucp_blog_settings' -->
+			<!-- IF S_BLOG_STYLE -->
+				<dl>
+					<dt><label for="blog_style">{L_BLOG_STYLE}:</label><br /><span>{L_BLOG_STYLE_EXPLAIN}</span></dt>
+					<dd>
+						<label for="blog_style">
+							<select name="blog_style">
+								<!-- BEGIN blog_styles -->
+									<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF -->>{blog_styles.NAME}</option>
+								<!-- END blog_styles -->
+							</select>
+						</label>
+					</dd>
+				</dl>
+			<!-- ENDIF -->
 			<dl>
 				<dt><label for="instant_redirect1">{L_BLOG_INSTANT_REDIRECT}:</label><br /><span>{L_BLOG_INSTANT_REDIRECT_EXPLAIN}</span></dt>
 				<dd>

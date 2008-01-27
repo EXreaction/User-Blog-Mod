@@ -101,7 +101,7 @@ function get_subscription_info($blog_id, $user_id = false)
 	{
 		blog_plugins::plugin_do_arg('function_get_subscription_info', $subscription_data);
 
-		if ($user_id !== false)
+		if ($user_id)
 		{
 			foreach ($subscription_data as $row)
 			{
@@ -112,7 +112,7 @@ function get_subscription_info($blog_id, $user_id = false)
 				}
 			}
 		}
-		else if ($blog_id !== false)
+		else if ($blog_id)
 		{
 			foreach ($subscription_data as $row)
 			{

@@ -30,19 +30,8 @@ $start = request_var('start', 0);
 $sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
 $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
+$limit = request_var('limit', (($page == 'search') ? 20 : (($blog_id || $reply_id) ? 10 : 5)));
 
-if ($page == 'search')
-{
-	$limit = request_var('limit', 20);
-}
-else if ($blog_id || $reply_id)
-{
-	$limit = request_var('limit', 10);
-}
-else
-{
-	$limit = request_var('limit', 5);
-}
 
 // setting some variables for sorting
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);

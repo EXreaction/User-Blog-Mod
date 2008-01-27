@@ -136,9 +136,8 @@ if ($feed == false || $all)
 	blog_plugins::plugin_do('view_main_end');
 
 	$template->set_filenames(array(
-		'view_blog'		=> 'view_blog_main.html',
+		'body'		=> 'blog/view_blog_main.html',
 	));
-	$blog_content = $template->assign_display('view_blog');
 }
 else
 {

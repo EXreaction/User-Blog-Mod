@@ -42,6 +42,15 @@ $user->add_lang('viewtopic');
 generate_blog_breadcrumbs();
 page_header(blog_data::$blog[$blog_id]['blog_subject']);
 
+$sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
+$sort_key = request_var('sk', 't');
+$sort_dir = request_var('sd', 'a');
+$limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
+$s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
+$order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
+$sort_by_text = array('t' => $user->lang['POST_TIME']);
+$sort_by_sql = array('t' => 'blog_time');
+
 $total_replies = $blog_data->get_reply_data('reply_count', $blog_id, array('sort_days' => $sort_days));
 
 // Get the reply data if we need to
@@ -61,6 +70,24 @@ $blog_data->get_polls($blog_id);
 
 // Get the Attachment Data
 get_attachment_data($blog_id, $reply_ids);
+
+// for highlighting
+if ($hilit_words)
+{
+	$highlight_match = $highlight = '';
+	foreach (explode(' ', trim($hilit_words)) as $word)
+	{
+		if (trim($word))
+		{
+			$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
+		}
+	}
+	$highlight = urlencode($hilit_words);
+}
+else
+{
+	$highlight_match = false;
+}
 
 blog_plugins::plugin_do('view_blog_start');
 
@@ -89,8 +116,6 @@ if ($user->data['user_id'] != $user_id)
 if ($total_replies > 0 || $sort_days != 0)
 {
 	// for sorting and pagination
-	$sort_by_text = array('t' => $user->lang['POST_TIME']);
-	$sort_by_sql = array('t' => 'blog_time');
 	gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 	$pagination = generate_blog_pagination($blog_urls['start_zero'], $total_replies, $limit, $start, false);
 
@@ -130,8 +155,7 @@ if ($total_replies > 0 || $sort_days != 0)
 blog_plugins::plugin_do('view_blog_end');
 
 $template->set_filenames(array(
-	'view_blog'		=> 'view_blog.html',
+	'body'		=> 'blog/view_blog.html',
 ));
-$blog_content = $template->assign_display('view_blog');
 
 ?>

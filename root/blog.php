@@ -11,7 +11,9 @@
 * TODO List
 *
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Rebuild template/style system
+* Bug when searching
+* 
+* add num_blogs as a dynamic config value for the total number of posted blogs
 * 
 * Information section - MCP
 *
@@ -34,9 +36,6 @@
 *	custom CSS coding allowed?
 */
 
-// This will be moved into an option for each user soon...
-$blog_template = 'prosilver';
-
 define('IN_BLOG', true);
 
 // The Version #
@@ -51,14 +50,26 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-$user->setup('mods/blog/common');
+// Do not do $user->setup here!
 
 // Get some variables
 $page = (!isset($page)) ? request_var('page', '') : $page;
 $mode = (!isset($mode)) ? request_var('mode', '') : $mode;
+$user_id = (!isset($user_id)) ? request_var('u', 0) : intval($user_id);
 $blog_id = request_var('b', 0);
 $reply_id = request_var('r', 0);
 $category_id = request_var('c', 0);
+$submit = (isset($_POST['post']) || isset($_POST['submit'])) ? true : false;
+$preview = (isset($_POST['preview'])) ? true : false;
+$print = (request_var('view', '') == 'print') ? true : false;
+$refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($_POST['cancel_unglobalise'])) ? true : false;
+$cancel = (isset($_POST['cancel'])) ? true : false;
+
+$feed = request_var('feed', '');
+$feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT')) && $config['user_blog_enable_feeds']) ? $feed : false;
+$hilit_words = request_var('hilit', '', true);
+$start = request_var('start', 0);
+$limit = request_var('limit', (($page == 'search') ? 20 : (($blog_id || $reply_id) ? 10 : 5)));
 
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
@@ -70,26 +81,9 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
 
-//$db->sql_query('SELECT blog_id FROM phpbb_blogs');
-
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
-
-// We need to use our own error handler which resets the template when trigger_error is called.
-set_error_handler('blog_error_handler');
-
-// Lets use our own custom template path so we can have our own templates
-$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
-$blog_content = ''; // Put all of what you want displayed on the page in this.  Make sure it is pre-parsed and all ready to be shown.
-$blog_stylesheet = ''; // Put any extra stylesheet information you require in here.
-
-// Some template links we will need...
-$template->assign_vars(array(
-	'T_BLOG_TEMPLATE_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}",
-	'T_BLOG_IMAGESET_PATH'			=> "{$phpbb_root_path}blog/styles/{$blog_template}/images",
-	'T_BLOG_IMAGESET_LANG_PATH'		=> "{$phpbb_root_path}blog/styles/{$blog_template}/images/" . $user->data['user_lang'],
-));
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
@@ -99,7 +93,7 @@ $subscribed = false;
 
 blog_plugins::plugin_do('blog_start');
 
-$default = false;
+$default = $inc_file = false;
 switch ($page)
 {
 	case 'vote'	: // Vote in a poll
@@ -109,37 +103,25 @@ switch ($page)
 	case 'search' : // blogs search
 	case 'resync' : // to resync the blog data
 	case 'rate' : // to rate a blog
-		$user->add_lang('mods/blog/misc');
-		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
-	// no break
 	case 'download' : // to download an attachment
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-		include($phpbb_root_path . "blog/{$page}.$phpEx");
+		$add_lang = 'mods/blog/misc';
+		$inc_file = $page;
 	break;
 	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-		$user->add_lang('mods/blog/setup');
-		include($phpbb_root_path . "blog/{$page}.$phpEx");
-	break;
 	case 'dev' : // used for developmental purposes
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-		$user->add_lang('mods/blog/setup');
-		include($phpbb_root_path . "blog/dev/dev.$phpEx");
+		$add_lang = 'mods/blog/setup';
+		$inc_file = $page;
 	break;
 	case 'blog' :
 	case 'reply' :
+		$add_lang = array('posting', 'mods/blog/posting');
 		include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
-		$blog_attachment = new blog_attachment();
-		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
-		$user->add_lang(array('posting', 'mods/blog/posting'));
-
 		include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 		include($phpbb_root_path . 'blog/includes/functions_posting.' . $phpEx);
-
+		$blog_attachment = new blog_attachment();
 		$blog_search = setup_blog_search();
 		$message_parser = new parse_message();
 
@@ -155,10 +137,10 @@ switch ($page)
 			case 'undelete' :
 			case 'report' :
 			case 'approve' :
-				include($phpbb_root_path . "blog/{$page}/{$mode}.$phpEx");
+				$inc_file = $page . '/' . $mode;
 			break;
 			case 'quote' :
-				include($phpbb_root_path . "blog/reply/add.$phpEx");
+				$inc_file = 'reply/add';
 			break;
 			default :
 				$default = true;
@@ -179,34 +161,175 @@ if ($default)
 	if ($default)
 	{
 		// With SEO urls, we make it so that the page could be the username name of the user we want to view...
-		if ($page != '' && $page != 'index' && !$category_id)
+		if (!$user_id && $page && !$category_id)
 		{
 			$user_id = $blog_data->get_user_data(false, false, $page);
-
-			if ($user_id === false)
-			{
-				unset($user_id);
-			}
 		}
 
-		include($phpbb_root_path . 'blog/includes/initial_data.' . $phpEx);
-		check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 		$user->add_lang('mods/blog/view');
 
 		if ($blog_id || $reply_id)
 		{
-			include($phpbb_root_path . 'blog/view/single.' . $phpEx);
+			$inc_file = 'view/single';
 		}
 		else if ($user_id)
 		{
-			include($phpbb_root_path . 'blog/view/user.' . $phpEx);
+			$inc_file = 'view/user';
 		}
 		else
 		{
-			include($phpbb_root_path . 'blog/view/main.' . $phpEx);
+			$inc_file = 'view/main';
 		}
 	}
 }
+
+if ($reply_id)
+{
+	if ($blog_data->get_reply_data('reply', $reply_id) === false)
+	{
+		trigger_error('REPLY_NOT_EXIST');
+	}
+
+	$reply_user_id = blog_data::$reply[$reply_id]['user_id'];
+	$blog_id = blog_data::$reply[$reply_id]['blog_id'];
+
+	// Now let us try to figure out what page the requested reply is on and show that set of replies.
+	if (intval(request_var('start', -1)) == -1)
+	{
+		$total_replies = $blog_data->get_reply_data('page', array($blog_id, $reply_id), array('order_dir' => $order_dir, 'sort_days' => $sort_days));
+		$start = (intval($total_replies / $limit) * $limit);
+	}
+}
+
+if ($blog_id)
+{
+	if ($blog_data->get_blog_data('blog', $blog_id) === false)
+	{
+		trigger_error('BLOG_NOT_EXIST');
+	}
+
+	$user_id = blog_data::$blog[$blog_id]['user_id'];
+}
+
+blog_data::$user_queue[] = $user_id;
+$blog_data->get_user_data(false, true); // do it this way so we get user data on editors/deleters
+
+// make sure they user they requested exists
+if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
+{
+	trigger_error('NO_USER');
+}
+
+$username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
+get_user_settings(array($user_id, $user->data['user_id']));
+get_zebra_info(array($user_id, $user->data['user_id']));
+update_edit_delete();
+
+// Make sure the user can view this blog by checking the blog's individual permissions
+if ($blog_id && !handle_user_blog_permissions($blog_id))
+{
+	trigger_error('NO_PERMISSIONS_READ');
+}
+
+// Check to make sure the user has permission to get to this page
+check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
+
+// Put the template we want in $blog_template for easier access/use
+$blog_template = ($user_id) ? $user_settings[$user_id]['blog_style'] : '';
+
+/**
+* Ok, now lets actually start setting up the page.
+*/
+
+// If the user wants a blog template shown we will use that, else we will use the board template
+if ($blog_template && !is_numeric($blog_template) && is_dir($phpbb_root_path . 'blog/styles/' . $blog_template))
+{
+	$user->setup('mods/blog/common');
+
+	// We need to use our own error handler which resets the template when trigger_error is called.
+	set_error_handler('blog_error_handler');
+
+	// Lets use our own custom template path so we can have our own templates
+	$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
+
+	// Some template links we will need...
+	$template->assign_vars(array(
+		'T_BLOG_TEMPLATE_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template,
+		'T_BLOG_IMAGESET_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images',
+		'T_BLOG_IMAGESET_LANG_PATH'		=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/' . $user->data['user_lang'],
+	));
+
+	$blog_style = true;
+	$blog_images_path = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/';
+}
+else
+{
+	if ($blog_template && is_numeric($blog_template))
+	{
+		$user->setup('mods/blog/common', $blog_template);
+	}
+	else
+	{
+		$user->setup('mods/blog/common');  // If that style does not exist, use the users' default style
+	}
+
+	$blog_style = false;
+	$blog_images_path = $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/blog/';
+}
+
+// If some of the pages needed extra language files included, add them now.
+if (isset($add_lang))
+{
+	$user->add_lang($add_lang);
+}
+
+if ($blog_id)
+{
+	$subscribed = get_subscription_info($blog_id);
+	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_BLOG'] : $user->lang['SUBSCRIBE_BLOG'];
+}
+else if ($user_id)
+{
+	$subscribed = get_subscription_info(false, $user_id);
+	$subscribed_title = ($subscribed) ? $user->lang['UNSUBSCRIBE_USER'] : $user->lang['SUBSCRIBE_USER'];
+}
+
+// Generate the common URL's
+generate_blog_urls();
+
+// Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
+$user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
+
+// Add some data to the template
+$template->assign_vars(array(
+	'MODE'					=> $mode,
+	'PAGE'					=> $page,
+	'BLOG_TITLE'			=> (isset($user_settings[$user_id])) ? censor_text($user_settings[$user_id]['title']) : false,
+	'BLOG_DESCRIPTION'		=> (isset($user_settings[$user_id])) ? generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7) : false,
+
+	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
+	'U_BLOG'				=> $blog_urls['self_minus_print'],
+	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=blog') : '',
+ 	'U_REPLY_BLOG'			=> ($blog_id != 0 && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
+	'U_VIEW_RESULTS'		=> $blog_urls['viewpoll'],
+
+	'S_POST_ACTION'			=> $blog_urls['self'],
+	'S_POLL_ACTION'			=> $blog_urls['vote'],
+	'S_PRINT_MODE'			=> $print,
+	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
+	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : (($user->data['user_id'] != $user_id || $blog_id) ? $blog_urls['subscribe'] : ''),
+	'S_WATCHING_FORUM'		=> $subscribed,
+
+	'UA_GREY_STAR_SRC'		=> $blog_images_path . 'star_grey.gif',
+	'UA_GREEN_STAR_SRC'		=> $blog_images_path . 'star_green.gif',
+	'UA_RED_STAR_SRC'		=> $blog_images_path . 'star_red.gif',
+	'UA_ORANGE_STAR_SRC'	=> $blog_images_path . 'star_orange.gif',
+	'UA_MAX_RATING'			=> $config['user_blog_max_rating'],
+	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
+));
+
+// Include the file we need for the page.
+include($phpbb_root_path . 'blog/' . $inc_file . '.' . $phpEx);
 
 // assign some common variables before the end of the page
 $template->assign_vars(array(
@@ -214,23 +337,6 @@ $template->assign_vars(array(
 ));
 
 blog_plugins::plugin_do('blog_end');
-
-// Set up the stylesheet
-$template->set_filenames(array(
-	'stylesheet'		=> 'stylesheet.css',
-));
-$blog_stylesheet .= $template->assign_display('stylesheet');
-
-// Ok now, anything you want outputted needs to be put in the $blog_content variable.  Should be the entire already parsed page.
-$template->set_template();
-$template->set_filenames(array(
-	'body' => 'blog/blog.html',
-));
-$template->assign_vars(array(
-	'BLOG_CONTENT'		=> $blog_content,
-	'BLOG_STYLESHEET'	=> $blog_stylesheet,
-));
-unset($blog_content, $blog_stylesheet);
 
 //$db->sql_report('display');
 

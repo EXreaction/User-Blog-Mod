@@ -9,7 +9,7 @@
 
 function archive_function_generate_menu(&$arg)
 {
-	global $auth, $db, $user, $template, $phpbb_root_path;
+	global $auth, $db, $user, $template, $phpbb_root_path, $blog_images_path;
 
 	if (!$arg['user_id'])
 	{
@@ -67,10 +67,13 @@ function archive_function_generate_menu(&$arg)
 	$template->assign_vars(array(
 		'S_ARCHIVES'	=> (count($archive_rows)) ? true : false,
 		'T_THEME_PATH'	=> "{$phpbb_root_path}styles/" . $user->theme['theme_path'] . '/theme',
+
+		'IMG_PLUS'		=> $blog_images_path . 'plus.gif',
+		'IMG_MINUS'		=> $blog_images_path . 'minus.gif',
 	));
 
 	$template->set_filenames(array(
-		'archive_body'		=> 'plugins/archive/archive_body.html',
+		'archive_body'		=> 'blog/plugins/archive/archive_body.html',
 	));
 
 	$arg['user_menu_extra'] .= $template->assign_display('archive_body');

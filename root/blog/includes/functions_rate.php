@@ -66,7 +66,7 @@ function get_user_blog_rating_data($user_id)
 */
 function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings, $user_rating, $force_average = false)
 {
-	global $auth, $config, $phpbb_root_path, $phpEx, $user, $blog_plugins, $blog_template;
+	global $auth, $config, $phpbb_root_path, $phpEx, $user, $blog_plugins, $blog_images_path;
 
 	if (!$config['user_blog_enable_ratings'])
 	{
@@ -92,11 +92,11 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	}
 
 	// Some variables we'll need
-	$star_green = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/star_green.gif';
-	$star_grey = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/star_grey.gif';
-	$star_orange = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/star_orange.gif';
-	$star_red = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/star_red.gif';
-	$star_remove = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/star_remove.gif';
+	$star_green = $blog_images_path . 'star_green.gif';
+	$star_grey = $blog_images_path . 'star_grey.gif';
+	$star_orange = $blog_images_path . 'star_orange.gif';
+	$star_red = $blog_images_path . 'star_red.gif';
+	$star_remove = $blog_images_path . 'star_remove.gif';
 
 	$final_code = ($force_average) ? sprintf((($num_ratings == 1) ? $user->lang['AVERAGE_OF_RATING'] : $user->lang['AVERAGE_OF_RATINGS']), $num_ratings) . ':' : '';
 

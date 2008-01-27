@@ -68,7 +68,7 @@ if (confirm_box(true))
 			{
 				trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
 			}
-/*
+
 			set_config('user_blog_enable_attachments', 1);
 
 			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'attachments\'';
@@ -213,22 +213,26 @@ if (confirm_box(true))
 
 			// Need to add polls to the blogs table
 			phpbb_db_tools::$return_statements = false;
-			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_title', array('STEXT_UNI', ''));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_title', array('STEXT_UNI', '', 'true_sort'));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_start', array('TIMESTAMP', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_length', array('TIMESTAMP', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_max_options', array('TINT:4', 1));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_last_vote', array('TIMESTAMP', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_vote_change', array('BOOL', 0));
-*/
-		$blog_permissions = array(
-			'local'      => array(),
-			'global'   => array(
-				'u_blog_vote',
-				'u_blog_vote_change',
-				'u_blog_create_poll',
-				)
-		);
-		$auth_admin->acl_add_option($blog_permissions);
+
+			// Blog style
+			phpbb_db_tools::sql_column_add(BLOGS_USERS_TABLE, 'blog_style', array('STEXT_UNI', '', 'true_sort'));
+
+			$blog_permissions = array(
+				'local'		=> array(),
+				'global'	=> array(
+					'u_blog_vote',
+					'u_blog_vote_change',
+					'u_blog_create_poll',
+					'u_blog_style',
+					)
+			);
+			$auth_admin->acl_add_option($blog_permissions);
 	}
 
 	// update the version

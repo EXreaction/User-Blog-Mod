@@ -17,6 +17,12 @@ if (!defined('IN_PHPBB'))
 $user->add_lang('viewtopic');
 
 // for sorting and pagination
+$sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
+$sort_key = request_var('sk', 't');
+$sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
+$limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
+$s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
+$order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
 $total_blogs = $blog_data->get_blog_info('user_count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false));
 $sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
 $sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
@@ -31,6 +37,24 @@ if ($mode == 'deleted')
 else
 {
 	$blog_ids = $blog_data->get_blog_data('user', $user_id, array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+}
+
+// for highlighting
+if ($hilit_words)
+{
+	$highlight_match = $highlight = '';
+	foreach (explode(' ', trim($hilit_words)) as $word)
+	{
+		if (trim($word))
+		{
+			$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
+		}
+	}
+	$highlight = urlencode($hilit_words);
+}
+else
+{
+	$highlight_match = false;
 }
 
 blog_plugins::plugin_do('view_user_start');
@@ -106,9 +130,8 @@ if (!$feed)
 	blog_plugins::plugin_do('view_user_end');
 
 	$template->set_filenames(array(
-		'view_blog'		=> 'view_blog.html',
+		'body'		=> 'blog/view_blog.html',
 	));
-	$blog_content = $template->assign_display('view_blog');
 }
 else // if $feed
 {

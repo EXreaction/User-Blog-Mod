@@ -16,8 +16,8 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 * Add the new permissions
 */
 $blog_permissions = array(
-	'local'      => array(),
-	'global'   => array(
+	'local'		=> array(),
+	'global'	=> array(
 		'u_blogview',
 		'u_blogpost',
 		'u_blogedit',
@@ -53,6 +53,7 @@ $blog_permissions = array(
 		'u_blog_vote',
 		'u_blog_vote_change',
 		'u_blog_create_poll',
+		'u_blog_style',
 	)
 );
 $auth_admin->acl_add_option($blog_permissions);

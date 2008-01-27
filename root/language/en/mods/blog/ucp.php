@@ -17,6 +17,8 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'BLOG_INSTANT_REDIRECT'					=> 'Instant Redirect',
 	'BLOG_INSTANT_REDIRECT_EXPLAIN'			=> 'This will set the User Blog Mod to instantly redirect to the next page instead of displaying the Information page.',
+	'BLOG_STYLE'							=> 'Blog Style',
+	'BLOG_STYLE_EXPLAIN'					=> 'Select the style you want displayed for your blog.',
 
 	'FOE_PERMISSIONS'						=> 'Foe Permissions',
 	'FRIEND_PERMISSIONS'					=> 'Friend Permissions',

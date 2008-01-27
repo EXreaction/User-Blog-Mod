@@ -1,6 +1,8 @@
 <!-- IF not S_PRINT_MODE -->
 
-	<!-- INCLUDE blog.js -->
+	<!-- INCLUDE overall_header.html -->
+
+	<!-- INCLUDE blog/blog.js -->
 
 	<!-- IF U_BLOG_MCP -->
 		<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
@@ -27,7 +29,7 @@
 	<table style="width: 100%">
 		<tr>
 			<td id="left_menu">
-				<!-- INCLUDE left_menu.html -->
+				<!-- INCLUDE blog/left_menu.html -->
 			</td>
 			<td style="vertical-align: top; padding-left: 10px;">
 	<!-- ENDIF -->
@@ -126,7 +128,7 @@
 						<h3><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
 					<!-- ENDIF -->
 
-					<p class="author"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{MINI_POST_IMG}" alt="{L_PERMANENT_LINK}" title="{L_PERMANENT_LINK}" /></a>{L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE} </p>
+					<p class="author"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a>{L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE} </p>
 
 					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
 						<p class="rules">
@@ -268,7 +270,7 @@
 						<!-- ENDIF -->
 
 						<h3><a href="{replyrow.U_VIEW}">{replyrow.TITLE}</a></h3>
-						<p class="author"><a href="{replyrow.U_VIEW_PERMANENT}"><img src="{MINI_POST_IMG}" alt="{L_PERMANENT_LINK}" title="{L_PERMANENT_LINK}" /></a>{L_POST_BY_AUTHOR} <strong>{replyrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {replyrow.DATE} </p>
+						<p class="author"><a href="{replyrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a>{L_POST_BY_AUTHOR} <strong>{replyrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {replyrow.DATE} </p>
 
 						<!-- IF replyrow.S_UNAPPROVED or replyrow.S_REPORTED -->
 							<p class="rules">
@@ -370,6 +372,8 @@
 		<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
 		<p>{LOGGED_IN_USER_LIST}</p>
 	<!-- ENDIF -->
+
+	<!-- INCLUDE overall_footer.html -->
 
 <!-- ELSE --> <!-- Print Mode -->
 
