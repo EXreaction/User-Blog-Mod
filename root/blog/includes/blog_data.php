@@ -914,7 +914,7 @@ class blog_data
 
 			foreach ($id as $i)
 			{
-				if ( (!array_key_exists($i, self::$user)) && (!in_array($i, $users_to_query)) )
+				if ($i && !array_key_exists($i, self::$user) && !in_array($i, $users_to_query))
 				{
 					$users_to_query[] = $i;
 				}
@@ -1059,7 +1059,7 @@ class blog_data
 			// replace any non-existing users with the anonymous user.
 			foreach ($id as $i)
 			{
-				if (!array_key_exists($i, self::$user))
+				if ($i && !array_key_exists($i, self::$user))
 				{
 					self::$user[$i] = self::$user[1];
 				}

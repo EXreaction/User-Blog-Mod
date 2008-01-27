@@ -156,7 +156,7 @@ function get_user_settings($user_ids)
 	$to_query = array();
 	foreach ($user_ids as $id)
 	{
-		if (!array_key_exists($id, $user_settings))
+		if ($id && !array_key_exists($id, $user_settings))
 		{
 			$cache_data = $cache->get('_blog_settings_' . intval($id));
 			if ($cache_data === false)
@@ -214,7 +214,7 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 	{
 		foreach ($user_ids as $user_id)
 		{
-			if (!is_array($zebra_list) || !array_key_exists($user_id, $zebra_list))
+			if (!is_array($zebra_list) || ($user_id && !array_key_exists($user_id, $zebra_list)))
 			{
 				$to_query[] = $user_id;
 			}
