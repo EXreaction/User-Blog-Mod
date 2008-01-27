@@ -376,7 +376,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 
 	if (!function_exists('blog_url'))
 	{
-		include($phpbb_root_path . 'blog/includes/functions_url.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 	}
 
 	if (!isset($user->lang['BLOG']))

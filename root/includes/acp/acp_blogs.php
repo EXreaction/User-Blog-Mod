@@ -693,10 +693,19 @@ class acp_blogs
 			case 'update' :
 				blog_plugins::plugin_update($action_to);
 			break;
+			case 'move_up' :
+			case 'move_down' :
+				blog_plugins::plugin_move($action_to, $action);
+
+				// We need to do a redirect here because the plugins list is not shown correctly after one is moved...and I see no easy way to resync the list
+				redirect($this->u_action);
+			break;
 		}
 
+		$i = 0;
 		foreach (blog_plugins::$available_plugins as $name => $data)
 		{
+			$i++;
 			$installed = (array_key_exists($name, blog_plugins::$plugins)) ? true : false;
 			$active = ($installed && blog_plugins::$plugins[$name]['plugin_enabled']) ? true : false;
 
@@ -712,6 +721,15 @@ class acp_blogs
 				{
 					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=activate&amp;name=" . $name . '">' . $user->lang['PLUGIN_ACTIVATE'] . '</a>';
 					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=uninstall&amp;name=" . $name . '">' . $user->lang['PLUGIN_UNINSTALL'] . '</a>';
+				}
+
+				if ($i > 1)
+				{
+					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=move_up&amp;name=" . $name . '">' . $user->lang['MOVE_UP'] . '</a>';
+				}
+				if ($i != sizeof(blog_plugins::$plugins))
+				{
+					$s_actions[] = '<a href="' . $this->u_action . "&amp;action=move_down&amp;name=" . $name . '">' . $user->lang['MOVE_DOWN'] . '</a>';
 				}
 
 				if ($data['plugin_version'] != blog_plugins::$plugins[$name]['plugin_version'])

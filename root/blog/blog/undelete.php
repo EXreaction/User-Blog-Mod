@@ -54,6 +54,8 @@ if (confirm_box(true))
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . intval($user_id);
 	$db->sql_query($sql);
 
+	set_config('num_blogs', $config['num_blogs']++, true);
+
 	// Update the blog_count for all the categories it is in.
 	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$result = $db->sql_query($sql);

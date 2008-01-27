@@ -233,6 +233,11 @@ if (confirm_box(true))
 					)
 			);
 			$auth_admin->acl_add_option($blog_permissions);
+
+			$sql = 'SELECT count(blog_id) AS blog_count FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			set_config('num_blogs', $row['blog_count'], true);
 	}
 
 	// update the version

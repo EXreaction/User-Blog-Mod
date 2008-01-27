@@ -94,6 +94,6 @@ $blog_id = $db->sql_nextid();
 
 $blog_search->index('add', $blog_id, 0, $message_parser->message, $user->lang['WELCOME_SUBJECT'], $user->data['user_id']);
 
-$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = \'' . $user->data['user_id'] . '\'';
+$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . $user->data['user_id'];
 $db->sql_query($sql);
 ?>

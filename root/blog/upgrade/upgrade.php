@@ -311,8 +311,8 @@ class blog_upgrade
 			if ($section == 0)
 			{
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-					WHERE blog_deleted = \'0\'
-					AND blog_approved = \'1\'
+					WHERE blog_deleted = 0
+					AND blog_approved = 1
 						ORDER BY blog_id DESC
 							LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
 				$result = $db->sql_query($sql);
@@ -341,8 +341,8 @@ class blog_upgrade
 			else
 			{
 				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE reply_deleted = \'0\'
-					AND reply_approved = \'1\'
+					WHERE reply_deleted = 0
+					AND reply_approved = 1
 						ORDER BY reply_id DESC
 							LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
 				$result = $db->sql_query($sql);
@@ -352,8 +352,8 @@ class blog_upgrade
 				}
 
 				$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE reply_deleted = \'0\'
-					AND reply_approved = \'1\'';
+					WHERE reply_deleted = 0
+					AND reply_approved = 1';
 				$result = $db->sql_query($sql);
 				$cnt = $db->sql_fetchrow($result);
 
@@ -376,7 +376,7 @@ class blog_upgrade
 	*/
 	function resync()
 	{
-		global $db, $user;
+		global $config, $db, $user;
 		global $part, $part_cnt, $section, $section_cnt;
 
 		$blog_data = array();
@@ -413,9 +413,9 @@ class blog_upgrade
 					// count all the replies (an SQL query seems the easiest way to do it)
 					$sql = 'SELECT count(reply_id) AS total 
 						FROM ' . BLOGS_REPLY_TABLE . ' 
-							WHERE blog_id = \'' . $row['blog_id'] . '\' 
-								AND reply_deleted = \'0\' 
-								AND reply_approved = \'1\'';
+							WHERE blog_id = ' . $row['blog_id'] . '
+								AND reply_deleted = 0
+								AND reply_approved = 1';
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
@@ -423,7 +423,7 @@ class blog_upgrade
 					if ($total['total'] != $row['blog_reply_count'])
 					{
 						// Update the reply count
-						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = ' . $total['total'] . ' WHERE blog_id = ' . $row['blog_id'];
 						$db->sql_query($sql);
 					}
 				}
@@ -444,7 +444,7 @@ class blog_upgrade
 					// count all the replies (an SQL query seems the easiest way to do it)
 					$sql = 'SELECT count(reply_id) AS total 
 						FROM ' . BLOGS_REPLY_TABLE . ' 
-							WHERE blog_id = \'' . $row['blog_id'] . '\'';
+							WHERE blog_id = ' . $row['blog_id'];
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
@@ -452,7 +452,7 @@ class blog_upgrade
 					if ($total['total'] != $row['blog_real_reply_count'])
 					{
 						// Update the reply count
-						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = \'' . $total['total'] . '\' WHERE blog_id = \'' . $row['blog_id'] . '\'';
+						$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_real_reply_count = ' . $total['total'] . ' WHERE blog_id = ' . $row['blog_id'];
 						$db->sql_query($sql);
 					}
 				}
@@ -476,9 +476,9 @@ class blog_upgrade
 					// count all the replies (an SQL query seems the easiest way to do it)
 					$sql2 = 'SELECT count(blog_id) AS total 
 						FROM ' . BLOGS_TABLE . ' 
-							WHERE user_id = \'' . $row['user_id'] . '\' 
-								AND blog_deleted = \'0\' 
-								AND blog_approved = \'1\'';
+							WHERE user_id = ' . $row['user_id'] . '
+								AND blog_deleted = 0
+								AND blog_approved = 1';
 					$result2 = $db->sql_query($sql2);
 					$total = $db->sql_fetchrow($result2);
 					$db->sql_freeresult($result2);
@@ -486,7 +486,7 @@ class blog_upgrade
 					if ($total['total'] != $row['blog_count'])
 					{
 						// Update the reply count
-						$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = \'' . $total['total'] . '\' WHERE user_id = \'' . $row['user_id'] . '\'';
+						$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = ' . $total['total'] . ' WHERE user_id = ' . $row['user_id'];
 						$db->sql_query($sql);
 					}
 				}
@@ -501,6 +501,11 @@ class blog_upgrade
 		}
 		else
 		{
+			$sql = 'SELECT count(blog_id) AS blog_count FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			set_config('num_blogs', $row['blog_count'], true);
+
 			$part = 0;
 			$section++;
 		}

@@ -13,15 +13,11 @@
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * Bug when searching
 * 
-* add num_blogs as a dynamic config value for the total number of posted blogs
-* 
 * Information section - MCP
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
 * Finish Feed icons - have a trigger_error just display all of the available options and examples for the javascript.
-*
-* Rename all the permissions to have more descriptive names?
 *
 * cash mod plugin
 * 
@@ -30,7 +26,6 @@
 * OTHER -------------------------------------------------------------------------------------------
 * 
 * Memorable entry (like a sticky)?
-* Left Menu Order
 *
 * UCP
 *	custom CSS coding allowed?
@@ -189,6 +184,7 @@ if ($reply_id)
 {
 	if ($blog_data->get_reply_data('reply', $reply_id) === false)
 	{
+		$user->setup('mods/blog/common');
 		trigger_error('REPLY_NOT_EXIST');
 	}
 
@@ -207,6 +203,7 @@ if ($blog_id)
 {
 	if ($blog_data->get_blog_data('blog', $blog_id) === false)
 	{
+		$user->setup('mods/blog/common');
 		trigger_error('BLOG_NOT_EXIST');
 	}
 
@@ -219,6 +216,7 @@ $blog_data->get_user_data(false, true); // do it this way so we get user data on
 // make sure they user they requested exists
 if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
 {
+	$user->setup('mods/blog/common');
 	trigger_error('NO_USER');
 }
 
@@ -230,11 +228,9 @@ update_edit_delete();
 // Make sure the user can view this blog by checking the blog's individual permissions
 if ($blog_id && !handle_user_blog_permissions($blog_id))
 {
+	$user->setup('mods/blog/common');
 	trigger_error('NO_PERMISSIONS_READ');
 }
-
-// Check to make sure the user has permission to get to this page
-check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 
 // Put the template we want in $blog_template for easier access/use
 $blog_template = ($user_id) ? $user_settings[$user_id]['blog_style'] : '';
@@ -278,6 +274,9 @@ else
 	$blog_style = false;
 	$blog_images_path = $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/blog/';
 }
+
+// Check to make sure the user has permission to get to this page
+check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
 
 // If some of the pages needed extra language files included, add them now.
 if (isset($add_lang))

@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 $this->available_upgrades[$name]['upgrade_title'] = 'The Blog Mod 0.2.4b';
 $this->available_upgrades[$name]['upgrade_copyright'] = 'EXreaction';
-$this->available_upgrades[$name]['upgrade_version'] = '0.7.0a';
+$this->available_upgrades[$name]['upgrade_version'] = '0.7.1';
 
 $this->available_upgrades[$name]['custom_options'] = array(
 	'replies'			=> array('lang' => 'UPGRADE_REPLIES',	'type' => 'radio:yes_no',	'explain' => false,		'default' => true),

@@ -46,7 +46,7 @@ class blog_plugins
 		{
 			if (!defined('BLOGS_PLUGINS_TABLE'))
 			{
-				include($phpbb_root_path . 'blog/data/constants.' . $phpEx);
+				include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 			}
 			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE;
 			$result = $db->sql_query($sql);
@@ -146,6 +146,9 @@ class blog_plugins
 		}
 	}
 
+	/**
+	* Install a plugin
+	*/
 	public static function plugin_install($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
@@ -185,6 +188,9 @@ class blog_plugins
 		$cache->purge();
 	}
 
+	/**
+	* Uninstall a plugin
+	*/
 	public static function plugin_uninstall($which)
 	{
 		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
@@ -213,6 +219,9 @@ class blog_plugins
 		$cache->purge();
 	}
 
+	/**
+	* Update a plugin
+	*/
 	public static function plugin_update($which)
 	{
 		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
@@ -265,6 +274,9 @@ class blog_plugins
 		}
 	}
 
+	/**
+	* Enable a plugin
+	*/
 	public static function plugin_enable($which)
 	{
 		global $db;
@@ -285,6 +297,9 @@ class blog_plugins
 		handle_blog_cache('plugins');
 	}
 
+	/**
+	* Disable a plugin
+	*/
 	public static function plugin_disable($which)
 	{
 		global $db;
@@ -302,6 +317,53 @@ class blog_plugins
 		add_log('admin', 'LOG_BLOG_PLUGIN_DISABLED', $which);
 
 		handle_blog_cache('plugins');
+	}
+
+	/**
+	* Move a plugin
+	* 
+	* This is used for the menu order on the User's blog page.
+	*/
+	public static function plugin_move($which, $action)
+	{
+		global $cache, $db, $blog_plugins_path, $phpEx;
+
+		if (!array_key_exists($which, self::$plugins))
+		{
+			trigger_error('PLUGIN_NOT_INSTALLED');
+		}
+
+		$temp = self::$plugins;
+		if ($action == 'move_down')
+		{
+			$temp = array_reverse($temp);
+		}
+
+		$to = $to_id = false;
+		foreach ($temp as $plugin_name => $data)
+		{
+			if ($plugin_name == $which)
+			{
+				break;
+			}
+			$to = $plugin_name;
+			$to_id = $data['plugin_id'];
+		}
+
+		if ($to)
+		{
+			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_id = 0 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
+			$db->sql_query($sql);
+
+			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_id = ' . self::$plugins[$which]['plugin_id'] . ' WHERE plugin_id = ' . $to_id;
+			$db->sql_query($sql);
+
+			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_id = ' . $to_id . ' WHERE plugin_id = 0';
+			$db->sql_query($sql);
+
+			handle_blog_cache('plugins');
+		}
+		unset($temp);
 	}
 }
 ?>
