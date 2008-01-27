@@ -1,0 +1,49 @@
+<!-- IF CATEGORY_RULES -->
+	<div class="rules">
+		<div class="inner"><span class="corners-top"><span></span></span>
+
+		<strong>{L_CATEGORY_RULES}</strong><br />
+		{CATEGORY_RULES}
+
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+<!-- ENDIF -->
+
+<!-- BEGIN category_row -->
+	<!-- IF category_row.S_FIRST_ROW  -->
+		<div class="forabg">
+			<div class="inner"><span class="corners-top"><span></span></span>
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<dt><!-- IF CURRENT_CATEGORY --><a href="{U_CURRENT_CATEGORY}">{CURRENT_CATEGORY}</a><!-- ELSE -->{L_CATEGORY}<!-- ENDIF --></dt>
+						<dd class="topics" style="width: 80px; float: right;">{L_BLOGS}</dd>
+					</dl>
+				</li>
+			</ul>
+			<ul class="topiclist forums">
+	<!-- ENDIF -->
+
+	<li class="row">
+		<dl class="icon">
+			<dt style="padding-left: 5px;">
+				<a href="{category_row.U_CATEGORY}" class="forumtitle">{category_row.CATEGORY_NAME}</a><br />
+				{category_row.CATEGORY_DESCRIPTION}
+				<!-- IF category_row.S_SUBCATEGORY --><br />
+					<strong>{category_row.L_SUBCATEGORY} :</strong>
+					<!-- BEGIN subcategory -->
+						<a href="{category_row.subcategory.U_CATEGORY}">{category_row.subcategory.CATEGORY_NAME}</a>
+					<!-- END subcategory -->
+				<!-- ENDIF -->
+			</dt>
+			<dd class="topics" style="width: 80px; float: right; border: 0;">{category_row.BLOGS} <dfn>{L_BLOGS}</dfn></dd>
+		</dl>
+	</li>
+
+	<!-- IF category_row.S_LAST_ROW -->
+			</ul>
+
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	<!-- ENDIF -->
+<!-- END category_row -->
