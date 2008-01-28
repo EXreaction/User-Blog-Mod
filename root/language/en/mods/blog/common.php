@@ -15,12 +15,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'EDIT_BLOG'							=> 'Edit Blog',
-		'DELETE_BLOG'						=> 'Delete Blog',
-			'REPORT_BLOG'						=> 'Report Blog',
-				'EDIT_REPLY'						=> 'Edit Reply',
-	'DELETE_REPLY'						=> 'Delete Reply',
-		'REPORT_REPLY'						=> 'Report Reply',
+	'AVAILABLE_FEEDS'				=> 'Available Feeds',
+
 	'BLOG'							=> 'Blog',
 	'BLOGS'							=> 'Blogs',
 	'BLOG_CREDITS'					=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
@@ -43,6 +39,12 @@ $lang = array_merge($lang, array(
 	'CNT_VIEWS'						=> 'Viewed %s times',
 	'CONTINUE'						=> 'Continue',
 	'CONTINUED'						=> 'Continued',
+
+	'DELETE_BLOG'					=> 'Delete Blog',
+	'DELETE_REPLY'					=> 'Delete Reply',
+
+	'EDIT_BLOG'						=> 'Edit Blog',
+	'EDIT_REPLY'					=> 'Edit Reply',
 
 	'FEED'							=> 'Feed',
 	'FOE_PERMISSIONS'				=> 'Foe Permissions',
@@ -83,6 +85,8 @@ $lang = array_merge($lang, array(
 	'REPLY_COUNT'					=> 'Reply Count',
 	'REPLY_DELETED_BY_MSG'			=> 'This reply was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this reply.',
 	'REPLY_NOT_EXIST'				=> 'The requested reply does not exist.',
+	'REPORT_BLOG'					=> 'Report Blog',
+	'REPORT_REPLY'					=> 'Report Reply',
 	'RETURN_BLOG_MAIN'				=> '%1$sReturn to %2$s\'s Blogs%3$s',
 	'RETURN_BLOG_OWN'				=> '%sReturn to your blog%s',
 	'RETURN_MAIN'					=> 'Click %shere%s to return to the main User Blog page',

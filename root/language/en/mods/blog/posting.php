@@ -50,7 +50,6 @@ $lang = array_merge($lang, array(
 
 	'DELETE_BLOG_CONFIRM'				=> 'Are you sure you want to delete this blog?',
 	'DELETE_BLOG_WARN'					=> 'Once deleted, only a moderator or administrator can un-delete this blog',
-
 	'DELETE_REPLY_CONFIRM'				=> 'Are you sure you want to delete this reply?',
 	'DELETE_REPLY_WARN'					=> 'Once deleted, only a moderator or administrator can un-delete this reply',
 
@@ -86,7 +85,6 @@ $lang = array_merge($lang, array(
 	'REPLY_REPORT_PM_SUBJECT'			=> 'Blog Reply Reported!',
 	'REPLY_SUBMIT_SUCCESS'				=> 'The reply was submitted successfully!',
 	'REPLY_UNDELETED'					=> 'The reply has been un-deleted.',
-
 
 	'SUBSCRIPTION_NOTICE'				=> 'Subscription notice from the User Blog Mod',
 

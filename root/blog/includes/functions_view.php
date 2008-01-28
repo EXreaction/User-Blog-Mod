@@ -971,7 +971,44 @@ function update_edit_delete($mode = 'all')
 */
 function feed_output($blog_ids, $feed_type)
 {
-	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user, $blog_data;
+	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user, $blog_data, $user_id, $blog_id;
+
+	if ($feed_type == 'explain')
+	{
+		$available_feeds = array(
+			'RSS 0.91'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_0.91'))),
+			'RSS 1.0'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_1.0'))),
+			'RSS 2.0'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_2.0'))),
+			'ATOM'			=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'ATOM'))),
+			'JAVASCRIPT'	=> array(
+				'url'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT'))),
+				'text'		=> htmlspecialchars('<script type="text/javascript" src="' . blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>'),
+				'demo'		=> '<script type="text/javascript" src="' . blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>',
+			),
+		);
+
+		blog_plugins::plugin_do_ref('available_feeds', $available_feeds);
+
+		$message = '<strong>' . $user->lang['AVAILABLE_FEEDS'] . '</strong><br /><br />';
+		foreach ($available_feeds as $feed_name => $data)
+		{
+			if (!is_array($data))
+			{
+				$message .= '<br /><h2>' . $feed_name . '</h2><div><a href="' . $data . '"><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data . '</code></dd></dl></a></div><br />';
+			}
+			else
+			{
+				$message .= '<br /><h2>' . $feed_name . '</h2><div><a href="' . $data['url'] . '"><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data['text'] . '</code></dd></dl></a></div><br />';
+
+				if (isset($data['demo']))
+				{
+					$message .= $data['demo'];
+				}
+			}
+		}
+
+		trigger_error($message);
+	}
 
 	if (!is_array($blog_ids))
 	{
@@ -991,8 +1028,8 @@ function feed_output($blog_ids, $feed_type)
 		'CURRENT_TIME'		=> date('r'),
 
 		// used for Javascript output feeds
-		'IMG_MIN'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/min_dark_blue.gif',
-		'IMG_MAX'			=> generate_board_url() . '/styles/' . $user->theme['template_path'] . '/template/blog/max_dark_blue.gif',
+		'IMG_MIN'			=> generate_board_url() . '/styles/' . $user->theme['theme_path'] . '/theme/images/blog/min_dark_blue.gif',
+		'IMG_MAX'			=> generate_board_url() . '/styles/' . $user->theme['theme_path'] . '/theme/images/blog/max_dark_blue.gif',
 		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false,
 	));
 
@@ -1014,12 +1051,15 @@ function feed_output($blog_ids, $feed_type)
 		$blog_row = $blog_data->handle_blog_data($id, true);
 
 		$row = array(
-			'URL'		=> blog_url(blog_data::$blog[$id]['user_id'], $id),
-			'USERNAME'	=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
+			'URL'				=> blog_url(blog_data::$blog[$id]['user_id'], $id),
+			'USERNAME'			=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
+			'BLOG_MESSAGE'		=> str_replace("'", '&#039;', $blog_row['BLOG_MESSAGE']),
 		);
 
-		$template->assign_block_vars('item', $blog_row + $row);
+		$template->assign_block_vars('item', array_merge($blog_row, $row));
 	}
+
+	blog_plugins::plugin_do_arg('function_feed_output', compact('blog_ids', 'feed_type'));
 
 	// Ok, now use the main template for this and immediately call page_footer.
 	$template->set_template();

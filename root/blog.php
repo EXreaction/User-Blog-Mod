@@ -61,7 +61,7 @@ $refresh = (isset($_POST['add_file']) || isset($_POST['delete_file']) || isset($
 $cancel = (isset($_POST['cancel'])) ? true : false;
 
 $feed = request_var('feed', '');
-$feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') || ($feed == 'ATOM') || ($feed == 'JAVASCRIPT')) && $config['user_blog_enable_feeds']) ? $feed : false;
+$feed = ($feed && ($feed == 'explain' || $feed == 'RSS_0.91' || $feed == 'RSS_1.0' || $feed == 'RSS_2.0' || $feed == 'ATOM' || $feed == 'JAVASCRIPT') && $config['user_blog_enable_feeds']) ? $feed : false;
 $hilit_words = request_var('hilit', '', true);
 $start = request_var('start', 0);
 $limit = request_var('limit', (($page == 'search') ? 20 : (($blog_id || $reply_id) ? 10 : 5)));
@@ -106,6 +106,7 @@ switch ($page)
 	case 'resync' : // to resync the blog data
 	case 'rate' : // to rate a blog
 	case 'download' : // to download an attachment
+	case 'feed' : // To view the feed options
 		$add_lang = 'mods/blog/misc';
 		$inc_file = $page;
 	break;
