@@ -177,7 +177,7 @@
 					<!-- BEGIN replyrow -->
 						<div id="r{replyrow.ID}" class="reply<!-- IF replyrow.S_REPORTED or replyrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF replyrow.S_DELETED --> deleted<!-- ENDIF -->">
 							<!-- IF not replyrow.S_SHORTENED and replyrow.RATING_STRING --><div class="reply_rating">{replyrow.RATING_STRING}</div><!-- ENDIF -->
-							<h3 class="reply_title"><a href="{replyrow.U_VIEW}">{replyrow.TITLE}</a></h3>
+							<h4 class="reply_title"><a href="{replyrow.U_VIEW}">{replyrow.TITLE}</a></h3>
 							<h4 class="reply_date"><a href="{replyrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{replyrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {replyrow.DATE}</h4>
 
 							<!-- IF replyrow.S_UNAPPROVED or replyrow.S_REPORTED -->
@@ -228,6 +228,7 @@
 							</div>
 
 							<div class="reply_bottom_left">
+								<br />
 							</div>
 						</div>
 					<!-- END replyrow -->

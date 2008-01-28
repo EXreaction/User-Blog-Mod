@@ -237,10 +237,19 @@ hr {
 }
 
 .reply {
+	padding: 5px;
 	margin-bottom: 15px;
 }
 
+.reply_title {
+	font-size: 1.1em;
+}
+
+.reply_date {
+}
+
 .reply_text {
+	min-height: 30px;
 }
 
 .reply_bottom_right {
