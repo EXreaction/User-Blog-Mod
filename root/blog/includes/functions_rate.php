@@ -133,14 +133,14 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 			$final_code .= 'src="' . $star_grey . '" ';
 		}
 		$final_code .= ($can_rate) ? "onmouseover=\"ratingHover('{$i}', '{$unique_str}')\"  onmouseout=\"ratingUnHover('{$average_rating}', '{$unique_str}')\"  onmousedown=\"ratingDown('{$i}', '{$unique_str}')\"" : '';
-		$final_code .= ' alt="' . $title . '" title="' . $title . '" />';
+		$final_code .= ' alt="' . $title . '" title="' . $title . '" border="0" />';
 		$final_code .= ($can_rate) ? '</a>' : '';
 	}
 
 	// If required, we will add the remove rating icon at the end
 	if ($user_rating !== false && !$force_average)
 	{
-		$final_code .= ' <a href="' . $delete_url . '"><img id="' . $unique_str . 'remove" src="' . $star_remove . '"  alt="' . $user->lang['REMOVE_RATING'] . '" title="' . $user->lang['REMOVE_RATING'] . '" /></a>';
+		$final_code .= ' <a href="' . $delete_url . '"><img id="' . $unique_str . 'remove" src="' . $star_remove . '"  alt="' . $user->lang['REMOVE_RATING'] . '" title="' . $user->lang['REMOVE_RATING'] . '" border="0" /></a>';
 	}
 
 	$final_code .= '</div>';

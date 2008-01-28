@@ -1,0 +1,373 @@
+<style type="text/css">
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #E1D4C0 url({T_BLOG_IMAGESET_PATH}/sides_body.png) repeat-y scroll center top;
+	font-family: "Trebuchet MS", sans-serif;
+	font-size: small;
+	font-size-adjust: none;
+	font-style: normal;
+	font-variant: normal;
+}
+
+/*
+* Tag styles --------------------------------------------------------------------------------------
+*/
+a:link {
+	color:#5588AA;
+	text-decoration:none;
+}
+
+a:visited {
+	color:#32527A;
+	text-decoration:none;
+}
+
+a:hover {
+	color:#CC6600;
+	text-decoration:underline;
+}
+
+h1 {
+	border-bottom: 1px solid #E1D4C0;
+	color: #333333;
+	font-weight: normal;
+	margin-bottom: 3px;
+}
+
+h3 {
+	font-size: 1.4em;
+}
+
+h4 {
+	font-size: 0.9em;
+}
+
+img {
+	border: 0;
+}
+
+/*
+* Class styles, starting from the first used to the last used -------------------------------------
+*/
+
+/* Header Classes */
+.nav {
+	background-color: #114477;
+	height: 30px;
+	padding: 0 5px;
+	border-bottom: 1px solid #000000;
+}
+
+.nav a {
+	color: #9CCEFF;
+}
+
+.nav a:hover {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.nav_icon {
+	float: left;
+	 margin-top: 2px;
+}
+
+.nav_search {
+	float: left;
+	margin: 5px 0 0 7px;
+	height: 13px;
+	font-size: 12px;
+}
+
+.nav_search_submit {
+	float: left;
+	margin: 4px 0 0 5px;
+	background-color: #114477;
+	border: 1px solid #4477AA;
+	color: #99CCFF;
+}
+
+.nav_links {
+	float: left;
+	margin: 6px 0 0 10px;
+	color: #94A8D4;
+}
+
+.nav_links_right {
+	float: right;
+	margin: 6px 5px 0 10px;
+	color: #94A8D4;
+}
+
+.header {
+	background-color: #002255;
+}
+
+.header_inner {
+	width: 810px;
+	margin: 0 auto;
+	background-image: url({T_BLOG_IMAGESET_PATH}/sides_head.png);
+}
+
+.header_img {
+	padding: 5px 50px;
+}
+
+/* Main Classes */
+.content {
+	width: 700px;
+	margin: 10px auto;
+}
+
+.blog_description {
+	padding: 5px 10px 15px 10px;
+}
+
+.blog {
+}
+
+.blog_rating {
+	float: right;
+}
+
+.blog_title a {
+	color: #CC6600;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.blog_title a:hover {
+	color: #333333;
+}
+
+.blog_date {
+}
+
+.blog_text {
+	padding: 10px 0;
+}
+
+.edited_message {
+}
+
+.deleted_message {
+}
+
+.signature {
+}
+
+.blog_bottom_right {
+	float: right;
+}
+
+.blog_bottom_left {
+}
+
+/* Footer Classes */
+.copyright {
+	margin-top: 10px;
+	padding: 5px;
+	text-align: center;
+	color: #555555;
+}
+
+/* Extra Classes */
+.deleted {
+	background-color: #33FF00;
+}
+
+.reported {
+	background-color: #f7f7f7;
+}
+
+/*
+* BBCode/Attachment/Other board styles ------------------------------------------------------------
+*/
+
+/* Quote block */
+blockquote {
+	background: #ebebeb none 6px 8px no-repeat;
+	border: 1px solid #dbdbdb;
+	font-size: 0.95em;
+	margin: 0.5em 1px 0 25px;
+	overflow: hidden;
+	padding: 5px;
+}
+
+blockquote blockquote {
+	/* Nested quotes */
+	background-color: #bababa;
+	font-size: 1em;
+	margin: 0.5em 1px 0 15px;	
+}
+
+blockquote blockquote blockquote {
+	/* Nested quotes */
+	background-color: #e4e4e4;
+}
+
+blockquote cite {
+	/* Username/source of quoter */
+	font-style: normal;
+	font-weight: bold;
+	margin-left: 20px;
+	display: block;
+	font-size: 0.9em;
+}
+
+blockquote cite cite {
+	font-size: 1em;
+}
+
+blockquote.uncited {
+	padding-top: 25px;
+}
+
+/* Code block */
+dl.codebox {
+	padding: 3px;
+	background-color: #FFFFFF;
+	border: 1px solid #d8d8d8;
+	font-size: 1em;
+}
+
+dl.codebox dt {
+	text-transform: uppercase;
+	border-bottom: 1px solid #CCCCCC;
+	margin-bottom: 3px;
+	font-size: 0.8em;
+	font-weight: bold;
+	display: block;
+}
+
+blockquote dl.codebox {
+	margin-left: 0;
+}
+
+dl.codebox code {
+	/* Also see tweaks.css */
+	overflow: auto;
+	display: block;
+	height: auto;
+	max-height: 200px;
+	white-space: normal;
+	padding-top: 5px;
+	font: 0.9em Monaco, "Andale Mono","Courier New", Courier, mono;
+	line-height: 1.3em;
+	color: #8b8b8b;
+	margin: 2px 0;
+}
+
+.syntaxbg		{ color: #FFFFFF; }
+.syntaxcomment	{ color: #000000; }
+.syntaxdefault	{ color: #bcbcbc; }
+.syntaxhtml		{ color: #000000; }
+.syntaxkeyword	{ color: #585858; }
+.syntaxstring	{ color: #a7a7a7; }
+
+/* Attachments */
+.attachbox {
+	width: auto; 
+	margin: 5px 5px 5px 0;
+	padding: 6px;
+	background-color: #FFFFFF;
+	border: 1px dashed #d8d8d8;
+}
+
+.attachbox dt {
+	font-family: Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+}
+
+.attachbox dd {
+	margin-top: 4px;
+	padding-top: 4px;
+	border-top: 1px solid #d8d8d8;
+}
+
+.attachbox dd dd {
+	border: none;
+}
+
+.attachbox p {
+	line-height: 110%;
+	color: #666666;
+	font-weight: normal;
+}
+
+.attachbox p.stats
+{
+	line-height: 110%;
+	color: #666666;
+	font-weight: normal;
+}
+
+.attach-image {
+	margin: 3px 0;
+	width: 100%;
+	max-height: 350px;
+	overflow: auto;
+}
+
+.attach-image img {
+	border: 1px solid #999999;
+/*	cursor: move; */
+	cursor: default;
+}
+
+/* Inline image thumbnails */
+div.inline-attachment dl.thumbnail, div.inline-attachment dl.file {
+	margin-bottom: 4px;
+}
+
+div.inline-attachment p {
+	font-size: 100%;
+}
+
+dl.file {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+dl.file dt {
+	text-transform: none;
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+dl.file dd {
+	color: #666666;
+	margin: 0;
+	padding: 0;	
+}
+
+dl.thumbnail img {
+	padding: 3px;
+	border: 1px solid #666666;
+	background-color: #FFF;
+}
+
+dl.thumbnail dd {
+	color: #666666;
+	font-style: italic;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.attachbox dl.thumbnail dd {
+	font-size: 100%;
+}
+
+dl.thumbnail dt a:hover {
+	background-color: #EEEEEE;
+}
+
+dl.thumbnail dt a:hover img {
+	border: 1px solid #d2d2d2;
+}
+</style>

@@ -48,7 +48,6 @@ $lang = array_merge($lang, array(
 
 	'CATEGORY_EXPLAIN'					=> 'You may select more than one category by holding CTRL and clicking more categories you would like to enter it in.<br/><br/>Blogs are <strong>always</strong> shown in your personal Blog page.',
 
-	'DELETE_BLOG'						=> 'Delete Blog',
 	'DELETE_BLOG_CONFIRM'				=> 'Are you sure you want to delete this blog?',
 	'DELETE_BLOG_WARN'					=> 'Once deleted, only a moderator or administrator can un-delete this blog',
 	'DELETE_REPLY'						=> 'Delete Reply',
@@ -57,7 +56,6 @@ $lang = array_merge($lang, array(
 
 	'EDIT_A_BLOG'						=> 'Edit a blog',
 	'EDIT_A_REPLY'						=> 'Edit a reply',
-	'EDIT_BLOG'							=> 'Edit Blog',
 	'EDIT_REPLY'						=> 'Edit Reply',
 
 	'FILES_CANT_WRITE'					=> 'The files/blog_mod/ folder is not writable, please CHMOD the directory to 777',
@@ -89,7 +87,6 @@ $lang = array_merge($lang, array(
 	'REPLY_REPORT_PM_SUBJECT'			=> 'Blog Reply Reported!',
 	'REPLY_SUBMIT_SUCCESS'				=> 'The reply was submitted successfully!',
 	'REPLY_UNDELETED'					=> 'The reply has been un-deleted.',
-	'REPORT_BLOG'						=> 'Report Blog',
 	'REPORT_REPLY'						=> 'Report Reply',
 
 	'SUBSCRIPTION_NOTICE'				=> 'Subscription notice from the User Blog Mod',

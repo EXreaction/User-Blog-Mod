@@ -10,6 +10,12 @@
 /*
 * TODO List
 *
+* BLOGGER TEMPLATE
+* Pagination
+* Comments
+* Polls
+* Right Menu
+* 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * Bug when searching
 * 
@@ -90,7 +96,7 @@ $subscribed = false;
 
 blog_plugins::plugin_do('blog_start');
 
-$default = $inc_file = false;
+$default = $inc_file = $user_style = false;
 switch ($page)
 {
 	case 'vote'	: // Vote in a poll
@@ -167,10 +173,12 @@ if ($default)
 
 		if ($blog_id || $reply_id)
 		{
+			$user_style = true; // Here and the view user page are the two places where users can view with their own custom style
 			$inc_file = 'view/single';
 		}
 		else if ($user_id)
 		{
+			$user_style = true;
 			$inc_file = 'view/user';
 		}
 		else
@@ -233,14 +241,18 @@ if ($blog_id && !handle_user_blog_permissions($blog_id))
 }
 
 // Put the template we want in $blog_template for easier access/use
-$blog_template = ($user_id) ? $user_settings[$user_id]['blog_style'] : '';
+$blog_template = (isset($_GET['blogstyle'])) ? $_GET['blogstyle'] : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '');
 
 /**
 * Ok, now lets actually start setting up the page.
 */
 
-// If the user wants a blog template shown we will use that, else we will use the board template
-if ($blog_template && !is_numeric($blog_template) && is_dir($phpbb_root_path . 'blog/styles/' . $blog_template))
+// If the user wants a blog template shown we will use that, else we will use the board template.
+/*
+* A slightly (weird) way it is that I have set this up.  Only on the view blog/user page can the user set a custom style except if that custom style is also a board style.
+* If the style they selected is also a board style we will also show that style on the posting/etc pages.  This is to keep it easier on the custom template developers.
+*/
+if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpbb_root_path . 'blog/styles/' . $blog_template))
 {
 	$user->setup('mods/blog/common');
 
@@ -320,6 +332,8 @@ $template->assign_vars(array(
 	'S_WATCH_FORUM_TITLE'	=> $subscribed_title,
 	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : (($user->data['user_id'] != $user_id || $blog_id) ? $blog_urls['subscribe'] : ''),
 	'S_WATCHING_FORUM'		=> $subscribed,
+
+	'L_USERNAMES_BLOGS'		=> sprintf($user->lang['USERNAMES_BLOGS'], $username),
 
 	'UA_GREY_STAR_SRC'		=> $blog_images_path . 'star_grey.gif',
 	'UA_GREEN_STAR_SRC'		=> $blog_images_path . 'star_green.gif',

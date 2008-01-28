@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}" xml:lang="{S_USER_LANG}">
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="{S_USER_LANG}" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2007-2008 EXreaction" />
+<meta name="keywords" content="" />
+<meta name="description" content="{PAGE_TITLE}" />
+{META}
+
+<!-- INCLUDE blog/stylesheet.css -->
+
+<!-- INCLUDE blog/blog.js -->
+
+<title>{PAGE_TITLE}</title>
+</head>
+
+<body>
+	<div class="nav">
+		<img class="nav_icon" src="{T_BLOG_IMAGESET_PATH}/mini_logo.png" />
+		<!-- IF S_DISPLAY_BLOG_SEARCH -->
+			<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
+				<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="nav_search" style="width: 140px" />
+				<input class="nav_search_submit" value="{L_SEARCH}" type="submit" />
+			</form>
+		<!-- ENDIF -->
+		<span class="nav_links">
+			<a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks -->
+		</span>
+		<span class="nav_links_right">
+			<!-- IF U_MY_BLOG --><a href="{U_MY_BLOG}">{L_MY_BLOG}</a> | <!-- ENDIF -->
+			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}">{L_NEW_BLOG}</a> | <!-- ENDIF -->
+			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>
+			<!-- IF not S_USER_LOGGED_IN --> | <a href="{U_REGISTER}">{L_REGISTER}</a><!-- ENDIF -->
+		</span>
+	</div>
+	<div class="header">
+		<div class="header_inner">
+			<a href="{U_BLOG}"><img src="http://www.blogblog.com/bdn/bdevelopers.gif" class="header_img" /></a>
+		</div>
+	</div>
+	<div class="content">

@@ -15,9 +15,12 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+	'EDIT_BLOG'							=> 'Edit Blog',
+		'DELETE_BLOG'						=> 'Delete Blog',
+			'REPORT_BLOG'						=> 'Report Blog',
 	'BLOG'							=> 'Blog',
 	'BLOGS'							=> 'Blogs',
-	'BLOG_CREDITS'					=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; 2007 EXreaction',
+	'BLOG_CREDITS'					=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
 	'BLOG_DELETED_BY_MSG'			=> 'This blog was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
 	'BLOG_DESCRIPTION'				=> 'Blog Description',
 	'BLOG_MCP'						=> 'Blog Moderator CP',
@@ -51,6 +54,7 @@ $lang = array_merge($lang, array(
 	'MY_BLOG'						=> 'My Blog',
 	'MY_BLOGS'						=> 'My Blogs',
 
+	'NEW_BLOG'						=> 'New Blog',
 	'NO_BLOGS'						=> 'There are no blogs.',
 	'NO_BLOGS_USER'					=> 'This user has not posted any blogs.',
 	'NO_BLOGS_USER_SORT_DAYS'		=> 'This user has not posted any blogs in the past %s',
@@ -65,8 +69,8 @@ $lang = array_merge($lang, array(
 
 	'PERMANENT_LINK'				=> 'Permanent Link',
 	'POPULAR_BLOGS'					=> 'Popular Blogs',
-	'POST_A_NEW_BLOG'				=> 'Post a new blog',
-	'POST_A_NEW_REPLY'				=> 'Post a new reply',
+	'POST_A_NEW_BLOG'				=> 'Post a blog',
+	'POST_A_NEW_REPLY'				=> 'Post a comment',
 
 	'RANDOM_BLOGS'					=> 'Random Blogs',
 	'RECENT_BLOGS'					=> 'Recent Blogs',

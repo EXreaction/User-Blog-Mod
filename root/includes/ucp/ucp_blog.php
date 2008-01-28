@@ -118,7 +118,7 @@ class ucp_blog
 						{
 							$template->assign_block_vars('blog_styles', array(
 								'VALUE'			=> $row['value'],
-								'SELECTED'		=> ($user_settings[$user->data['user_id']]['blog_style'] == $row['value']) ? true : false,
+								'SELECTED'		=> (isset($user_settings[$user->data['user_id']]) && $user_settings[$user->data['user_id']]['blog_style'] == $row['value']) ? true : false,
 								'NAME'			=> $row['name'],
 							));
 						}
