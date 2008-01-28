@@ -9,7 +9,6 @@ body {
 	background: #E1D4C0 url({T_BLOG_IMAGESET_PATH}/sides_body.png) repeat-y scroll center top;
 	font-family: "Trebuchet MS", sans-serif;
 	font-size: small;
-	font-size-adjust: none;
 	font-style: normal;
 	font-variant: normal;
 }
@@ -47,8 +46,12 @@ h4 {
 	font-size: 0.9em;
 }
 
-img {
+img, fieldset {
 	border: 0;
+}
+
+hr {
+	margin: 10px 0;
 }
 
 /*
@@ -74,22 +77,32 @@ img {
 
 .nav_icon {
 	float: left;
-	 margin-top: 2px;
+	margin-top: 2px;
 }
 
 .nav_search {
 	float: left;
-	margin: 5px 0 0 7px;
+}
+
+.nav_search_input {
+	float: left;
+	margin: 6px 0 0 7px;
 	height: 13px;
 	font-size: 12px;
 }
 
 .nav_search_submit {
 	float: left;
-	margin: 4px 0 0 5px;
+	height: 17px;
+	margin: 6px 0 0 5px;
 	background-color: #114477;
 	border: 1px solid #4477AA;
 	color: #99CCFF;
+	font-size: 12px;
+}
+
+.nav_search_submit:hover {
+	background-color: #4477AA;
 }
 
 .nav_links {
@@ -119,15 +132,65 @@ img {
 }
 
 /* Main Classes */
-.content {
-	width: 700px;
+.main {
+	width: 720px;
 	margin: 10px auto;
+}
+
+.content {
+	<!-- IF USER_MENU_EXTRA -->
+	width: 550px;
+	<!-- ELSE -->
+	width: 720px;
+	<!-- ENDIF -->
 }
 
 .blog_description {
 	padding: 5px 10px 15px 10px;
 }
 
+/* Pagination */
+.pagination {
+	float: right;
+}
+
+/* Sidebar */
+#sidebar {
+	float: right;
+	width: 150px;
+}
+
+#sidebar .post {
+	background: transparent url({T_BLOG_IMAGESET_PATH}/bg_mod_top.png) no-repeat scroll left top;
+	margin-bottom: 15px;
+}
+
+#sidebar .inner {
+	background: transparent url({T_BLOG_IMAGESET_PATH}/bg_mod_bot.png) no-repeat scroll left bottom;
+}
+
+#sidebar .left_menu_title {
+	text-align: center;
+	color: #525252;
+	font-size: 130%;
+}
+
+#sidebar dl dd {
+	padding: 5px;
+	border-color: #E1D4C0;
+	border-style: none solid;
+	border-width: medium 2px;
+}
+
+#sidebar dl .panel dd {
+	border: 0;
+}
+
+#sidebar .topiclist {
+	list-style: none;
+}
+
+/* Blog Classes */
 .blog {
 }
 
@@ -168,9 +231,31 @@ img {
 .blog_bottom_left {
 }
 
+/* Reply Classes */
+#replies {
+	margin-top: 15px;
+}
+
+.reply {
+	margin-bottom: 15px;
+}
+
+.reply_text {
+}
+
+.reply_bottom_right {
+	float: right;
+}
+
+.reply_bottom_left {
+}
+
 /* Footer Classes */
+.bottom_links {
+}
+
 .copyright {
-	margin-top: 10px;
+	margin-top: 15px;
 	padding: 5px;
 	text-align: center;
 	color: #555555;
@@ -186,13 +271,102 @@ img {
 }
 
 /*
-* BBCode/Attachment/Other board styles ------------------------------------------------------------
+* Poll/BBCode/Attachment/Other board styles ------------------------------------------------------------
 */
+
+/* Poll Styles */
+.poll_info {
+}
+
+fieldset.polls {
+	margin: 5px 5px 10px 5px;
+}
+
+fieldset.polls dl {
+	margin-top: 5px;
+	border-top: 1px solid #DCDEE2;
+	padding: 5px 0 0 0;
+	height: 18px;
+	color: #666666;
+}
+
+fieldset.polls dl.voted {
+	font-weight: bold;
+	color: #000000;
+}
+
+fieldset.polls dt {
+	text-align: left;
+	float: left;
+	display: block;
+	width: 30%;
+	border-right: none;
+	padding: 0;
+	margin: 0;
+	font-size: 1.1em;
+}
+
+fieldset.polls dd {
+	float: left;
+	width: 10%;
+	border-left: none;
+	padding: 0 5px;
+	margin-left: 0;
+	font-size: 1.1em;
+}
+
+fieldset.polls dd.resultbar {
+	width: 50%;
+}
+
+fieldset.polls dd input {
+	margin: 2px 0;
+}
+
+fieldset.polls dd div {
+	text-align: right;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 0 2px;
+	overflow: visible;
+	min-width: 2%;
+}
+
+.pollbar1 {
+	background-color: #AA2346;
+	border-bottom-color: #74162C;
+	border-right-color: #74162C;
+}
+
+.pollbar2 {
+	background-color: #BE1E4A;
+	border-bottom-color: #8C1C38;
+	border-right-color: #8C1C38;
+}
+
+.pollbar3 {
+	background-color: #D11A4E;
+	border-bottom-color: #AA2346;
+	border-right-color: #AA2346;
+}
+
+.pollbar4 {
+	background-color: #E41653;
+	border-bottom-color: #BE1E4A;
+	border-right-color: #BE1E4A;
+}
+
+.pollbar5 {
+	background-color: #F81157;
+	border-bottom-color: #D11A4E;
+	border-right-color: #D11A4E;
+}
 
 /* Quote block */
 blockquote {
-	background: #ebebeb none 6px 8px no-repeat;
-	border: 1px solid #dbdbdb;
+	background: #EBEADD url("{T_BLOG_IMAGESET_PATH}/quote.gif") 6px 8px no-repeat;
+	border: 1px solid #DBDBCE;
 	font-size: 0.95em;
 	margin: 0.5em 1px 0 25px;
 	overflow: hidden;
@@ -201,14 +375,14 @@ blockquote {
 
 blockquote blockquote {
 	/* Nested quotes */
-	background-color: #bababa;
+	background-color: #EFEED9;
 	font-size: 1em;
 	margin: 0.5em 1px 0 15px;	
 }
 
 blockquote blockquote blockquote {
 	/* Nested quotes */
-	background-color: #e4e4e4;
+	background-color: #EBEADD;
 }
 
 blockquote cite {
@@ -232,7 +406,7 @@ blockquote.uncited {
 dl.codebox {
 	padding: 3px;
 	background-color: #FFFFFF;
-	border: 1px solid #d8d8d8;
+	border: 1px solid #C9D2D8;
 	font-size: 1em;
 }
 
@@ -259,16 +433,16 @@ dl.codebox code {
 	padding-top: 5px;
 	font: 0.9em Monaco, "Andale Mono","Courier New", Courier, mono;
 	line-height: 1.3em;
-	color: #8b8b8b;
+	color: #2E8B57;
 	margin: 2px 0;
 }
 
 .syntaxbg		{ color: #FFFFFF; }
-.syntaxcomment	{ color: #000000; }
-.syntaxdefault	{ color: #bcbcbc; }
+.syntaxcomment	{ color: #FF8000; }
+.syntaxdefault	{ color: #0000BB; }
 .syntaxhtml		{ color: #000000; }
-.syntaxkeyword	{ color: #585858; }
-.syntaxstring	{ color: #a7a7a7; }
+.syntaxkeyword	{ color: #007700; }
+.syntaxstring	{ color: #DD0000; }
 
 /* Attachments */
 .attachbox {
@@ -276,7 +450,7 @@ dl.codebox code {
 	margin: 5px 5px 5px 0;
 	padding: 6px;
 	background-color: #FFFFFF;
-	border: 1px dashed #d8d8d8;
+	border: 1px dashed #C9D2D8;
 }
 
 .attachbox dt {
@@ -287,7 +461,7 @@ dl.codebox code {
 .attachbox dd {
 	margin-top: 4px;
 	padding-top: 4px;
-	border-top: 1px solid #d8d8d8;
+	border-top: 1px solid #C9D2D8;
 }
 
 .attachbox dd dd {
@@ -350,7 +524,7 @@ dl.file dd {
 dl.thumbnail img {
 	padding: 3px;
 	border: 1px solid #666666;
-	background-color: #FFF;
+	background-color: #FFFFFF;
 }
 
 dl.thumbnail dd {
@@ -368,6 +542,6 @@ dl.thumbnail dt a:hover {
 }
 
 dl.thumbnail dt a:hover img {
-	border: 1px solid #d2d2d2;
+	border: 1px solid #368AD2;
 }
 </style>

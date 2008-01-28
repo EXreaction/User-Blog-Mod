@@ -9,12 +9,6 @@
 
 /*
 * TODO List
-*
-* BLOGGER TEMPLATE
-* Pagination
-* Comments
-* Polls
-* Right Menu
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * Bug when searching
@@ -71,6 +65,11 @@ $feed = ((($feed == 'RSS_0.91') || ($feed == 'RSS_1.0') || ($feed == 'RSS_2.0') 
 $hilit_words = request_var('hilit', '', true);
 $start = request_var('start', 0);
 $limit = request_var('limit', (($page == 'search') ? 20 : (($blog_id || $reply_id) ? 10 : 5)));
+
+$sort_days = request_var('st', ((!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : 0));
+$sort_key = request_var('sk', 't');
+$sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
+$order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
 
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
@@ -156,8 +155,8 @@ switch ($page)
 if ($default)
 {
 	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-	$temp = compact('page', 'mode', 'default');
-	blog_plugins::plugin_do_ref('blog_page_switch', $default);
+	$temp = compact('page', 'mode', 'default', 'inc_file');
+	blog_plugins::plugin_do_ref('blog_page_switch', $temp);
 	extract($temp);
 
 	// Check again since a plugin could have used it's own page.
@@ -174,16 +173,16 @@ if ($default)
 		if ($blog_id || $reply_id)
 		{
 			$user_style = true; // Here and the view user page are the two places where users can view with their own custom style
-			$inc_file = 'view/single';
+			$inc_file = ($inc_file) ? array($inc_file, 'view/single') : 'view/single';
 		}
 		else if ($user_id)
 		{
 			$user_style = true;
-			$inc_file = 'view/user';
+			$inc_file = ($inc_file) ? array($inc_file, 'view/user') : 'view/user';
 		}
 		else
 		{
-			$inc_file = 'view/main';
+			$inc_file = ($inc_file) ? array($inc_file, 'view/main') : 'view/main';
 		}
 	}
 }
@@ -241,7 +240,8 @@ if ($blog_id && !handle_user_blog_permissions($blog_id))
 }
 
 // Put the template we want in $blog_template for easier access/use
-$blog_template = (isset($_GET['blogstyle'])) ? $_GET['blogstyle'] : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '');
+// style= overrides everything, blogstyle= overrides the user's requested style, then it is set to the user's style or blank if none set
+$blog_template = ((isset($_GET['style'])) ? intval($_GET['style']) : ((isset($_GET['blogstyle'])) ? request_var('blogstyle', '') : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '')));
 
 /**
 * Ok, now lets actually start setting up the page.
@@ -280,7 +280,7 @@ else
 	}
 	else
 	{
-		$user->setup('mods/blog/common');  // If that style does not exist, use the users' default style
+		$user->setup('mods/blog/common');
 	}
 
 	$blog_style = false;
@@ -343,8 +343,18 @@ $template->assign_vars(array(
 	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
 ));
 
-// Include the file we need for the page.
-include($phpbb_root_path . 'blog/' . $inc_file . '.' . $phpEx);
+// Include the file(s) we need for the page.
+if (!is_array($inc_file))
+{
+	include($phpbb_root_path . 'blog/' . $inc_file . '.' . $phpEx);
+}
+else
+{
+	foreach ($inc_file as $file)
+	{
+		include($phpbb_root_path . 'blog/' . $file . '.' . $phpEx);
+	}
+}
 
 // assign some common variables before the end of the page
 $template->assign_vars(array(

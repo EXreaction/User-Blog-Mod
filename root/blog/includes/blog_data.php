@@ -513,6 +513,7 @@ class blog_data
 			'U_EDIT'				=> (check_blog_permissions('blog', 'edit', true, $id)) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'edit')) : '',
 			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $id)) ? blog_url(false, $id, false, array('page' => 'reply', 'mode' => 'quote')) : '',
 			'U_REPORT'				=> (check_blog_permissions('blog', 'report', true, $id) ) ? blog_url(false, $id, false, array('page' => 'blog', 'mode' => 'report')) : '',
+			'U_REPLY'				=> (check_blog_permissions('reply', 'add', true, $id) ) ? blog_url(false, $id, false, array('page' => 'reply', 'mode' => 'add')) : '',
 			'U_VIEW'				=> blog_url($user_id, $id),
 			'U_VIEW_PERMANENT'		=> blog_url(false, $id, false, array(), array(), true),
 			'U_WARN'				=> (($auth->acl_get('m_warn')) && $user_id != $user->data['user_id'] && $user_id != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id", true, $user->session_id) : '',
@@ -855,6 +856,7 @@ class blog_data
 			'U_DELETE'				=> (check_blog_permissions('reply', 'delete', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'delete')) : '',
 			'U_EDIT'				=> (check_blog_permissions('reply', 'edit', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'edit')) : '',
 			'U_QUOTE'				=> (check_blog_permissions('reply', 'quote', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'quote')) : '',
+			'U_REPLY'				=> (check_blog_permissions('reply', 'add', true, $blog_id) ) ? blog_url(false, $blog_id, false, array('page' => 'reply', 'mode' => 'add')) : '',
 			'U_REPORT'				=> (check_blog_permissions('reply', 'report', true, $blog_id, $id)) ? blog_url(false, false, $id, array('page' => 'reply', 'mode' => 'report')) : '',
 			'U_WARN'				=> (($auth->acl_get('m_warn')) && $reply['user_id'] != $user->data['user_id'] && $reply['user_id'] != ANONYMOUS) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=warn&amp;mode=warn_user&amp;u=$user_id") : '',
 
