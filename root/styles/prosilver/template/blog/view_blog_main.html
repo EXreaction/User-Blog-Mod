@@ -14,7 +14,7 @@
 			<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
 				<div class="post bg3" style="text-align: center;">
 					<span class="corners-top"><span></span></span>
-						<strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
+						<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF --><strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
 					<span class="corners-bottom"><span></span></span>
 				</div>
 				<!-- IF S_SORT -->

@@ -17,8 +17,6 @@
 *
 * In Blog ACP -> add option to remove orphan blog attachments
 *
-* Finish Feed icons - have a trigger_error just display all of the available options and examples for the javascript.
-*
 * cash mod plugin
 * 
 * LOW PRIORITY ------------------------------------------------------------------------------------

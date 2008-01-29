@@ -69,6 +69,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
+			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('page' => 'view', 'mode' => 'random', 'feed' => 'explain')) : '',
 			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'random')),
 			'TITLE'				=> $user->lang['RANDOM_BLOGS'],
 		));
@@ -92,6 +93,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
+			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('page' => 'view', 'mode' => 'recent', 'feed' => 'explain')) : '',
 			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'recent')),
 			'TITLE'				=> $user->lang['RECENT_BLOGS'],
 		));
@@ -115,6 +117,7 @@ if ($feed == false || $all)
 	{
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> ($all) ? '33' : '100',
+			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('page' => 'view', 'mode' => 'popular', 'feed' => 'explain')) : '',
 			'U_VIEW'			=> blog_url(false, false, false, array('page' => 'view', 'mode' => 'popular')),
 			'TITLE'				=> $user->lang['POPULAR_BLOGS'],
 		));

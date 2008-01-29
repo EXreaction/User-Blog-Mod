@@ -79,6 +79,7 @@ if (!$feed)
 		'PAGE_NUMBER' 			=> on_page($total_blogs, $limit, $start),
 		'TOTAL_POSTS'			=> ($total_blogs == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total_blogs),
 
+		'U_FEED'				=> ($config['user_blog_enable_feeds']) ? blog_url($user_id, false, false, array('feed' => 'explain')): '',
 		'U_PRINT_TOPIC'			=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',
 		'U_VIEW'				=> $blog_urls['self'],
 
