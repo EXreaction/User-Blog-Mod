@@ -43,7 +43,7 @@ class blog_data
 	*/
 	public function get_blog_data($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
+		global $db, $user, $phpbb_root_path, $phpEx, $auth;
 
 		blog_plugins::plugin_do_ref('blog_data_start', $selection_data);
 
@@ -255,7 +255,7 @@ class blog_data
 	*/
 	public function get_blog_info($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $auth, $blog_plugins;
+		global $db, $user, $auth;
 
 		blog_plugins::plugin_do_ref('blog_info_start', $selection_data);
 
@@ -402,7 +402,7 @@ class blog_data
 	public function handle_blog_data($id, $trim_text = false)
 	{
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_attachment, $blog_plugins, $category_id;
+		global $blog_attachment, $category_id;
 
 		$blog = &self::$blog[$id];
 		$user_id = $blog['user_id'];
@@ -622,7 +622,7 @@ class blog_data
 	*/
 	public function get_reply_data($mode, $id = 0, $selection_data = array())
 	{
-		global $db, $user, $phpbb_root_path, $phpEx, $auth, $blog_plugins;
+		global $db, $user, $phpbb_root_path, $phpEx, $auth;
 
 		blog_plugins::plugin_do_ref('reply_data_start', $selection_data);
 
@@ -811,7 +811,7 @@ class blog_data
 	public function handle_reply_data($id)
 	{
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
-		global $blog_attachment, $blog_plugins, $category_id;
+		global $blog_attachment, $category_id;
 
 		$reply = &self::$reply[$id];
 		$blog_id = $reply['blog_id'];
@@ -873,7 +873,7 @@ class blog_data
 	}
 
 	/**
-	* --------------------------------------------------------------------------------------------------------------------------- REPLIES -----------------------------------------------------------------------------------------------------------------
+	* --------------------------------------------------------------------------------------------------------------------------- USERS -----------------------------------------------------------------------------------------------------------------
 	*/
 
 	/**
@@ -886,7 +886,7 @@ class blog_data
 	*/
 	public function get_user_data($id, $user_queue = false, $username = false)
 	{
-		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp, $blog_plugins;
+		global $user, $db, $phpbb_root_path, $phpEx, $config, $auth, $cp;
 
 		// if we are using the user_queue, set $user_id as that for consistency
 		if ($user_queue)
@@ -1000,16 +1000,6 @@ class blog_data
 			$row['email_url'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id")  : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
 			$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_viewemail'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
 
-			// Signature
-			if ($config['allow_sig'] && $user->optionget('viewsigs') && $row['user_sig'] != '')
-			{
-				$row['user_sig'] = generate_text_for_display($row['user_sig'], $row['user_sig_bbcode_uid'], $row['user_sig_bbcode_bitfield'], 7);
-			}
-			else
-			{
-				$row['user_sig'] = '';
-			}
-
 			// get the custom profile fields if the admin wants them
 			if ($config['user_blog_custom_profile_enable'])
 			{
@@ -1032,6 +1022,18 @@ class blog_data
 		{
 			if (isset($user_id))
 			{
+				// Grab all profile fields from users in id cache for later use - similar to the poster cache
+				if ($config['user_blog_custom_profile_enable'])
+				{
+					if (!class_exists('custom_profile'))
+					{
+						include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+						$cp = new custom_profile();
+					}
+
+					$profile_fields_cache = $cp->generate_profile_fields_template('grab', $user_id);
+				}
+
 				// Grab user status information
 				$status_data = array();
 				$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
@@ -1093,7 +1095,7 @@ class blog_data
 	public function handle_user_data($user_id, $output_custom = false)
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
-		global $blog_data, $zebra_list, $blog_plugins;
+		global $blog_data, $zebra_list;
 
 		if ($output_custom == false)
 		{
@@ -1107,7 +1109,7 @@ class blog_data
 				'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, self::$user[$user_id]['rank_img']),
 				'RANK_IMG_SRC'		=> self::$user[$user_id]['rank_img_src'],
 				'RANK_TITLE'		=> self::$user[$user_id]['rank_title'],
-				'SIGNATURE'			=> self::$user[$user_id]['user_sig'],
+				'SIGNATURE'			=> ($config['allow_sig'] && $user->optionget('viewsigs') && self::$user[$user_id]['user_sig']) ? generate_text_for_display(self::$user[$user_id]['user_sig'], self::$user[$user_id]['user_sig_bbcode_uid'], self::$user[$user_id]['user_sig_bbcode_bitfield'], 7) : '',
 				'STATUS_IMG'		=> ((self::$user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE')),
 				'USERNAME'			=> self::$user[$user_id]['username'],
 				'USER_COLOUR'		=> self::$user[$user_id]['user_colour'],

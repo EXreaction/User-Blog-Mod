@@ -11,11 +11,6 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* Bug when searching
-* 
-* Information section - MCP
-*
-* In Blog ACP -> add option to remove orphan blog attachments
 *
 * cash mod plugin
 * 
