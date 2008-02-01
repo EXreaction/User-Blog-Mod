@@ -120,7 +120,7 @@
 							<!-- IF blogrow.U_QUOTE --><li class="quote-icon"><a href="{blogrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}"><span>{L_REPLY_WITH_QUOTE}</span></a></li><!-- ENDIF -->
 						</ul>
 
-						<h3><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
+						<h3><!-- IF blogrow.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
 
 						<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div style="float: right;">{blogrow.RATING_STRING}</div><!-- ENDIF -->
 					<!-- ELSE -->
@@ -154,21 +154,22 @@
 
 					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 						<div class="notice">
-							<!-- IF not blogrow.DELETED_MESSAGE and not blogrow.SIGNATURE--><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
 							{blogrow.EDITED_MESSAGE}
 							<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
 						</div>
 					<!-- ENDIF -->
 					<!-- IF blogrow.DELETED_MESSAGE -->
 						<div class="notice">
-							<!-- IF not blogrow.SIGNATURE --><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
 							{blogrow.DELETED_MESSAGE}
 						</div>
 					<!-- ENDIF -->
 
+					<br clear="all" />
+	
 					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
 
-					<!-- IF (not blogrow.DELETED_MESSAGE and not blogrow.EDITED_MESSAGE and not blogrow.EDIT_REASON) or blogrow.SIGNATURE --><span class="num_replies">{blogrow.REPLIES}</span><!-- ENDIF -->
+					<span class="num_replies">{blogrow.REPLIES}</span>
+					<span style="float: left;">{blogrow.VIEWS}</span>
 				</div>
 
 				<!-- IF S_CATEGORY_MODE -->

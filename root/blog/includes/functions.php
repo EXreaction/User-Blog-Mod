@@ -86,13 +86,8 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				$url_data['page'] = $extra_data['username'];
 			}
-			else if (class_exists('blog_data'))
+			else if (class_exists('blog_data') && isset(blog_data::$user[$user_id]))
 			{
-				if (!isset(blog_data::$user[$user_id]))
-				{
-					global $blog_data;
-					$blog_data->get_user_data($user_id);
-				}
 				$url_data['page'] = blog_data::$user[$user_id]['username'];
 			}
 			else
@@ -330,8 +325,15 @@ function blog_error_handler($errno, $msg_text, $errfile, $errline)
 {
 	if ($errno == E_USER_NOTICE)
 	{
-		global $template;
-		$template->set_template();
+		global $user, $template;
+		if (!isset($user->lang['CLICK_INSTALL_BLOG']))
+		{
+			$user->setup('mods/blog/common');
+		}
+		else
+		{
+			$template->set_template();	
+		}
 	}
 
 	msg_handler($errno, $msg_text, $errfile, $errline);

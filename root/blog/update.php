@@ -216,7 +216,7 @@ if (confirm_box(true))
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_title', array('STEXT_UNI', '', 'true_sort'));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_start', array('TIMESTAMP', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_length', array('TIMESTAMP', 0));
-			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_max_options', array('TINT:4', 1));
+			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_max_options', array('TINT:4', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_last_vote', array('TIMESTAMP', 0));
 			phpbb_db_tools::sql_column_add(BLOGS_TABLE, 'poll_vote_change', array('BOOL', 0));
 

@@ -44,7 +44,6 @@ $lang = array_merge($lang, array(
 	'BLOG_SUBSCRIPTION_NOTICE'			=> 'This is an automatically dispatched message from the User Blog mod notifying you that a reply has been made to [url=%1$s]this[/url] blog by %2$s.<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
 	'BLOG_SUBSCRIPTION_NOTICE_EMAIL'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a reply has been made to this blog by %2$s: /r/n %1$s /r/n /r/n /r/n If you would like to no longer recieve these notices click the following link to unsubscribe:/r/n%3$s',
 	'BLOG_UNDELETED'					=> 'The blog has been un-deleted.',
-	'BLOG_USER_NOT_PROVIDED'			=> 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
 
 	'CATEGORY_EXPLAIN'					=> 'You may select more than one category by holding CTRL and clicking more categories you would like to enter it in.<br/><br/>Blogs are <strong>always</strong> shown in your personal Blog page.',
 

@@ -11,7 +11,9 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-*
+* 
+* Add feed icon on prosilver on user's blogs
+* 
 * cash mod plugin
 * 
 * LOW PRIORITY ------------------------------------------------------------------------------------
@@ -64,6 +66,13 @@ $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
 $order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
 
+// include some files
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+include($phpbb_root_path . 'blog/functions.' . $phpEx);
+
+// We need to use our own error handler which resets the template when trigger_error is called.
+set_error_handler('blog_error_handler');
+
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
 {
@@ -72,13 +81,8 @@ if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUN
 }
 else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $page != 'update' && $page != 'install' && $user->data['user_type'] != USER_FOUNDER)
 {
-	$user->setup('mods/blog/common');
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
-
-// include some files
-include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include($phpbb_root_path . 'blog/functions.' . $phpEx);
 
 // set some initial variables that we will use
 $blog_data = new blog_data();
@@ -185,7 +189,6 @@ if ($reply_id)
 {
 	if ($blog_data->get_reply_data('reply', $reply_id) === false)
 	{
-		$user->setup('mods/blog/common');
 		trigger_error('REPLY_NOT_EXIST');
 	}
 
@@ -204,7 +207,6 @@ if ($blog_id)
 {
 	if ($blog_data->get_blog_data('blog', $blog_id) === false)
 	{
-		$user->setup('mods/blog/common');
 		trigger_error('BLOG_NOT_EXIST');
 	}
 
@@ -217,19 +219,16 @@ $blog_data->get_user_data(false, true); // do it this way so we get user data on
 // make sure they user they requested exists
 if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
 {
-	$user->setup('mods/blog/common');
 	trigger_error('NO_USER');
 }
 
 $username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
 get_user_settings(array($user_id, $user->data['user_id']));
 get_zebra_info(array($user_id, $user->data['user_id']));
-update_edit_delete();
 
 // Make sure the user can view this blog by checking the blog's individual permissions
 if ($blog_id && !handle_user_blog_permissions($blog_id))
 {
-	$user->setup('mods/blog/common');
 	trigger_error('NO_PERMISSIONS_READ');
 }
 
@@ -251,7 +250,7 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 	$user->setup('mods/blog/common');
 
 	// We need to use our own error handler which resets the template when trigger_error is called.
-	set_error_handler('blog_error_handler');
+	//set_error_handler('blog_error_handler');
 
 	// Lets use our own custom template path so we can have our own templates
 	$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
@@ -280,6 +279,9 @@ else
 	$blog_style = false;
 	$blog_images_path = $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/blog/';
 }
+
+//Update the edit and delete fields
+update_edit_delete();
 
 // Check to make sure the user has permission to get to this page
 check_blog_permissions($page, $mode, false, $blog_id, $reply_id);
