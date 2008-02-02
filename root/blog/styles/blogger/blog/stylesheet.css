@@ -117,6 +117,11 @@ hr {
 	color: #94A8D4;
 }
 
+.feed_icon {
+	float: left;
+	padding: 1px 3px;
+}
+
 .header {
 	background-color: #002255;
 }

@@ -11,9 +11,6 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* 
-* Add feed icon on prosilver on user's blogs
-* 
 * cash mod plugin
 * 
 * LOW PRIORITY ------------------------------------------------------------------------------------
@@ -29,7 +26,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.38_dev';
+$user_blog_version = '0.3.38';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
