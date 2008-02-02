@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.38_dev
+## MOD Version: 0.3.38
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -99,8 +99,8 @@
 ##		Alpha 37a
 ##			+ Oops, the install file did not have the correct instructions for viewtopic.php.
 ##			+ To update, update viewtopic.php.
-## 2008-01-
-##		Alpha 38_dev
+## 2008-02-02
+##		Alpha 38
 ##			+ Less than PHP 5.1.0 and less than MySQL 4.1.3 is no longer supported.
 ##			+ Plenty of bug fixes (hopefully not too many new bugs) and lots of updates, to name a few: 
 ##				- Added DB2 support.
