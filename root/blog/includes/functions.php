@@ -240,9 +240,9 @@ function generate_blog_urls()
 		'self_minus_start'	=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*skip*'))),
 		'self_print'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('view' => 'print'))),
 		'start_zero'		=> blog_url($user_id, $blog_id, $reply_id, array_merge($self_data, array('start' => '*start*'))),
-		'subscribe'			=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
+		'subscribe'			=> (($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS && $config['user_blog_subscription_enabled']) ? blog_url($user_id, $blog_id, false, array('page' => 'subscribe')) : '',
 
-		'unsubscribe'		=> ($config['user_blog_subscription_enabled'] && ($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
+		'unsubscribe'		=> (($blog_id != 0 || $user_id != 0) && $user->data['user_id'] != ANONYMOUS && $config['user_blog_subscription_enabled']) ? blog_url($user_id, $blog_id, false, array('page' => 'unsubscribe')) : '',
 
 		'view_blog'			=> ($blog_id) ? blog_url($user_id, $blog_id) : false,
 		'viewpoll'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('view' => 'viewpoll')) : false,

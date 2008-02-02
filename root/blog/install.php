@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 if (isset($config['user_blog_version']))
 {
-	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
+	//trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
 if (version_compare(PHP_VERSION, '5.1.0') < 0)
@@ -23,7 +23,6 @@ if (version_compare(PHP_VERSION, '5.1.0') < 0)
 	trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
 }
 
-$template->set_template();
 if (confirm_box(true))
 {
 	$error = array();
@@ -35,13 +34,20 @@ if (confirm_box(true))
 	}
 
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/db_tools.' . $phpEx);
 	include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/eami.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$dbmd = get_available_dbms($dbms);
 	$eami = new eami();
 	define('IN_BLOG_INSTALL', true);
+
+	// We are using the DB Tools script from 3.2
+	include($phpbb_root_path . 'blog/includes/db_tools.' . $phpEx);
+	// If db type is not setup in the db_tools (it is a problem with using mysqli) we will use the mysql commands.  Have to do this because the used DB tools script is from 3.2.
+	if (!isset(phpbb_db_tools::$dbms_type_map[$dbms]))
+	{
+		$dbms = 'mysql';
+	}
 
 	include("{$phpbb_root_path}blog/install/tables.$phpEx");
 	include("{$phpbb_root_path}blog/install/modules.$phpEx");

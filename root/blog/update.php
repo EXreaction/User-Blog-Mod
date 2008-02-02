@@ -25,11 +25,18 @@ if (confirm_box(true))
 
 	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
-	include($phpbb_root_path . 'blog/includes/db_tools.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/eami.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$dbmd = get_available_dbms($dbms);
 	$eami = new eami();
+
+	// We are using the DB Tools script from 3.2
+	include($phpbb_root_path . 'blog/includes/db_tools.' . $phpEx);
+	// If db type is not setup in the db_tools (it is a problem with using mysqli) we will use the mysql commands.  Have to do this because the used DB tools script is from 3.2.
+	if (!isset(phpbb_db_tools::$dbms_type_map[$dbms]))
+	{
+		$dbms = 'mysql';
+	}
 
 	switch ($config['user_blog_version'])
 	{

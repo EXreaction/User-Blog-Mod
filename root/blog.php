@@ -213,13 +213,15 @@ if ($blog_id)
 	$user_id = blog_data::$blog[$blog_id]['user_id'];
 }
 
-blog_data::$user_queue[] = $user_id;
-$blog_data->get_user_data(false, true); // do it this way so we get user data on editors/deleters
-
-// make sure they user they requested exists
-if ($user_id != 0 && !array_key_exists($user_id, blog_data::$user))
+if ($user_id)
 {
-	trigger_error('NO_USER');
+	blog_data::$user_queue[] = $user_id;
+	$blog_data->get_user_data(false, true); // do it this way so we get user data on editors/deleters
+
+	if (!array_key_exists($user_id, blog_data::$user))
+	{
+		trigger_error('NO_USER');
+	}
 }
 
 $username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
@@ -306,6 +308,19 @@ else if ($user_id)
 // Generate the common URL's
 generate_blog_urls();
 
+// Include the file(s) we need for the page.
+if (!is_array($inc_file))
+{
+	include($phpbb_root_path . 'blog/' . $inc_file . '.' . $phpEx);
+}
+else
+{
+	foreach ($inc_file as $file)
+	{
+		include($phpbb_root_path . 'blog/' . $file . '.' . $phpEx);
+	}
+}
+
 // Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
 $user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
@@ -337,24 +352,8 @@ $template->assign_vars(array(
 	'UA_ORANGE_STAR_SRC'	=> $blog_images_path . 'star_orange.gif',
 	'UA_MAX_RATING'			=> $config['user_blog_max_rating'],
 	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
-));
 
-// Include the file(s) we need for the page.
-if (!is_array($inc_file))
-{
-	include($phpbb_root_path . 'blog/' . $inc_file . '.' . $phpEx);
-}
-else
-{
-	foreach ($inc_file as $file)
-	{
-		include($phpbb_root_path . 'blog/' . $file . '.' . $phpEx);
-	}
-}
-
-// assign some common variables before the end of the page
-$template->assign_vars(array(
-	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
+	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 ));
 
 blog_plugins::plugin_do('blog_end');
