@@ -93,13 +93,28 @@ if (is_array($settings))
 		{
 			$rids[] = $row['reply_id'];
 		}
-		$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
+		if (sizeof($rids))
+		{
+			$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
+		}
+		else
+		{
+			$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		}
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row['physical_filename']);
 		}
-		$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids));
+
+		if (sizeof($rids))
+		{
+			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids));
+		}
+		else
+		{
+			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		}
 
 		// delete the blog
 		$db->sql_query('DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . intval($blog_id));
