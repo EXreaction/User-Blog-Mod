@@ -30,7 +30,12 @@
 	blog_undelete_start
 	blog_undelete_confirm
 
-/blog/data/blog_data.php
+/blog/download.php
+	download_start
+	download_before_send
+	download_end
+
+/blog/includes/blog_data.php
 	blog_data_start
 	blog_data_sql
 	blog_data_while
@@ -50,21 +55,15 @@
 	user_handle_data
 	user_handle_data_cp
 
-/blog/data/initial_data.php
-	initial_output
-
-/blog/download.php
-	download_start
-	download_before_send
-	download_end
-
-/blog/functions.php
-
-/blog/header.php
-
 /blog/includes/functions.php
+	function_blog_url
+	function_generate_blog_urls
+	function_get_user_settings_insert
+	function_get_user_settings_update
+	function_get_user_settings
 	function_handle_blog_cache
 	function_handle_blog_cache_mode
+	function_get_subscription_types
 
 /blog/includes/functions_admin.php
 	function_resync_blog
@@ -73,7 +72,6 @@
 	function_posting_gen_attachment_entry
 	function_get_attachment_data
 	function_parse_attachments
-	function_output_attachment_data
 	get_submitted_attachment_data
 	function_upload_attachment
 	function_obtain_blog_attach_extensions
@@ -86,16 +84,10 @@
 /blog/includes/functions_confirm.php
 	function_build_blog_cfg_template
 
-/blog/includes/functions_misc.php
-	function_get_user_settings_insert
-	function_get_user_settings_update
-	function_get_user_settings
-	function_get_user_settings
-	function_get_zebra_info
-
 /blog/includes/functions_permissions.php
 	handle_user_blog_permissions
 	function_permission_settings_builder
+	function_build_permission_sql
 	function_check_blog_permissions
 	permissions_end
 
@@ -103,6 +95,8 @@
 	function_handle_basic_posting_data
 	function_handle_captcha
 	function_inform_approve_report
+	function_handle_subscription
+	function_handle_subscription_end
 	post_options
 	post_options_set_status
 	post_options_set_in_template
@@ -110,21 +104,19 @@
 /blog/includes/functions_rate.php
 	function_get_star_rating
 
-/blog/includes/functions_sql.php
-	function_build_permission_sql
-
-/blog/includes/functions_subscription.php
-	function_get_subscription_types
-	function_handle_subscription
-	function_handle_subscription_end
-	function_get_subscription_info
-
-/blog/includes/functions_url.php
-	function_blog_url
-	function_generate_blog_urls
-
 /blog/includes/functions_view.php
+	function_get_attachment_data
+	function_get_subscription_info
+	function_get_user_settings
+	function_get_zebra_info
 	function_generate_menu
+	available_feeds
+	function_feed_output
+	function_parse_attachments_for_view
+	function_obtain_blog_attach_extensions
+
+/blog/includes/initial_data.php
+	initial_output
 
 /blog/rate.php
 	rate
@@ -161,10 +153,6 @@
 /blog/reply/undelete.php
 	reply_undelete
 	reply_undelete_confirm
-
-/blog/search/fulltext_native.php
-
-/blog/search/search.php
 
 /blog/search.php
 	search
