@@ -1010,11 +1010,6 @@ function feed_output($blog_ids, $feed_type)
 		trigger_error($message);
 	}
 
-	if (!is_array($blog_ids))
-	{
-		$blog_ids = array(intval($blog_ids));
-	}
-
 	$title = str_replace("'", "\\'", $template->_tpldata['navlinks'][(sizeof($template->_tpldata['navlinks']) - 1)]['FORUM_NAME']);
 
 	$template->assign_vars(array(
@@ -1033,33 +1028,41 @@ function feed_output($blog_ids, $feed_type)
 		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false,
 	));
 
-	// the items section is only used in RSS 1.0
-	if ($feed_type == 'RSS_1.0')
+	if ($blog_ids !== false)
 	{
-		// output the URLS for the items section
+		if (!is_array($blog_ids))
+		{
+			$blog_ids = array(intval($blog_ids));
+		}
+
+		// the items section is only used in RSS 1.0
+		if ($feed_type == 'RSS_1.0')
+		{
+			// output the URLS for the items section
+			foreach ($blog_ids as $id)
+			{
+				$template->assign_block_vars('items', array(
+					'URL'	=> blog_url(blog_data::$blog[$id]['user_id'], $id),
+				));
+			}
+		}
+
+		// Output the main data
 		foreach ($blog_ids as $id)
 		{
-			$template->assign_block_vars('items', array(
-				'URL'	=> blog_url(blog_data::$blog[$id]['user_id'], $id),
-			));
+			$blog_row = $blog_data->handle_blog_data($id, true);
+
+			$row = array(
+				'URL'				=> blog_url(blog_data::$blog[$id]['user_id'], $id),
+				'USERNAME'			=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
+				'BLOG_MESSAGE'		=> str_replace("'", '&#039;', $blog_row['BLOG_MESSAGE']),
+			);
+
+			$template->assign_block_vars('item', array_merge($blog_row, $row));
 		}
+
+		blog_plugins::plugin_do_arg('function_feed_output', compact('blog_ids', 'feed_type'));
 	}
-
-	// Output the main data
-	foreach ($blog_ids as $id)
-	{
-		$blog_row = $blog_data->handle_blog_data($id, true);
-
-		$row = array(
-			'URL'				=> blog_url(blog_data::$blog[$id]['user_id'], $id),
-			'USERNAME'			=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
-			'BLOG_MESSAGE'		=> str_replace("'", '&#039;', $blog_row['BLOG_MESSAGE']),
-		);
-
-		$template->assign_block_vars('item', array_merge($blog_row, $row));
-	}
-
-	blog_plugins::plugin_do_arg('function_feed_output', compact('blog_ids', 'feed_type'));
 
 	// Ok, now use the main template for this and immediately call page_footer.
 	$template->set_template();
