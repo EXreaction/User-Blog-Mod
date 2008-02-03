@@ -118,7 +118,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 		{
 		    while (false !== ($file1 = readdir($handle)))
 			{
-				if (strpos($file, '.'))
+				if (substr($file, -3) == $phpEx)
 				{
 					$file_list[] = $file1;
 				}
@@ -147,12 +147,12 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 			}
 		}
 	}
-	else if (strpos($file, $phpEx) && $file != "dev.$phpEx") // Skip non .php files
+	else if (substr($file, -3) == $phpEx && $file != "dev.$phpEx") // Skip non .php files
 	{
 		$handle = @fopen($dir . '/' . $file, "r");
 		if ($handle)
 		{
-			$hook_list .= substr($dir, strpos($dir, $original_dir) + strlen($original_dir)) . '/' . $file . "\n";
+			$tmp_hook_list = '';
 			while (!feof($handle))
 			{
 				$line = fgets($handle, 4096);
@@ -160,11 +160,17 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 				if (strpos($line, 'blog_plugins::plugin_do') !== false)
 				{
 					$start_pos = strpos($line, "('") + 2;
-					$hook_list .= "\t" . substr($line, $start_pos, strpos($line, "'", $start_pos) - $start_pos) . "\n";
+					$tmp_hook_list .= "\t" . substr($line, $start_pos, strpos($line, "'", $start_pos) - $start_pos) . "\n";
 				}
 			}
 			fclose($handle);
-			$hook_list .= "\n";
+
+			if ($tmp_hook_list != '')
+			{
+				$hook_list .= substr($dir, strpos($dir, $original_dir) + strlen($original_dir)) . '/' . $file . "\n";
+				$hook_list .= $tmp_hook_list;
+				$hook_list .= "\n";
+			}
 		}
 	}
 
