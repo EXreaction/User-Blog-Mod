@@ -26,7 +26,10 @@ foreach ($schema_data as $table_name => $table_data)
 
 	foreach ($statements as $sql)
 	{
-		$db->sql_query($sql);
+		if (!$db->sql_query($sql))
+		{
+			trigger_error('Table Creation Error.<br />Please report this to EXreaction and include the following data:<br /><br />' . $sql);
+		}
 	}
 }
 
