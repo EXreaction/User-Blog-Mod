@@ -70,7 +70,7 @@ $lang = array_merge($lang, array(
 
 	'ONE_BLOG'						=> '1 blog',
 	'ONE_REPLY'						=> '1 reply',
-	'ONE_VIEW'						=> 'Viewed Once',
+	'ONE_VIEW'						=> 'Viewed 1 time',
 
 	'PERMANENT_LINK'				=> 'Permanent Link',
 	'POPULAR_BLOGS'					=> 'Popular Blogs',
