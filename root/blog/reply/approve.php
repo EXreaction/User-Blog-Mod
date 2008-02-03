@@ -38,7 +38,6 @@ generate_blog_breadcrumbs($user->lang['APPROVE_REPLY']);
 
 if (blog_data::$reply[$reply_id]['reply_approved'] == 0)
 {
-	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('reply_approve_confirm');

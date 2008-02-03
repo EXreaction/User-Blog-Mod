@@ -39,7 +39,6 @@ generate_blog_breadcrumbs($user->lang['UNDELETE_BLOG']);
 
 blog_plugins::plugin_do('blog_undelete_start');
 
-$template->set_template();
 if (confirm_box(true))
 {
 	blog_plugins::plugin_do('blog_undelete_confirm');

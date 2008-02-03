@@ -38,7 +38,6 @@ blog_plugins::plugin_do('blog_approve');
 
 if (blog_data::$blog[$blog_id]['blog_approved'] == 0)
 {
-	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('blog_approve_confirm');

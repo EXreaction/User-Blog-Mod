@@ -39,7 +39,6 @@ blog_plugins::plugin_do('reply_report');
 // To close the reports
 if (blog_data::$reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogreplyreport'))
 {
-	$template->set_template();
 	if (confirm_box(true))
 	{
 		blog_plugins::plugin_do('reply_report_confirm');
@@ -75,7 +74,6 @@ if (blog_data::$reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogrepl
 }
 else
 {
-	$template->set_template();
 	if (confirm_box(true))
 	{
 		// we are making it look like the user can report the reply even if it has already been reported...but if it already has reported we can skip the extra SQL query

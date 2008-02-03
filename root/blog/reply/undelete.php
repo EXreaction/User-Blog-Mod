@@ -42,7 +42,6 @@ if (blog_data::$reply[$reply_id]['reply_deleted'] == 0)
 
 blog_plugins::plugin_do('reply_undelete');
 
-$template->set_template();
 if (confirm_box(true))
 {
 	blog_plugins::plugin_do('reply_undelete_confirm');
