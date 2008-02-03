@@ -40,9 +40,9 @@ $auth->acl($user->data);
 // Do not do $user->setup here!
 
 // Get some variables
-$page = (!isset($page)) ? request_var('page', '') : $page;
-$mode = (!isset($mode)) ? request_var('mode', '') : $mode;
-$user_id = (!isset($user_id)) ? request_var('u', 0) : intval($user_id);
+$page = request_var('page', '');
+$mode = request_var('mode', '');
+$user_id = request_var('u', 0);
 $blog_id = request_var('b', 0);
 $reply_id = request_var('r', 0);
 $category_id = request_var('c', 0);
@@ -247,8 +247,10 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 {
 	$user->setup('mods/blog/common');
 
-	// We need to use our own error handler which resets the template when trigger_error is called.
-	//set_error_handler('blog_error_handler');
+	if (strpos($blog_template, '.') !== false || strpos($blog_template, '/') !== false)
+	{
+		trigger_error('You are not allowed to move around directories.');
+	}
 
 	// Lets use our own custom template path so we can have our own templates
 	$template->set_custom_template($phpbb_root_path . 'blog/styles/' . $blog_template, $blog_template);
