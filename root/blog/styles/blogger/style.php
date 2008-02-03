@@ -11,6 +11,6 @@
 * To add a new user selectable style, you must add just the following line and put it in a file named style.php
 * The name field is what is shown to the user, the value field is the location of the style off of the blog/styles/ directory.
 */
-$available_styles[] = array('name' => 'Blogger', 'value' => 'blogger');
+$available_styles[] = array('name' => 'Blogger Clone', 'value' => 'blogger');
 
 ?>

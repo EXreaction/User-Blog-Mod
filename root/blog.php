@@ -85,11 +85,10 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 $blog_data = new blog_data();
 $error = $blog_urls = $zebra_list = $user_settings = array();
 $s_hidden_fields = $subscribed_title = '';
-$subscribed = false;
+$default = $inc_file = $user_style = $subscribed = false;
 
 blog_plugins::plugin_do('blog_start');
 
-$default = $inc_file = $user_style = false;
 switch ($page)
 {
 	case 'vote'	: // Vote in a poll
@@ -150,7 +149,7 @@ switch ($page)
 if ($default)
 {
 	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
-	$temp = compact('page', 'mode', 'default', 'inc_file');
+	$temp = compact('page', 'mode', 'default', 'inc_file', 'user_style');
 	blog_plugins::plugin_do_ref('blog_page_switch', $temp);
 	extract($temp);
 
