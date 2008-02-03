@@ -21,7 +21,8 @@ if (empty($lang) || !is_array($lang))
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
 	'ALREADY_SUBSCRIBED'		=> 'You are already subscribed.',
-	'BLOG_USER_NOT_PROVIDED'			=> 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
+
+	'BLOG_USER_NOT_PROVIDED'	=> 'You must provide the user_id or blog_id of the item you would like to subscribe to.',
 
 	'NOT_ALLOWED_CHANGE_VOTE'	=> 'You are not allowed to change your vote.',
 	'NOT_SUBSCRIBED'			=> 'You are not subscribed.',
