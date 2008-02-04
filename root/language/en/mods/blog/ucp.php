@@ -15,10 +15,12 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+	'BLOG_CSS'								=> 'Blog CSS',
+	'BLOG_CSS_EXPLAIN'						=> 'Here you may enter any CSS code you would like to format and change the style of your own blog to make it look the way you want.',
 	'BLOG_INSTANT_REDIRECT'					=> 'Instant Redirect',
 	'BLOG_INSTANT_REDIRECT_EXPLAIN'			=> 'This will set the User Blog Mod to instantly redirect to the next page instead of displaying the Information page.',
 	'BLOG_STYLE'							=> 'Blog Style',
-	'BLOG_STYLE_EXPLAIN'					=> 'Select the style you want displayed for your blog.',
+	'BLOG_STYLE_EXPLAIN'					=> 'Select the style you want displayed for your blog.<br />If the style has a * after the name you may enter your own CSS to customize it further (if you have permission).',
 
 	'FOE_PERMISSIONS'						=> 'Foe Permissions',
 	'FRIEND_PERMISSIONS'					=> 'Friend Permissions',

@@ -278,6 +278,7 @@ function get_blog_schema_struct()
 			'instant_redirect'				=> array('BOOL', 1),
 			'blog_subscription_default'		=> array('UINT:11', 0),
 			'blog_style'					=> array('STEXT_UNI', '', 'true_sort'),
+			'blog_css'						=> array('MTEXT_UNI', ''),
 		),
 		'PRIMARY_KEY'	=> 'user_id',
 	);

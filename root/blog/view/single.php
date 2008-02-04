@@ -98,6 +98,8 @@ $template->assign_vars(array(
 
 	'S_CATEGORY_MODE'	=> ($category_id) ? true : false,
 	'S_SINGLE'			=> true,
+
+	'BLOG_CSS'			=> (isset($user_settings[$user_id]['blog_css'])) ? $user_settings[$user_id]['blog_css'] : '',
 ));
 
 // Parse the blog data and output it to the template

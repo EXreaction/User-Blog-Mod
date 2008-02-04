@@ -39,6 +39,7 @@ $lang = array_merge($lang, array(
 	'acl_u_blog_vote'			=> array('lang' => 'Can vote in polls', 'cat' => 'blog'),
 	'acl_u_blog_vote_change'	=> array('lang' => 'Can change existing vote', 'cat' => 'blog'),
 	'acl_u_blog_style'			=> array('lang' => 'Can select a style to use for their own blog', 'cat' => 'blog'),
+	'acl_u_blog_css'			=> array('lang' => 'Can enter in their own CSS code to customize their style the way they want.', 'cat' => 'blog'),
 ));
 
 // Moderator Permissions

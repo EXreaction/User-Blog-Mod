@@ -11,6 +11,8 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
+* editing user in the ACP -> new panel for blog settings
+*
 * cash mod plugin
 * 
 * LOW PRIORITY ------------------------------------------------------------------------------------
@@ -18,15 +20,12 @@
 * OTHER -------------------------------------------------------------------------------------------
 * 
 * Memorable entry (like a sticky)?
-*
-* UCP
-*	custom CSS coding allowed?
 */
 
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.38';
+$user_blog_version = '0.3.39_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

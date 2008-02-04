@@ -47,6 +47,7 @@ class ucp_blog
 						'instant_redirect'				=> request_var('instant_redirect', 0),
 						'blog_subscription_default'		=> 0,
 						'blog_style'					=> ($auth->acl_get('u_blog_style')) ? request_var('blog_style', '') : '',
+						'blog_css'						=> ($auth->acl_get('u_blog_css')) ? request_var('blog_css', '') : '',
 					);
 
 					if ($config['user_blog_subscription_enabled'])
@@ -116,10 +117,17 @@ class ucp_blog
 
 						foreach ($available_styles as $row)
 						{
+							if (isset($user_settings[$user->data['user_id']]) && $user_settings[$user->data['user_id']]['blog_style'] == $row['value'] && isset($row['demo']) && $row['demo'])
+							{
+								$default_demo = $row['demo'];
+							}
+
 							$template->assign_block_vars('blog_styles', array(
 								'VALUE'			=> $row['value'],
 								'SELECTED'		=> (isset($user_settings[$user->data['user_id']]) && $user_settings[$user->data['user_id']]['blog_style'] == $row['value']) ? true : false,
 								'NAME'			=> $row['name'],
+								'BLOG_CSS'		=> (isset($row['blog_css']) && $row['blog_css']) ? true : false,
+								'DEMO'			=> (isset($row['demo']) && $row['demo']) ? $row['demo'] : '',
 							));
 						}
 					}
@@ -128,6 +136,9 @@ class ucp_blog
 						'S_BLOG_INSTANT_REDIRECT'	=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['instant_redirect'] : 0,
 						'S_SUBSCRIPTIONS'			=> ($config['user_blog_subscription_enabled']) ? true : false,
 						'S_BLOG_STYLE'				=> (isset($available_styles) && sizeof($available_styles) > 1) ? true : false,
+						'S_BLOG_CSS'				=> ($auth->acl_get('u_blog_css')) ? true : false,
+						'DEFAULT_DEMO'				=> (isset($default_demo)) ? $default_demo : '',
+						'BLOG_CSS'					=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['blog_css'] : '',
 					));
 				}
 			break;

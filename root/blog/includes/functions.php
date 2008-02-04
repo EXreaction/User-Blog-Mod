@@ -57,6 +57,12 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		$url_data['c'] = $category_id;
 	}
 
+	// Add the blogstyle setting if required
+	if (isset($_GET['blogstyle']) && !isset($url_data['blogstyle']))
+	{
+		$url_data['blogstyle'] = $_GET['blogstyle'];
+	}
+
 	// Handle the anchor
 	if (isset($url_data['anchor']))
 	{
@@ -283,6 +289,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 			'instant_redirect'					=> (isset($data['instant_redirect'])) ? $data['instant_redirect'] : 0,
 			'blog_subscription_default'			=> (isset($data['blog_subscription_default'])) ? $data['blog_subscription_default'] : 0,
 			'blog_style'						=> (isset($data['blog_style'])) ? $data['blog_style'] : '',
+			'blog_css'							=> (isset($data['blog_css'])) ? $data['blog_css'] : '',
 		);
 
 		$temp = compact('sql_array', 'user_id', 'data');

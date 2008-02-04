@@ -253,6 +253,16 @@ if (confirm_box(true))
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			set_config('num_blogs', $row['blog_count'], true);
+		case '0.3.38' :
+			phpbb_db_tools::sql_column_add(BLOGS_USERS_TABLE, 'blog_css', array('MTEXT_UNI', ''));
+
+			$blog_permissions = array(
+				'local'		=> array(),
+				'global'	=> array(
+					'u_blog_css',
+					)
+			);
+			$auth_admin->acl_add_option($blog_permissions);
 	}
 
 	// update the version

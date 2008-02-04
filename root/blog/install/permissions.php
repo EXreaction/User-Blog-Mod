@@ -54,6 +54,7 @@ $blog_permissions = array(
 		'u_blog_vote_change',
 		'u_blog_create_poll',
 		'u_blog_style',
+		'u_blog_css',
 	)
 );
 $auth_admin->acl_add_option($blog_permissions);

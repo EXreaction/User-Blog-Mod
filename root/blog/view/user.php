@@ -91,6 +91,8 @@ if (!$feed)
 
 		'L_NO_DELETED_BLOGS'	=> ($sort_days == 0) ? $user->lang['NO_DELETED_BLOGS'] : sprintf($user->lang['NO_DELETED_BLOGS_SORT_DAYS'], $limit_days[$sort_days]),
 		'L_NO_BLOGS_USER'		=> ($sort_days == 0) ? $user->lang['NO_BLOGS_USER'] : sprintf($user->lang['NO_BLOGS_USER_SORT_DAYS'], $limit_days[$sort_days]),
+
+		'BLOG_CSS'				=> (isset($user_settings[$user_id]['blog_css'])) ? $user_settings[$user_id]['blog_css'] : '',
 	));
 	unset($pagination);
 
