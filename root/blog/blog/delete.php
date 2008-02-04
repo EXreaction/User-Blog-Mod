@@ -113,7 +113,7 @@ if (is_array($settings))
 		}
 		else
 		{
-			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id));
 		}
 
 		// delete the blog
