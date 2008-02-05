@@ -274,6 +274,11 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		get_user_settings($user_id);
 	}
 
+	if (isset($data['blog_css']))
+	{
+		$data['blog_css'] = str_replace(array('java', 'script'), '', $data['blog_css']);
+	}
+
 	if (!isset($user_settings[$user_id]))
 	{
 		$sql_array = array(
