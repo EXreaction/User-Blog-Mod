@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.38b
+## MOD Version: 0.3.39_dev
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -98,9 +98,8 @@
 ##			+ To update, update viewtopic.php.
 ## 2008-02-02
 ##		Alpha 38
-##			+ Less than PHP 5.1.0 and less than MySQL 4.1.3 is no longer supported.
+##			+ Versions of PHP less than 5.1.0 is no longer supported.
 ##			+ Plenty of bug fixes (hopefully not too many new bugs) and lots of updates, to name a few: 
-##				- Added DB2 support.
 ##				- Re-integrated the Attachments plugin and created a new module for managing blog attachment extensions.
 ##				- Simplified getting the blog/reply/user data by putting all 3 classes into the blog_data class.
 ##				- Lots of code cleanup and a bunch more hooks for the plugins system (some old hooks were renamed/removed).
@@ -111,10 +110,6 @@
 ##					+ and you can easily add more templates for the blog without installing new templates for the forums.
 ##				- You can now change the priority of plugins by moving them up/down in the Blog Plugins ACP.
 ##				- The Javascript output feed has been finished and there is a feed icon on supporting pages to bring you to a page with the available feed options.
-##			+ The upgrade script no longer supports upgrades from versions older than Alpha 33 (0.3.33).
-##				- If you must upgrade from earlier than Alpha 33, rename the update.php file in blog/, then copy update_old.php from blog/update/ to blog/
-##				- Then rename update_old.php to update.php, then go to blog.php?page=update in your web browser.  After that, remove the update.php file you
-##				- copied from blog/update/, and rename the original update.php that was in blog/ back to update.php, and then go to blog.php?page=update again.
 ##			+ To update, update the edits in viewtopic.php and the prosilver/theme/stylesheet.css, copy the new files over, and then run the upgrade script by going to blog.php?page=update
 ##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
 ## 2008-02-03
@@ -125,6 +120,11 @@
 ##		Alpha 38b
 ##			+ Another quick bug fix for blog deletion.
 ##			+ To update, simply upload the new files.
+## 2008-02-
+##		Alpha 39_dev
+##			+ Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).
+##				- Going back to the 3.0.x style of adding/managing tables.
+##			+ To update, upload the new files and point your browser to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
