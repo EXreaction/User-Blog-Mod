@@ -39,7 +39,7 @@ switch ($mode)
 	case 'get_hooks' :
 		get_hooks(); // Gets all available hooks and lists them in a file.  For more detail, check the function directly.
 		break;
-	case 'build_install' :
+	case 'build_install' : // Build the Installation Schema Files
 		build_blog_install();
 		break;
 	default :
