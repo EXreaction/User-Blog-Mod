@@ -1,32 +1,27 @@
-#
-# $Id: $
-#
-
 BEGIN TRANSACTION;
 
-# Table: 'phpbb_blogs_attachment'
-CREATE TABLE phpbb_blogs_attachment (
-	attach_id INTEGER PRIMARY KEY NOT NULL ,
+# Table: 'phpbb_blogs_poll_options'
+CREATE TABLE phpbb_blogs_poll_options (
+	poll_option_id tinyint(4) NOT NULL DEFAULT '0',
 	blog_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	reply_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	poster_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	is_orphan INTEGER UNSIGNED NOT NULL DEFAULT '1',
-	physical_filename varchar(255) NOT NULL DEFAULT '',
-	real_filename varchar(255) NOT NULL DEFAULT '',
-	download_count INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	attach_comment text(65535) NOT NULL DEFAULT '',
-	extension varchar(100) NOT NULL DEFAULT '',
-	mimetype varchar(100) NOT NULL DEFAULT '',
-	filesize INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	filetime INTEGER UNSIGNED NOT NULL DEFAULT '0',
-	thumbnail INTEGER UNSIGNED NOT NULL DEFAULT '0'
+	poll_option_text text(65535) NOT NULL DEFAULT '',
+	poll_option_total INTEGER UNSIGNED NOT NULL DEFAULT '0'
 );
 
-CREATE INDEX phpbb_blogs_attachment_blog_id ON phpbb_blogs_attachment (blog_id);
-CREATE INDEX phpbb_blogs_attachment_reply_id ON phpbb_blogs_attachment (reply_id);
-CREATE INDEX phpbb_blogs_attachment_filetime ON phpbb_blogs_attachment (filetime);
-CREATE INDEX phpbb_blogs_attachment_poster_id ON phpbb_blogs_attachment (poster_id);
-CREATE INDEX phpbb_blogs_attachment_is_orphan ON phpbb_blogs_attachment (is_orphan);
+CREATE INDEX phpbb_blogs_poll_options_poll_opt_id ON phpbb_blogs_poll_options (poll_option_id);
+CREATE INDEX phpbb_blogs_poll_options_blog_id ON phpbb_blogs_poll_options (blog_id);
+
+# Table: 'phpbb_blogs_poll_votes'
+CREATE TABLE phpbb_blogs_poll_votes (
+	blog_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	poll_option_id tinyint(4) NOT NULL DEFAULT '0',
+	vote_user_id INTEGER UNSIGNED NOT NULL DEFAULT '0',
+	vote_user_ip varchar(40) NOT NULL DEFAULT ''
+);
+
+CREATE INDEX phpbb_blogs_poll_votes_blog_id ON phpbb_blogs_poll_votes (blog_id);
+CREATE INDEX phpbb_blogs_poll_votes_vote_user_id ON phpbb_blogs_poll_votes (vote_user_id);
+CREATE INDEX phpbb_blogs_poll_votes_vote_user_ip ON phpbb_blogs_poll_votes (vote_user_ip);
 
 
 COMMIT;
