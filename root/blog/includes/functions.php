@@ -276,7 +276,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 
 	if (isset($data['blog_css']))
 	{
-		$data['blog_css'] = str_replace(array('java', 'script'), '', $data['blog_css']);
+		$data['blog_css'] = str_replace(array('java', 'script', 'eval'), '', $data['blog_css']);
 	}
 
 	if (!isset($user_settings[$user_id]))
