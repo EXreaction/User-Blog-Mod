@@ -131,7 +131,8 @@ hr {
 }
 
 .header_img {
-	padding: 5px 50px;
+	background: transparent url({T_BLOG_IMAGESET_PATH}/logo.gif) no-repeat 50px center;
+	height: 120px;
 }
 
 /* Main Classes */
