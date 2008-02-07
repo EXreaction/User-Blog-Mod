@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.39_dev
+## MOD Version: 0.3.39
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -120,8 +120,8 @@
 ##		Alpha 38b
 ##			+ Another quick bug fix for blog deletion.
 ##			+ To update, simply upload the new files.
-## 2008-02-
-##		Alpha 39_dev
+## 2008-02-07
+##		Alpha 39
 ##			+ Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).
 ##				- Going back to the 3.0.x style of adding/managing tables.
 ##			+ To update, upload the new files and point your browser to blog.php?page=update
