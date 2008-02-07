@@ -402,11 +402,11 @@ if (confirm_box(true))
 				{
 					if (version_compare($db->mysql_version, '4.1.3', '>=') || $dbms == 'mysqli')
 					{
-						$dbms_schema = 'schemas/mysql_41_schema.sql';
+						$dbms_schema = 'mysql_41_schema.sql';
 					}
 					else
 					{
-						$dbms_schema = 'schemas/mysql_40_schema.sql';
+						$dbms_schema = 'mysql_40_schema.sql';
 					}
 				}
 				else
@@ -491,11 +491,11 @@ if (confirm_box(true))
 			{
 				if (version_compare($db->mysql_version, '4.1.3', '>=') || $dbms == 'mysqli')
 				{
-					$dbms_schema = 'schemas/mysql_41_schema.sql';
+					$dbms_schema = 'mysql_41_schema.sql';
 				}
 				else
 				{
-					$dbms_schema = 'schemas/mysql_40_schema.sql';
+					$dbms_schema = 'mysql_40_schema.sql';
 				}
 			}
 			else
