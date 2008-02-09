@@ -26,7 +26,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.39';
+$user_blog_version = '0.3.40';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

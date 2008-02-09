@@ -565,6 +565,7 @@ if (confirm_box(true))
 					)
 			);
 			$auth_admin->acl_add_option($blog_permissions);
+		case '0.3.39' :
 	}
 
 	// update the version
