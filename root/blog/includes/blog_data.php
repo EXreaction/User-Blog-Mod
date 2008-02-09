@@ -292,7 +292,14 @@ class blog_data
 		}
 		if (!$auth->acl_get('m_blogapprove'))
 		{
-			$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';;
+			if ($user->data['is_registered'])
+			{
+				$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';
+			}
+			else
+			{
+				$sql_where[] = 'b.blog_approved = 1';
+			}
 		}
 		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{
@@ -660,7 +667,14 @@ class blog_data
 
 		if (!$auth->acl_get('m_blogreplyapprove'))
 		{
-			$sql_where[] = 'reply_approved = 1';
+			if ($user->data['is_registered'])
+			{
+				$sql_where[] = '(reply_approved = 1 OR reply_id = ' . $user->data['user_id'] . ')';
+			}
+			else
+			{
+				$sql_where[] = 'reply_approved = 1';
+			}
 		}
 		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
 		{
