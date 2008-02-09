@@ -2,7 +2,7 @@
 /**
 *
 * @package phpBB3
-* @version $Id: create_schema_files.php 8374 2008-02-03 22:55:10Z naderman $
+* @version $Id$
 * @copyright (c) 2006 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *

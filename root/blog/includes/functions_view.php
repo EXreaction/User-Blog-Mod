@@ -2,7 +2,8 @@
 /**
 *
 * @package phpBB3 User Blog
-* @copyright (c) 2007 EXreaction, Lithium Studios
+* @version $Id:
+* @copyright (c) 2008 EXreaction, Lithium Studios
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
 */
@@ -699,7 +700,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
    {
 	  if (($start_pos = strrpos($text, $tag[0])) > strrpos($text, $tag[1]))
 	  {
-		 $text = substr($text, 0, $start_pos) . ' …';
+		 $text = substr($text, 0, $start_pos) . ' ...';
 	  }
    }
 
