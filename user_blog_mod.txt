@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.39
+## MOD Version: 0.3.40
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -84,18 +84,9 @@
 ## 2007-12-23 Alpha 34b
 ## 2007-12-24 Alpha 35
 ## 2007-12-27 Alpha 36
-## 2007-12-28
-##		Alpha 36a
-##			+ Had some bugs in the header file.
-##			+ To update, copy the new files over.
-## 2007-12-30
-##		Alpha 37
-##			+ Bug fixes.
-##			+ To update, copy the new files over, update viewtopic.php, and run the update script by going to blog.php?page=update.
-## 2007-12-31
-##		Alpha 37a
-##			+ Oops, the install file did not have the correct instructions for viewtopic.php.
-##			+ To update, update viewtopic.php.
+## 2007-12-28 Alpha 36a
+## 2007-12-30 Alpha 37
+## 2007-12-31 Alpha 37a
 ## 2008-02-02
 ##		Alpha 38
 ##			+ Versions of PHP less than 5.1.0 is no longer supported.
@@ -125,6 +116,10 @@
 ##			+ Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).
 ##				- Going back to the 3.0.x style of adding/managing tables.
 ##			+ To update, upload the new files and point your browser to blog.php?page=update
+## 2008-02-09
+##		Alpha 40
+##			+ Ok, a few bug fixes from changing to the 3.0.x style of adding/managing tables and a few other places fixed.
+##			+ To update, upload the new files
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
