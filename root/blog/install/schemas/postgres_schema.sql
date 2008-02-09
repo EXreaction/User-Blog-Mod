@@ -1,4 +1,11 @@
+/*
+
+ $Id$
+
+*/
+
 BEGIN;
+
 
 /*
 	Table: 'phpbb_blogs'

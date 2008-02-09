@@ -1,4 +1,11 @@
 /*
+
+ $Id$
+
+*/
+
+
+/*
 	Table: 'phpbb_blogs'
 */
 CREATE TABLE phpbb_blogs (

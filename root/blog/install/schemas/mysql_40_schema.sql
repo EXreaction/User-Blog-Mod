@@ -1,3 +1,7 @@
+#
+# $Id$
+#
+
 # Table: 'phpbb_blogs'
 CREATE TABLE phpbb_blogs (
 	blog_id mediumint(8) UNSIGNED NOT NULL auto_increment,

@@ -1,3 +1,7 @@
+#
+# $Id$
+#
+
 BEGIN TRANSACTION;
 
 # Table: 'phpbb_blogs'

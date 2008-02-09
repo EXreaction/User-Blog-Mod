@@ -251,33 +251,33 @@ foreach ($supported_dbms as $dbms)
 	{
 		case 'mysql_40':
 		case 'mysql_41':
-			//$line = "#\n# \$I" . "d: $\n#\n\n";
+			$line = "#\n# \$Id$\n#\n\n";
 		break;
 
 		case 'firebird':
-			//$line = "#\n# \$I" . "d: $\n#\n\n";
+			$line = "#\n# \$Id$\n#\n\n";
 			$line .= custom_data('firebird') . "\n";
 		break;
 
 		case 'sqlite':
-			//$line = "#\n# \$I" . "d: $\n#\n\n";
+			$line = "#\n# \$Id$\n#\n\n";
 			$line .= "BEGIN TRANSACTION;\n\n";
 		break;
 
 		case 'mssql':
-			//$line = "/*\n\n \$I" . "d: $\n\n*/\n\n";
+			$line = "/*\n\n \$Id$\n\n*/\n\n";
 			$line .= "BEGIN TRANSACTION\nGO\n\n";
 		break;
 
 		case 'oracle':
-			//$line = "/*\n\n \$I" . "d: $\n\n*/\n\n";
-			//$line .= custom_data('oracle') . "\n";
+			$line = "/*\n\n \$Id$\n\n*/\n\n";
+			$line .= custom_data('oracle') . "\n";
 		break;
 
 		case 'postgres':
-			//$line = "/*\n\n \$I" . "d: $\n\n*/\n\n";
+			$line = "/*\n\n \$Id$\n\n*/\n\n";
 			$line .= "BEGIN;\n\n";
-			//$line .= custom_data('postgres') . "\n";
+			$line .= custom_data('postgres') . "\n";
 		break;
 	}
 

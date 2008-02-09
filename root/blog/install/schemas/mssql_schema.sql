@@ -1,3 +1,9 @@
+/*
+
+ $Id$
+
+*/
+
 BEGIN TRANSACTION
 GO
 
