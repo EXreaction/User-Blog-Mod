@@ -392,12 +392,14 @@ function handle_blog_cache($mode, $user_id = 0)
 
 	switch ($mode)
 	{
-/*			Not currently used
 		case 'new_blog' :
 		case 'approve_blog' :
-		case 'report_blog' :
 		case 'delete_blog' :
 		case 'undelete_blog' :
+			$cache->destroy('_blog_categories');
+		break;
+/*		Not currently used...
+		case 'report_blog' :
 		case 'new_reply' :
 		case 'approve_reply' :
 		case 'report_reply' :
@@ -427,8 +429,7 @@ function blog_meta_refresh($time, $url)
 
 	if ($time == 0 || (isset($user_settings[$user->data['user_id']]['instant_redirect']) && $user_settings[$user->data['user_id']]['instant_redirect']))
 	{
-		$time = 0;
-		header('Location: ' . str_replace('&amp;', '&', $url));
+		redirect($url);
 	}
 
 	$template->assign_vars(array(

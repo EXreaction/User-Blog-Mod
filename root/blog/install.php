@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 if (isset($config['user_blog_version']))
 {
-	//trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
+	trigger_error(sprintf($user->lang['ALREADY_INSTALLED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
 
 if (version_compare(PHP_VERSION, '5.1.0') < 0)
