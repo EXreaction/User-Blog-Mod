@@ -404,6 +404,11 @@ class blog_data
 		global $config, $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
 		global $blog_attachment, $category_id;
 
+		if (!isset(self::$blog[$id]))
+		{
+			return array();
+		}
+
 		$blog = &self::$blog[$id];
 		$user_id = $blog['user_id'];
 
@@ -813,6 +818,11 @@ class blog_data
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
 		global $blog_attachment, $category_id;
 
+		if (!isset(self::$reply[$id]))
+		{
+			return array();
+		}
+
 		$reply = &self::$reply[$id];
 		$blog_id = $reply['blog_id'];
 		$user_id = $reply['user_id'];
@@ -1096,6 +1106,11 @@ class blog_data
 	{
 		global $phpbb_root_path, $phpEx, $user, $auth, $config, $template;
 		global $blog_data, $zebra_list;
+
+		if (!isset(self::$user[$user_id]))
+		{
+			return array();
+		}
 
 		if ($output_custom == false)
 		{
