@@ -14,6 +14,53 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Perform actions on a user's profile from the acp_users file
+*/
+function blog_acp_profile($user_id, $submit)
+{
+	global $db, $phpbb_root_path, $phpEx, $template, $user;
+
+	$user->add_lang(array('mods/blog/common', 'mods/blog/ucp'));
+	include("{$phpbb_root_path}blog/includes/functions.$phpEx");
+	include("{$phpbb_root_path}blog/includes/constants.$phpEx");
+	include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+	new blog_plugins();
+
+	if ($submit)
+	{
+		$blog_description = utf8_normalize_nfc(request_var('blog_description', '', true));
+		$blog_description_uid = $blog_description_bitfield = $blog_description_options = '';
+		generate_text_for_storage($blog_description, $blog_description_uid, $blog_description_bitfield, $blog_description_options, true, true, true);
+
+		$blog_data = array(
+			'title'							=> utf8_normalize_nfc(request_var('blog_title', '', true)),
+			'description'					=> $blog_description,
+			'description_bbcode_bitfield'	=> $blog_description_bitfield,
+			'description_bbcode_uid'		=> $blog_description_uid,
+			'blog_css'						=> request_var('blog_css', ''),
+		);
+		update_user_blog_settings($user_id, $blog_data);
+	}
+	else
+	{
+		global $user_settings;
+		get_user_settings($user_id);
+
+		if (isset($user_settings[$user_id]))
+		{
+			decode_message($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid']);
+			$template->assign_vars(array(
+				'BLOG_TITLE'		=> $user_settings[$user_id]['title'],
+				'BLOG_DESCRIPTION'	=> $user_settings[$user_id]['description'],
+				'BLOG_CSS'			=> $user_settings[$user_id]['blog_css'],
+			));
+		}
+
+		blog_plugins::plugin_do_arg('function_blog_acp_profile', compact('blog_data', 'user_id'));
+	}
+}
+
+/**
 * Syncronise Blog Data
 *
 * This should never need to be used unless someone manually deletes blogs or replies from the database

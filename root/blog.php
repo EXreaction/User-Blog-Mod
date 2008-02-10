@@ -12,8 +12,6 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* editing user in the ACP -> new panel for blog settings
-*
 * cash mod plugin
 * 
 * LOW PRIORITY ------------------------------------------------------------------------------------
@@ -26,7 +24,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.40';
+$user_blog_version = '0.3.41_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

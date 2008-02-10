@@ -131,64 +131,6 @@ function get_subscription_info($blog_id, $user_id = false)
 }
 
 /**
-* Gets user settings
-*
-* @param int $user_ids array of user_ids to get the settings for
-*/
-function get_user_settings($user_ids)
-{
-	global $cache, $config, $user_settings;
-
-	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
-	{
-		return;
-	}
-
-	if (!is_array($user_settings))
-	{
-		$user_settings = array();
-	}
-
-	if (!is_array($user_ids))
-	{
-		$user_ids = array($user_ids);
-	}
-
-	$to_query = array();
-	foreach ($user_ids as $id)
-	{
-		if ($id && !array_key_exists($id, $user_settings))
-		{
-			$cache_data = $cache->get('_blog_settings_' . intval($id));
-			if ($cache_data === false)
-			{
-				$to_query[] = (int) $id;
-			}
-			else
-			{
-				$user_settings[$id] = $cache_data;
-			}
-		}
-	}
-
-	if (count($to_query))
-	{
-		global $db;
-		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
-		$result = $db->sql_query($sql);
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$cache->put('_blog_settings_' . $row['user_id'], $row);
-
-			$user_settings[$row['user_id']] = $row;
-		}
-		$db->sql_freeresult($result);
-	}
-
-	blog_plugins::plugin_do('function_get_user_settings');
-}
-
-/**
 * Gets Zebra (friend/foe)  info
 *
 * @param int|bool $uid The user_id we will grab the zebra data for.  If this is false we will use $user->data['user_id']
