@@ -51,7 +51,7 @@
 	</div>
 	<div class="header">
 		<div class="header_inner">
-			<a href="{U_BLOG}"><div class="header_img"></div></a>
+			<div class="header_img"></div>
 		</div>
 	</div>
 	<div class="main">
@@ -121,7 +121,7 @@
 
 				<div id="b{blogrow.BLOG_ID}" class="blog<!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF -->">
 					<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div class="blog_rating">{blogrow.RATING_STRING}</div><!-- ENDIF -->
-					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
+					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_BLOG_IMAGESET_PATH}/icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
 					<h4 class="blog_date"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE}</h4>
 
 					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->

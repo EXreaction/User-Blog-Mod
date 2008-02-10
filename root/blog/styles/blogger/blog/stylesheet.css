@@ -226,6 +226,7 @@ hr {
 }
 
 .signature {
+	border-top: 1px dotted #7C756A;
 }
 
 .blog_bottom_right {
