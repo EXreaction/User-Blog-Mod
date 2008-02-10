@@ -12,20 +12,6 @@
 	<fieldset>
 		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
 		<!-- IF MODE == 'ucp_blog_settings' -->
-			<!-- IF S_BLOG_STYLE -->
-				<dl>
-					<dt><label for="blog_style">{L_BLOG_STYLE}:</label><br /><span>{L_BLOG_STYLE_EXPLAIN}</span></dt>
-					<dd>
-						<label for="blog_style">
-							<select name="blog_style">
-								<!-- BEGIN blog_styles -->
-									<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF -->>{blog_styles.NAME}</option>
-								<!-- END blog_styles -->
-							</select>
-						</label>
-					</dd>
-				</dl>
-			<!-- ENDIF -->
 			<dl>
 				<dt><label for="instant_redirect1">{L_BLOG_INSTANT_REDIRECT}:</label><br /><span>{L_BLOG_INSTANT_REDIRECT_EXPLAIN}</span></dt>
 				<dd>
@@ -41,6 +27,32 @@
 							<dd><label for="{subscriptions.SUB_TYPE}"><input type="checkbox" name="{subscriptions.TYPE}" id="{subscriptions.TYPE}" <!-- IF subscriptions.S_CHECKED -->checked="checked"<!-- ENDIF --> /> {subscriptions.NAME}</label></dd>
 						<!-- END subscriptions -->
 				</dl>
+			<!-- ENDIF -->
+
+			<!-- IF S_BLOG_STYLE -->
+				<dl>
+					<dt><label for="blog_style">{L_BLOG_STYLE}:</label><br /><span>{L_BLOG_STYLE_EXPLAIN}</span></dt>
+					<dd>
+						<label for="blog_style">
+							<select name="blog_style" onchange="document.getElementById('style_demo').src = this.options[selectedIndex].id;">
+								<!-- BEGIN blog_styles -->
+									<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF --> id="{blog_styles.DEMO}">
+										{blog_styles.NAME}<!-- IF blog_styles.BLOG_CSS --> *<!-- ENDIF -->
+									</option>
+								<!-- END blog_styles -->
+							</select>
+						</label>
+					</dd>
+					<dd>
+						<img id="style_demo" src="{DEFAULT_DEMO}" />
+					</dd>
+				</dl>
+			<!-- ENDIF -->
+			<!-- IF S_BLOG_CSS -->
+				<div><label for="blog_css" style="font-weight: bold;">{L_BLOG_CSS}:</label><br /><span>{L_BLOG_CSS_EXPLAIN}</span></div>
+				<div id="message-box">
+					<textarea name="blog_css" id="blog_css" rows="15" cols="76" tabindex="3" class="inputbox">{BLOG_CSS}</textarea>
+				</div>
 			<!-- ENDIF -->
 		<!-- ENDIF -->
 		<!-- IF MODE == 'ucp_blog_permissions' -->

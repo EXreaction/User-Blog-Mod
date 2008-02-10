@@ -41,16 +41,20 @@
 
 							<dl>
 								<dt>
-									<strong><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
+									<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
 									<div class="content" style="width: 95%; padding: 4px;">{row.BLOG_MESSAGE}</div>
-
-									<div style="clear: both; float: right; vertical-align: bottom;">{row.REPLIES}</div>
 
 									<!-- IF row.S_HAS_ATTACHMENTS -->
 										<dl class="attachbox">
 											<dt>{L_ATTACHMENTS}</dt>
 										</dl>
 									<!-- ENDIF -->
+
+									<br clear="all" />
+									<div>
+										<span class="num_replies">{row.REPLIES}</span>
+										{row.VIEWS}
+									</div>
 								</dt>
 							</dl>
 						</div>
