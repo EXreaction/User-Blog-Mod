@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds user blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.40
+## MOD Version: 0.3.41_dev
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -43,24 +43,17 @@
 ## 2007-07-08 Alpha 7
 ## 2007-07-12 Alpha 8
 ## 2007-07-28 Alpha 9
-## 2007-07-29 Alpha 9a
 ## 2007-07-30 Alpha 10
-## 2007-07-31 Alpha 10a
 ## 2007-08-04 Alpha 11
 ## 2007-08-07 Alpha 12
 ## 2007-08-12 Alpha 13
-## 2007-08-14 Alpha 13a
-## 2007-08-15 Alpha 13b
 ## 2007-08-26 Alpha 14
-## 2007-08-27 Alpha 14a
-## 2007-09-10 Alpha 14b
 ## 2007-09-30 Alpha 15
 ## 2007-10-09 Alpha 16
 ## 2007-10-15 Alpha 17
 ## 2007-10-17 Alpha 18
 ## 2007-10-21 Alpha 19
 ## 2007-10-22 Alpha 20
-## 2007-10-22 Alpha 20a
 ## 2007-10-24 Alpha 21
 ## 2007-10-26 Alpha 22
 ## 2007-10-30 Alpha 23
@@ -68,25 +61,16 @@
 ## 2007-11-03 Alpha 25
 ## 2007-11-04 Alpha 26
 ## 2007-11-06 Alpha 27
-## 2007-11-07 Alpha 27a
 ## 2007-11-11 Alpha 28
-## 2007-11-12 Alpha 28a
-## 2007-11-13 Alpha 28b
 ## 2007-11-17 Alpha 29
 ## 2007-11-24 Alpha 30
 ## 2007-12-13 Alpha 31
-## 2007-12-14 Alpha 31a
-## 2007-12-14 Alpha 31b
 ## 2007-12-19 Alpha 32
 ## 2007-12-21 Alpha 33
 ## 2007-12-22 Alpha 34
-## 2007-12-22 Alpha 34a
-## 2007-12-23 Alpha 34b
 ## 2007-12-24 Alpha 35
 ## 2007-12-27 Alpha 36
-## 2007-12-28 Alpha 36a
 ## 2007-12-30 Alpha 37
-## 2007-12-31 Alpha 37a
 ## 2008-02-02
 ##		Alpha 38
 ##			+ Versions of PHP less than 5.1.0 is no longer supported.
@@ -103,14 +87,6 @@
 ##				- The Javascript output feed has been finished and there is a feed icon on supporting pages to bring you to a page with the available feed options.
 ##			+ To update, update the edits in viewtopic.php and the prosilver/theme/stylesheet.css, copy the new files over, and then run the upgrade script by going to blog.php?page=update
 ##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
-## 2008-02-03
-##		Alpha 38a
-##			+ A few minor bug fixes.
-##			+ To update, simply upload the new files.
-## 2008-02-03
-##		Alpha 38b
-##			+ Another quick bug fix for blog deletion.
-##			+ To update, simply upload the new files.
 ## 2008-02-07
 ##		Alpha 39
 ##			+ Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).
@@ -119,7 +95,11 @@
 ## 2008-02-09
 ##		Alpha 40
 ##			+ Ok, a few bug fixes from changing to the 3.0.x style of adding/managing tables and a few other places fixed.
-##			+ To update, upload the new files
+##			+ To update, upload the new files and point your browser to blog.php?page=update
+## 2008-02-
+##		Alpha 41_dev
+##			+ A few more bug fixes and you can now edit a user's blog CSS in the ACP->Manage Users.
+##			+ To update, upload the new files, update the code in includes/acp/acp_users.php, and point your browser to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################
@@ -164,40 +144,10 @@ $cp = new custom_profile();
 #-----[ BEFORE, ADD ]--------------------------------------
 #
 
-				// Start User Blog Mod
-				$user->add_lang('mods/blog/common');
-				include("{$phpbb_root_path}blog/functions.$phpEx");
-
-				if ($submit)
-				{
-					$blog_description = utf8_normalize_nfc(request_var('blog_description', '', true));
-					$blog_description_uid = $blog_description_bitfield = $blog_description_options = '';
-					generate_text_for_storage($blog_description, $blog_description_uid, $blog_description_bitfield, $blog_description_options, true, true, true);
-
-					$blog_data = array(
-						'title'							=> utf8_normalize_nfc(request_var('blog_title', '', true)),
-						'description'					=> $blog_description,
-						'description_bbcode_bitfield'	=> $blog_description_bitfield,
-						'description_bbcode_uid'		=> $blog_description_uid,
-					);
-					update_user_blog_settings($user_id, $blog_data);
-				}
-				else
-				{
-					$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE user_id = ' . $user_id;
-					$result = $db->sql_query($sql);
-					$blog_data = $db->sql_fetchrow($result);
-
-					if ($blog_data)
-					{
-						decode_message($blog_data['description'], $blog_data['description_bbcode_uid']);
-						$template->assign_vars(array(
-							'BLOG_TITLE'		=> $blog_data['title'],
-							'BLOG_DESCRIPTION'	=> $blog_data['description'],
-						));
-					}
-				}
-				// End User Blog Mod
+				// Start User Blog Mod ----------------------
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_acp_profile($user_id, $submit);
+				// End User Blog Mod ------------------------
 
 #
 #-----[ OPEN ]---------------------------------------------
@@ -216,9 +166,9 @@ includes/functions.php
 #-----[ BEFORE, ADD ]--------------------------------------
 #
 
-	// Start Add User Blog Mod ------------------
+	// Start User Blog Mod ----------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
-	// End Add User Blog Mod --------------------
+	// End User Blog Mod ------------------------
 
 #
 #-----[ OPEN ]---------------------------------------------
