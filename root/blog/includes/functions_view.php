@@ -306,8 +306,9 @@ function generate_blog_pagination($base_url, $num_items, $per_page, $start_item,
 * @param mixed $user_data Extra data on the user.  If blog_count is supplied in $user_data we can skip 1 sql query (if $grab_from_db is true)
 * @param bool $grab_from_db If it is true we will run the query to find out how many blogs the user has if the data isn't supplied in $user_data, otherwise we won't and just display the link alone.
 * @param bool $force_output is if you would like to force the output of the links for the single requested section
+* @param bool $return Set to true to return an array with the data in it instead of outputting it
 */
-function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false)
+function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = false, $force_output = false, $return = false)
 {
 	global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
 	global $reverse_zebra_list, $user_settings;
@@ -377,6 +378,14 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		{
 			if ($config['user_blog_always_show_blog_url'] || $force_output)
 			{
+				if ($return)
+				{
+					return array(
+						'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+						'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+					);
+				}
+
 				$template->assign_block_vars($block, array(
 					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 					'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
@@ -406,6 +415,14 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	
 	if ($user_data['blog_count'] > 0 || (($config['user_blog_always_show_blog_url'] || $force_output) && $user_data['blog_count'] >= 0))
 	{
+		if ($return)
+		{
+			return array(
+				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+			);
+		}
+
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
@@ -413,6 +430,14 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	}
 	else if (!$grab_from_db && $user_data['blog_count'] == -1)
 	{
+		if ($return)
+		{
+			return array(
+				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+			);
+		}
+
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
@@ -505,12 +530,16 @@ function generate_menu($user_id = false)
 
 	if ($user_id)
 	{
-		$template->assign_vars($blog_data->handle_user_data($user_id));
-		$blog_data->handle_user_data($user_id, 'custom_fields');
-
 		$template->assign_vars(array(
 			'S_USER_BLOG_MENU'	=> true,
 			'USER_MENU_EXTRA'	=> $user_menu_extra,
+		));
+	}
+	else
+	{
+		$template->assign_vars(array(
+			'S_MAIN_BLOG_MENU'		=> true,
+			'MAIN_BLOG_MENU_EXTRA'	=> $extra,
 		));
 	}
 

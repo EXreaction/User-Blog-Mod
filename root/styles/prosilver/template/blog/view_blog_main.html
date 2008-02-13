@@ -6,70 +6,79 @@
 <br />
 <!-- ENDIF -->
 
-<!-- INCLUDE blog/category_list.html -->
-
 <table style="width: 100%">
 	<tr>
-		<!-- BEGIN column -->
-			<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
-				<div class="post bg3" style="text-align: center;">
-					<span class="corners-top"><span></span></span>
-						<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF --><strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
-					<span class="corners-bottom"><span></span></span>
-				</div>
-				<!-- IF S_SORT -->
-					<form id="viewdownloads" method="post" action="{S_POST_ACTION}">
-					<fieldset class="display-options" style="margin-top: 0;">
-						<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
-						<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
-						<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
-						<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label> <label>{S_SELECT_SORT_DIR} <input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
-					</fieldset>
-					</form>
-				<!-- ENDIF -->
-				<!-- BEGIN row -->
-					<div class="post bg1<!-- IF row.S_REPORTED or row.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF row.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF row.POST_COLOR and not row.S_REPORTED and not row.S_UNAPPROVED and not row.S_DELETED -->style="background-color: {row.POST_COLOR}"<!-- ENDIF -->>
-						<div class="inner"><span class="corners-top"><span></span></span>
+		<td id="left_menu">
+			<!-- INCLUDE blog/left_menu.html -->
+		</td>
+		<td style="vertical-align: top; padding-left: 10px;">
+			<!-- INCLUDE blog/category_list.html -->
 
-						<div class="postbody" style="width: 100%;">
-							<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
-								<p class="rules">
-									<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
-									<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_REPORTED_SHORT}</strong></a><!-- ENDIF -->
-								</p>
+			<table style="width: 100%">
+				<tr>
+					<!-- BEGIN column -->
+						<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
+							<div class="post bg3" style="text-align: center;">
+								<span class="corners-top"><span></span></span>
+									<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF --><strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
+								<span class="corners-bottom"><span></span></span>
+							</div>
+							<!-- IF S_SORT -->
+								<form id="sortblogs" method="post" action="{S_POST_ACTION}">
+								<fieldset class="display-options" style="margin-top: 0;">
+									<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
+									<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
+									<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
+									<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label> <label>{S_SELECT_SORT_DIR} <input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
+								</fieldset>
+								</form>
 							<!-- ENDIF -->
+							<!-- BEGIN row -->
+								<div class="post bg1<!-- IF row.S_REPORTED or row.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF row.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF row.POST_COLOR and not row.S_REPORTED and not row.S_UNAPPROVED and not row.S_DELETED -->style="background-color: {row.POST_COLOR}"<!-- ENDIF -->>
+									<div class="inner"><span class="corners-top"><span></span></span>
 
-							<dl>
-								<dt>
-									<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
-									<div class="content" style="width: 95%; padding: 4px;">{row.BLOG_MESSAGE}</div>
+									<div class="postbody" style="width: 100%;">
+										<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
+											<p class="rules">
+												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
+												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_REPORTED_SHORT}</strong></a><!-- ENDIF -->
+											</p>
+										<!-- ENDIF -->
 
-									<!-- IF row.S_HAS_ATTACHMENTS -->
-										<dl class="attachbox">
-											<dt>{L_ATTACHMENTS}</dt>
+										<dl>
+											<dt>
+												<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
+												<div class="content" style="width: 95%; padding: 4px;">{row.BLOG_MESSAGE}</div>
+
+												<!-- IF row.S_HAS_ATTACHMENTS -->
+													<dl class="attachbox">
+														<dt>{L_ATTACHMENTS}</dt>
+													</dl>
+												<!-- ENDIF -->
+
+												<br clear="all" />
+												<div>
+													<span class="num_replies">{row.REPLIES}</span>
+													{row.VIEWS}
+												</div>
+											</dt>
 										</dl>
-									<!-- ENDIF -->
-
-									<br clear="all" />
-									<div>
-										<span class="num_replies">{row.REPLIES}</span>
-										{row.VIEWS}
 									</div>
-								</dt>
-							</dl>
-						</div>
-						<span class="corners-bottom"><span></span></span>
-					</div>
-				</div>
-				<!-- BEGINELSE -->
-					<div class="post bg1" style="text-align: center; margin: 5px;">
-						<span class="corners-top"><span></span></span>
-							<strong>{L_NO_BLOGS}</strong>
-						<span class="corners-bottom"><span></span></span>
-					</div>	
-				<!-- END row -->
-			</td>
-		<!-- END column -->
+									<span class="corners-bottom"><span></span></span>
+								</div>
+							</div>
+							<!-- BEGINELSE -->
+								<div class="post bg1" style="text-align: center; margin: 5px;">
+									<span class="corners-top"><span></span></span>
+										<strong>{L_NO_BLOGS}</strong>
+									<span class="corners-bottom"><span></span></span>
+								</div>	
+							<!-- END row -->
+						</td>
+					<!-- END column -->
+				</tr>
+			</table>
+		</td>
 	</tr>
 </table>
 

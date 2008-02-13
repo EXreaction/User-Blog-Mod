@@ -20,7 +20,7 @@ $user->add_lang('viewtopic');
 // for sorting and pagination
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 $s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
-$total_blogs = $blog_data->get_blog_info('user_count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false));
+$total_blogs = $blog_data->get_blog_info('count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false, 'custom_sql' => 'b.user_id = ' . $user_id));
 $sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
 $sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
 gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
@@ -34,24 +34,6 @@ if ($mode == 'deleted')
 else
 {
 	$blog_ids = $blog_data->get_blog_data('user', $user_id, array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
-}
-
-// for highlighting
-if ($hilit_words)
-{
-	$highlight_match = $highlight = '';
-	foreach (explode(' ', trim($hilit_words)) as $word)
-	{
-		if (trim($word))
-		{
-			$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
-		}
-	}
-	$highlight = urlencode($hilit_words);
-}
-else
-{
-	$highlight_match = false;
 }
 
 blog_plugins::plugin_do('view_user_start');
@@ -80,7 +62,7 @@ if (!$feed)
 		'PAGE_NUMBER' 			=> on_page($total_blogs, $limit, $start),
 		'TOTAL_POSTS'			=> ($total_blogs == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total_blogs),
 
-		'U_FEED'				=> ($config['user_blog_enable_feeds']) ? blog_url($user_id, false, false, array('feed' => 'explain')): '',
+		'U_FEED'				=> ($config['user_blog_enable_feeds']) ? blog_url($user_id, false, false, array('feed' => 'explain')) : '',
 		'U_PRINT_TOPIC'			=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',
 		'U_VIEW'				=> $blog_urls['self'],
 
@@ -108,7 +90,7 @@ if (!$feed)
 
 		foreach($blog_ids as $id)
 		{
-			$blogrow = $blog_data->handle_blog_data($id, true);
+			$blogrow = array_merge($blog_data->handle_user_data(blog_data::$blog[$id]['user_id']), $blog_data->handle_blog_data($id, $config['user_blog_user_text_limit']));
 			$template->assign_block_vars('blogrow', $blogrow);
 
 			if (!$blogrow['S_SHORTENED'])

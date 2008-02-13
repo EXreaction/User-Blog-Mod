@@ -12,10 +12,18 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* cash mod plugin
-* 
-* LOW PRIORITY ------------------------------------------------------------------------------------
+* finish main page
+*	add recent replies to main page
+*	add counter for # of replies in the config table
+*	add stats section to main page
+*	add links section (my blogs, blog control panel, random blogs, recent blogs, popular blogs)
 *
+* subsilver2 template
+*
+* LOW PRIORITY ------------------------------------------------------------------------------------
+* cash mod plugin
+* personal categories plugin
+* 
 * OTHER -------------------------------------------------------------------------------------------
 * 
 * Memorable entry (like a sticky)?
@@ -146,6 +154,24 @@ switch ($page)
 
 if ($default)
 {
+	// for highlighting
+	if ($hilit_words)
+	{
+		$highlight_match = $highlight = '';
+		foreach (explode(' ', trim($hilit_words)) as $word)
+		{
+			if (trim($word))
+			{
+				$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
+			}
+		}
+		$highlight = urlencode($hilit_words);
+	}
+	else
+	{
+		$highlight_match = false;
+	}
+
 	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
 	$temp = compact('page', 'mode', 'default', 'inc_file', 'user_style');
 	blog_plugins::plugin_do_ref('blog_page_switch', $temp);
@@ -354,7 +380,9 @@ $template->assign_vars(array(
 
 blog_plugins::plugin_do('blog_end');
 
+// DEBUG
 //$db->sql_report('display');
+//$cache->put('_a', $template);
 
 // setup the page footer
 page_footer();

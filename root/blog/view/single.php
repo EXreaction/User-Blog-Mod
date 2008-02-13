@@ -72,24 +72,6 @@ $blog_data->get_polls($blog_id);
 // Get the Attachment Data
 get_attachment_data($blog_id, $reply_ids);
 
-// for highlighting
-if ($hilit_words)
-{
-	$highlight_match = $highlight = '';
-	foreach (explode(' ', trim($hilit_words)) as $word)
-	{
-		if (trim($word))
-		{
-			$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
-		}
-	}
-	$highlight = urlencode($hilit_words);
-}
-else
-{
-	$highlight_match = false;
-}
-
 blog_plugins::plugin_do('view_blog_start');
 
 // Output some data
@@ -104,8 +86,7 @@ $template->assign_vars(array(
 ));
 
 // Parse the blog data and output it to the template
-$template->assign_block_vars('blogrow', $blog_data->handle_blog_data($blog_id) + $blog_data->handle_user_data($user_id));
-$blog_data->handle_user_data($user_id, 'blogrow.custom_fields');
+$template->assign_block_vars('blogrow', array_merge($blog_data->handle_blog_data($blog_id), $blog_data->handle_user_data($user_id)));
 
 blog_plugins::plugin_do('view_blog_after_blogrow');
 
@@ -140,17 +121,8 @@ if ($total_replies > 0 || $sort_days != 0)
 		// use a foreach to easily output the data
 		foreach($reply_ids as $id)
 		{
-			$data = $blog_data->handle_reply_data($id) + $blog_data->handle_user_data(blog_data::$reply[$id]['user_id']);
-
-			blog_plugins::plugin_do_ref('view_blog_reply_while', $data);
-
 			// send the data to the template
-			$template->assign_block_vars('replyrow', $data);
-
-			// output the custom fields
-			$blog_data->handle_user_data(blog_data::$reply[$id]['user_id'], 'replyrow.custom_fields');
-
-			unset($data);
+			$template->assign_block_vars('replyrow', array_merge($blog_data->handle_reply_data($id), $blog_data->handle_user_data(blog_data::$reply[$id]['user_id'])));
 		}
 	}
 }
