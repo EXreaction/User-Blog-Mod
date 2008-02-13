@@ -21,12 +21,9 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
+'RECENT_REPLIES' => 'Recent Replies',
 	'AVERAGE_OF_RATING'				=> 'Average of %s rating',
 	'AVERAGE_OF_RATINGS'			=> 'Average of %s ratings',
-
-	'BLOG_REPORTED'					=> 'Blog has been reported, click to close the report',
-	'BLOG_REPORTED_SHORT'			=> 'This Blog has been reported.',
-	'BLOG_UNAPPROVED'				=> 'Blog Needs Approval',
 
 	'CLICK_HERE_SHOW_POST'			=> 'Click here to show the post.',
 	'CNT_COMMENTS'					=> '%s Comments',
@@ -47,10 +44,9 @@ $lang = array_merge($lang, array(
 
 	'RATE_ME'						=> '%1$s out of %2$s',
 	'REMOVE_RATING'					=> 'Reset Rating',
-	'REPLY_REPORTED'				=> 'Reply has been reported, click to close the report',
-	'REPLY_REPORTED_SHORT'			=> 'This Reply has been reported.',
+	'REPORTED'				=> 'This message has been reported.  Click here to close the report.',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',
-	'REPLY_UNAPPROVED'				=> 'Reply Needs Approval',
+	'UNAPPROVED'				=> 'This message needs approval.  Click here to approve this message.',
 
 	'SUBCATEGORIES'					=> 'Subcategories',
 	'SUBCATEGORY'					=> 'Subcategory',

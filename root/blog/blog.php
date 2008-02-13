@@ -26,13 +26,20 @@ if (count($extras))
 	{
 		$var = explode('-', $extra, 2);
 
-		if (count($var) == 1 && !empty($last))
+		if (count($var) == 1)
 		{
-			$var[1] = $last[1] . '_' . $var[0];
-			$var[0] = $last[0];
+			if (!empty($last))
+			{
+				$var[1] = $last[1] . '_' . $var[0];
+				$var[0] = $last[0];
+			}
+			else // it must be part of the mode then, so add it to the mode.
+			{
+				$_GET['mode'] = $_REQUEST['mode'] = $mode = $mode . '_' . $var[0];
+			}
 		}
 
-		if (count($var) > 1)
+		if (count($var) == 2)
 		{
 			$_GET[$var[0]] = $_REQUEST[$var[0]] = $var[1];
 

@@ -119,17 +119,17 @@
 					</form>
 				<!-- ENDIF -->
 
-				<div id="b{blogrow.BLOG_ID}" class="blog<!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF -->">
+				<div id="b{blogrow.ID}" class="blog<!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF -->">
 					<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div class="blog_rating">{blogrow.RATING_STRING}</div><!-- ENDIF -->
 					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_BLOG_IMAGESET_PATH}/icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
 					<h4 class="blog_date"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE}</h4>
 
 					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
-						<!-- IF blogrow.S_UNAPPROVED --><a href="{blogrow.U_APPROVE}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
-						<!-- IF blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}"><strong>{L_BLOG_REPORTED}</strong></a><!-- ENDIF -->
+						<!-- IF blogrow.S_UNAPPROVED --><a href="{blogrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+						<!-- IF blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
 					<!-- ENDIF -->
 
-					<div class="blog_text">{blogrow.BLOG_MESSAGE}</div>
+					<div class="blog_text">{blogrow.MESSAGE}</div>
 
 					<!-- IF blogrow.S_HAS_ATTACHMENTS -->
 						<dl class="attachbox">
@@ -142,7 +142,7 @@
 
 					<!-- IF blogrow.S_DISPLAY_NOTICE --><div class="reported">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
 
-					{blogrow.BLOG_EXTRA}
+					{blogrow.EXTRA}
 
 					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 						<div class="edited_message">
@@ -196,7 +196,7 @@
 								</div>
 							<!-- ENDIF -->
 
-							<div class="reply_text">{replyrow.REPLY_MESSAGE}</div>
+							<div class="reply_text">{replyrow.MESSAGE}</div>
 
 							<!-- IF replyrow.S_HAS_ATTACHMENTS -->
 								<dl class="attachbox">
@@ -209,7 +209,7 @@
 
 							<!-- IF replyrow.S_DISPLAY_NOTICE --><div class="reported">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
 
-							{replyrow.REPLY_EXTRA}
+							{replyrow.EXTRA}
 
 							<!-- IF replyrow.EDITED_MESSAGE or replyrow.EDIT_REASON -->
 								<div class="edited_message">

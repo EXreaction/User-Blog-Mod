@@ -13,7 +13,6 @@
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * finish main page
-*	add recent replies to main page
 *	add counter for # of replies in the config table
 *	add stats section to main page
 *	add links section (my blogs, blog control panel, random blogs, recent blogs, popular blogs)
@@ -180,23 +179,31 @@ if ($default)
 	// Check again since a plugin could have used it's own page.
 	if ($default)
 	{
-		// With SEO urls, we make it so that the page could be the username name of the user we want to view...
-		if (!$user_id && $page && !$category_id)
-		{
-			$user_id = $blog_data->get_user_data(false, false, $page);
-		}
-
 		$user->add_lang('mods/blog/view');
 
-		if ($blog_id || $reply_id)
+		// View is a special page for the main page...we shall make sure no user can try to steal that page.
+		if ($page != 'view')
 		{
-			$user_style = true; // Here and the view user page are the two places where users can view with their own custom style
-			$inc_file = ($inc_file) ? array($inc_file, 'view/single') : 'view/single';
-		}
-		else if ($user_id)
-		{
-			$user_style = true;
-			$inc_file = ($inc_file) ? array($inc_file, 'view/user') : 'view/user';
+			// With SEO urls, we make it so that the page could be the username name of the user we want to view...
+			if (!$user_id && $page && !$category_id)
+			{
+				$user_id = $blog_data->get_user_data(false, false, $page);
+			}
+
+			if ($blog_id || $reply_id)
+			{
+				$user_style = true; // Here and the view user page are the two places where users can view with their own custom style
+				$inc_file = ($inc_file) ? array($inc_file, 'view/single') : 'view/single';
+			}
+			else if ($user_id)
+			{
+				$user_style = true;
+				$inc_file = ($inc_file) ? array($inc_file, 'view/user') : 'view/user';
+			}
+			else
+			{
+				$inc_file = ($inc_file) ? array($inc_file, 'view/main') : 'view/main';
+			}
 		}
 		else
 		{

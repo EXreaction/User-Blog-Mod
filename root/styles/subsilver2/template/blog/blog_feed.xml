@@ -10,7 +10,7 @@
 				<item>
 					<title><![CDATA[{item.TITLE}]]></title>
 					<link>{item.URL}</link>
-					<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
+					<description><![CDATA[{item.MESSAGE}]]></description>
 				</item>
 			<!-- END item -->
 		</channel>
@@ -18,32 +18,29 @@
 <!-- ELSEIF FEED == 'RSS_1.0' -->
 	<?xml version="1.0"?>
 	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
-	<channel rdf:about="{SELF_URL}">
-		<title><![CDATA[{TITLE}]]></title>
-		<link>{SITE_URL}</link>
-		<description><![CDATA[{SITE_DESC}]]></description>
-		<language>{SITE_LANG}</language>
-		<items>
-			<rdf:Seq>
-				<!-- BEGIN items -->
-					<rdf:li rdf:resource="{items.URL}"/>
-				<!-- END items -->
-			</rdf:Seq>
-		</items>
-	</channel>
-	<!-- BEGIN item -->
-		<item rdf:about="{item.URL}">
-			<title><![CDATA[{item.TITLE}]]></title>
-			<link>{item.URL}</link>
-			<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
-			<author><![CDATA[{item.USERNAME}]]></author>
-			<pubDate>{item.PUB_DATE}</pubDate>
-		</item>
-	<!-- END item -->
-</rdf:RDF>
+		<channel rdf:about="{SELF_URL}">
+			<title><![CDATA[{TITLE}]]></title>
+			<link>{SITE_URL}</link>
+			<description><![CDATA[{SITE_DESC}]]></description>
+			<items>
+				<rdf:Seq>
+					<!-- BEGIN items -->
+						<rdf:li rdf:resource="{items.URL}"/>
+					<!-- END items -->
+				</rdf:Seq>
+			</items>
+		</channel>
+		<!-- BEGIN item -->
+			<item rdf:about="{item.URL}">
+				<title><![CDATA[{item.TITLE}]]></title>
+				<link>{item.URL}</link>
+				<description><![CDATA[{item.MESSAGE}]]></description>
+			</item>
+		<!-- END item -->
+	</rdf:RDF>
 <!-- ELSEIF FEED == 'RSS_2.0' -->
 	<?xml version="1.0"?>
-	<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 		<channel>
 			<title><![CDATA[{TITLE}]]></title>
 			<link>{SITE_URL}</link>
@@ -52,11 +49,10 @@
 			<lastBuildDate>{CURRENT_TIME}</lastBuildDate>
 			<!-- BEGIN item -->
 				<item>
-					<id>{item.BLOG_ID}</id>
 					<title><![CDATA[{item.TITLE}]]></title>
 					<link>{item.URL}</link>
 					<guid>{item.URL}</guid>
-					<description><![CDATA[{item.BLOG_MESSAGE}]]></description>
+					<description><![CDATA[{item.MESSAGE}]]></description>
 					<author><![CDATA[{item.USERNAME}]]></author>
 					<pubDate>{item.PUB_DATE}</pubDate>
 				</item>
@@ -66,16 +62,23 @@
 <!-- ELSEIF FEED == 'ATOM' -->
 	<?xml version="1.0" encoding="utf-8"?>
 	<feed xmlns="http://www.w3.org/2005/Atom">
-		<title><![CDATA[{TITLE}]]></title>
-		<link>{SITE_URL}</link>
+		<title type="text"><![CDATA[{TITLE}]]></title>
+		<id>{SELF_FULL_URL}</id>
 		<updated>{CURRENT_TIME}</updated>
+		<link rel="self" type="application/atom+xml" href="{SELF_FULL_URL}" />
 		<!-- BEGIN item -->
 			<entry>
 				<title><![CDATA[{item.TITLE}]]></title>
-				<link>{item.URL}</link>
-				<id>{item.BLOG_ID}</id>
-				<updated>{item.PUB_DATE}</updated>
-				<summary><![CDATA[{item.BLOG_MESSAGE}]]></summary>
+				<link href="{item.URL}" />
+				<id>{item.URL}</id>
+				<published>{item.DATE_3339}</published>
+				<updated>{item.DATE_3339}</updated>
+				<author>
+					<name><![CDATA[{item.USERNAME}]]></name>
+				</author>
+				<summary>
+					<![CDATA[{item.MESSAGE}]]>
+				</summary>
 			</entry>
 		<!-- END item -->
 	</feed>
@@ -83,7 +86,7 @@
 	<!-- IF S_OUTPUT -->
 		document.write('<div style="border: 1px solid #C5D7EF;"><h2 style="margin: 0px; padding: 2px; color: #3366CC; font-family: arial,sans-serif; font-size: 1.1em; font-weight: normal; background-color: #E5ECF9; text-align: center;"><a href="{SELF_URL}">{TITLE}</a></h2>');
 		<!-- BEGIN item -->
-		document.write('<div style="font-size: 1.1em; margin-bottom: 5px;"><a href="javascript:void(0)" onclick="if(document.getElementById(\'b_{item.BLOG_ID}\').style.display == \'none\'){document.getElementById(\'b_{item.BLOG_ID}\').style.display=\'block\';}else{document.getElementById(\'b_{item.BLOG_ID}\').style.display=\'none\';}if(this.style.background.search(\'{IMG_MIN}\') != -1){this.style.background = \'url({IMG_MAX})\'; this.style.backgroundPosition = \'0px 12px\';}else{this.style.background = \'url({IMG_MIN})\'; this.style.backgroundPosition = \'0px 12px\';}" onmouseover="this.style.backgroundPosition = \'0px 12px\';" onmouseout="this.style.backgroundPosition = \'0px 0px\';" style="margin: 5px 3px 0 3px; float: left; background-image: url({IMG_MAX}); background-position: 0px, 0px; width: 12px; height: 12px;" /><a href="{item.URL}">{item.TITLE}</a></div><div id="b_{item.BLOG_ID}" style="display: none; padding: 5px 5px 2px 15px; font-size: 0.9em;<!-- IF not item.S_LAST_ROW --> border-bottom: 1px dotted #DDDDDD;<!-- ENDIF -->">{item.BLOG_MESSAGE}</div>');
+		document.write('<div style="font-size: 1.1em; margin-bottom: 5px;"><a href="javascript:void(0)" onclick="if(document.getElementById(\'b_{item.ID}\').style.display == \'none\'){document.getElementById(\'b_{item.ID}\').style.display=\'block\';}else{document.getElementById(\'b_{item.ID}\').style.display=\'none\';}if(this.style.background.search(\'{IMG_MIN}\') != -1){this.style.background = \'url({IMG_MAX})\'; this.style.backgroundPosition = \'0px 12px\';}else{this.style.background = \'url({IMG_MIN})\'; this.style.backgroundPosition = \'0px 12px\';}" onmouseover="this.style.backgroundPosition = \'0px 12px\';" onmouseout="this.style.backgroundPosition = \'0px 0px\';" style="margin: 5px 3px 0 3px; float: left; background-image: url({IMG_MAX}); background-position: 0px, 0px; width: 12px; height: 12px;" /><a href="{item.URL}">{item.TITLE}</a></div><div id="b_{item.ID}" style="display: none; padding: 5px 5px 2px 15px; font-size: 0.9em;<!-- IF not item.S_LAST_ROW --> border-bottom: 1px dotted #DDDDDD;<!-- ENDIF -->">{item.MESSAGE}</div>');
 		<!-- END item -->
 		document.write('</div>');
 	<!-- ELSE -->
@@ -101,8 +104,8 @@
 		data[{item.S_ROW_COUNT}]['url'] = '{item.URL}';
 		data[{item.S_ROW_COUNT}]['url'] = '{item.URL}';
 		data[{item.S_ROW_COUNT}]['username'] = '{item.USERNAME}';
-		data[{item.S_ROW_COUNT}]['blog_id'] = '{item.BLOG_ID}';
-		data[{item.S_ROW_COUNT}]['blog_message'] = '{item.BLOG_MESSAGE}';
+		data[{item.S_ROW_COUNT}]['blog_id'] = '{item.ID}';
+		data[{item.S_ROW_COUNT}]['blog_message'] = '{item.MESSAGE}';
 		data[{item.S_ROW_COUNT}]['blog_time'] = '{item.PUB_DATE}';
 		<!-- END item -->
 	<!-- ENDIF -->

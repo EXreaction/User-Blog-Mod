@@ -114,7 +114,7 @@
 			<hr />
 		<!-- ENDIF -->
 
-		<div id="b{blogrow.BLOG_ID}" class="post <!-- IF blogrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF blogrow.S_ONLINE and S_CATEGORY_MODE --> online<!-- ENDIF -->">
+		<div id="b{blogrow.ID}" class="post <!-- IF blogrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF blogrow.S_ONLINE and S_CATEGORY_MODE --> online<!-- ENDIF -->">
 			<div class="inner"><span class="corners-top"><span></span></span>
 				<div class="postbody" <!-- IF not S_CATEGORY_MODE -->style="width: 100%;"<!-- ENDIF -->>
 					<!-- IF not blogrow.S_SHORTENED and (blogrow.U_EDIT or blogrow.U_DELETE or blogrow.U_REPORT or blogrow.U_WARN or blogrow.U_QUOTE) -->
@@ -138,12 +138,12 @@
 
 					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
 						<p class="rules">
-							<!-- IF blogrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{blogrow.U_APPROVE}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
-							<!-- IF blogrow.S_REPORTED -->{REPORTED_IMG} <a href="{blogrow.U_REPORT}"><strong>{L_BLOG_REPORTED}</strong></a><!-- ENDIF -->
+							<!-- IF blogrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{blogrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+							<!-- IF blogrow.S_REPORTED -->{REPORTED_IMG} <a href="{blogrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
 						</p>
 					<!-- ENDIF -->
 
-					<div class="content">{blogrow.BLOG_MESSAGE}</div>
+					<div class="content">{blogrow.MESSAGE}</div>
 
 					<!-- IF blogrow.S_HAS_ATTACHMENTS -->
 						<dl class="attachbox">
@@ -156,7 +156,7 @@
 
 					<!-- IF blogrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
 
-					{blogrow.BLOG_EXTRA}
+					{blogrow.EXTRA}
 
 					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
 						<div class="notice">
@@ -281,12 +281,12 @@
 
 						<!-- IF replyrow.S_UNAPPROVED or replyrow.S_REPORTED -->
 							<p class="rules">
-								<!-- IF replyrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{replyrow.U_APPROVE}"><strong>{L_REPLY_UNAPPROVED}</strong></a><!-- ENDIF -->
-								<!-- IF replyrow.S_REPORTED -->{REPORTED_IMG} <a href="{replyrow.U_REPORT}"><strong>{L_REPLY_REPORTED}</strong></a><!-- ENDIF -->
+								<!-- IF replyrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{replyrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+								<!-- IF replyrow.S_REPORTED -->{REPORTED_IMG} <a href="{replyrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
 							</p>
 						<!-- ENDIF -->
 
-						<div class="content">{replyrow.REPLY_MESSAGE}</div>
+						<div class="content">{replyrow.MESSAGE}</div>
 
 						<!-- IF replyrow.S_HAS_ATTACHMENTS -->
 							<dl class="attachbox">
@@ -299,7 +299,7 @@
 
 						<!-- IF replyrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
 
-						{replyrow.REPLY_EXTRA}
+						{replyrow.EXTRA}
 
 						<!-- IF replyrow.EDITED_MESSAGE or replyrow.EDIT_REASON -->
 							<div class="notice">{replyrow.EDITED_MESSAGE}
@@ -474,8 +474,8 @@
 				<td><b>{blogrow.TITLE}</b></td>
 			</tr>
 			<tr>
-				<td colspan="2"><hr class="sep" />{blogrow.BLOG_MESSAGE}
-				<br/>{blogrow.BLOG_EXTRA}</td>
+				<td colspan="2"><hr class="sep" />{blogrow.MESSAGE}
+				<br/>{blogrow.EXTRA}</td>
 			</tr>
 		</table>
 
@@ -493,8 +493,8 @@
 					<td>{replyrow.USER_FULL} [ {replyrow.DATE} ]</td>
 				</tr>
 				<tr>
-					<td colspan="2"><hr class="sep" />{replyrow.REPLY_MESSAGE}
-					<br/>{replyrow.REPLY_EXTRA}</td>
+					<td colspan="2"><hr class="sep" />{replyrow.MESSAGE}
+					<br/>{replyrow.EXTRA}</td>
 				</tr>
 			</table>
 

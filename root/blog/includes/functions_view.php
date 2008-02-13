@@ -530,6 +530,14 @@ function generate_menu($user_id = false)
 
 	if ($user_id)
 	{
+		$userdata = $blog_data->handle_user_data($user_id);
+		$template->assign_vars($userdata);
+
+		foreach ($userdata['custom_fields'] as $fields)
+		{
+			$template->assign_block_vars('custom_fields', $fields);
+		}
+
 		$template->assign_vars(array(
 			'S_USER_BLOG_MENU'	=> true,
 			'USER_MENU_EXTRA'	=> $user_menu_extra,
@@ -937,25 +945,25 @@ function update_edit_delete($mode = 'all')
 
 /**
 * Outputs data as a Feed.
- *
+*
 * @param int|array $blog_ids The id's of blogs that are going to get outputted,
- * @param string $feed_type The type of feed we are outputting
+* @param string $feed_type The type of feed we are outputting
 */
-function feed_output($blog_ids, $feed_type)
+function feed_output($ids, $feed_type)
 {
 	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user, $blog_data, $user_id, $blog_id;
 
 	if ($feed_type == 'explain')
 	{
 		$available_feeds = array(
-			'RSS 0.91'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_0.91'))),
-			'RSS 1.0'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_1.0'))),
-			'RSS 2.0'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'RSS_2.0'))),
-			'ATOM'			=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'ATOM'))),
+			'RSS 0.91'		=> blog_url(false, false, false, array_merge($_GET, array('feed' => 'RSS_0.91'))),
+			'RSS 1.0'		=> blog_url(false, false, false, array_merge($_GET, array('feed' => 'RSS_1.0'))),
+			'RSS 2.0'		=> blog_url(false, false, false, array_merge($_GET, array('feed' => 'RSS_2.0'))),
+			'ATOM'			=> blog_url(false, false, false, array_merge($_GET, array('feed' => 'ATOM'))),
 			'JAVASCRIPT'	=> array(
-				'url'		=> blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT'))),
-				'text'		=> htmlspecialchars('<script type="text/javascript" src="' . blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>'),
-				'demo'		=> '<script type="text/javascript" src="' . blog_url($user_id, $blog_id, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>',
+				'url'		=> blog_url(false, false, false, array_merge($_GET, array('feed' => 'JAVASCRIPT'))),
+				'text'		=> htmlspecialchars('<script type="text/javascript" src="' . blog_url(false, false, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>'),
+				'demo'		=> '<script type="text/javascript" src="' . blog_url(false, false, false, array_merge($_GET, array('feed' => 'JAVASCRIPT', 'output' => 'true'))) . '"></script>',
 			),
 		);
 
@@ -992,7 +1000,7 @@ function feed_output($blog_ids, $feed_type)
 		'SITE_URL'			=> generate_board_url(),
 		'SITE_DESC'			=> $config['site_desc'],
 		'SITE_LANG'			=> $config['default_lang'],
-		'CURRENT_TIME'		=> date('r'),
+		'CURRENT_TIME'		=> ($feed_type == 'ATOM') ? date3339() : date('r'),
 
 		// used for Javascript output feeds
 		'IMG_MIN'			=> generate_board_url() . '/styles/' . $user->theme['theme_path'] . '/theme/images/blog/min_dark_blue.gif',
@@ -1000,40 +1008,76 @@ function feed_output($blog_ids, $feed_type)
 		'S_OUTPUT'			=> (isset($_GET['output'])) ? true : false,
 	));
 
-	if ($blog_ids !== false)
+	if ($ids !== false)
 	{
-		if (!is_array($blog_ids))
+		if (!is_array($ids))
 		{
-			$blog_ids = array(intval($blog_ids));
+			$ids = array(intval($ids));
 		}
 
 		// the items section is only used in RSS 1.0
 		if ($feed_type == 'RSS_1.0')
 		{
-			// output the URLS for the items section
-			foreach ($blog_ids as $id)
+			if ($mode == 'blog')
 			{
-				$template->assign_block_vars('items', array(
-					'URL'	=> blog_url(blog_data::$blog[$id]['user_id'], $id),
-				));
+				// output the URLS for the items section
+				foreach ($ids as $id)
+				{
+					$template->assign_block_vars('items', array(
+						'URL'	=> blog_url(blog_data::$blog[$id]['user_id'], $id),
+					));
+				}
+			}
+			else
+			{
+				// output the URLS for the items section
+				foreach ($ids as $id)
+				{
+					$template->assign_block_vars('items', array(
+						'URL'	=> blog_url(blog_data::$reply[$id]['user_id'], $id),
+					));
+				}
 			}
 		}
 
-		// Output the main data
-		foreach ($blog_ids as $id)
+		if (strpos($mode, 'replies') === false)
 		{
-			$blog_row = $blog_data->handle_blog_data($id, true);
+			// Output the main data
+			foreach ($ids as $id)
+			{
+				$blog_row = $blog_data->handle_blog_data($id, true);
 
-			$row = array(
-				'URL'				=> blog_url(blog_data::$blog[$id]['user_id'], $id),
-				'USERNAME'			=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
-				'BLOG_MESSAGE'		=> str_replace("'", '&#039;', $blog_row['BLOG_MESSAGE']),
-			);
+				$row = array(
+					'URL'				=> blog_url(blog_data::$blog[$id]['user_id'], $id),
+					'USERNAME'			=> blog_data::$user[blog_data::$blog[$id]['user_id']]['username'],
+					'MESSAGE'			=> str_replace("'", '&#039;', $blog_row['MESSAGE']),
+					'PUB_DATE'			=> date('r', blog_data::$blog[$id]['blog_time']),
+					'DATE_3339'			=> ($feed_type == 'ATOM') ? date3339(blog_data::$blog[$id]['blog_time']) : '',
+				);
 
-			$template->assign_block_vars('item', array_merge($blog_row, $row));
+				$template->assign_block_vars('item', array_merge($blog_row, $row));
+			}
+		}
+		else
+		{
+			// Output the main data
+			foreach ($ids as $id)
+			{
+				$reply_row = $blog_data->handle_reply_data($id, true);
+
+				$row = array(
+					'URL'				=> blog_url(blog_data::$reply[$id]['user_id'], $id),
+					'USERNAME'			=> blog_data::$user[blog_data::$reply[$id]['user_id']]['username'],
+					'MESSAGE'			=> str_replace("'", '&#039;', $reply_row['MESSAGE']),
+					'PUB_DATE'			=> date('r', blog_data::$reply[$id]['reply_time']),
+					'DATE_3339'			=> ($feed_type == 'ATOM') ? date3339(blog_data::$reply[$id]['reply_time']) : '',
+				);
+
+				$template->assign_block_vars('item', array_merge($reply_row, $row));
+			}
 		}
 
-		blog_plugins::plugin_do_arg('function_feed_output', compact('blog_ids', 'feed_type'));
+		blog_plugins::plugin_do_arg('function_feed_output', compact('ids', 'feed_type', 'mode'));
 	}
 
 	// Ok, now use the main template for this and immediately call page_footer.
@@ -1428,5 +1472,31 @@ function obtain_blog_attach_extensions()
 	blog_plugins::plugin_do_ref('function_obtain_blog_attach_extensions', $return);
 
 	return $return;
+}
+
+/**
+ * Get date in RFC3339
+ * For example used in XML/Atom
+ *
+ * @param integer $timestamp
+ * @return string date in RFC3339
+ * @author Boris Korobkov
+ * @see http://tools.ietf.org/html/rfc3339
+ */
+function date3339($timestamp=0) {
+
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+    $date = date('Y-m-d\TH:i:s', $timestamp);
+
+    $matches = array();
+    if (preg_match('/^([\-+])(\d{2})(\d{2})$/', date('O', $timestamp), $matches)) {
+        $date .= $matches[1].$matches[2].':'.$matches[3];
+    } else {
+        $date .= 'Z';
+    }
+    return $date;
+
 }
 ?>

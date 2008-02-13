@@ -187,6 +187,11 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 				}
 			}
 		}
+		else if (isset($url_data['mode']) && $url_data['mode'])
+		{
+			$url_data['mode'] = url_replace($url_data['mode']);
+			return $start_url . "blog/view/{$url_data['mode']}{$extras}.html{$anchor}";
+		}
 		else
 		{
 			if ($extras || $anchor)
@@ -201,7 +206,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	}
 
 	// No SEO Url's :(
-	global $phpbb_root_path, $phpEx;
+	global $phpEx;
 
 	// add this stuff first
 	$extras .= (($user_id) ? '&amp;u=' . $user_id : ((isset($url_data['u'])) ? '&amp;u=' . $url_data['u'] : ''));
@@ -223,7 +228,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	}
 
 	$extras = substr($extras, 5); // remove the first &amp;
-	return append_sid($phpbb_root_path . 'blog.' . $phpEx, $extras) . $anchor;
+	return append_sid($start_url . 'blog.' . $phpEx, $extras) . $anchor;
 }
 
 /**

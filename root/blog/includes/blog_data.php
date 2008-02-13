@@ -158,7 +158,7 @@ class blog_data
 			break;
 
 			case 'random' : // select random blogs
-				$random_ids = $this->get_blog_info('random_blog_ids', 0, $selection_data);
+				$random_ids = $this->get_blog_data('random_blog_ids', 0, $selection_data);
 
 				if ($random_ids === false)
 				{
@@ -194,8 +194,71 @@ class blog_data
 				$sql_where[] =  'b.blog_approved = 0';
 			break;
 
-			default :
-				return false;
+			case 'random_blog_ids' : // this gets a few random blog_ids
+				$random_ids = array();
+				$all_blog_ids = $this->get_blog_data('all_ids', 0, $selection_data);
+				$total = count($all_blog_ids);
+
+				if ($total == 0)
+				{
+					return false;
+				}
+
+				// if the limit is higher than the total number of blogs, just give them what we have (and shuffle it so it looks random)
+				if ($limit > count($all_blog_ids))
+				{
+					shuffle($all_blog_ids);
+					$this->get_blog_data('blog', $all_blog_ids);
+					return $all_blog_ids;
+				}
+				else
+				{
+					// this is not the most efficient way to do it...but as long as the limit doesn't get too close to the total number of blogs it's fine
+					// If the limit is near the total number of blogs we just hope it doesn't take too long (the user should not be requesting many random blogs anyways)
+					for ($j = 0; $j < $limit; $j++)
+					{
+						$random_id = rand(0, $total - 1);
+
+						// make sure the random_id can only be picked once...
+						if (!in_array($all_blog_ids[$random_id], $random_ids))
+						{
+							array_push($random_ids, $all_blog_ids[$random_id]);
+						}
+						else
+						{
+							$j--;
+						}
+					}
+				}
+				return $random_ids;
+			break;
+
+			case 'count' : // this just does a count of the number of blogs
+				$sql_array['SELECT'] = 'count(b.blog_id) AS total';
+				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+
+				$result = $db->sql_query($sql);
+				$total = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+				return $total['total'];
+			break;
+
+			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
+				$all_ids = array();
+				$sql_array['SELECT'] = 'b.blog_id';
+				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+
+				$result = $db->sql_query($sql);
+				while($row = $db->sql_fetchrow($result))
+				{
+					$all_ids[] = $row['blog_id'];
+				}
+				$db->sql_freeresult($result);
+
+				return $all_ids;
+			break;
 		}
 
 		$temp = compact('sql_array', 'sql_where');
@@ -257,160 +320,6 @@ class blog_data
 		}
 
 		return $blog_ids;
-	}
-
-	/**
-	* Get Blog Info
-	*
-	*  A lot like Get Blog Data, except this handles counting of blog_id's, finding all the blog_id's, etc
-	*
-	* @param string $mode The mode we want
-	* @param int $id The ID we will select (used for misc things like the user_count mode, where we count the # of blogs by a user_id (in that case $id would be the $user_id))
-	* @param array $selection_data For extras, like start, limit, order by, order direction, etc, all of the options are listed a few lines below
-	*/
-	public function get_blog_info($mode, $id = 0, $selection_data = array())
-	{
-		global $db, $user, $auth;
-
-		blog_plugins::plugin_do_ref('blog_info_start', $selection_data);
-
-		// input options for selection_data
-		$category_id	= (isset($selection_data['category_id'])) ? $selection_data['category_id'] : 	0;			// The category ID
-		$start			= (isset($selection_data['start'])) ? $selection_data['start'] :				0;			// the start used in the Limit sql query
-		$limit			= (isset($selection_data['limit'])) ? $selection_data['limit'] :				5;			// the limit on how many blogs we will select
-		$order_by		= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :			'default';	// the way we want to order the request in the SQL query
-		$order_dir		= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :		'DESC';		// the direction we want to order the request in the SQL query
-		$sort_days		= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] :	 	0;			// the sort days selection
-		$deleted		= (isset($selection_data['deleted'])) ? $selection_data['deleted'] : 			false;		// to view only deleted blogs
-		$custom_sql		= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 		'';			// here you can add in a custom section to the WHERE part of the query
-
-		// Setup some variables...
-		$blog_ids = array(); // this is what get's returned
-
-		$sql_array = array(
-			'SELECT'	=> '*',
-			'FROM'		=> array(
-				BLOGS_TABLE	=> array('b'),
-			),
-			'ORDER_BY'	=> (($order_by != 'default') ? $order_by : 'b.blog_id') . ' ' . $order_dir,
-		);
-		$sql_where = array();
-
-		if ($category_id)
-		{
-			$sql_array['LEFT_JOIN'] = array(array(
-				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
-				'ON'		=> 'bc.blog_id = b.blog_id',
-			));
-			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . $category_id;
-		}
-		if (!$auth->acl_get('m_blogapprove'))
-		{
-			if ($user->data['is_registered'])
-			{
-				$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';
-			}
-			else
-			{
-				$sql_where[] = 'b.blog_approved = 1';
-			}
-		}
-		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
-		{
-			$sql_where[] = 'b.blog_deleted != 0';
-		}
-		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
-		{
-			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
-		}
-		if ($sort_days != 0)
-		{
-			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
-		}
-		if ($custom_sql)
-		{
-			$sql_where[] = $custom_sql;
-		}
-		if (build_permission_sql($user->data['user_id']))
-		{
-			$sql_where[] = substr(build_permission_sql($user->data['user_id']), 5);
-		}
-
-		$temp = compact('sql_array', 'sql_where');
-		blog_plugins::plugin_do_ref('blog_info_sql', $temp);
-		extract($temp);
-
-		// Switch for the modes
-		switch ($mode)
-		{
-			case 'random_blog_ids' : // this gets a few random blog_ids
-				$random_ids = array();
-				$all_blog_ids = $this->get_blog_info('all_ids', 0, $selection_data);
-				$total = count($all_blog_ids);
-
-				if ($total == 0)
-				{
-					return false;
-				}
-
-				// if the limit is higher than the total number of blogs, just give them what we have (and shuffle it so it looks random)
-				if ($limit > count($all_blog_ids))
-				{
-					shuffle($all_blog_ids);
-					$this->get_blog_data('blog', $all_blog_ids);
-					return $all_blog_ids;
-				}
-				else
-				{
-					// this is not the most efficient way to do it...but as long as the limit doesn't get too close to the total number of blogs it's fine
-					// If the limit is near the total number of blogs we just hope it doesn't take too long (the user should not be requesting many random blogs anyways)
-					for ($j = 0; $j < $limit; $j++)
-					{
-						$random_id = rand(0, $total - 1);
-
-						// make sure the random_id can only be picked once...
-						if (!in_array($all_blog_ids[$random_id], $random_ids))
-						{
-							array_push($random_ids, $all_blog_ids[$random_id]);
-						}
-						else
-						{
-							$j--;
-						}
-					}
-				}
-				return $random_ids;
-			break;
-
-			case 'count' : // this just does a count of the number of blogs
-				$user_permission_sql = build_permission_sql($user->data['user_id']);
-
-				$sql_array['SELECT'] = 'count(b.blog_id) AS total';
-				$sql_array['WHERE'] = implode(' AND ', $sql_where);
-				$sql = $db->sql_build_query('SELECT', $sql_array);
-
-				$result = $db->sql_query($sql);
-				$total = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-				return $total['total'];
-			break;
-
-			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
-				$all_ids = array();
-				$sql_array['SELECT'] = 'b.blog_id';
-				$sql_array['WHERE'] = implode(' AND ', $sql_where);
-				$sql = $db->sql_build_query('SELECT', $sql_array);
-
-				$result = $db->sql_query($sql);
-				while($row = $db->sql_fetchrow($result))
-				{
-					$all_ids[] = $row['blog_id'];
-				}
-				$db->sql_freeresult($result);
-
-				return $all_ids;
-			break;
-		}
 	}
 
 	/**
@@ -515,16 +424,15 @@ class blog_data
 		}
 
 		$blog_row = array(
-			'BLOG_EXTRA'			=> '',
-			'BLOG_ID'				=> $id,
-			'BLOG_MESSAGE'			=> $blog_text,
+			'ID'					=> $id,
+			'MESSAGE'				=> $blog_text,
 			'DATE'					=> $user->format_date($blog['blog_time']),
 			'DELETED_MESSAGE'		=> $blog['deleted_message'],
 			'EDIT_REASON'			=> $blog['edit_reason'],
 			'EDITED_MESSAGE'		=> $blog['edited_message'],
+			'EXTRA'					=> '',
 			'POLL_QUESTION'			=> generate_text_for_display($blog['poll_title'], $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options),
 			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
-			'PUB_DATE'				=> date('r', $blog['blog_time']),
 			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
 			'TOTAL_VOTES'			=> $total_votes,
@@ -654,12 +562,13 @@ class blog_data
 		blog_plugins::plugin_do_ref('reply_data_start', $selection_data);
 
 		// input options for selection_data
-		$start		= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
-		$limit		= (isset($selection_data['limit'])) ? $selection_data['limit'] :			10;			// the limit on how many blogs we will select
-		$order_by	= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'reply_id';	// the way we want to order the request in the SQL query
-		$order_dir	= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :	'DESC';		// the direction we want to order the request in the SQL query
-		$sort_days	= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] : 	0;			// the sort days selection
-		$custom_sql	= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 	'';			// add your own custom WHERE part to the query
+		$start			= (isset($selection_data['start'])) ? $selection_data['start'] :			0;			// the start used in the Limit sql query
+		$limit			= (isset($selection_data['limit'])) ? $selection_data['limit'] :			10;			// the limit on how many blogs we will select
+		$order_by		= (isset($selection_data['order_by'])) ? $selection_data['order_by'] :		'reply_id';	// the way we want to order the request in the SQL query
+		$order_dir		= (isset($selection_data['order_dir'])) ? $selection_data['order_dir'] :	'DESC';		// the direction we want to order the request in the SQL query
+		$sort_days		= (isset($selection_data['sort_days'])) ? $selection_data['sort_days'] : 	0;			// the sort days selection
+		$custom_sql		= (isset($selection_data['custom_sql'])) ? $selection_data['custom_sql'] : 	'';			// add your own custom WHERE part to the query
+		$category_id	= (isset($selection_data['category_id'])) ? $selection_data['category_id'] : 0;			// The category ID, if selecting replies only from blogs from a certain category
 
 		// Setup some variables...
 		$reply_ids = array();
@@ -679,6 +588,14 @@ class blog_data
 		);
 		$sql_where = array();
 
+		if ($category_id)
+		{
+			$sql_array['LEFT_JOIN'] = array(array(
+				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
+				'ON'		=> 'bc.blog_id = r.blog_id',
+			));
+			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . $category_id;
+		}
 		if (!$auth->acl_get('m_blogreplyapprove'))
 		{
 			if ($user->data['is_registered'])
@@ -707,11 +624,13 @@ class blog_data
 		{
 			case 'blog' : // view all replys by a blog_id
 				$sql_where[] = $db->sql_in_set('blog_id', $id);
-				break;
+			break;
+
 			case 'reply' : // select replies by reply_id(s)
 				$sql_where[] = $db->sql_in_set('reply_id', $id);
 				$limit = 0;
-				break;
+			break;
+
 			case 'reported' : // select reported replies
 				if (!$auth->acl_get('m_blogreplyreport'))
 				{
@@ -719,7 +638,8 @@ class blog_data
 				}
 
 				$sql_where[] = 'reply_reported = 1';
-				break;
+			break;
+
 			case 'disapproved' : // select disapproved replies
 				if (!$auth->acl_get('m_blogreplyapprove'))
 				{
@@ -727,7 +647,8 @@ class blog_data
 				}
 
 				$sql_where[] = 'reply_approved = 0';
-				break;
+			break;
+
 			case 'reply_count' : // for counting how many replies there are for a blog
 				if (self::$blog[$id[0]]['blog_real_reply_count'] == 0 || self::$blog[$id[0]]['blog_real_reply_count'] == self::$blog[$id[0]]['blog_reply_count'])
 				{
@@ -753,8 +674,9 @@ class blog_data
 				{
 					return self::$blog[$id[0]]['blog_reply_count'];
 				}
-				break;
-			case 'page' :
+			break;
+
+			case 'page' : // Special mode for trying to find out what page the reply is on
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = ' . $id[0] . 
@@ -773,9 +695,18 @@ class blog_data
 				$db->sql_freeresult($result);
 
 				return $cnt;
-				break;
-			default :
-				return false;
+			break;
+
+			case 'count' : // this just does a count of the number of replies
+				$sql_array['SELECT'] = 'count(r.reply_id) AS total';
+				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql = $db->sql_build_query('SELECT', $sql_array);
+
+				$result = $db->sql_query($sql);
+				$total = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+				return $total['total'];
+			break;
 		}
 
 		$temp = compact('sql_array', 'sql_where');
@@ -884,13 +815,11 @@ class blog_data
 			'ID'					=> $id,
 			'TITLE'					=> $reply_subject,
 			'DATE'					=> $user->format_date($reply['reply_time']),
-			'REPLY_EXTRA'			=> '',
-
-			'REPLY_MESSAGE'			=> $reply_text,
-
+			'MESSAGE'				=> $reply_text,
 			'EDITED_MESSAGE'		=> $reply['edited_message'],
 			'EDIT_REASON'			=> $reply['edit_reason'],
 			'DELETED_MESSAGE'		=> $reply['deleted_message'],
+			'EXTRA'					=> '',
 
 			'U_VIEW'				=> blog_url($user_id, $blog_id, $id),
 			'U_VIEW_PERMANENT'		=> blog_url($user_id, $blog_id, $id, array(), array(), true),
@@ -1162,7 +1091,10 @@ class blog_data
 			}
 		}
 		// add the blog links in the custom fields
-		$custom_fields[] = add_blog_links($user_id, '', self::$user[$user_id], false, false, true);
+		if ($user_id != ANONYMOUS)
+		{
+			$custom_fields[] = add_blog_links($user_id, '', self::$user[$user_id], false, true, true);
+		}
 
 		$output_data = array(
 			'USER_ID'			=> $user_id,

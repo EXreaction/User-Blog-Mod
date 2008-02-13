@@ -40,15 +40,15 @@
 									<div class="postbody" style="width: 100%;">
 										<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
 											<p class="rules">
-												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_UNAPPROVED}</strong></a><!-- ENDIF -->
-												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_BLOG_REPORTED_SHORT}</strong></a><!-- ENDIF -->
+												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
 											</p>
 										<!-- ENDIF -->
 
 										<dl>
 											<dt>
 												<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
-												<div class="content" style="width: 95%; padding: 4px;">{row.BLOG_MESSAGE}</div>
+												<div class="content" style="width: 95%; padding: 4px;">{row.MESSAGE}</div>
 
 												<!-- IF row.S_HAS_ATTACHMENTS -->
 													<dl class="attachbox">
@@ -70,7 +70,7 @@
 							<!-- BEGINELSE -->
 								<div class="post bg1" style="text-align: center; margin: 5px;">
 									<span class="corners-top"><span></span></span>
-										<strong>{L_NO_BLOGS}</strong>
+										<strong>{column.L_NO_MSG}</strong>
 									<span class="corners-bottom"><span></span></span>
 								</div>	
 							<!-- END row -->

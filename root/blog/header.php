@@ -53,7 +53,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			'URL'		=> $blog_url,
 			'CLASS'		=> 'icon-members',
 			'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_members.gif" />',
-			'TEXT'		=> $user->lang['USER_BLOGS'],
+			'TEXT'		=> $user->lang['BLOGS'],
 		));
 
 		// Also output it normally, since it has been requested a few times...

@@ -20,7 +20,7 @@ $user->add_lang('viewtopic');
 // for sorting and pagination
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 $s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
-$total_blogs = $blog_data->get_blog_info('count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false, 'custom_sql' => 'b.user_id = ' . $user_id));
+$total_blogs = $blog_data->get_blog_data('count', $user_id, array('sort_days' => $sort_days, 'deleted' => ($mode == 'deleted') ? true : false, 'custom_sql' => 'b.user_id = ' . $user_id));
 $sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
 $sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
 gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
