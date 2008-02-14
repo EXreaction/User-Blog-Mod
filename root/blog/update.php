@@ -557,6 +557,7 @@ if (confirm_box(true))
 			$row = $db->sql_fetchrow($result);
 			set_config('num_blogs', $row['blog_count'], true);
 		case '0.3.38' :
+		/*
 			$db_tool->sql_column_add(BLOGS_USERS_TABLE, 'blog_css', array('MTEXT_UNI', ''));
 
 			$blog_permissions = array(
@@ -565,9 +566,15 @@ if (confirm_box(true))
 					'u_blog_css',
 					)
 			);
-			$auth_admin->acl_add_option($blog_permissions);
+			$auth_admin->acl_add_option($blog_permissions);*/
 		case '0.3.39' :
 		case '0.3.40' :
+			// Must re-do this because the code used to increment the num_blogs was not correct.
+			$sql = 'SELECT count(blog_id) AS blog_count FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			set_config('num_blogs', $row['blog_count'], true);
+
 			$sql = 'SELECT count(reply_id) AS reply_count FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_deleted = 0 AND reply_approved = 1';
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);

@@ -214,7 +214,7 @@ else // user submitted and there are no errors
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
-		set_config('num_blog_replies', $config['num_blog_replies']++, true);
+		set_config('num_blog_replies', ++$config['num_blog_replies'], true);
 
 		handle_subscription('new_reply', censor_text($reply_subject), 0, $blog_id, $reply_id);
 	}

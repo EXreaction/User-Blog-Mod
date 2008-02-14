@@ -373,7 +373,7 @@ else // user submitted and there are no errors
 	{
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = ' . $user->data['user_id'];
 		$db->sql_query($sql);
-		set_config('num_blogs', $config['num_blogs']--, true);
+		set_config('num_blogs', --$config['num_blogs'], true);
 
 		inform_approve_report('blog_approve', $blog_id);
 	}

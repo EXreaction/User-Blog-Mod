@@ -74,7 +74,7 @@ if (is_array($settings))
 			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id) . ' AND blog_reply_count > 0';
 			$db->sql_query($sql);
 
-			set_config('num_blog_replies', $config['num_blog_replies']--, true);
+			set_config('num_blog_replies', --$config['num_blog_replies'], true);
 		}
 
 		// Delete the Attachments
@@ -109,7 +109,7 @@ if (is_array($settings))
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id) . ' AND blog_reply_count > 0';
 		$db->sql_query($sql);
 
-		set_config('num_blog_replies', $config['num_blog_replies']--, true);
+		set_config('num_blog_replies', --$config['num_blog_replies'], true);
 	}
 
 	handle_blog_cache('delete_reply', $user_id);

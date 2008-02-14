@@ -298,13 +298,14 @@ function organize_lang($file = false, $skip_errors = false)
 	}
 
 	// make sure they have a file name
-	if ($file == '' && !$skip_errors)
+	if ($file == '')
 	{
+		if ($skip_errors)
+		{
+			return;
+		}
+
 		trigger_error('No File Specified.');
-	}
-	else if ($skip_errors)
-	{
-		return;
 	}
 
 	// make sure they are not trying to get out of the language directory, otherwise this would be a security risk. ;)
@@ -327,7 +328,7 @@ function organize_lang($file = false, $skip_errors = false)
 
 				if (strpos($file1, ".$phpEx"))
 				{
-					organize_lang($file . '/' . substr($file1, 0, strpos($file1, ".$phpEx")));
+					organize_lang($file . '/' . substr($file1, 0, strpos($file1, ".$phpEx")), true);
 				}
 				else if (is_dir($phpbb_root_path . 'language/' . $file . '/' . $file1))
 				{
@@ -350,13 +351,14 @@ function organize_lang($file = false, $skip_errors = false)
 	@include($phpbb_root_path . 'language/' . $file . '.' . $phpEx);
 
 	// make sure it is a valid language file
-	if ((!isset($lang) || !is_array($lang)) && !$skip_errors)
+	if (!isset($lang) || !is_array($lang))
 	{
-		trigger_error('Bad Language File.');
-	}
-	else if ($skip_errors)
-	{
-		return;
+		if ($skip_errors)
+		{
+			return;
+		}
+
+		trigger_error('Bad Language File. language/' . $file);
 	}
 
 	// setup the $output var
@@ -383,14 +385,15 @@ function organize_lang($file = false, $skip_errors = false)
 		}
 		fclose($handle);
 
-		if (!$stopped && !$skip_errors)
+		if (!$stopped)
 		{
+			if ($skip_errors)
+			{
+				echo 'Bad line endings in ' . $phpbb_root_path . 'language/' . $file . '.' . $phpEx . '<br/>';
+				return;
+			}
+
 			trigger_error('Please make sure you are using UNIX line endings.');
-		}
-		else if ($skip_errors)
-		{
-			echo 'Bad line endings in ' . $phpbb_root_path . 'language/' . $file . '.' . $phpEx . '<br/>';
-			return;
 		}
 	}
 

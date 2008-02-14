@@ -215,7 +215,7 @@ else // user submitted and there are no errors
 	{
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
-		set_config('num_blog_replies', $config['num_blog_replies']--, true);
+		set_config('num_blog_replies', --$config['num_blog_replies'], true);
 
 		inform_approve_report('reply_approve', $reply_id);
 	}

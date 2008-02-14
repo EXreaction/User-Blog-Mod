@@ -36,14 +36,14 @@
 
 				<!-- IF searchrow.S_UNAPPROVED or searchrow.S_REPORTED -->
 					<p class="rules">
-						<!-- IF searchrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{searchrow.U_APPROVE}"><strong>{L_REPLY_UNAPPROVED}</strong></a><!-- ENDIF -->
-						<!-- IF searchrow.S_REPORTED -->{REPORTED_IMG} <a href="{searchrow.U_REPORT}"><strong>{L_REPLY_REPORTED}</strong></a><!-- ENDIF -->
+						<!-- IF searchrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{searchrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+						<!-- IF searchrow.S_REPORTED -->{REPORTED_IMG} <a href="{searchrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
 					</p>
 				<!-- ENDIF -->
 
-				<div class="content">{searchrow.REPLY_MESSAGE}{searchrow.BLOG_MESSAGE}</div>
+				<div class="content">{searchrow.MESSAGE}</div>
 
-				{searchrow.REPLY_EXTRA}{searchrow.BLOG_EXTRA}
+				{searchrow.EXTRA}
 
 
 				<!-- IF searchrow.EDITED_MESSAGE or searchrow.EDIT_REASON -->

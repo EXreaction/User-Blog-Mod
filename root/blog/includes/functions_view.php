@@ -521,10 +521,11 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 */
 function generate_menu($user_id = false)
 {
-	global $config, $db, $template, $blog_data;
+	global $config, $db, $template, $blog_data, $user;
 
 	$extra = $user_menu_extra = '';
-	$temp = compact('user_id', 'user_menu_extra', 'extra');
+	$stats = ($user_id) ? array() : array($user->lang['TOTAL_NUMBER_OF_BLOGS'] => $config['num_blogs'], $user->lang['TOTAL_NUMBER_OF_REPLIES'] => $config['num_blog_replies']);
+	$temp = compact('user_id', 'user_menu_extra', 'extra', 'stats');
 	blog_plugins::plugin_do_ref('function_generate_menu', $temp);
 	extract($temp);
 
@@ -545,10 +546,24 @@ function generate_menu($user_id = false)
 	}
 	else
 	{
+		
 		$template->assign_vars(array(
 			'S_MAIN_BLOG_MENU'		=> true,
 			'MAIN_BLOG_MENU_EXTRA'	=> $extra,
 		));
+	}
+
+	if (sizeof($stats))
+	{
+		$template->assign_vars(array('S_BLOG_STATS' => true));
+
+		foreach ($stats as $name => $value)
+		{
+			$template->assign_block_vars('stats', array(
+				'NAME'		=> $name,
+				'VALUE'		=> $value,
+			));
+		}
 	}
 
 	if ($config['user_blog_search'])

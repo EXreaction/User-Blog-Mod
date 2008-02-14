@@ -13,8 +13,6 @@
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * finish main page
-*	add counter for # of replies in the config table
-*	add stats section to main page
 *	add links section (my blogs, blog control panel, random blogs, recent blogs, popular blogs)
 *
 * subsilver2 template

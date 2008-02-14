@@ -52,7 +52,7 @@ if (blog_data::$reply[$reply_id]['reply_approved'] == 0)
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
-		set_config('num_blog_replies', $config['num_blog_replies']++, true);
+		set_config('num_blog_replies', ++$config['num_blog_replies'], true);
 
 		handle_subscription('new_reply',  censor_text(blog_data::$reply[$reply_id]['reply_subject']), 0, 0, $reply_id);
 

@@ -40,8 +40,8 @@
 									<div class="postbody" style="width: 100%;">
 										<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
 											<p class="rules">
-												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_VIEW}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
-												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_VIEW}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
+												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_REPORT}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
 											</p>
 										<!-- ENDIF -->
 
@@ -74,6 +74,11 @@
 									<span class="corners-bottom"><span></span></span>
 								</div>	
 							<!-- END row -->
+							<!-- IF PAGINATION or TOTAL_POSTS -->
+								<div class="pagination">
+									{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
+								</div>
+							<!-- ENDIF -->
 						</td>
 					<!-- END column -->
 				</tr>
