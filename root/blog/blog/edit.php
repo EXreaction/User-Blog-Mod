@@ -368,6 +368,16 @@ else // user submitted and there are no errors
 		}
 	}
 
+	// If it needs reapproval...
+	if (blog_data::$blog[$blog_id]['blog_approved'] == 0 && !$auth->acl_get('u_blognoapprove'))
+	{
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count - 1 WHERE user_id = ' . $user->data['user_id'];
+		$db->sql_query($sql);
+		set_config('num_blogs', $config['num_blogs']--, true);
+
+		inform_approve_report('blog_approve', $blog_id);
+	}
+
 	handle_blog_cache('edit_blog', $user_id);
 
 	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />'; 

@@ -299,13 +299,13 @@ else // user submitted and there are no errors
 
 	if ($auth->acl_get('u_blognoapprove'))
 	{
-		handle_subscription('new_blog', censor_text($blog_subject), $user->data['user_id'], $blog_id);
-
 		// Update the blog_count for the user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . $user->data['user_id'];
 		$db->sql_query($sql);
 
 		set_config('num_blogs', $config['num_blogs']++, true);
+
+		handle_subscription('new_blog', censor_text($blog_subject), $user->data['user_id'], $blog_id);
 	}
 	else
 	{

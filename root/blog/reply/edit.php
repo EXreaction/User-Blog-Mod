@@ -194,7 +194,7 @@ else // user submitted and there are no errors
 	// the update query
 	$sql = 'UPDATE ' . BLOGS_REPLY_TABLE . '
 		SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
-		WHERE reply_id = \'' . $reply_id . '\'';
+		WHERE reply_id = ' . intval($reply_id);
 
 	$db->sql_query($sql);
 
@@ -209,6 +209,16 @@ else // user submitted and there are no errors
 
 	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_EDIT_SUCCESS']) . '<br /><br />'; 
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
+
+	// If it needs reapproval...
+	if (blog_data::$reply[$reply_id]['reply_approved'] == 0 && !$auth->acl_get('u_blogreplynoapprove'))
+	{
+		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count - 1 WHERE blog_id = ' . intval($blog_id);
+		$db->sql_query($sql);
+		set_config('num_blog_replies', $config['num_blog_replies']--, true);
+
+		inform_approve_report('reply_approve', $reply_id);
+	}
 
 	handle_blog_cache('edit_reply', $user_id);
 

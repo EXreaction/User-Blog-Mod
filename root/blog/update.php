@@ -567,6 +567,11 @@ if (confirm_box(true))
 			);
 			$auth_admin->acl_add_option($blog_permissions);
 		case '0.3.39' :
+		case '0.3.40' :
+			$sql = 'SELECT count(reply_id) AS reply_count FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_deleted = 0 AND reply_approved = 1';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			set_config('num_blog_replies', $row['reply_count'], true);
 	}
 
 	// update the version
