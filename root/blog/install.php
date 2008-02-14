@@ -34,6 +34,7 @@ if (confirm_box(true))
 		unset($dbpasswd, $dbuser, $dbname);
 	}
 
+	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx); // Needed for remove_comments function for some DB types
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
 	include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
 	include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);

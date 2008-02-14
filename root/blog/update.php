@@ -33,9 +33,10 @@ if (confirm_box(true))
 {
 	$sql_array = array();
 
-	include($phpbb_root_path . '/includes/acp/auth.' . $phpEx);
+	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx); // Needed for remove_comments function for some DB types
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);
 	include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+	include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
 	include($phpbb_root_path . 'blog/includes/eami.' . $phpEx);
 	$auth_admin = new auth_admin();
 	$db_tool = new phpbb_db_tools($db);
