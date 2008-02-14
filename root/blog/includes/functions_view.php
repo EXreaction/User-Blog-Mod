@@ -549,7 +549,7 @@ function generate_menu($user_id = false)
 		
 		$template->assign_vars(array(
 			'S_MAIN_BLOG_MENU'		=> true,
-			'MAIN_BLOG_MENU_EXTRA'	=> $extra,
+			'MENU_EXTRA'			=> $extra,
 		));
 	}
 

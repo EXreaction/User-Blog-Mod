@@ -14,6 +14,55 @@
 		<td style="vertical-align: top; padding-left: 10px;">
 			<!-- INCLUDE blog/category_list.html -->
 
+			<!-- IF S_RANDOM_BLOG -->
+				<div class="post bg3" style="text-align: center;">
+					<span class="corners-top"><span></span></span>
+						<strong>{L_RANDOM_BLOG}</strong>
+					<span class="corners-bottom"><span></span></span>
+				</div>
+				<!-- BEGIN random -->
+					<div class="post bg1<!-- IF random.S_REPORTED or random.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF random.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF random.POST_COLOR and not random.S_REPORTED and not random.S_UNAPPROVED and not random.S_DELETED -->style="background-color: {random.POST_COLOR}"<!-- ENDIF -->>
+						<div class="inner"><span class="corners-top"><span></span></span>
+
+						<div class="postbody" style="width: 100%;">
+							<!-- IF random.S_UNAPPROVED or random.S_REPORTED -->
+								<p class="rules">
+									<!-- IF random.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{random.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+									<!-- IF random.S_REPORTED -->{REPORTED_IMG} <a href="{random.U_REPORT}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
+								</p>
+							<!-- ENDIF -->
+
+							<dl>
+								<dt>
+									<strong><!-- IF random.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{random.U_VIEW}">{random.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{random.USER_FULL}</strong>  {L_POSTED_ON_DATE} {random.DATE} <br/>
+									<div class="content" style="width: 95%; padding: 4px;">{random.MESSAGE}</div>
+
+									<!-- IF random.S_HAS_ATTACHMENTS -->
+										<dl class="attachbox">
+											<dt>{L_ATTACHMENTS}</dt>
+										</dl>
+									<!-- ENDIF -->
+
+									<br clear="all" />
+									<div>
+										<span class="num_replies">{random.REPLIES}</span>
+										{random.VIEWS}
+									</div>
+								</dt>
+							</dl>
+						</div>
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+				<!-- BEGINELSE -->
+					<div class="post bg1" style="text-align: center; margin: 5px;">
+						<span class="corners-top"><span></span></span>
+							<strong>{L_NO_BLOGS}</strong>
+						<span class="corners-bottom"><span></span></span>
+					</div>	
+				<!-- END random -->
+			<!-- ENDIF -->
+
 			<table style="width: 100%">
 				<tr>
 					<!-- BEGIN column -->

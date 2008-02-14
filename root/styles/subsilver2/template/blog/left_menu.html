@@ -45,6 +45,22 @@
 	{USER_MENU_EXTRA}
 <!-- ENDIF -->
 
+<!-- IF S_BLOG_STATS -->
+	<div class="post bg1">
+		<div class="inner">
+			<span class="corners-top"><span></span></span>
+			<div class="left_menu_title">{L_BLOG_STATS}</div>
+			<!-- BEGIN stats -->
+				<div>
+					<span style="float: right;">{stats.VALUE}</span>
+					<span>{stats.NAME}</span>
+				</div>
+			<!-- END stats -->
+			<span class="corners-bottom"><span></span></span>
+		</div>
+	</div>
+<!-- ENDIF -->
+
 <!-- IF S_DISPLAY_BLOG_SEARCH -->
 	<div class="post bg1">
 		<div class="inner">
@@ -61,3 +77,5 @@
 		</div>
 	</div>
 <!-- ENDIF -->
+
+{MENU_EXTRA}
