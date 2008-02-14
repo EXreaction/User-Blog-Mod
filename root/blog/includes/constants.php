@@ -15,17 +15,12 @@ if (!defined('IN_PHPBB'))
 
 if (!defined('BLOGS_TABLE'))
 {
-	if (!isset($table_prefix))
+	global $table_prefix;
+	if (empty($table_prefix))
 	{
-		if (!isset($phpbb_root_path) || !isset($phpEx))
-		{
-			global $phpbb_root_path, $phpEx;
-		}
-
+		global $phpbb_root_path, $phpEx;
 		include($phpbb_root_path . 'config.' . $phpEx);
 		unset($dbpasswd);
-		unset($dbuser);
-		unset($dbname);
 	}
 
 	define('BLOGS_TABLE',					$table_prefix . 'blogs');
