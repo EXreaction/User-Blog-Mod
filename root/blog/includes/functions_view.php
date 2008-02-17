@@ -1080,7 +1080,7 @@ function feed_output($ids, $feed_type)
 		// the items section is only used in RSS 1.0
 		if ($feed_type == 'RSS_1.0')
 		{
-			if ($mode == 'blog')
+			if (strpos($mode, 'replies') === false)
 			{
 				// output the URLS for the items section
 				foreach ($ids as $id)
