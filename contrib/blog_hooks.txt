@@ -39,8 +39,6 @@
 	blog_data_start
 	blog_data_sql
 	blog_data_while
-	blog_info_start
-	blog_info_sql
 	blog_handle_data_start
 	blog_handle_data_end
 	reply_data_start
@@ -53,11 +51,11 @@
 	user_data_sql
 	user_data_while
 	user_handle_data
-	user_handle_data_cp
 
 /blog/includes/functions.php
 	function_blog_url
 	function_generate_blog_urls
+	function_get_user_settings
 	function_get_user_settings_insert
 	function_get_user_settings_update
 	function_get_user_settings
@@ -66,6 +64,7 @@
 	function_get_subscription_types
 
 /blog/includes/functions_admin.php
+	function_blog_acp_profile
 	function_resync_blog
 
 /blog/includes/functions_attachments.php
@@ -107,7 +106,6 @@
 /blog/includes/functions_view.php
 	function_get_attachment_data
 	function_get_subscription_info
-	function_get_user_settings
 	function_get_zebra_info
 	function_generate_menu
 	available_feeds
@@ -173,12 +171,12 @@
 /blog/view/main.php
 	view_main_start
 	view_main_end
+	view_main_end
 	view_main_feed_end
 
 /blog/view/single.php
 	view_blog_start
 	view_blog_after_blogrow
-	view_blog_reply_while
 	view_blog_end
 
 /blog/view/user.php
