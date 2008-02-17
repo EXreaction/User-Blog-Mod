@@ -220,8 +220,8 @@ CREATE TABLE phpbb_blog_search_wordlist (
 	word_count INTEGER UNSIGNED NOT NULL DEFAULT '0'
 );
 
-CREATE UNIQUE INDEX phpbb_blog_search_wordlist_wrd_txt ON phpbb_blog_search_wordlist (word_text);
-CREATE INDEX phpbb_blog_search_wordlist_wrd_cnt ON phpbb_blog_search_wordlist (word_count);
+CREATE UNIQUE INDEX phpbb_blog_search_wordlist_word_text ON phpbb_blog_search_wordlist (word_text);
+CREATE INDEX phpbb_blog_search_wordlist_word_count ON phpbb_blog_search_wordlist (word_count);
 
 # Table: 'phpbb_blog_search_wordmatch'
 CREATE TABLE phpbb_blog_search_wordmatch (
@@ -231,7 +231,7 @@ CREATE TABLE phpbb_blog_search_wordmatch (
 	title_match INTEGER UNSIGNED NOT NULL DEFAULT '0'
 );
 
-CREATE UNIQUE INDEX phpbb_blog_search_wordmatch_unq_mtch ON phpbb_blog_search_wordmatch (blog_id, reply_id, word_id, title_match);
+CREATE UNIQUE INDEX phpbb_blog_search_wordmatch_unique_match ON phpbb_blog_search_wordmatch (blog_id, reply_id, word_id, title_match);
 CREATE INDEX phpbb_blog_search_wordmatch_word_id ON phpbb_blog_search_wordmatch (word_id);
 CREATE INDEX phpbb_blog_search_wordmatch_blog_id ON phpbb_blog_search_wordmatch (blog_id);
 CREATE INDEX phpbb_blog_search_wordmatch_reply_id ON phpbb_blog_search_wordmatch (reply_id);

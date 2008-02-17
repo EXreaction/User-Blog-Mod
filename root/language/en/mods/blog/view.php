@@ -24,8 +24,6 @@ $lang = array_merge($lang, array(
 	'AVERAGE_OF_RATING'				=> 'Average of %s rating',
 	'AVERAGE_OF_RATINGS'			=> 'Average of %s ratings',
 
-	'BLOG_STATS'					=> 'Blog Stats',
-
 	'CLICK_HERE_SHOW_POST'			=> 'Click here to show the post.',
 	'CNT_COMMENTS'					=> '%s Comments',
 	'COMMENTS'						=> 'Comments',

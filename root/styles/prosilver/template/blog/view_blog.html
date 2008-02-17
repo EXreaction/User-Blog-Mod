@@ -354,6 +354,10 @@
 		<!-- END replyrow -->
 	<!-- ENDIF -->
 
+	<!-- IF S_QUICK_REPLY -->
+		<!-- INCLUDE blog/quick_reply.html -->
+	<!-- ENDIF -->
+
 	<!-- IF PAGINATION or TOTAL_POSTS -->
 		<div class="pagination">
 			{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->

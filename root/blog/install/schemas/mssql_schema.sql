@@ -381,10 +381,10 @@ ALTER TABLE [phpbb_blog_search_wordlist] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-CREATE  UNIQUE  INDEX [wrd_txt] ON [phpbb_blog_search_wordlist]([word_text]) ON [PRIMARY]
+CREATE  UNIQUE  INDEX [word_text] ON [phpbb_blog_search_wordlist]([word_text]) ON [PRIMARY]
 GO
 
-CREATE  INDEX [wrd_cnt] ON [phpbb_blog_search_wordlist]([word_count]) ON [PRIMARY]
+CREATE  INDEX [word_count] ON [phpbb_blog_search_wordlist]([word_count]) ON [PRIMARY]
 GO
 
 
@@ -399,7 +399,7 @@ CREATE TABLE [phpbb_blog_search_wordmatch] (
 ) ON [PRIMARY]
 GO
 
-CREATE  UNIQUE  INDEX [unq_mtch] ON [phpbb_blog_search_wordmatch]([blog_id], [reply_id], [word_id], [title_match]) ON [PRIMARY]
+CREATE  UNIQUE  INDEX [unique_match] ON [phpbb_blog_search_wordmatch]([blog_id], [reply_id], [word_id], [title_match]) ON [PRIMARY]
 GO
 
 CREATE  INDEX [word_id] ON [phpbb_blog_search_wordmatch]([word_id]) ON [PRIMARY]

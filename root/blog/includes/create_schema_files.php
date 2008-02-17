@@ -674,8 +674,15 @@ foreach ($supported_dbms as $dbms)
 						}
 
 						$line .= ($key_data[0] == 'INDEX') ? 'CREATE INDEX' : '';
+
+						// We will shorten key names for tables that could be overly long for Oracle
+						$short_tbl_name = '';
+						foreach (explode('_', $table_name) as $tbl_frag)
+						{
+							$short_tbl_name .= (isset($tbl_frag[0])) ? $tbl_frag[0] : '';
+						}
 						
-						$line .= " {$table_name}_{$key_name} ON {$table_name} (" . implode(', ', $key_data[1]) . ")\n";
+						$line .= " {$short_tbl_name}_{$key_name} ON {$table_name} (" . implode(', ', $key_data[1]) . ")\n";
 						$line .= "/\n";
 					break;
 

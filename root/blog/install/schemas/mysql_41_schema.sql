@@ -222,8 +222,8 @@ CREATE TABLE phpbb_blog_search_wordlist (
 	word_common tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	word_count mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	PRIMARY KEY (word_id),
-	UNIQUE wrd_txt (word_text),
-	KEY wrd_cnt (word_count)
+	UNIQUE word_text (word_text),
+	KEY word_count (word_count)
 ) CHARACTER SET `utf8` COLLATE `utf8_bin`;
 
 
@@ -233,7 +233,7 @@ CREATE TABLE phpbb_blog_search_wordmatch (
 	reply_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	word_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	title_match tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-	UNIQUE unq_mtch (blog_id, reply_id, word_id, title_match),
+	UNIQUE unique_match (blog_id, reply_id, word_id, title_match),
 	KEY word_id (word_id),
 	KEY blog_id (blog_id),
 	KEY reply_id (reply_id)

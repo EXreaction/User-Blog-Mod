@@ -20,12 +20,15 @@ $lang = array_merge($lang, array(
 
 	'BLOG'							=> 'Blog',
 	'BLOGS'							=> 'Blogs',
+	'BLOG_CONTROL_PANEL'			=> 'Blog Control Panel',
 	'BLOG_CREDITS'					=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
 	'BLOG_DELETED_BY_MSG'			=> 'This blog was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
 	'BLOG_DESCRIPTION'				=> 'Blog Description',
+	'BLOG_LINKS'					=> 'Blog Links',
 	'BLOG_MCP'						=> 'Blog Moderator CP',
 	'BLOG_NOT_EXIST'				=> 'The requested blog does not exist.',
 	'BLOG_SEARCH_BACKEND_NOT_EXIST'	=> 'The Search backend was not found.  Please contact an administrator or moderator.',
+	'BLOG_STATS'					=> 'Blog Stats',
 	'BLOG_SUBJECT'					=> 'Blog Subject',
 	'BLOG_TITLE'					=> 'Blog Title',
 

@@ -45,15 +45,31 @@
 	{USER_MENU_EXTRA}
 <!-- ENDIF -->
 
+<!-- IF S_BLOG_LINKS -->
+	<div class="post bg1">
+		<div class="inner">
+			<span class="corners-top"><span></span></span>
+			<div class="left_menu_title">{L_BLOG_LINKS}</div>
+			<ul style="list-style: none;">
+				<!-- BEGIN left_blog_links -->
+					<li class="{left_blog_links.CLASS}" style="font-weight: normal; padding-bottom: <!-- IF left_blog_links.S_LAST_ROW -->6<!-- ELSE -->4<!-- ENDIF -->px;">
+						<!-- IF left_blog_links.URL == 'spacer' && left_blog_links.NAME == 'spacer' -->&nbsp;<!-- ELSE --><a href="{left_blog_links.URL}">{left_blog_links.NAME}</a><!-- ENDIF -->
+					</li>
+				<!-- END left_blog_links -->
+			</ul>
+			<span class="corners-bottom"><span></span></span>
+		</div>
+	</div>
+<!-- ENDIF -->
+
 <!-- IF S_BLOG_STATS -->
 	<div class="post bg1">
 		<div class="inner">
 			<span class="corners-top"><span></span></span>
 			<div class="left_menu_title">{L_BLOG_STATS}</div>
 			<!-- BEGIN stats -->
-				<div>
-					<span style="float: right;">{stats.VALUE}</span>
-					<span>{stats.NAME}</span>
+				<div style="padding-bottom: <!-- IF stats.S_LAST_ROW -->6<!-- ELSE -->3<!-- ENDIF -->px;">
+					<!-- IF stats.URL == 'spacer' && stats.NAME == 'spacer' -->&nbsp;<!-- ELSE --><span style="float: right;">{stats.VALUE}</span><span>{stats.NAME}</span><!-- ENDIF -->
 				</div>
 			<!-- END stats -->
 			<span class="corners-bottom"><span></span></span>
@@ -70,9 +86,10 @@
 				<fieldset>
 					<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" /> 
 					<input class="button2" value="{L_SEARCH}" type="submit" /><br />
-					<a href="{U_BLOG_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a> {S_HIDDEN_FIELDS}
+					{S_HIDDEN_FIELDS}
 				</fieldset>
 			</form>
+			<div style="padding: 2px;"><a href="{U_BLOG_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a></div>
 			<span class="corners-bottom"><span></span></span>
 		</div>
 	</div>

@@ -57,7 +57,7 @@ foreach ($role_data as $role => $options)
 				'auth_option_id'	=> $row['auth_option_id'],
 				'auth_setting'		=> 1,
 			);
-			$sql = 'INSERT IGNORE INTO ' . ACL_ROLES_DATA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$sql = 'INSERT INTO ' . ACL_ROLES_DATA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
 		}
 	}

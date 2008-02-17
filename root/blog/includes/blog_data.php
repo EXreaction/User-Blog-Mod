@@ -170,10 +170,7 @@ class blog_data
 			break;
 
 			case 'popular' : // select popular blogs.
-				if ($order_by == 'default')
-				{
-					$sql_array['ORDER_BY'] = 'b.blog_reply_count DESC, b.blog_read_count DESC';
-				}
+				$sql_array['ORDER_BY'] = 'b.blog_reply_count DESC, b.blog_read_count DESC';
 			break;
 
 			case 'reported' : // select reported blogs

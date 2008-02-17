@@ -671,8 +671,8 @@ function get_schema_struct()
 		),
 		'PRIMARY_KEY'	=> 'word_id',
 		'KEYS'			=> array(
-			'wrd_txt'			=> array('UNIQUE', 'word_text'),
-			'wrd_cnt'			=> array('INDEX', 'word_count'),
+			'word_text'			=> array('UNIQUE', 'word_text'),
+			'word_count'		=> array('INDEX', 'word_count'),
 		),
 	);
 
@@ -684,7 +684,7 @@ function get_schema_struct()
 			'title_match'		=> array('BOOL', 0),
 		),
 		'KEYS'			=> array(
-			'unq_mtch'			=> array('UNIQUE', array('blog_id', 'reply_id', 'word_id', 'title_match')),
+			'unique_match'		=> array('UNIQUE', array('blog_id', 'reply_id', 'word_id', 'title_match')),
 			'word_id'			=> array('INDEX', 'word_id'),
 			'blog_id'			=> array('INDEX', 'blog_id'),
 			'reply_id'			=> array('INDEX', 'reply_id'),

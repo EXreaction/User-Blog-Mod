@@ -76,14 +76,21 @@ blog_plugins::plugin_do('view_blog_start');
 
 // Output some data
 $template->assign_vars(array(
+	'BLOG_CSS'			=> (isset($user_settings[$user_id]['blog_css'])) ? $user_settings[$user_id]['blog_css'] : '',
+
 	'U_PRINT_TOPIC'		=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',
 	'U_VIEW'			=> $blog_urls['self'],
 
 	'S_CATEGORY_MODE'	=> ($category_id) ? true : false,
 	'S_SINGLE'			=> true,
 
-	'BLOG_CSS'			=> (isset($user_settings[$user_id]['blog_css'])) ? $user_settings[$user_id]['blog_css'] : '',
+	// Quick reply
+	'U_QUICK_REPLY'		=> blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')),
+	'S_QUICK_REPLY'		=> ($user->data['is_registered']) ? true : false,
 ));
+
+// Quick Reply
+add_form_key('postform');
 
 // Parse the blog data and output it to the template
 $template->assign_block_vars('blogrow', array_merge($blog_data->handle_blog_data($blog_id), $blog_data->handle_user_data($user_id)));

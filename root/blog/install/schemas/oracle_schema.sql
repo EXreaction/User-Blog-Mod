@@ -50,23 +50,23 @@ CREATE TABLE phpbb_blogs (
 )
 /
 
-CREATE INDEX phpbb_blogs_user_id ON phpbb_blogs (user_id)
+CREATE INDEX pb_user_id ON phpbb_blogs (user_id)
 /
-CREATE INDEX phpbb_blogs_user_ip ON phpbb_blogs (user_ip)
+CREATE INDEX pb_user_ip ON phpbb_blogs (user_ip)
 /
-CREATE INDEX phpbb_blogs_blog_approved ON phpbb_blogs (blog_approved)
+CREATE INDEX pb_blog_approved ON phpbb_blogs (blog_approved)
 /
-CREATE INDEX phpbb_blogs_blog_deleted ON phpbb_blogs (blog_deleted)
+CREATE INDEX pb_blog_deleted ON phpbb_blogs (blog_deleted)
 /
-CREATE INDEX phpbb_blogs_perm_guest ON phpbb_blogs (perm_guest)
+CREATE INDEX pb_perm_guest ON phpbb_blogs (perm_guest)
 /
-CREATE INDEX phpbb_blogs_perm_registered ON phpbb_blogs (perm_registered)
+CREATE INDEX pb_perm_registered ON phpbb_blogs (perm_registered)
 /
-CREATE INDEX phpbb_blogs_perm_foe ON phpbb_blogs (perm_foe)
+CREATE INDEX pb_perm_foe ON phpbb_blogs (perm_foe)
 /
-CREATE INDEX phpbb_blogs_perm_friend ON phpbb_blogs (perm_friend)
+CREATE INDEX pb_perm_friend ON phpbb_blogs (perm_friend)
 /
-CREATE INDEX phpbb_blogs_rating ON phpbb_blogs (rating)
+CREATE INDEX pb_rating ON phpbb_blogs (rating)
 /
 
 CREATE SEQUENCE phpbb_blogs_seq
@@ -107,15 +107,15 @@ CREATE TABLE phpbb_blogs_attachment (
 )
 /
 
-CREATE INDEX phpbb_blogs_attachment_blog_id ON phpbb_blogs_attachment (blog_id)
+CREATE INDEX pba_blog_id ON phpbb_blogs_attachment (blog_id)
 /
-CREATE INDEX phpbb_blogs_attachment_reply_id ON phpbb_blogs_attachment (reply_id)
+CREATE INDEX pba_reply_id ON phpbb_blogs_attachment (reply_id)
 /
-CREATE INDEX phpbb_blogs_attachment_filetime ON phpbb_blogs_attachment (filetime)
+CREATE INDEX pba_filetime ON phpbb_blogs_attachment (filetime)
 /
-CREATE INDEX phpbb_blogs_attachment_poster_id ON phpbb_blogs_attachment (poster_id)
+CREATE INDEX pba_poster_id ON phpbb_blogs_attachment (poster_id)
 /
-CREATE INDEX phpbb_blogs_attachment_is_orphan ON phpbb_blogs_attachment (is_orphan)
+CREATE INDEX pba_is_orphan ON phpbb_blogs_attachment (is_orphan)
 /
 
 CREATE SEQUENCE phpbb_blogs_attachment_seq
@@ -156,7 +156,7 @@ CREATE TABLE phpbb_blogs_categories (
 )
 /
 
-CREATE INDEX phpbb_blogs_categories_left_right_id ON phpbb_blogs_categories (left_id, right_id)
+CREATE INDEX pbc_left_right_id ON phpbb_blogs_categories (left_id, right_id)
 /
 
 CREATE SEQUENCE phpbb_blogs_categories_seq
@@ -198,9 +198,9 @@ CREATE TABLE phpbb_blogs_plugins (
 )
 /
 
-CREATE INDEX phpbb_blogs_plugins_plugin_name ON phpbb_blogs_plugins (plugin_name)
+CREATE INDEX pbp_plugin_name ON phpbb_blogs_plugins (plugin_name)
 /
-CREATE INDEX phpbb_blogs_plugins_plugin_enabled ON phpbb_blogs_plugins (plugin_enabled)
+CREATE INDEX pbp_plugin_enabled ON phpbb_blogs_plugins (plugin_enabled)
 /
 
 CREATE SEQUENCE phpbb_blogs_plugins_seq
@@ -230,9 +230,9 @@ CREATE TABLE phpbb_blogs_poll_options (
 )
 /
 
-CREATE INDEX phpbb_blogs_poll_options_poll_opt_id ON phpbb_blogs_poll_options (poll_option_id)
+CREATE INDEX pbpo_poll_opt_id ON phpbb_blogs_poll_options (poll_option_id)
 /
-CREATE INDEX phpbb_blogs_poll_options_blog_id ON phpbb_blogs_poll_options (blog_id)
+CREATE INDEX pbpo_blog_id ON phpbb_blogs_poll_options (blog_id)
 /
 
 /*
@@ -246,11 +246,11 @@ CREATE TABLE phpbb_blogs_poll_votes (
 )
 /
 
-CREATE INDEX phpbb_blogs_poll_votes_blog_id ON phpbb_blogs_poll_votes (blog_id)
+CREATE INDEX pbpv_blog_id ON phpbb_blogs_poll_votes (blog_id)
 /
-CREATE INDEX phpbb_blogs_poll_votes_vote_user_id ON phpbb_blogs_poll_votes (vote_user_id)
+CREATE INDEX pbpv_vote_user_id ON phpbb_blogs_poll_votes (vote_user_id)
 /
-CREATE INDEX phpbb_blogs_poll_votes_vote_user_ip ON phpbb_blogs_poll_votes (vote_user_ip)
+CREATE INDEX pbpv_vote_user_ip ON phpbb_blogs_poll_votes (vote_user_ip)
 /
 
 /*
@@ -296,15 +296,15 @@ CREATE TABLE phpbb_blogs_reply (
 )
 /
 
-CREATE INDEX phpbb_blogs_reply_blog_id ON phpbb_blogs_reply (blog_id)
+CREATE INDEX pbr_blog_id ON phpbb_blogs_reply (blog_id)
 /
-CREATE INDEX phpbb_blogs_reply_user_id ON phpbb_blogs_reply (user_id)
+CREATE INDEX pbr_user_id ON phpbb_blogs_reply (user_id)
 /
-CREATE INDEX phpbb_blogs_reply_user_ip ON phpbb_blogs_reply (user_ip)
+CREATE INDEX pbr_user_ip ON phpbb_blogs_reply (user_ip)
 /
-CREATE INDEX phpbb_blogs_reply_reply_approved ON phpbb_blogs_reply (reply_approved)
+CREATE INDEX pbr_reply_approved ON phpbb_blogs_reply (reply_approved)
 /
-CREATE INDEX phpbb_blogs_reply_reply_deleted ON phpbb_blogs_reply (reply_deleted)
+CREATE INDEX pbr_reply_deleted ON phpbb_blogs_reply (reply_deleted)
 /
 
 CREATE SEQUENCE phpbb_blogs_reply_seq
@@ -367,11 +367,11 @@ CREATE TABLE phpbb_blog_search_wordlist (
 	word_common number(1) DEFAULT '0' NOT NULL,
 	word_count number(8) DEFAULT '0' NOT NULL,
 	CONSTRAINT pk_phpbb_blog_search_wordlist PRIMARY KEY (word_id),
-	CONSTRAINT u_phpbb_wrd_txt UNIQUE (word_text)
+	CONSTRAINT u_phpbb_word_text UNIQUE (word_text)
 )
 /
 
-CREATE INDEX phpbb_blog_search_wordlist_wrd_cnt ON phpbb_blog_search_wordlist (word_count)
+CREATE INDEX pbsw_word_count ON phpbb_blog_search_wordlist (word_count)
 /
 
 CREATE SEQUENCE phpbb_blog_search_wordlist_seq
@@ -398,14 +398,14 @@ CREATE TABLE phpbb_blog_search_wordmatch (
 	reply_id number(8) DEFAULT '0' NOT NULL,
 	word_id number(8) DEFAULT '0' NOT NULL,
 	title_match number(1) DEFAULT '0' NOT NULL,
-	CONSTRAINT u_phpbb_unq_mtch UNIQUE (blog_id, reply_id, word_id, title_match)
+	CONSTRAINT u_phpbb_unique_match UNIQUE (blog_id, reply_id, word_id, title_match)
 )
 /
 
-CREATE INDEX phpbb_blog_search_wordmatch_word_id ON phpbb_blog_search_wordmatch (word_id)
+CREATE INDEX pbsw_word_id ON phpbb_blog_search_wordmatch (word_id)
 /
-CREATE INDEX phpbb_blog_search_wordmatch_blog_id ON phpbb_blog_search_wordmatch (blog_id)
+CREATE INDEX pbsw_blog_id ON phpbb_blog_search_wordmatch (blog_id)
 /
-CREATE INDEX phpbb_blog_search_wordmatch_reply_id ON phpbb_blog_search_wordmatch (reply_id)
+CREATE INDEX pbsw_reply_id ON phpbb_blog_search_wordmatch (reply_id)
 /
 

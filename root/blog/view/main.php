@@ -54,7 +54,7 @@ switch ($mode)
 		// for sorting and pagination
 		$sort_by_sql = (strpos($mode, 'replies') === false) ? array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject') : array('t' => 'reply_time');
 
-		$ids = (strpos($mode, 'replies') === false) ? $blog_data->get_blog_data($mode, 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days)) : $blog_data->get_reply_data($mode, 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+		$ids = (strpos($mode, 'replies') === false) ? $blog_data->get_blog_data(str_replace('_blogs', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days)) : $blog_data->get_reply_data(str_replace('_replies', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();
 
@@ -74,7 +74,7 @@ switch ($mode)
 				'PAGE_NUMBER' 			=> on_page($total, $limit, $start),
 				'TOTAL_POSTS'			=> (strpos($mode, 'replies') === false) ? (($total == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total)) : (($total == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $total)),
 
-				'S_SORT'				=> ($mode == 'random') ? false : true,
+				'S_SORT'				=> ($mode == 'random_blogs' || $mode == 'popular_blogs') ? false : true,
 				'S_SELECT_SORT_DIR' 	=> $s_sort_dir,
 				'S_SELECT_SORT_KEY' 	=> $s_sort_key,
 				'S_SELECT_SORT_DAYS' 	=> $s_limit_days,
@@ -122,7 +122,7 @@ switch ($mode)
 		// Get the random blog(s) and the recent blogs
 		$random_blog_ids = $blog_data->get_blog_data('random', 0, array('limit' => 1, 'category_id' => $category_id));
 		$recent_blog_ids = $blog_data->get_blog_data('recent', 0, array('limit' => $limit, 'category_id' => $category_id));
-		$recent_reply_ids = $blog_data->get_reply_data('', 0, array('category_id' => $category_id));
+		$recent_reply_ids = $blog_data->get_reply_data('', 0, array('limit' => $limit, 'category_id' => $category_id));
 
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();

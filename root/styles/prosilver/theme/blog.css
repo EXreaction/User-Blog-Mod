@@ -31,7 +31,9 @@
 
 .left_menu_title {
 	font-weight: bold;
+	font-size: 11px;
 	text-align: center;
+	padding: 1px 0 5px 0;
 }
 
 #blog_searchform {
