@@ -2,7 +2,7 @@
 ## MOD Title: User Blog Mod
 ## MOD Author: EXreaction < exreaction@lithiumstudios.org > (Nathan Guse) http://www.lithiumstudios.org
 ##
-## MOD Description: Adds user blogs to a phpBB3 board.
+## MOD Description: Adds Blogs to a phpBB3 board.
 ##
 ## MOD Version: 0.3.41
 ##

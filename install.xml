@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.0.1.xsd">
+  <header>
+    <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+    <title lang="en-GB">User Blog Mod</title>
+    <description lang="en-GB">Adds Blogs to a phpBB3 board.</description>
+
+    <author-notes lang="en-GB">Please report any bugs/problems at my website: http://www.lithiumstudios.org
+
+The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/</author-notes>
+
+    <author-group>
+      <author>
+        <username>EXreaction</username>
+        <realname>Nathan Guse</realname>
+        <homepage>http://www.lithiumstudios.org/</homepage>
+        <email>exreaction@lithiumstidos.org</email>
+      </author>
+    </author-group>
+
+    <mod-version>
+      <major>0</major>
+      <minor>3</minor>
+      <revision>41</revision>
+    </mod-version>
+
+    <installation>
+      <level>easy</level>
+      <time>420</time>
+      <target-version>
+        <target-primary>3.0</target-primary>
+        <target-major allow="exact">3</target-major>
+        <target-minor allow="exact">0</target-minor>
+      </target-version>
+    </installation>
+
+    <history>
+      <entry>
+        <date>2008-02-17</date>
+        <rev-version>
+          <major>0</major>
+          <minor>3</minor>
+          <revision>41</revision>
+        </rev-version>
+        <changelog lang="en-GB">
+          <change>A few more bug fixes and you can now edit a user's blog CSS in the ACP->Manage Users.  Rebuilt the main blog page.  Changed the bright green post deleted color to a dull grey.
+To update from A40, upload the new files, update the code in includes/acp/acp_users.php, and point your browser to blog.php?page=update</change>
+        </changelog>
+      </entry>
+    </history>
+  </header>
+
+  <action-group>
+    <copy>
+      <file from="root/*.*" to="*.*" />
+    </copy>
+	<open src="adm/style/acp_users_profile.html">
+		<edit>
+			<find><![CDATA[</fieldset>]]></find>
+			<action type="after-add"><![CDATA[<!-- INCLUDE acp_blog_users.html -->]]></action>
+		</edit>
+    </open>
+	<open src="includes/acp/acp_users.php">
+		<edit>
+			<find>$cp = new custom_profile();</find>
+			<action type="before-add">				// Start User Blog Mod ----------------------
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_acp_profile($user_id, $submit);
+				// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="includes/functions.php">
+		<edit>
+			<find>	// application/xhtml+xml not used because of IE
+	header('Content-type: text/html; charset=UTF-8');</find>
+			<action type="before-add">	// Start User Blog Mod ----------------------
+	include($phpbb_root_path . 'blog/header.' . $phpEx);
+	// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="styles/prosilver/template/overall_header.html">
+		<edit>
+			<comment lang="en">Do this for all prosilver based styles.</comment>
+			<find>{U_FAQ}</find>
+			<action type="before-add"><![CDATA[				<!-- BEGIN blog_links -->
+					<li class="{blog_links.CLASS}"><a href="{blog_links.URL}">{blog_links.TEXT}</a></li>
+				<!-- END blog_links -->]]></action>
+		</edit>
+	</open>
+	<open src="styles/prosilver/theme/stylesheet.css">
+		<edit>
+			<comment lang="en">Do this for all prosilver based styles.</comment>
+			<find><![CDATA[@import url("colours.css");]]></find>
+			<action type="after-add"><![CDATA[@import url("blog.css");]]></action>
+		</edit>
+	</open>
+	<open src="styles/subsilver2/template/overall_header.html">
+		<edit>
+			<comment lang="en">Do this for all subsilver2 based styles.</comment>
+			<find>{U_FAQ}</find>
+			<action type="before-add"><![CDATA[				<!-- BEGIN blog_links -->
+					<a href="{blog_links.URL}">{blog_links.IMG} {blog_links.TEXT}</a>&nbsp; &nbsp;
+				<!-- END blog_links -->]]></action>
+		</edit>
+	</open>
+	<open src=".htaccess">
+		<edit>
+			<comment lang="en">Only add this if your server has mod_rewrite enabled.  If you are not sure you may add it anyways, but, if you get an internal server error, undo the edit.</comment>
+			<find><![CDATA[<Files "common.php">
+Order Allow,Deny
+Deny from All
+</Files>]]></find>
+			<action type="after-add"><![CDATA[RewriteEngine on
+
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
+Rewriterule ^blog/$						./blog/blog.php]]></action>
+		</edit>
+	</open>
+	<open src="viewtopic.php">
+		<edit>
+			<comment lang="en">If you do not want the blog count or link for each user shown on viewtopic you may skip editing this file.</comment>
+			<find>'search'		=> ($auth->acl_get('u_search'))</find>
+			<action type="after-add">				'blog_count'	=> ((isset($row['blog_count'])) ? $row['blog_count'] : 0),</action>
+		</edit>
+		<edit>
+			<find>// Load custom profile fields</find>
+			<action type="before-add">// Start Add User Blog Mod ------------------
+include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
+include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
+include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
+$user->add_lang('mods/blog/common');
+new blog_plugins();
+get_zebra_info($user->data['user_id'], true);
+get_user_settings($id_cache);
+// End Add User Blog Mod --------------------</action>
+		</edit>
+		<edit>
+			<find>	// Dump vars into template
+	$template->assign_block_vars('postrow', $postrow);</find>
+			<action type="after-add">	// Start Add User Blog Mod ------------------
+	add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
+	// End Add User Blog Mod --------------------</action>
+		</edit>
+	</open>
+    <diy-instructions lang="en">Go to blog.php?page=install in your web browser to install the database section.
+
+Go to ACP->Styles->Style components->Theme->prosilver->Refresh
+
+Set the user/group permissions and configuration settings.</diy-instructions>
+  </action-group>
+</mod>
