@@ -12,24 +12,19 @@
 * TODO List
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
-* finish main page
-*	add links section (my blogs, blog control panel, random blogs, recent blogs, popular blogs)
-*
 * subsilver2 template
 *
-* LOW PRIORITY ------------------------------------------------------------------------------------
+* OTHER -------------------------------------------------------------------------------------------
+* post revisions plugin
 * cash mod plugin
 * personal categories plugin
-* 
-* OTHER -------------------------------------------------------------------------------------------
-* 
 * Memorable entry (like a sticky)?
 */
 
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.41_dev';
+$user_blog_version = '0.3.41';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

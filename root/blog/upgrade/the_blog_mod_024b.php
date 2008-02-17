@@ -112,6 +112,12 @@ if (isset($run_upgrade) && $run_upgrade)
 						'perm_registered'		=> (($row['entry_access'] == 0 || $row['entry_access'] == 1) ? 2 : 0),
 						'perm_foe'				=> 0,
 						'perm_friend'			=> (($row['entry_access'] == 0 || $row['entry_access'] == 1 || $row['entry_access'] == 2) ? 2 : 0),
+						'blog_attachment'		=> 0,
+						'poll_title'			=> '',
+						'poll_start'			=> 0,
+						'poll_length'			=> 0,
+						'poll_max_options'		=> 0,
+						'poll_vote_change'		=> 0,
 					);
 
 					if ($this->selected_options['truncate'])

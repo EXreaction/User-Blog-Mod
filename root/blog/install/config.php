@@ -38,6 +38,7 @@ set_config('user_blog_enable_attachments', 1);
 set_config('user_blog_max_attachments', 3);
 set_config('num_blogs', 1, true);
 set_config('num_blog_replies', 0, true);
+set_config('user_blog_quick_reply', 1);
 
 set_config('user_blog_version', $user_blog_version);
 ?>

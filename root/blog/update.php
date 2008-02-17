@@ -578,6 +578,7 @@ if (confirm_box(true))
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			set_config('num_blog_replies', $row['reply_count'], true);
+			set_config('user_blog_quick_reply', 1);
 	}
 
 	// update the version

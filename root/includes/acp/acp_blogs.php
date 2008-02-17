@@ -104,6 +104,7 @@ class acp_blogs
 			'user_blog_inform'					=> array('lang' => 'BLOG_INFORM', 					'validate' => 'string',	'type' => 'text:25:100',				'explain' => true),
 			'user_blog_min_rating'				=> array('lang' => 'BLOG_MIN_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_max_rating'				=> array('lang' => 'BLOG_MAX_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
+			'user_blog_quick_reply'				=> array('lang' => 'BLOG_QUICK_REPLY',				'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
 
 			'legend3'							=> 'BLOG_ATTACHMENT_SETTINGS',
 			'user_blog_max_attachments'			=> array('lang' => 'BLOG_MAX_ATTACHMENTS',			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),

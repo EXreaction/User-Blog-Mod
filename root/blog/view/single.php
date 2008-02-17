@@ -86,7 +86,7 @@ $template->assign_vars(array(
 
 	// Quick reply
 	'U_QUICK_REPLY'		=> blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')),
-	'S_QUICK_REPLY'		=> ($user->data['is_registered']) ? true : false,
+	'S_QUICK_REPLY'		=> ($user->data['is_registered'] && $config['user_blog_quick_reply']) ? true : false,
 ));
 
 // Quick Reply
