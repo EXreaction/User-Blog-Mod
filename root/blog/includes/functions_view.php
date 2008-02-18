@@ -1036,11 +1036,11 @@ function feed_output($ids, $feed_type)
 		{
 			if (!is_array($data))
 			{
-				$message .= '<br /><h2>' . $feed_name . '</h2><div><a href="' . $data . '"><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data . '</code></dd></dl></a></div><br />';
+				$message .= '<br /><h2><a href="' . $data . '">' . $feed_name . '</a></h2><div><a href="' . $data . '">' . $data . '</a></div><br />';
 			}
 			else
 			{
-				$message .= '<br /><h2>' . $feed_name . '</h2><div><a href="' . $data['url'] . '"><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data['text'] . '</code></dd></dl></a></div><br />';
+				$message .= '<br /><h2><a href="' . $data['url'] . '">' . $feed_name . '</a></h2><div><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data['text'] . '</code></dd></dl></div><br />';
 
 				if (isset($data['demo']))
 				{
