@@ -24,7 +24,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.41';
+$user_blog_version = '0.3.42_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -376,6 +376,10 @@ $template->assign_vars(array(
 	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
 
 	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
+
+	// Stuff required for subsilver2
+	'POLL_LEFT_CAP_IMG'		=> $user->img('poll_left'),
+	'POLL_RIGHT_CAP_IMG'	=> $user->img('poll_right'),
 ));
 
 blog_plugins::plugin_do('blog_end');
