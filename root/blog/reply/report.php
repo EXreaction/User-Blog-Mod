@@ -51,7 +51,7 @@ if (blog_data::$reply[$reply_id]['reply_reported'] && $auth->acl_get('m_blogrepl
 
 		handle_blog_cache('report_reply', $user_id);
 
-		blog_meta_refresh(3, $$blog_urls['view_reply']);
+		blog_meta_refresh(3, $blog_urls['view_reply']);
 
 		$message = $user->lang['REPORT_CLOSED_SUCCESS'] . '<br/><br/>';
 		$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br/>';
