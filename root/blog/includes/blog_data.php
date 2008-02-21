@@ -704,6 +704,10 @@ class blog_data
 				$db->sql_freeresult($result);
 				return $total['total'];
 			break;
+
+			case 'recent' :
+				$sql_array['ORDER_BY'] = 'reply_time DESC';
+			break;
 		}
 
 		$temp = compact('sql_array', 'sql_where');

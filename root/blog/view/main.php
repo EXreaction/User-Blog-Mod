@@ -122,7 +122,7 @@ switch ($mode)
 		// Get the random blog(s) and the recent blogs
 		$random_blog_ids = $blog_data->get_blog_data('random', 0, array('limit' => 1, 'category_id' => $category_id));
 		$recent_blog_ids = $blog_data->get_blog_data('recent', 0, array('limit' => $limit, 'category_id' => $category_id));
-		$recent_reply_ids = $blog_data->get_reply_data('', 0, array('limit' => $limit, 'category_id' => $category_id));
+		$recent_reply_ids = $blog_data->get_reply_data('recent', 0, array('limit' => $limit, 'category_id' => $category_id));
 
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();
@@ -162,7 +162,7 @@ switch ($mode)
 			'SECTION_WIDTH'		=> '50',
 			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('mode' => 'recent_replies', 'feed' => 'explain')) : '',
 			'U_VIEW'			=> blog_url(false, false, false, array('mode' => 'recent_replies')),
-			'TITLE'				=> $user->lang['RECENT_REPLIES'],
+			'TITLE'				=> $user->lang['RECENT_COMMENTS'],
 			'L_NO_MSG'			=> $user->lang['NO_REPLIES'],
 		));
 		if ($recent_reply_ids !== false)

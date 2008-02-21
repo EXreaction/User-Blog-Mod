@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 
 	'RANDOM_BLOG'					=> 'Random Blog',
 	'RATE_ME'						=> '%1$s out of %2$s',
+	'RECENT_COMMENTS'				=> 'Recent Comments',
 	'RECENT_REPLIES'				=> 'Recent Replies',
 	'REMOVE_RATING'					=> 'Reset Rating',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',
