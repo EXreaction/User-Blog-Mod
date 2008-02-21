@@ -11,7 +11,6 @@
 <!-- ENDIF -->
 
 <div id="pagecontent">
-
 	<!-- IF not S_CATEGORY_MODE -->
 	<table style="width: 100%">
 		<tr>
@@ -29,33 +28,35 @@
 	</div>
 
 	<table width="100%" cellspacing="1">
-	<tr>
-		<td align="{S_CONTENT_FLOW_BEGIN}" valign="middle" nowrap="nowrap">
-			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}"><img src="{T_IMAGESET_LANG_PATH}/button_blog_new.gif" alt="{L_POST_A_NEW_BLOG}" /></a><!-- ENDIF -->
-			<!-- IF U_REPLY_BLOG -->&nbsp;<a href="{U_REPLY_BLOG}">{REPLY_IMG}</a><!-- ENDIF -->
-		</td>
-		<!-- IF TOTAL_POSTS -->
-			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
-			<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
-			<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- INCLUDE pagination.html --></td>
-		<!-- ENDIF -->
-	</tr>
+		<tr>
+			<td align="{S_CONTENT_FLOW_BEGIN}" valign="middle" nowrap="nowrap">
+				<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}"><img src="{T_IMAGESET_LANG_PATH}/button_blog_new.gif" alt="{L_POST_A_NEW_BLOG}" /></a><!-- ENDIF -->
+				<!-- IF U_REPLY_BLOG -->&nbsp;<a href="{U_REPLY_BLOG}">{REPLY_IMG}</a><!-- ENDIF -->
+			</td>
+			<!-- IF TOTAL_POSTS -->
+				<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+				<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+				<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
+			<!-- ENDIF -->
+		</tr>
 	</table>
 
+	<br />
+
 	<table class="tablebg" width="100%" cellspacing="1">
-	<tr>
-		<td class="cat">
-			<table width="100%" cellspacing="0">
-			<tr>
-				<td class="nav" nowrap="nowrap">
-					<span style="float: right;">
-						<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a> &nbsp;<!-- ENDIF -->
-					</span>
-				</td>
-			</tr>
-			</table>
-		</td>
-	</tr>
+		<tr>
+			<td class="cat">
+				<table width="100%" cellspacing="0">
+					<tr>
+						<td class="nav" nowrap="nowrap">
+							<span style="float: right;">
+								<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a> &nbsp;<!-- ENDIF -->
+							</span>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	</table>
 
 	<!-- BEGIN blogrow -->
@@ -265,16 +266,13 @@
 			</tr>
 		</table>
 	<!-- BEGINELSE -->
-		<div class="post bg1">
-			<div class="inner"><span class="corners-top"><span></span></span>
-
-				<div class="postbody" style="width: 100%;">
-					<div class="no_blogs"><!-- IF MODE == 'deleted' -->{L_NO_DELETED_BLOGS}<!-- ELSE -->{L_NO_BLOGS_USER}<!-- ENDIF --></div>
-				</div>
-			<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
-
-			<span class="corners-bottom"><span></span></span></div>
-		</div>
+		<table class="tablebg" width="100%" cellspacing="1">
+			<tr class="row1">
+				<td>
+					<div style="text-align: center;"><!-- IF MODE == 'deleted' -->{L_NO_DELETED_BLOGS}<!-- ELSE -->{L_NO_BLOGS_USER}<!-- ENDIF --></div>
+				</td>
+			</tr>
+		</table>
 	<!-- END blogrow -->
 
 	<!-- IF S_REPLIES -->
@@ -404,30 +402,46 @@
 		<!-- INCLUDE blog/quick_reply.html -->
 	<!-- ENDIF -->
 
-	<!-- IF PAGINATION or TOTAL_POSTS -->
-		<div class="pagination">
-			{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
-		</div>
+	<table width="100%" cellspacing="1">
+		<tr>
+			<td align="{S_CONTENT_FLOW_BEGIN}" valign="middle" nowrap="nowrap">
+				<br /><!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}"><img src="{T_IMAGESET_LANG_PATH}/button_blog_new.gif" alt="{L_POST_A_NEW_BLOG}" /></a><!-- ENDIF -->
+				<!-- IF U_REPLY_BLOG -->&nbsp;<a href="{U_REPLY_BLOG}">{REPLY_IMG}</a><!-- ENDIF -->
+			</td>
+			<!-- IF TOTAL_POSTS -->
+				<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+				<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+				<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
+			<!-- ENDIF -->
+		</tr>
+	</table>
+
+	<br clear="all" />
+
+	<!-- INCLUDE breadcrumbs.html -->
+
+	<!-- IF S_DISPLAY_ONLINE_LIST -->
+		<br clear="all" />
+
+		<table class="tablebg" width="100%" cellspacing="1">
+		<tr>
+			<td class="cat"><h4>{L_WHO_IS_ONLINE}</h4></td>
+		</tr>
+		<tr>
+			<td class="row1"><p class="gensmall">{LOGGED_IN_USER_LIST}</p></td>
+		</tr>
+		</table>
 	<!-- ENDIF -->
 
-	<!-- IF U_ADD_BLOG or U_REPLY_BLOG -->
-	<div class="topic-actions">
-		<div class="buttons">
-			<!-- IF U_ADD_BLOG --><div class="blog-icon"><a href="{U_ADD_BLOG}"><span></span>{L_POST_A_NEW_BLOG}</a></div><!-- ENDIF -->
-			<!-- IF U_REPLY_BLOG --><div class="reply-icon"><a href="{U_REPLY_BLOG}"><span></span>{L_POST_REPLY}</a></div><!-- ENDIF -->
-		</div>
-	</div>
-	<!-- ENDIF -->
+	<br clear="all" />
 
 	<!-- IF not S_CATEGORY_MODE -->
 			</td>
 		</tr>
 	</table>
 	<!-- ENDIF -->
+</div>
 
-	<!-- IF S_DISPLAY_ONLINE_LIST -->
-		<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
-		<p>{LOGGED_IN_USER_LIST}</p>
-	<!-- ENDIF -->
+<div id="pagefooter"></div>
 
-	<!-- INCLUDE overall_footer.html -->
+<!-- INCLUDE overall_footer.html -->
