@@ -39,7 +39,7 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 		$var = (isset($user_settings[$user_id])) ? $user_settings[$user_id] : false;
 	}
 
-	// Anonymous users are not allowed to set per blog permissions, and if the user is viewing their own or is a mod or admin, they can see it.  Also 
+	// Anonymous users are not allowed to set per blog permissions, and if the user is viewing their own or is a mod or admin, they can see it.
 	if ($user_id == ANONYMOUS || $user->data['user_id'] == $user_id || $auth->acl_gets('a_', 'm_') || !$var)
 	{
 		return true;
