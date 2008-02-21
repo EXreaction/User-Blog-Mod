@@ -1118,13 +1118,14 @@ class blog_data
 			'U_JABBER'			=> self::$user[$user_id]['jabber_url'],
 			'U_MSN'				=> self::$user[$user_id]['msn_url'],
 			'U_PM'				=> self::$user[$user_id]['pm_url'],
-			'U_VIEW_PROFILE'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id"),
+			'U_PROFILE'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=$user_id"),
 			'U_WWW'				=> self::$user[$user_id]['user_website'],
 			'U_YIM'				=> self::$user[$user_id]['yim_url'],
 
 			'S_CUSTOM_FIELDS'	=> (isset(self::$user[$user_id]['cp_row']['blockrow'])) ? true : false,
 			'S_ONLINE'			=> self::$user[$user_id]['status'],
 
+			'ONLINE_IMG'		=> (self::$user[$user_id]['status']) ? $user->img('icon_user_online', 'ONLINE') : $user->img('icon_user_offline', 'OFFLINE'),
 			'USER_EXTRA'		=> '',
 
 			'custom_fields'		=> $custom_fields,

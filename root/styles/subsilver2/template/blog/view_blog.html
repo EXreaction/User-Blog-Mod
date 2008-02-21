@@ -15,7 +15,7 @@
 	<!-- IF not S_CATEGORY_MODE -->
 	<table style="width: 100%">
 		<tr>
-			<td id="left_menu">
+			<td style="width: 240px; vertical-align: top;">
 				<!-- INCLUDE blog/left_menu.html -->
 			</td>
 			<td style="vertical-align: top; padding-left: 10px;">
@@ -24,15 +24,15 @@
 	<div id="pageheader">
 		<!-- IF S_SINGLE --><!-- BEGIN blogrow(0,0) --><h2><a class="titles" href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h2><!-- END blogrow --><!-- ENDIF -->
 		<!-- IF U_BLOG_MCP -->
-			<p class="linkmcp">[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
+			<p class="linkmcp">[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p><br /><br />
 		<!-- ENDIF -->
 	</div>
 
 	<table width="100%" cellspacing="1">
 	<tr>
 		<td align="{S_CONTENT_FLOW_BEGIN}" valign="middle" nowrap="nowrap">
-			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}">{POST_IMG}</a>&nbsp;<!-- ENDIF -->
-			<!-- IF U_REPLY_BLOG --><a href="{U_REPLY_BLOG}">{REPLY_IMG}</a><!-- ENDIF -->
+			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}"><img src="{T_IMAGESET_LANG_PATH}/button_blog_new.gif" alt="{L_POST_A_NEW_BLOG}" /></a><!-- ENDIF -->
+			<!-- IF U_REPLY_BLOG -->&nbsp;<a href="{U_REPLY_BLOG}">{REPLY_IMG}</a><!-- ENDIF -->
 		</td>
 		<!-- IF TOTAL_POSTS -->
 			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
@@ -48,7 +48,9 @@
 			<table width="100%" cellspacing="0">
 			<tr>
 				<td class="nav" nowrap="nowrap">
-					<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a><!-- ENDIF -->
+					<span style="float: right;">
+						<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a> &nbsp;<!-- ENDIF -->
+					</span>
 				</td>
 			</tr>
 			</table>
@@ -57,6 +59,7 @@
 	</table>
 
 	<!-- BEGIN blogrow -->
+		<a name="p{blogrow.ID}"></a>
 		<table class="tablebg" width="100%" cellspacing="1">
 			<!-- IF blogrow.S_HAS_POLL and S_SINGLE -->
 				<tr>
@@ -116,113 +119,151 @@
 			<!-- ENDIF -->
 
 			<!-- IF blogrow.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<!-- IF S_CATEGORY_MODE -->
+					<td align="center" valign="middle">
+						{blogrow.USER_FULL}
+					</td>
+				<!-- ENDIF -->
+				<td width="100%" height="25">
+					<div style="float: {S_CONTENT_FLOW_BEGIN};">&nbsp;<b><!-- IF blogrow.S_HAS_POLL -->{L_VIEW_TOPIC_POLL}<!-- ELSE -->{L_POST_SUBJECT}:<!-- ENDIF --></b> <a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></div><div style="float: {S_CONTENT_FLOW_END};"><!-- IF S_IS_BOT --><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /><!-- ELSE --><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a><!-- ENDIF --><b>{L_POSTED}:</b> {blogrow.DATE}&nbsp;</div></td>
+				</td>
+			</tr>
+
+			<!-- IF blogrow.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<!-- IF S_CATEGORY_MODE -->
+					<td valign="top" class="profile">
+						<table cellspacing="4" align="center" width="150">
+							<!-- IF blogrow.ONLINE_IMG -->
+								<tr>
+									<td>{blogrow.ONLINE_IMG}</td>
+								</tr>
+							<!-- ENDIF -->
+							<!-- IF blogrow.RANK_TITLE -->
+								<tr>
+									<td class="postdetails">{blogrow.RANK_TITLE}</td>
+								</tr>
+							<!-- ENDIF -->
+							<!-- IF blogrow.RANK_IMG -->
+								<tr>
+									<td>{blogrow.RANK_IMG}</td>
+								</tr>
+							<!-- ENDIF -->
+							<!-- IF blogrow.AVATAR -->
+								<tr>
+									<td>{blogrow.AVATAR}</td>
+								</tr>
+							<!-- ENDIF -->
+						</table>
+
+						<span class="postdetails">
+							<!-- IF blogrow.POSTER_JOINED --><br /><b>{L_JOINED}:</b> {blogrow.POSTER_JOINED}<!-- ENDIF -->
+							<!-- IF blogrow.POSTER_POSTS != '' --><br /><b>{L_POSTS}:</b> {blogrow.POSTER_POSTS}<!-- ENDIF -->
+							<!-- IF blogrow.POSTER_FROM --><br /><b>{L_LOCATION}:</b> {blogrow.POSTER_FROM}<!-- ENDIF -->
+
+							<!-- IF blogrow.S_PROFILE_FIELD1 -->
+								<!-- Use a construct like this to include admin defined profile fields. Replace FIELD1 with the name of your field. -->
+								<br /><b>{blogrow.PROFILE_FIELD1_NAME}:</b> {blogrow.PROFILE_FIELD1_VALUE}
+							<!-- ENDIF -->
+
+							<!-- BEGIN custom_fields -->
+								<br /><b>{blogrow.custom_fields.PROFILE_FIELD_NAME}:</b> {blogrow.custom_fields.PROFILE_FIELD_VALUE}
+							<!-- END custom_fields -->
+						</span>
+					</td>
+				<!-- ENDIF -->
+				<td valign="top">
+					<table width="100%" cellspacing="5">
+						<tr>
+							<td>
+								<!-- IF blogrow.S_POST_UNAPPROVED or blogrow.S_POST_REPORTED -->
+									<table width="100%" cellspacing="0">
+										<tr>
+											<td class="gensmall"><!-- IF blogrow.S_POST_UNAPPROVED --><span class="postapprove">{UNAPPROVED_IMG} <a href="{blogrow.U_MCP_APPROVE}">{L_POST_UNAPPROVED}</a></span> <!-- ENDIF --> <!-- IF blogrow.S_POST_REPORTED --><span class="postreported">{REPORTED_IMG} <a href="{blogrow.U_MCP_REPORT}">{L_POST_REPORTED}</a></span><!-- ENDIF --></td>
+										</tr>
+									</table>
+
+									<br clear="all" />
+								<!-- ENDIF -->
+
+								<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div style="float: right;">{blogrow.RATING_STRING}</div><!-- ENDIF -->
+
+								<div class="postbody">{blogrow.MESSAGE}</div>
+
+								<!-- IF blogrow.S_HAS_ATTACHMENTS -->
+									<br clear="all" /><br />
+
+									<table class="tablebg" width="100%" cellspacing="1">
+									<tr>
+										<td class="row3"><b class="genmed">{L_ATTACHMENTS}: </b></td>
+									</tr>
+									<!-- BEGIN attachment -->
+										<tr>
+											<!-- IF blogrow.attachment.S_ROW_COUNT is even --><td class="row2"><!-- ELSE --><td class="row1"><!-- ENDIF -->{blogrow.attachment.DISPLAY_ATTACHMENT}</td>
+										</tr>
+									<!-- END attachment -->
+									</table>
+								<!-- ENDIF -->
+
+								<!-- IF blogrow.S_DISPLAY_NOTICE -->
+									<span class="gensmall error"><br /><br />{L_DOWNLOAD_NOTICE}</span>
+								<!-- ENDIF -->
+								<!-- IF blogrow.SIGNATURE and S_SINGLE -->
+									<span class="postbody"><br />_________________<br />{blogrow.SIGNATURE}</span>
+								<!-- ENDIF -->
+
+								{blogrow.EXTRA}
+
+								<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
+									<br /><br />
+									<table class="tablebg" width="100%" cellspacing="1">
+									<tr>
+										<td class="row3"><span class="gensmall">{blogrow.EDITED_MESSAGE}</span></td>
+									</tr>
+									<!-- IF blogrow.EDIT_REASON -->
+										<tr>
+											<td class="row2"><span class="genmed">{blogrow.EDIT_REASON}</span></td>
+										</tr>
+									<!-- ENDIF -->
+									</table>
+								<!-- ENDIF -->
+								<!-- IF blogrow.DELETED_MESSAGE -->
+									<br /><br />
+										<table class="tablebg" width="100%" cellspacing="1">
+										<tr>
+											<td class="row3"><span class="gensmall">{blogrow.DELETED_MESSAGE}</span></td>
+										</tr>
+									</table>
+								<!-- ENDIF -->
+
+								<!-- IF not blogrow.S_HAS_ATTACHMENTS --><br clear="all" /><br /><!-- ENDIF -->
+
+								<table width="100%" cellspacing="0">
+									<tr valign="middle">
+										<td class="gensmall" align="{S_CONTENT_FLOW_END}">
+										<!-- IF not blogrow.S_SHORTENED and not S_IS_BOT -->
+											<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF --> 
+											<!-- IF blogrow.U_WARN --><a href="{blogrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF --> 
+											<!-- IF blogrow.U_DELETE --><a href="{blogrow.U_DELETE}">{DELETE_IMG}</a> <!-- ENDIF -->
+										<!-- ENDIF -->
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<!-- IF blogrow.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<!-- IF S_CATEGORY_MODE --><td class="profile"><strong><a href="#wrapheader">{L_BACK_TO_TOP}</a></strong></td><!-- ENDIF -->
+				<td>
+					<!-- IF S_SINGLE -->
+						<div class="gensmall" style="float: {S_CONTENT_FLOW_BEGIN};">&nbsp;<!-- IF blogrow.U_PROFILE --><a href="{blogrow.U_PROFILE}">{PROFILE_IMG}</a> <!-- ENDIF --> <!-- IF blogrow.U_PM --><a href="{blogrow.U_PM}">{PM_IMG}</a> <!-- ENDIF --> <!-- IF blogrow.U_EMAIL --><a href="{blogrow.U_EMAIL}">{EMAIL_IMG}</a> <!-- ENDIF -->&nbsp;</div> <div class="gensmall" style="float: {S_CONTENT_FLOW_END};"><!-- IF not S_IS_BOT --><!-- IF blogrow.U_EDIT --><a href="{blogrow.U_EDIT}">{EDIT_IMG}</a> <!-- ENDIF --> <!-- IF blogrow.U_QUOTE --><a href="{blogrow.U_QUOTE}">{QUOTE_IMG}</a> <!-- ENDIF --> <!-- ENDIF -->&nbsp;</div>
+					<!-- ELSE -->
+						<div class="gensmall" style="float: {S_CONTENT_FLOW_BEGIN};">&nbsp;{blogrow.VIEWS}</div> <div class="gensmall" style="float: {S_CONTENT_FLOW_END};">{blogrow.REPLIES}&nbsp;</div>
+					<!-- ENDIF -->
+				</td>
 			</tr>
 		</table>
-
-		<div id="b{blogrow.ID}" class="post <!-- IF blogrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF blogrow.S_ONLINE and S_CATEGORY_MODE --> online<!-- ENDIF -->">
-			<div class="inner"><span class="corners-top"><span></span></span>
-				<div class="postbody" <!-- IF not S_CATEGORY_MODE -->style="width: 100%;"<!-- ENDIF -->>
-					<!-- IF not blogrow.S_SHORTENED and (blogrow.U_EDIT or blogrow.U_DELETE or blogrow.U_REPORT or blogrow.U_WARN or blogrow.U_QUOTE) -->
-						<ul class="profile-icons">
-							<!-- IF blogrow.U_EDIT --><li class="edit-icon"><a href="{blogrow.U_EDIT}" title="{L_EDIT_POST}"><span>{L_EDIT_POST}</span></a></li><!-- ENDIF -->
-							<!-- IF blogrow.U_DELETE --><li class="delete-icon"><a href="{blogrow.U_DELETE}" title="{L_DELETE_POST}"><span>{L_DELETE_POST}</span></a></li><!-- ENDIF -->
-							<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><li class="report-icon"><a href="{blogrow.U_REPORT}" title="{L_REPORT_POST}"><span>{L_REPORT_POST}</span></a></li><!-- ENDIF -->
-							<!-- IF blogrow.U_WARN --><li class="warn-icon"><a href="{blogrow.U_WARN}" title="{L_WARN_USER}"><span>{WARN_USER}</span></a></li><!-- ENDIF -->
-							<!-- IF blogrow.U_QUOTE --><li class="quote-icon"><a href="{blogrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}"><span>{L_REPLY_WITH_QUOTE}</span></a></li><!-- ENDIF -->
-						</ul>
-
-						<h3><!-- IF blogrow.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
-
-						<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div style="float: right;">{blogrow.RATING_STRING}</div><!-- ENDIF -->
-					<!-- ELSE -->
-						<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div style="float: right;">{blogrow.RATING_STRING}</div><!-- ENDIF -->
-						<h3><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
-					<!-- ENDIF -->
-
-					<p class="author"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a>{L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE} </p>
-
-					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
-						<p class="rules">
-							<!-- IF blogrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{blogrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
-							<!-- IF blogrow.S_REPORTED -->{REPORTED_IMG} <a href="{blogrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
-						</p>
-					<!-- ENDIF -->
-
-					<div class="content">{blogrow.MESSAGE}</div>
-
-					<!-- IF blogrow.S_HAS_ATTACHMENTS -->
-						<dl class="attachbox">
-							<dt>{L_ATTACHMENTS}</dt>
-							<!-- BEGIN attachment -->
-								<dd>{blogrow.attachment.DISPLAY_ATTACHMENT}</dd>
-							<!-- END attachment -->
-						</dl>
-					<!-- ENDIF -->
-
-					<!-- IF blogrow.S_DISPLAY_NOTICE --><div class="rules">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
-
-					{blogrow.EXTRA}
-
-					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
-						<div class="notice">
-							{blogrow.EDITED_MESSAGE}
-							<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
-						</div>
-					<!-- ENDIF -->
-					<!-- IF blogrow.DELETED_MESSAGE -->
-						<div class="notice">
-							{blogrow.DELETED_MESSAGE}
-						</div>
-					<!-- ENDIF -->
-
-					<br clear="all" />
-	
-					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
-
-					<span class="num_replies">{blogrow.REPLIES}</span>
-					{blogrow.VIEWS}
-				</div>
-
-				<!-- IF S_CATEGORY_MODE -->
-					<dl class="postprofile">
-						<dt>
-							<!-- IF blogrow.AVATAR -->
-								{blogrow.AVATAR}<br />
-							<!-- ENDIF -->
-							<strong>{blogrow.USER_FULL}</strong>
-						</dt>
-
-						<!-- IF blogrow.RANK_TITLE or blogrow.RANK_IMG --><dd>{blogrow.RANK_TITLE}<!-- IF blogrow.RANK_TITLE and blogrow.RANK_IMG --><br /><!-- ENDIF -->{blogrow.RANK_IMG}</dd><!-- ENDIF -->
-
-						<dd>&nbsp;</dd>
-
-						<!-- IF blogrow.POSTER_POSTS != '' --><dd><strong>{L_POSTS}:</strong> {blogrow.POSTER_POSTS}</dd><!-- ENDIF -->
-						<!-- IF blogrow.POSTER_JOINED --><dd><strong>{L_JOINED}:</strong> {blogrow.POSTER_JOINED}</dd><!-- ENDIF -->
-						<!-- IF blogrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {blogrow.POSTER_FROM}</dd><!-- ENDIF -->
-
-						<!-- BEGIN custom_fields -->
-							<dd><strong>{blogrow.custom_fields.PROFILE_FIELD_NAME}:</strong> {blogrow.custom_fields.PROFILE_FIELD_VALUE}</dd>
-						<!-- END custom_fields -->
-
-						<!-- IF blogrow.U_PM or blogrow.U_EMAIL or blogrow.U_WWW or blogrow.U_MSN or blogrow.U_ICQ or blogrow.U_YIM or blogrow.U_AIM -->
-							<dd>
-								<ul class="profile-icons">
-									<!-- IF blogrow.U_PM --><li class="pm-icon"><a href="{blogrow.U_PM}" title="{L_PRIVATE_MESSAGE}"><span>{L_PRIVATE_MESSAGE}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_EMAIL --><li class="email-icon"><a href="{blogrow.U_EMAIL}" title="{L_EMAIL}"><span>{L_EMAIL}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_WWW --><li class="web-icon"><a href="{blogrow.U_WWW}" title="{L_VISIT_WEBSITE}: {blogrow.U_WWW}"><span>{L_WEBSITE}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_MSN --><li class="msnm-icon"><a href="{blogrow.U_MSN}" title="{L_MSNM}"><span>{L_MSNM}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_ICQ --><li class="icq-icon"><a href="{blogrow.U_ICQ}" title="{L_ICQ}"><span>{L_ICQ}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_YIM --><li class="yahoo-icon"><a href="{blogrow.U_YIM}" title="{L_YIM}"><span>{L_YIM}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_AIM --><li class="aim-icon"><a href="{blogrow.U_AIM}" title="{L_AIM}"><span>{L_AIM}</span></a></li><!-- ENDIF -->
-									<!-- IF blogrow.U_JABBER --><li class="jabber-icon"><a href="{blogrow.U_JABBER}" title="{L_JABBER}"><span>{L_JABBER}</span></a></li><!-- ENDIF -->
-								</ul>
-							</dd>
-						<!-- ENDIF -->
-					</dl>
-				<!-- ENDIF -->
-
-			<span class="corners-bottom"><span></span></span></div>
-		</div>
 	<!-- BEGINELSE -->
 		<div class="post bg1">
 			<div class="inner"><span class="corners-top"><span></span></span>

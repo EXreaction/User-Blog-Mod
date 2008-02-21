@@ -356,7 +356,7 @@ $template->assign_vars(array(
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
 	'U_BLOG'				=> $blog_urls['self_minus_print'],
 	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=blog') : '',
- 	'U_REPLY_BLOG'			=> ($blog_id != 0 && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
+ 	'U_REPLY_BLOG'			=> ($blog_id && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
 	'U_VIEW_RESULTS'		=> $blog_urls['viewpoll'],
 
 	'S_POST_ACTION'			=> $blog_urls['self'],
@@ -378,8 +378,17 @@ $template->assign_vars(array(
 	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 
 	// Stuff required for subsilver2
+	'REPLY_IMG'				=> $user->img('button_topic_reply', 'POST_A_NEW_REPLY'),
 	'POLL_LEFT_CAP_IMG'		=> $user->img('poll_left'),
 	'POLL_RIGHT_CAP_IMG'	=> $user->img('poll_right'),
+	'REPORT_IMG'			=> $user->img('icon_post_report', 'REPORT_POST'),
+	'WARN_IMG'				=> $user->img('icon_user_warn', 'WARN_USER'),
+	'DELETE_IMG' 			=> $user->img('icon_post_delete', 'DELETE_POST'),
+	'PROFILE_IMG'			=> $user->img('icon_user_profile', 'READ_PROFILE'),
+	'PM_IMG' 				=> $user->img('icon_contact_pm', 'SEND_PRIVATE_MESSAGE'),
+	'EMAIL_IMG' 			=> $user->img('icon_contact_email', 'SEND_EMAIL'),
+	'EDIT_IMG' 				=> $user->img('icon_post_edit', 'EDIT_POST'),
+	'QUOTE_IMG' 			=> $user->img('icon_post_quote', 'REPLY_WITH_QUOTE'),
 ));
 
 blog_plugins::plugin_do('blog_end');

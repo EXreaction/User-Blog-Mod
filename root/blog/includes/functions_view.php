@@ -382,13 +382,13 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				{
 					return array(
 						'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-						'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+						'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
 					);
 				}
 
 				$template->assign_block_vars($block, array(
 					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-					'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+					'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
 				));
 
 				return;
@@ -419,13 +419,13 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		{
 			return array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 			);
 		}
 
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
+			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
 		));
 	}
 	else if (!$grab_from_db && $user_data['blog_count'] == -1)
@@ -434,13 +434,13 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		{
 			return array(
 				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
 			);
 		}
 
 		$template->assign_block_vars($block, array(
 			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array(), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
+			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
 		));
 	}
 }
