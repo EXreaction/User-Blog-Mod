@@ -1052,7 +1052,7 @@ function feed_output($ids, $feed_type)
 		trigger_error($message);
 	}
 
-	$title = str_replace("'", "\\'", $template->_tpldata['navlinks'][(sizeof($template->_tpldata['navlinks']) - 1)]['FORUM_NAME']);
+	$title = ($feed_type == 'JAVASCRIPT') ? str_replace("'", "\\'", $template->_tpldata['navlinks'][(sizeof($template->_tpldata['navlinks']) - 1)]['FORUM_NAME']) : $template->_tpldata['navlinks'][(sizeof($template->_tpldata['navlinks']) - 1)]['FORUM_NAME'];
 
 	$template->assign_vars(array(
 		'FEED'				=> $feed_type,
