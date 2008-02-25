@@ -7,9 +7,10 @@
     <title lang="en-GB">User Blog Mod</title>
     <description lang="en-GB">Adds Blogs to a phpBB3 board.</description>
 
-    <author-notes lang="en-GB">Please report any bugs/problems at my website: http://www.lithiumstudios.org
-
-The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/</author-notes>
+    <author-notes lang="en-GB">PHP 5.1.0 and less is NOT supported.  
+Please report any bugs/problems at my website: http://www.lithiumstudios.org.  
+The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/  
+You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.</author-notes>
 
     <author-group>
       <author>
@@ -23,7 +24,7 @@ The SVN repository for this project is: http://userblogmod.googlecode.com/svn/tr
     <mod-version>
       <major>0</major>
       <minor>3</minor>
-      <revision>41</revision>
+      <revision>42_dev</revision>
     </mod-version>
 
     <installation>
@@ -47,6 +48,18 @@ The SVN repository for this project is: http://userblogmod.googlecode.com/svn/tr
         <changelog lang="en-GB">
           <change>A few more bug fixes and you can now edit a user's blog CSS in the ACP->Manage Users.  Rebuilt the main blog page.  Changed the bright green post deleted color to a dull grey.
 To update from A40, upload the new files, update the code in includes/acp/acp_users.php, and point your browser to blog.php?page=update</change>
+        </changelog>
+      </entry>
+	  <entry>
+        <date>2008-02-</date>
+        <rev-version>
+          <major>0</major>
+          <minor>3</minor>
+          <revision>42_dev</revision>
+        </rev-version>
+        <changelog lang="en-GB">
+          <change>More bug fixes.  subsilver2 style is now included.
+To update, upload the new files and point your browser to blog.php?page=update</change>
         </changelog>
       </entry>
     </history>
