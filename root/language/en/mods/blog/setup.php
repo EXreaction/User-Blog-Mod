@@ -55,6 +55,7 @@ $lang = array_merge($lang, array(
 
 	'NEXT_PART'						=> 'Proceed to next part',
 	'NO_STAGE'						=> 'You have not given a stage to work on.',
+	'NOT_INSTALLED'					=> 'You must install the User Blog Mod before you run the upgrade script.',
 
 	'PRE_CONVERT_COMPLETE'			=> 'All pre-conversion steps have successfully been completed. You may now begin the actual conversion process. Please note that you may have to manually do and adjust several things after the automatic conversion, especially check the permissions assigned.',
 

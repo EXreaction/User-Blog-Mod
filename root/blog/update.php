@@ -16,12 +16,7 @@ if (!defined('IN_PHPBB'))
 
 if (!isset($config['user_blog_version']))
 {
-	trigger_error('Either you do not have the User Blog Mod installed in your database, or you are running a very old version.<br/>If you have the mod installed already please delete the tables and information which was inserted by the version you used and reinstall the mod.');
-}
-
-if (!defined('BLOGS_TABLE') || !defined('BLOGS_REPLY_TABLE') || !defined('BLOGS_SUBSCRIPTION_TABLE') || !defined('BLOGS_USERS_TABLE'))
-{
-	trigger_error('UPDATE_IN_FILES_FIRST');
+	trigger_error('NOT_INSTALLED');
 }
 
 if ($user_blog_version == $config['user_blog_version'])
@@ -579,6 +574,8 @@ if (confirm_box(true))
 			$row = $db->sql_fetchrow($result);
 			set_config('num_blog_replies', $row['reply_count'], true);
 			set_config('user_blog_quick_reply', 1);
+		case '0.3.41' :
+		case '0.3.42' :
 	}
 
 	// update the version
