@@ -24,7 +24,7 @@ You may check for updated code in the repository, but the latest files in the re
     <mod-version>
       <major>0</major>
       <minor>3</minor>
-      <revision>42_dev</revision>
+      <revision>42</revision>
     </mod-version>
 
     <installation>
@@ -38,27 +38,15 @@ You may check for updated code in the repository, but the latest files in the re
     </installation>
 
     <history>
-      <entry>
-        <date>2008-02-17</date>
-        <rev-version>
-          <major>0</major>
-          <minor>3</minor>
-          <revision>41</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-          <change>A few more bug fixes and you can now edit a user's blog CSS in the ACP->Manage Users.  Rebuilt the main blog page.  Changed the bright green post deleted color to a dull grey.
-To update from A40, upload the new files, update the code in includes/acp/acp_users.php, and point your browser to blog.php?page=update</change>
-        </changelog>
-      </entry>
 	  <entry>
-        <date>2008-02-</date>
+        <date>2008-02-26</date>
         <rev-version>
           <major>0</major>
           <minor>3</minor>
-          <revision>42_dev</revision>
+          <revision>42</revision>
         </rev-version>
         <changelog lang="en-GB">
-          <change>More bug fixes.  subsilver2 style is now included.
+          <change>More bug fixes.  A security fix as well with the blog CSS.  Update ASAP.
 To update, upload the new files and point your browser to blog.php?page=update</change>
         </changelog>
       </entry>
