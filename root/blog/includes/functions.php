@@ -340,7 +340,12 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 
 	if (isset($data['blog_css']))
 	{
-		$data['blog_css'] = str_replace(array('java', 'script', 'eval'), '', $data['blog_css']);
+		// This MUST be checked continuously until there are none left.
+		$replacements = 1;
+		while ($replacements > 0)
+		{
+			$data['blog_css'] = str_replace(array('java', 'script', 'eval'), '', $data['blog_css'], $replacements);
+		}
 	}
 
 	if (!isset($user_settings[$user_id]))
