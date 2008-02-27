@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds Blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.42_dev
+## MOD Version: 0.3.42
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
