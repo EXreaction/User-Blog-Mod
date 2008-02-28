@@ -18,8 +18,8 @@ $user->add_lang('install');
 $user->add_lang('posting');
 
 generate_blog_urls();
-generate_blog_breadcrumbs($user->lang['UPGRADE_BLOG'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
-page_header($user->lang['UPGRADE_BLOG']);
+generate_blog_breadcrumbs($user->lang['UPGRADE_BLOGS'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
+page_header($user->lang['UPGRADE_BLOGS']);
 
 include($phpbb_root_path . 'blog/upgrade/upgrade.' . $phpEx);
 include($phpbb_root_path . 'blog/upgrade/functions.' .$phpEx);

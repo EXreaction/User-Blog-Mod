@@ -41,43 +41,50 @@ fieldset dt {
 	</div>
 <!-- ENDIF -->
 
-<div class="panel">
-	<div class="inner"><span class="corners-top"><span></span></span>
+<form id="confirm" method="post" action="{U_ACTION}">
+	<table width="100%" cellspacing="1" class="tablebg">
+		<th>{L_TITLE}</th>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<div style="text-align: center; margin: 10px 0 20px 0;"><strong>{L_TITLE_EXPLAIN}</strong></div>
 
-		<h2>{L_TITLE}</h2>
-		<p>{L_TITLE_EXPLAIN}</p>
-
-		<form id="confirm" method="post" action="{U_ACTION}">
-			<!-- BEGIN options -->
-				<!-- IF options.S_LEGEND -->
-					<!-- IF not options.S_FIRST_ROW -->
-						</fieldset>
-					<!-- ENDIF -->
-					<fieldset class="admin">
-						<legend>{options.LEGEND}</legend>
+				<table width="100%">
+					<!-- BEGIN options -->
+						<!-- IF options.S_LEGEND -->
+							<!-- IF not options.S_FIRST_ROW -->
+								</table>
+							<!-- ENDIF -->
+							<table width="90%" cellspacing="1" class="tablebg" style="margin: 5px auto;">
+								<tr class="cat">
+									<td colspan="2" align="center"><strong>{options.LEGEND}</strong></td>
+								</tr>
+						<!-- ELSE -->
+							<tr class="row1">
+								<td style="padding: 7px 5px;"><strong>{options.TITLE}:</strong><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></td>
+								<td align="center">{options.CONTENT}</td>
+							</tr>
+						<!-- ENDIF -->
+					<!-- BEGINELSE -->
+						<table>
+					<!-- END options -->
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat" colspan="2" align="center">
+				<!-- IF S_YES_NO -->
+					<input class="btnmain" type="submit" name="submit" value="{L_YES}" />
+					&nbsp; <input class="btnmain" type="submit" name="cancel" value="{L_NO}" />
 				<!-- ELSE -->
-					<dl>
-						<dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
-						<dd>{options.CONTENT}</dd>
-					</dl>
+					<input class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" />
+					&nbsp; <input class="btnlite" type="submit"  name="reset" value="{L_RESET}" />
 				<!-- ENDIF -->
-			<!-- BEGINELSE -->
-				<fieldset><br />
-			<!-- END options -->
-			{S_FORM_TOKEN}
-			</fieldset>
-			<!-- IF S_YES_NO -->
-				<p class="submit-buttons" style="text-align: center;">
-					<input type="submit" name="submit" value="{L_YES}" class="button2" />&nbsp; 
-					<input type="submit" name="cancel" value="{L_NO}" class="button2" />
-				</p>
-			<!-- ELSE -->
-				<p class="submit-buttons" style="text-align: center;">
-					<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-					<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
-				</p>
-			<!-- ENDIF -->
-		</form>
-	<span class="corners-bottom"><span></span></span></div>
-</div>
+			</td>
+		</tr>
+	</table>
+	{S_FORM_TOKEN}
+</form>
+
+<br clear="all" />
+
 <!-- INCLUDE overall_footer.html -->

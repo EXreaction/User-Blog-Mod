@@ -160,58 +160,51 @@ function previous_list(field)
 </script>
 
 <!-- IF S_MENU_ZEBRA_ENABLED -->
-	<div class="post bg1">
-		<div class="inner">
-			<span class="corners-top"><span></span></span>
-			<dl>
-				<dt class="left_menu_title">{L_FRIENDS}</dt>
-				<dd>
-					<ul class="topiclist">
-						<li>
-							<strong style="color:green">{L_FRIENDS_ONLINE}</strong><br />
-							<!-- BEGIN menu_friends_online -->
-								<div id="online_friends_{menu_friends_online.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_online.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
-									<span style="float: right;"><a href="{menu_friends_online.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
-									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Online" /> {menu_friends_online.USERNAME_FULL}
-								</div>
-							<!-- BEGINELSE -->
-								{L_NO_FRIENDS_ONLINE}<br />
-							<!-- END menu_friends_online -->
-							<!-- IF S_SHOW_NEXT_ONLINE -->
-								<div style="margin-bottom: 10px;">
-									<div id="previous_online" style="display: none;">
-										<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
-									</div>
-									<div id="next_online">
-										<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
-									</div>
-								</div>
-							<!-- ENDIF -->
-							<br/>
-							<strong style="color:red">{L_FRIENDS_OFFLINE}</strong><br />
-							<!-- BEGIN menu_friends_offline -->
-								<div id="offline_friends_{menu_friends_offline.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_offline.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
-									<span style="float: right;"><a href="{menu_friends_offline.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
-									<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Offline" /> {menu_friends_offline.USERNAME_FULL}
-								</div>
-							<!-- BEGINELSE -->
-								{L_NO_FRIENDS_OFFLINE}
-							<!-- END menu_friends_offline -->
-							<!-- IF S_SHOW_NEXT_OFFLINE -->
-								<div style="margin-bottom: 10px;">
-									<div id="previous_offline" style="display: none;">
-										<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
-									</div>
-									<div id="next_offline">
-										<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
-									</div>
-								</div>
-							<!-- ENDIF -->
-						</li>
-					</ul>
-				</dd>
-			</dl>
-			<span class="corners-bottom"><span></span></span>
-		</div>
-	</div>
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_FRIENDS}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<strong style="color:green">{L_FRIENDS_ONLINE}</strong><br />
+				<!-- BEGIN menu_friends_online -->
+					<div id="online_friends_{menu_friends_online.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_online.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
+						<span style="float: right;"><a href="{menu_friends_online.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+						<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Online" /> {menu_friends_online.USERNAME_FULL}
+					</div>
+				<!-- BEGINELSE -->
+					{L_NO_FRIENDS_ONLINE}<br />
+				<!-- END menu_friends_online -->
+				<!-- IF S_SHOW_NEXT_ONLINE -->
+					<div style="margin-bottom: 10px;">
+						<div id="previous_online" style="display: none;">
+							<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
+						</div>
+						<div id="next_online">
+							<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
+						</div>
+					</div>
+				<!-- ENDIF -->
+				<br/>
+				<strong style="color:red">{L_FRIENDS_OFFLINE}</strong><br />
+				<!-- BEGIN menu_friends_offline -->
+					<div id="offline_friends_{menu_friends_offline.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_offline.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
+						<span style="float: right;"><a href="{menu_friends_offline.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+						<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="Offline" /> {menu_friends_offline.USERNAME_FULL}
+					</div>
+				<!-- BEGINELSE -->
+					{L_NO_FRIENDS_OFFLINE}
+				<!-- END menu_friends_offline -->
+				<!-- IF S_SHOW_NEXT_OFFLINE -->
+					<div style="margin-bottom: 10px;">
+						<div id="previous_offline" style="display: none;">
+							<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
+						</div>
+						<div id="next_offline">
+							<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
+						</div>
+					</div>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+	<br />
 <!-- ENDIF -->

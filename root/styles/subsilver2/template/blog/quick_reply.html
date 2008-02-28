@@ -1,19 +1,20 @@
-<div id="quick_reply">
-	<form action="{U_QUICK_REPLY}" method="post" id="postform">
-		<div class="panel">
-			<div class="inner"><span class="corners-top"><span></span></span>
-			
-			<h3>{L_POST_REPLY}</h3>
-
-			<fieldset class="submit-buttons">
-				<textarea name="message" id="message" rows="6" cols="100" class="inputbox" ></textarea><br /><br />
-				<input type="hidden" name="subject" value="Re: <!-- BEGIN blogrow(0,0) -->{blogrow.TITLE}<!-- END blogrow -->" />
-				<input type="submit" name="preview" tabindex="6" value="{L_PREVIEW}" class="button1" onclick="document.getElementById('postform').action += '#preview';" />&nbsp; 
-				<input type="submit" name="post" tabindex="5" value="{L_SUBMIT}" class="button1" accesskey="s" />
-			</fieldset>
-				
-			<span class="corners-bottom"><span></span></span></div>
-		</div>
+<br />
+<a name="quick_reply"></a>
+<form action="{U_QUICK_REPLY}" method="post" id="postform">
+	<table width="100%" cellspacing="1" class="tablebg">
+		<th>{L_POST_REPLY}</th>
+		<tr class="row2" align="center">
+			<td>
+				<textarea name="message" id="message" rows="6" cols="100" class="inputbox" ></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat" colspan="2" align="center">
+				<input class="btnlite" type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" />
+				&nbsp; <input class="btnmain" type="submit" accesskey="s" tabindex="6" name="post" value="{L_SUBMIT}" />
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="subject" value="Re: <!-- BEGIN blogrow(0,0) -->{blogrow.TITLE}<!-- END blogrow -->" />
 	{S_FORM_TOKEN}
-	</form>
-</div>
+</form>
