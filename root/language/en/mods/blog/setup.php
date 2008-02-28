@@ -54,8 +54,8 @@ $lang = array_merge($lang, array(
 	'LIMIT_INCORRECT'				=> 'You must give a limit of at least 1.  It is highly recommended that you use at least 100 for this, but probably not more than 1000, depending on your PHP settings.',
 
 	'NEXT_PART'						=> 'Proceed to next part',
-	'NO_STAGE'						=> 'You have not given a stage to work on.',
 	'NOT_INSTALLED'					=> 'You must install the User Blog Mod before you run the upgrade script.',
+	'NO_STAGE'						=> 'You have not given a stage to work on.',
 
 	'PRE_CONVERT_COMPLETE'			=> 'All pre-conversion steps have successfully been completed. You may now begin the actual conversion process. Please note that you may have to manually do and adjust several things after the automatic conversion, especially check the permissions assigned.',
 

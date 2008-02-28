@@ -28,6 +28,7 @@ $lang = array_merge($lang, array(
 
 	'GUEST_PERMISSIONS'						=> 'Guest Permissions',
 
+	'NONE'									=> 'None',
 	'NO_PERMISSIONS'						=> 'Can not read or reply to your blogs.',
 
 	'REGISTERED_PERMISSIONS'				=> 'Members Permissions',

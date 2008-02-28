@@ -24,7 +24,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.42';
+$user_blog_version = '0.3.43_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -291,7 +291,7 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 }
 else
 {
-	if ($blog_template && is_numeric($blog_template))
+	if ($blog_template && is_numeric($blog_template) && $blog_template != 0)
 	{
 		$user->setup('mods/blog/common', $blog_template);
 	}

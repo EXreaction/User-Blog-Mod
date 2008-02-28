@@ -92,7 +92,7 @@ class ucp_blog
 
 					if ($auth->acl_get('u_blog_style'))
 					{
-						$available_styles = array();
+						$available_styles = array(array('name' => $user->lang['NONE'], 'value' => 0));
 						$sql = 'SELECT * FROM ' . STYLES_TABLE . ' WHERE style_active = 1';
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
