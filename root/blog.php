@@ -14,7 +14,6 @@
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * subsilver2 template
 * 	- Posting
-* 	- MCP
 *
 * OTHER -------------------------------------------------------------------------------------------
 * post revisions plugin
@@ -26,7 +25,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.3.43_dev';
+$user_blog_version = '0.7.0_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

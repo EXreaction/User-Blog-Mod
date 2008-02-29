@@ -95,7 +95,7 @@ class blog_data
 		}
 		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = \'' . $user->data['user_id'] . '\' )';
+			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 		}
 		if ($sort_days != 0)
 		{

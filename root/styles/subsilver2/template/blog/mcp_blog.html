@@ -3,65 +3,44 @@
 <h2>{L_TITLE}</h2>
 
 <form id="mcp" method="post" action="{S_MCP_ACTION}">
-	<div class="panel">
-		<div class="inner"><span class="corners-top"><span></span></span>
+	<p>{L_EXPLAIN}</p>
 
-		<p>{L_EXPLAIN}</p>
+	<!-- IF PAGINATION -->
+		<br />
+		<table width="100%" cellspacing="1">
+		<tr>
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ <!-- IF TOTAL_TOPICS -->{TOTAL_TOPICS}<!-- ELSEIF TOTAL_POSTS -->{TOTAL_POSTS}<!-- ELSE -->{TOTAL}<!-- ENDIF --> ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- INCLUDE pagination.html --></td>
+		</tr>
+		</table>
+		<br />
+	<!-- ENDIF -->
 
-			<ul class="linklist">
-				<li class="rightside pagination">
-					<!-- IF TOTAL --> {TOTAL}<!-- ENDIF -->
-					<!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; <a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{PAGE_NUMBER}</a> &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
-				</li>
-			</ul>	
-			<ul class="topiclist">
-				<li class="header">
-					<dl>
-						<dt><!-- IF S_BLOGS -->{L_BLOG}<!-- ELSE -->{L_REPLIES}<!-- ENDIF --></dt>
-					</dl>
-				</li>
-				</ul>
-				<ul class="topiclist cplist">
-					<!-- BEGIN postrow -->
-						<li class="row<!-- IF postrow.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
-							<dl>
-								<dt>
-									<a href="{postrow.U_VIEW}" class="topictitle">{postrow.SUBJECT}</a> <br />
-									<span>{L_POSTED} {L_POST_BY_AUTHOR} {postrow.AUTHOR} {L_POSTED_ON_DATE}  {postrow.TIME}</span>
-								</dt>
-							</dl>
-						</li>
-					<!-- BEGINELSE -->
-						<li class="row<!-- IF postrow.S_ROW_COUNT is odd --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
-							<dl>
-								<dt>
-									<strong><!-- IF S_BLOGS -->{L_NO_BLOGS}<!-- ELSE -->{L_NO_REPLIES}<!-- ENDIF --></strong>
-								</dt>
-							</dl>
-						</li>
-					<!-- END postrow -->
-				</ul>
+	<br />
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr>
+			<th>&nbsp;{L_SUBJECT}&nbsp;</th>
+			<th style="width: 20%;">&nbsp;{L_AUTHOR}&nbsp;</th>
+			<th style="width: 20%;">&nbsp;{L_POST_TIME}&nbsp;</th>
+		</tr>
+		<!-- BEGIN postrow -->
+			<tr>
+				<td class="row1" valign="top"><span class="gen"><a href="{postrow.U_VIEW}">{postrow.SUBJECT}</a></span></td>
+				<td class="row2" align="center" width="15%" nowrap="nowrap" valign="top"><span class="gen">{postrow.AUTHOR}</span></td>
+				<td class="row1" align="center" width="15%" nowrap="nowrap" valign="top"><span class="gensmall">{postrow.TIME}</span></td>
+			</tr>
+		<!-- BEGINELSE -->
+			<tr>
+				<td class="row1" valign="top" colspan="3" align="center"><span class="gen"><!-- IF S_BLOGS -->{L_NO_BLOGS}<!-- ELSE -->{L_NO_REPLIES}<!-- ENDIF --></span></td>
+			</tr>
+		<!-- END postrow -->
 
-			<fieldset class="display-options">
-				<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
-				<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->		
-				<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
-				<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label><label>{S_SELECT_SORT_DIR}</label>
-				<!-- IF TOPIC_ID --><label><input type="checkbox" class="radio" name="t" value="{TOPIC_ID}" checked="checked" />&nbsp; <strong>{L_ONLY_TOPIC}</strong></label><!-- ENDIF -->
-				<input type="submit" name="sort" value="{L_GO}" class="button2" />
-			</fieldset>
+		<tr>
+			<td class="cat" colspan="3" align="center"><span class="gensmall">{L_DISPLAY_POSTS}:</span> {S_SELECT_SORT_DAYS}&nbsp;<span class="gensmall">{L_SORT_BY}</span> {S_SELECT_SORT_KEY} {S_SELECT_SORT_DIR}&nbsp;<input class="btnlite" type="submit" value="{L_GO}" name="sort" /></td>
+		</tr>
+	</table>
 
-			<hr />
-
-			<ul class="linklist">
-				<li class="rightside pagination">
-					<!-- IF TOTAL -->{TOTAL}<!-- ENDIF -->
-					<!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; <a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{PAGE_NUMBER}</a> &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
-				</li>
-			</ul>
-
-		<span class="corners-bottom"><span></span></span></div>
-	</div>
 {S_FORM_TOKEN}
 </form>
 

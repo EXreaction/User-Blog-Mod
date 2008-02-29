@@ -77,6 +77,7 @@ class mcp_blog
 		$extra_data = array('start' => $start, 'limit' => $limit, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days);
 		switch ($mode)
 		{
+			// Need to add counts here...
 			case 'reported_blogs' :
 				$ids = $blog_data->get_blog_data('reported', false, $extra_data);
 			break;
@@ -87,11 +88,21 @@ class mcp_blog
 				$ids = $blog_data->get_blog_data('disapproved', false, $extra_data);
 			break;
 			case 'disapproved_replies' :
-				$ids = $blog_data->get_reply_data('reported', false, $extra_data);
+				$ids = $blog_data->get_reply_data('disapproved', false, $extra_data);
 			break;
 			default :
 				blog_plugins::plugin_do_arg('mcp_default', $mode);
 		}
+
+		$cnt_sql = 'SELECT count(' . (($blog) ? 'blog_id' : 'reply_id') . ') AS total FROM ' . (($blog) ? BLOGS_TABLE : BLOGS_REPLY_TABLE) . ' WHERE ' . (($blog) ? 'blog_' : 'reply_') . ((strpos($mode, 'reported') !== false) ? 'reported = 1' : 'approved = 0');
+		$result = $db->sql_query($cnt_sql);
+		$row = $db->sql_fetchrow($result);
+		if ($row)
+		{
+			$count = $row['total'];
+		}
+		$db->sql_freeresult($result);
+		unset($row, $cnt_sql);
 
 		if ($ids === false)
 		{
@@ -102,7 +113,7 @@ class mcp_blog
 
 		if ($blog)
 		{
-			$total_posts = (count($ids) == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], count($ids));
+			$total_posts = ($count == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $count);
 
 			foreach ($ids as $id)
 			{
@@ -117,7 +128,7 @@ class mcp_blog
 		}
 		else
 		{
-			$total_posts = (count($ids) == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], count($ids));
+			$total_posts = ($count == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $count);
 
 			foreach ($ids as $id)
 			{
@@ -133,11 +144,11 @@ class mcp_blog
 		}
 
 		gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
-		$pagination = generate_blog_pagination($blog_urls['start_zero'], count($ids), $limit, $start, false);
+		$pagination = generate_pagination($this->u_action . "&amp;limit={$limit}&amp;st={$sort_days}&amp;sk={$sort_key}&amp;sd={$sort_dir}", $count, $limit, $start, false);
 
 		$template->assign_vars(array(
 			'PAGINATION'			=> $pagination,
-			'PAGE_NUMBER' 			=> on_page(count($ids), $limit, $start),
+			'PAGE_NUMBER' 			=> on_page($count, $limit, $start),
 			'TOTAL_POSTS'			=> $total_posts,
 			'S_SELECT_SORT_DIR' 	=> $s_sort_dir,
 			'S_SELECT_SORT_KEY' 	=> $s_sort_key,
