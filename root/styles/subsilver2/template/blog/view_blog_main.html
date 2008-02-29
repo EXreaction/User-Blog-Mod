@@ -16,19 +16,21 @@
 		<td style="vertical-align: top; padding-left: 10px;">
 			<!-- INCLUDE blog/category_list.html -->
 
+			<!-- IF TOTAL_POSTS -->
 			<table width="100%" cellspacing="1">
 				<tr>
-					<!-- IF TOTAL_POSTS -->
-						<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
-						<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
-						<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
-					<!-- ENDIF -->
+					<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+					<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+					<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
 				</tr>
 			</table>
+			<!-- ENDIF -->
 
 			<!-- IF S_RANDOM_BLOG -->
 				<table class="tablebg" width="100%" cellspacing="1">
-					<th>{L_RANDOM_BLOG}</th>
+					<tr>
+						<th>{L_RANDOM_BLOG}</th>
+					</tr>
 					<!-- BEGIN random -->
 						<!-- IF random.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
 							<td width="100%" height="25">
@@ -80,10 +82,12 @@
 					<!-- BEGIN column -->
 						<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
 							<table class="tablebg" width="100%" cellspacing="1">
-								<th>
-									<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF -->
-									<a href="{column.U_VIEW}">{column.TITLE}</a>
-								</th>
+								<tr>
+									<th>
+										<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF -->
+										<a href="{column.U_VIEW}">{column.TITLE}</a>
+									</th>
+								</tr>
 								<!-- IF S_SORT -->
 									<tr>
 										<td class="cat" align="center">
@@ -140,15 +144,15 @@
 				</tr>
 			</table>
 
+			<!-- IF TOTAL_POSTS -->
 			<table width="100%" cellspacing="1">
 				<tr>
-					<!-- IF TOTAL_POSTS -->
-						<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
-						<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
-						<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
-					<!-- ENDIF -->
+					<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+					<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+					<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
 				</tr>
 			</table>
+			<!-- ENDIF -->
 
 			<!-- INCLUDE breadcrumbs.html -->
 

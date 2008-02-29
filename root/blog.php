@@ -13,7 +13,6 @@
 * 
 * HIGH PRIORITY -----------------------------------------------------------------------------------
 * subsilver2 template
-*	- Search
 * 	- Posting
 * 	- UCP
 * 	- MCP

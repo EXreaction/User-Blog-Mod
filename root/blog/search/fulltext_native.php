@@ -580,7 +580,6 @@ class blog_fulltext_native extends blog_search
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);
-		echo $sql;
 		$result = $db->sql_query($sql);
 		$ids = array();
 		while ($row = $db->sql_fetchrow($result))
