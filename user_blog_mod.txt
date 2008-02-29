@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Adds Blogs to a phpBB3 board.
 ##
-## MOD Version: 0.3.42
+## MOD Version: 0.7.0
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~7 Minutes
@@ -23,7 +23,7 @@
 ## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
 ##############################################################
 ## Author Notes:
-##	PHP 5.1.0 and less is NOT supported.
+##	PHP versions less than 5.1.0 are NOT supported.
 ##
 ##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
 ##
@@ -69,22 +69,7 @@
 ## 2007-12-24 Alpha 35
 ## 2007-12-27 Alpha 36
 ## 2007-12-30 Alpha 37
-## 2008-02-02
-##		Alpha 38
-##			+ Versions of PHP less than 5.1.0 is no longer supported.
-##			+ Plenty of bug fixes (hopefully not too many new bugs) and lots of updates, to name a few: 
-##				- Re-integrated the Attachments plugin and created a new module for managing blog attachment extensions.
-##				- Simplified getting the blog/reply/user data by putting all 3 classes into the blog_data class.
-##				- Lots of code cleanup and a bunch more hooks for the plugins system (some old hooks were renamed/removed).
-##				- Added easier access for subscriptions by putting it in as you add a reply and a default setting for it in UCP.
-##				- Added a hard delete option on the first delete page for deleting blogs/replies for users who can hard delete.
-##				- Added Polls for blogs.
-##				- Now there is a new setup on the templating system!  Each user can easily select what template they want to be displayed for their blog,
-##					+ and you can easily add more templates for the blog without installing new templates for the forums.
-##				- You can now change the priority of plugins by moving them up/down in the Blog Plugins ACP.
-##				- The Javascript output feed has been finished and there is a feed icon on supporting pages to bring you to a page with the available feed options.
-##			+ To update, update the edits in viewtopic.php and the prosilver/theme/stylesheet.css, copy the new files over, and then run the upgrade script by going to blog.php?page=update
-##				- If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.
+## 2008-02-02 Alpha 38
 ## 2008-02-07
 ##		Alpha 39
 ##			+ Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).
@@ -102,6 +87,10 @@
 ## 2008-02-26
 ##		Alpha 42
 ##			+ More bug fixes.  A security fix as well with the blog CSS.  Update ASAP.
+##			+ To update, upload the new files and point your browser to blog.php?page=update
+## 2008-02-29
+##		Beta 1
+##			+ A few bug fixes.  subsilver2 style is now included.
 ##			+ To update, upload the new files and point your browser to blog.php?page=update
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
