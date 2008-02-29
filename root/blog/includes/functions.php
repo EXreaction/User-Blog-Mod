@@ -245,7 +245,7 @@ function generate_blog_urls()
 		'add_blog'			=> blog_url(false, false, false, array('page' => 'blog', 'mode' => 'add')),
 		'add_reply'			=> ($blog_id) ? blog_url($user_id, $blog_id, false, array('page' => 'reply', 'mode' => 'add')) : false,
 
-		'main'				=> blog_url(false),
+		'main'				=> blog_url(false, false, false, array('c' => '*skip*')),
 
 		'self'				=> blog_url(false, false, false, $self_data),
 		'self_minus_print'	=> blog_url(false, false, false, array_merge($self_data, array('view' => '*skip*'))),

@@ -1,144 +1,174 @@
 <!-- INCLUDE overall_header.html -->
 
+<!-- INCLUDE blog/blog.js -->
+
 <!-- IF U_BLOG_MCP -->
-	<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
+	<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p><br />
 <!-- ELSE -->
 <br />
 <!-- ENDIF -->
 
 <table style="width: 100%">
 	<tr>
-		<td id="left_menu" style="vertical-align: top;">
+		<td id="left_menu" style="vertical-align: top; width: 240px;">
 			<!-- INCLUDE blog/left_menu.html -->
 		</td>
 		<td style="vertical-align: top; padding-left: 10px;">
 			<!-- INCLUDE blog/category_list.html -->
 
+			<table width="100%" cellspacing="1">
+				<tr>
+					<!-- IF TOTAL_POSTS -->
+						<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+						<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+						<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
+					<!-- ENDIF -->
+				</tr>
+			</table>
+
 			<!-- IF S_RANDOM_BLOG -->
-				<div class="post bg3" style="text-align: center;">
-					<span class="corners-top"><span></span></span>
-						<strong>{L_RANDOM_BLOG}</strong>
-					<span class="corners-bottom"><span></span></span>
-				</div>
-				<!-- BEGIN random -->
-					<div class="post bg1<!-- IF random.S_REPORTED or random.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF random.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF random.POST_COLOR and not random.S_REPORTED and not random.S_UNAPPROVED and not random.S_DELETED -->style="background-color: {random.POST_COLOR}"<!-- ENDIF -->>
-						<div class="inner"><span class="corners-top"><span></span></span>
+				<table class="tablebg" width="100%" cellspacing="1">
+					<th>{L_RANDOM_BLOG}</th>
+					<!-- BEGIN random -->
+						<!-- IF random.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+							<td width="100%" height="25">
+								<strong><!-- IF random.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{random.U_VIEW}">{random.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{random.USER_FULL}</strong>  {L_POSTED_ON_DATE} {random.DATE}
+							</td>
+						</tr>
+						<!-- IF random.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+							<td valign="top">
+								<table width="100%" cellspacing="5">
+									<tr>
+										<td>
+											<!-- IF random.S_UNAPPROVED or random.S_REPORTED -->
+												<table width="100%" cellspacing="0">
+													<tr>
+														<td class="gensmall"><!-- IF random.S_UNAPPROVED --><span class="postapprove">{UNAPPROVED_IMG} <a href="{random.U_APPROVE}">{L_POST_UNAPPROVED}</a></span> <!-- ENDIF --> <!-- IF random.S_REPORTED --><span class="postreported">{REPORTED_IMG} <a href="{random.U_REPORT}">{L_POST_REPORTED}</a></span><!-- ENDIF --></td>
+													</tr>
+												</table>
 
-						<div class="postbody" style="width: 100%;">
-							<!-- IF random.S_UNAPPROVED or random.S_REPORTED -->
-								<p class="rules">
-									<!-- IF random.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{random.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
-									<!-- IF random.S_REPORTED -->{REPORTED_IMG} <a href="{random.U_REPORT}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
-								</p>
-							<!-- ENDIF -->
+												<br clear="all" />
+											<!-- ENDIF -->
 
-							<dl>
-								<dt>
-									<strong><!-- IF random.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{random.U_VIEW}">{random.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{random.USER_FULL}</strong>  {L_POSTED_ON_DATE} {random.DATE} <br/>
-									<div class="content" style="width: 95%; padding: 4px;">{random.MESSAGE}</div>
+											<!-- IF not random.S_SHORTENED and random.RATING_STRING --><div style="float: right;">{random.RATING_STRING}</div><!-- ENDIF -->
 
-									<!-- IF random.S_HAS_ATTACHMENTS -->
-										<dl class="attachbox">
-											<dt>{L_ATTACHMENTS}</dt>
-										</dl>
-									<!-- ENDIF -->
+											<div class="postbody">{random.MESSAGE}</div>
 
-									<br clear="all" />
-									<div>
-										<span class="num_replies">{random.REPLIES}</span>
-										{random.VIEWS}
-									</div>
-								</dt>
-							</dl>
-						</div>
-						<span class="corners-bottom"><span></span></span>
-					</div>
-				</div>
-				<!-- BEGINELSE -->
-					<div class="post bg1" style="text-align: center; margin: 5px;">
-						<span class="corners-top"><span></span></span>
-							<strong>{L_NO_BLOGS}</strong>
-						<span class="corners-bottom"><span></span></span>
-					</div>	
-				<!-- END random -->
+											<!-- IF random.S_HAS_ATTACHMENTS -->
+												<br clear="all" />
+												<p class="row3"><b class="genmed">{L_ATTACHMENTS}</b></p>
+											<!-- ENDIF -->
+
+											{random.EXTRA}
+
+											<!-- IF not random.S_HAS_ATTACHMENTS --><br clear="all" /><!-- ENDIF -->
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					<!-- BEGINELSE -->
+						<tr class="row1" align="center">
+							<td>{L_NO_BLOGS}</td>
+						</tr>
+					<!-- END random -->
+				</table>
 			<!-- ENDIF -->
 
 			<table style="width: 100%">
 				<tr>
 					<!-- BEGIN column -->
 						<td style="width: {column.SECTION_WIDTH}%; vertical-align: top;">
-							<div class="post bg3" style="text-align: center;">
-								<span class="corners-top"><span></span></span>
-									<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF --><strong><a href="{column.U_VIEW}">{column.TITLE}</a></strong>
-								<span class="corners-bottom"><span></span></span>
-							</div>
-							<!-- IF S_SORT -->
-								<form id="sortblogs" method="post" action="{S_POST_ACTION}">
-								<fieldset class="display-options" style="margin-top: 0;">
-									<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
-									<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
-									<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
-									<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label> <label>{S_SELECT_SORT_DIR} <input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
-								</fieldset>
-								</form>
-							<!-- ENDIF -->
-							<!-- BEGIN row -->
-								<div class="post bg1<!-- IF row.S_REPORTED or row.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF row.S_DELETED --> deleted<!-- ENDIF -->" <!-- IF row.POST_COLOR and not row.S_REPORTED and not row.S_UNAPPROVED and not row.S_DELETED -->style="background-color: {row.POST_COLOR}"<!-- ENDIF -->>
-									<div class="inner"><span class="corners-top"><span></span></span>
+							<table class="tablebg" width="100%" cellspacing="1">
+								<th>
+									<!-- IF column.U_FEED --><span style="float: right;"><a href="{column.U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a></span> <!-- ENDIF -->
+									<a href="{column.U_VIEW}">{column.TITLE}</a>
+								</th>
+								<!-- IF S_SORT -->
+									<tr>
+										<td class="cat" align="center">
+											<form name="sort_replies" method="post" action="{S_POST_ACTION}"><span class="gensmall">{L_DISPLAY_POSTS}:</span> {S_SELECT_SORT_DAYS}&nbsp;<span class="gensmall">{L_SORT_BY}</span> {S_SELECT_SORT_KEY} {S_SELECT_SORT_DIR}&nbsp;<input class="btnlite" type="submit" value="{L_GO}" name="sort" /></form>
+										</td>
+									</tr>
+								<!-- ENDIF -->
+								<!-- BEGIN row -->
+									<!-- IF row.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+										<td width="100%" height="25">
+											<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE}
+										</td>
+									</tr>
+									<!-- IF row.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+										<td valign="top">
+											<table width="100%" cellspacing="5">
+												<tr>
+													<td>
+														<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
+															<table width="100%" cellspacing="0">
+																<tr>
+																	<td class="gensmall"><!-- IF row.S_UNAPPROVED --><span class="postapprove">{UNAPPROVED_IMG} <a href="{row.U_APPROVE}">{L_POST_UNAPPROVED}</a></span> <!-- ENDIF --> <!-- IF row.S_REPORTED --><span class="postreported">{REPORTED_IMG} <a href="{row.U_REPORT}">{L_POST_REPORTED}</a></span><!-- ENDIF --></td>
+																</tr>
+															</table>
 
-									<div class="postbody" style="width: 100%;">
-										<!-- IF row.S_UNAPPROVED or row.S_REPORTED -->
-											<p class="rules">
-												<!-- IF row.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{row.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
-												<!-- IF row.S_REPORTED -->{REPORTED_IMG} <a href="{row.U_REPORT}"><strong>{L_REPORTED_SHORT}</strong></a><!-- ENDIF -->
-											</p>
-										<!-- ENDIF -->
+															<br clear="all" />
+														<!-- ENDIF -->
 
-										<dl>
-											<dt>
-												<strong><!-- IF row.S_HAS_POLL --><img src="{T_THEME_PATH}/images/blog/icon_poll.gif" style="float: right;" alt="" /> <!-- ENDIF --><a href="{row.U_VIEW}">{row.TITLE}</a></strong> {L_POST_BY_AUTHOR} <strong>{row.USER_FULL}</strong>  {L_POSTED_ON_DATE} {row.DATE} <br/>
-												<div class="content" style="width: 95%; padding: 4px;">{row.MESSAGE}</div>
+														<!-- IF not row.S_SHORTENED and row.RATING_STRING --><div style="float: right;">{row.RATING_STRING}</div><!-- ENDIF -->
 
-												<!-- IF row.S_HAS_ATTACHMENTS -->
-													<dl class="attachbox">
-														<dt>{L_ATTACHMENTS}</dt>
-													</dl>
-												<!-- ENDIF -->
+														<div class="postbody">{row.MESSAGE}</div>
 
-												<br clear="all" />
-												<div>
-													<span class="num_replies">{row.REPLIES}</span>
-													{row.VIEWS}
-												</div>
-											</dt>
-										</dl>
-									</div>
-									<span class="corners-bottom"><span></span></span>
-								</div>
-							</div>
-							<!-- BEGINELSE -->
-								<div class="post bg1" style="text-align: center; margin: 5px;">
-									<span class="corners-top"><span></span></span>
-										<strong>{column.L_NO_MSG}</strong>
-									<span class="corners-bottom"><span></span></span>
-								</div>	
-							<!-- END row -->
-							<!-- IF PAGINATION or TOTAL_POSTS -->
-								<div class="pagination">
-									{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
-								</div>
-							<!-- ENDIF -->
+														<!-- IF row.S_HAS_ATTACHMENTS -->
+															<br clear="all" />
+															<p class="row3"><b class="genmed">{L_ATTACHMENTS}</b></p>
+														<!-- ENDIF -->
+
+														{row.EXTRA}
+
+														<br clear="all" />
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								<!-- BEGINELSE -->
+									<tr class="row1" align="center">
+										<td>{L_NO_BLOGS}</td>
+									</tr>
+								<!-- END row -->
+							</table>
 						</td>
 					<!-- END column -->
 				</tr>
 			</table>
+
+			<table width="100%" cellspacing="1">
+				<tr>
+					<!-- IF TOTAL_POSTS -->
+						<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+						<td class="gensmall" nowrap="nowrap">&nbsp;[ {TOTAL_POSTS} ]&nbsp;</td>
+						<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- IF PAGINATION --><b><!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}">{L_PREVIOUS}</a>&nbsp;&nbsp;<!-- ENDIF -->{PAGINATION}<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}">{L_NEXT}</a><!-- ENDIF --></b><!-- ENDIF --></td>
+					<!-- ENDIF -->
+				</tr>
+			</table>
+
+			<!-- INCLUDE breadcrumbs.html -->
+
+			<!-- IF S_DISPLAY_ONLINE_LIST -->
+				<br clear="all" />
+
+				<table class="tablebg" width="100%" cellspacing="1">
+				<tr>
+					<td class="cat"><h4>{L_WHO_IS_ONLINE}</h4></td>
+				</tr>
+				<tr>
+					<td class="row1"><p class="gensmall">{LOGGED_IN_USER_LIST}</p></td>
+				</tr>
+				</table>
+			<!-- ENDIF -->
+
+			<br clear="all" />
+
 		</td>
 	</tr>
 </table>
-
-<!-- IF S_DISPLAY_ONLINE_LIST -->
-	<h3><a href="{U_VIEWONLINE}">{L_WHO_IS_ONLINE}</a></h3>
-	<p>{LOGGED_IN_USER_LIST}</p>
-<!-- ENDIF -->
 
 <!-- INCLUDE overall_footer.html -->
