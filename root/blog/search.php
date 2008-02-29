@@ -68,8 +68,8 @@ if ($keywords || $author)
 	}
 	else
 	{
-		$blog_search->split_keywords($keywords, $terms, false, $start, $limit);
-		$ids = $blog_search->keyword_search($sf, $terms, 0, $start, $limit);
+		$blog_search->split_keywords($keywords, $terms);
+		$ids = $blog_search->keyword_search($sf, $terms, 0);
 	}
 
 	if ($ids !== false)
@@ -119,6 +119,7 @@ if ($keywords || $author)
 		krsort($temp);
 
 		$i = 0;
+		$matches = (count($ids));
 		$blog_ids = $reply_ids = $ids = array();
 		foreach ($temp as $time => $data)
 		{
@@ -127,7 +128,7 @@ if ($keywords || $author)
 				$i++;
 				continue;
 			}
-			if ($i > ($start + $limit))
+			if ($i >= ($start + $limit))
 			{
 				break;
 			}
@@ -159,7 +160,6 @@ if ($keywords || $author)
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();
 
-		$matches = (count($ids));
 		foreach ($ids as $id)
 		{
 			if (isset($id['blog_id']))
@@ -185,7 +185,7 @@ if ($keywords || $author)
 		$matches = 0;
 	}
 
-	$pagination = generate_blog_pagination(blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf, 'start' => '*start*'), array(), true), $matches, $limit, $start, false);
+	$pagination = generate_blog_pagination(blog_url(false, false, false, array('page' => 'search', 'author' => $author, 'keywords' => $keywords, 'terms' => $terms, 'sf' => $sf, 'start' => '*start*', 'limit' => $limit), array(), true), $matches, $limit, $start, false);
 
 	$template->assign_vars(array(
 		'PAGINATION'		=> $pagination,

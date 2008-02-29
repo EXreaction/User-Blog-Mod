@@ -52,7 +52,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		$template->assign_block_vars('blog_links', array(
 			'URL'		=> $blog_url,
 			'CLASS'		=> 'icon-members',
-			'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_members.gif" />',
+			'IMG'		=> '<img src="' . $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/icon_mini_members.gif" alt="' . $user->lang['BLOGS'] . '" />',
 			'TEXT'		=> $user->lang['BLOGS'],
 		));
 

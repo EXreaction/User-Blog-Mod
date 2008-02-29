@@ -613,7 +613,7 @@ function generate_menu($user_id = false)
 		}
 	}
 
-	if ($config['user_blog_search'])
+	if ($config['user_blog_search'] && !$user->data['is_bot'])
 	{
 		$template->assign_vars(array(
 			'S_DISPLAY_BLOG_SEARCH'	=> true,

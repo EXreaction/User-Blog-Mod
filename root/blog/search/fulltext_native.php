@@ -411,7 +411,7 @@ class blog_fulltext_native extends blog_search
 	*
 	* @access	public
 	*/
-	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0, $start = 0, $limit = 20)
+	function keyword_search($fields = 'all', $terms = 'all', $blog_id = 0)
 	{
 		global $config, $db, $user;
 
@@ -448,7 +448,6 @@ class blog_fulltext_native extends blog_search
 			),
 			'LEFT_JOIN'	=> array(),
 			'GROUP_BY'	=> 'm0.blog_id',
-			'LIMIT'		=> $start . ', ' . $limit,
 		);
 		$sql_where = array();
 
@@ -570,17 +569,18 @@ class blog_fulltext_native extends blog_search
 
 		if ($fields == 'blog')
 		{
-			$sql_where[] = 'm0.reply_id = \'0\'';
+			$sql_where[] = 'm0.reply_id = 0';
 		}
 
 		if ($blog_id)
 		{
-			$sql_where[] = 'm0.blog_id =  \'' . intval($blog_id) . '\'';
+			$sql_where[] = 'm0.blog_id =  ' . intval($blog_id);
 		}
 
 		$sql_array['WHERE'] = implode(' AND ', $sql_where);
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);
+		echo $sql;
 		$result = $db->sql_query($sql);
 		$ids = array();
 		while ($row = $db->sql_fetchrow($result))
