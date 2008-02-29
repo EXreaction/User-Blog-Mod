@@ -9,23 +9,17 @@
 */
 
 /*
-* TODO List
-* 
-* HIGH PRIORITY -----------------------------------------------------------------------------------
-* subsilver2 template
-* 	- Posting
-*
-* OTHER -------------------------------------------------------------------------------------------
+* Notes - To do
 * post revisions plugin
 * cash mod plugin
-* personal categories plugin
+* personal categories (tags) plugin
 * Memorable entry (like a sticky)?
 */
 
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.7.0_dev';
+$user_blog_version = '0.7.0';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

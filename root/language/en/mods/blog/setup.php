@@ -85,18 +85,12 @@ $lang = array_merge($lang, array(
 	'UPGRADE_LIST'					=> 'Upgrade List',
 	'UPGRADE_REPLIES'				=> 'Upgrade Replies',
 
-	'WELCOME_MESSAGE'				=> 'Here are the current Author\'s Notes:
-[code]## Author Notes:
-##	This is Alpha quality software.  Do not install unless you are willing to lose any
-##		data with future upgrades or glitches.  DO NOT complain to me if you lose any data,
-##		I will take no resposibility for any damage with the use of this mod in a live environment.
-##
-##	Please report any bugs/problems at my website: http://www.lithiumstudios.org
-##
-##	The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
-##		You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.
-[/code]
-This message will be changed before the final version.',
+	'WELCOME_MESSAGE'				=> 'Welcome to the Beta Release of the User Blog Mod!
+
+Please report any bugs/problems at my website: http://www.lithiumstudios.org
+
+The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/
+You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.',
 	'WELCOME_SUBJECT'				=> 'Welcome to the User Blog Mod!',
 ));
 
