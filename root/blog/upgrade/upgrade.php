@@ -35,7 +35,7 @@ class blog_upgrade
 		}
 
 		$this->selected_options = request_var('config', array('' => ''), true);
-		if (!count($this->selected_options))
+		if (!sizeof($this->selected_options))
 		{
 			$cache_data = $cache->get('_blog_upgrade');
 			if ($cache_data !== false)
@@ -242,12 +242,12 @@ class blog_upgrade
 
 		connect_check_db(true, $error, array('DRIVER' => substr($sql_db, 5)), $this->selected_options['db_prefix'], $this->selected_options['db_host'],$this->selected_options['db_user'], $this->selected_options['db_password'], $this->selected_options['db_name'], $this->selected_options['db_port'], false, false);
 
-		if (count($error) == 1 && $error[0] == '')
+		if (sizeof($error) == 1 && $error[0] == '')
 		{
 			$error = array();
 		}
 
-		if (!count($error))
+		if (!sizeof($error))
 		{
 			$this->old_db_connect();
 			$old_db->sql_return_on_error(true);
@@ -262,7 +262,7 @@ class blog_upgrade
 			}
 		}
 
-		if (!count($error))
+		if (!sizeof($error))
 		{
 			// put the options in the cache for the upgrade
 			$cache->put('_blog_upgrade', $this->selected_options);
@@ -393,7 +393,7 @@ class blog_upgrade
 			$blog_data[$row['blog_id']] = $row;
 		}
 		$db->sql_freeresult($result);
-		$blog_count = count($blog_data);
+		$blog_count = sizeof($blog_data);
 
 		$i=0;
 		switch ($section)

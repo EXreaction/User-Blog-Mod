@@ -79,7 +79,7 @@ if (is_array($settings))
 
 		// Delete the Attachments
 		$blog_attachment->get_attachment_data(false, $reply_id);
-		if (count(blog_data::$reply[$reply_id]['attachment_data']))
+		if (sizeof(blog_data::$reply[$reply_id]['attachment_data']))
 		{
 			foreach (blog_data::$reply[$reply_id]['attachment_data'] as $null => $data)
 			{

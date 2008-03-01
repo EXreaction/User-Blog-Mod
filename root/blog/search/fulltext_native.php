@@ -421,7 +421,7 @@ class blog_fulltext_native extends blog_search
 			return false;
 		}
 
-		if (!count($this->must_contain_ids) && !count($this->must_not_contain_ids) && !count($this->must_exclude_one_ids))
+		if (!sizeof($this->must_contain_ids) && !sizeof($this->must_not_contain_ids) && !sizeof($this->must_exclude_one_ids))
 		{
 			$ignored = (sizeof($this->common_words)) ? sprintf($user->lang['IGNORED_TERMS_EXPLAIN'], implode(' ', $this->common_words)) . '<br />' : '';
 			trigger_error($ignored . sprintf($user->lang['NO_KEYWORDS'], $this->word_length['min'], $this->word_length['max']));
@@ -641,7 +641,7 @@ class blog_fulltext_native extends blog_search
 		}
 
 		$new_ids = array();
-		if (count($ids))
+		if (sizeof($ids))
 		{
 			foreach ($ids as $id => $ary)
 			{

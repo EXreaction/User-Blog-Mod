@@ -19,14 +19,14 @@ $extras = (isset($_GET['mode'])) ? $_GET['mode'] : '';
 $extras = explode('_', $extras);
 $_GET['mode'] = $_REQUEST['mode'] = $mode = array_shift($extras);
 
-if (count($extras))
+if (sizeof($extras))
 {
 	$last = array();
 	foreach ($extras as $extra)
 	{
 		$var = explode('-', $extra, 2);
 
-		if (count($var) == 1)
+		if (sizeof($var) == 1)
 		{
 			if (!empty($last))
 			{
@@ -39,7 +39,7 @@ if (count($extras))
 			}
 		}
 
-		if (count($var) == 2)
+		if (sizeof($var) == 2)
 		{
 			$_GET[$var[0]] = $_REQUEST[$var[0]] = $var[1];
 

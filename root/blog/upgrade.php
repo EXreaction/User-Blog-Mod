@@ -39,7 +39,7 @@ $stages = array($user->lang['UPGRADE_LIST'], $user->lang['OPTIONS'], $user->lang
 if ($stage >= 2)
 {
 	$blog_upgrade->confirm_upgrade_options($mode, $error);
-	if (count($error))
+	if (sizeof($error))
 	{
 		$stage = 2;
 	}
@@ -109,7 +109,7 @@ $template->assign_vars(array(
 	'S_NEXT_PART'	=> ($section <= ($section_cnt - 1) || $part <= ($part_cnt - 1)) ? true : false,
 	'U_ACTION'		=> $redirect_url,
 	'U_BACK'		=> append_sid("{$phpbb_root_path}blog.$phpEx", "page=upgrade&amp;mode={$mode}&amp;stage=" . ($stage - 1)),
-	'ERROR'			=> (count($error)) ? implode('<br/>', $error) : '',
+	'ERROR'			=> (sizeof($error)) ? implode('<br/>', $error) : '',
 	'MESSAGE'		=> $message,
 ));
 

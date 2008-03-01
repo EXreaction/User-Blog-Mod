@@ -89,7 +89,7 @@ function get_hooks()
 	}
 
 	// Looks a little strange, but it is being done this way so folders get listed first, then files (otherwise it just lists everything alphabetical file)
-	if (count($dir_list))
+	if (sizeof($dir_list))
 	{
 		foreach ($dir_list as $file)
 		{
@@ -97,7 +97,7 @@ function get_hooks()
 		}
 	}
 
-	if (count($file_list))
+	if (sizeof($file_list))
 	{
 		foreach ($file_list as $file)
 		{
@@ -147,7 +147,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 		    closedir($handle);
 		}
 
-		if (count($dir_list))
+		if (sizeof($dir_list))
 		{
 			foreach ($dir_list as $file1)
 			{
@@ -155,7 +155,7 @@ function get_hooks_recusive(&$hook_list, $file, $dir, $original_dir)
 			}
 		}
 
-		if (count($file_list))
+		if (sizeof($file_list))
 		{
 			foreach ($file_list as $file1)
 			{

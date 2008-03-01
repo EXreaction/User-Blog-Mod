@@ -58,7 +58,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 		{
 			// The category display box
 			$category = request_var('category', array('' => ''));
-			if (!count($category))
+			if (!sizeof($category))
 			{
 				$category = request_var('c', 0);
 			}
@@ -151,7 +151,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 		{
 			$allowed_extensions = $blog_attachment->obtain_blog_attach_extensions();
 
-			if (count($allowed_extensions['_allowed_']))
+			if (sizeof($allowed_extensions['_allowed_']))
 			{
 				$blog_attachment->posting_gen_attachment_entry($attachment_data, $filename_data);
 
@@ -580,7 +580,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	$blog_data->get_user_data('2');
 
 	// Send the PM
-	if (isset($send[1]) && count($send[1]))
+	if (isset($send[1]) && sizeof($send[1]))
 	{
 		if (!function_exists('submit_pm'))
 		{
@@ -624,7 +624,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	}
 
 	// Send the email
-	if (isset($send[2]) && count($send[2]) && $config['email_enable'])
+	if (isset($send[2]) && sizeof($send[2]) && $config['email_enable'])
 	{
 		if (!class_exists('messenger'))
 		{

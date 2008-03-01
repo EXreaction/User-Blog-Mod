@@ -141,7 +141,7 @@ class blog_data
 					}
 				}
 
-				if (!count($to_query))
+				if (!sizeof($to_query))
 				{
 					return;
 				}
@@ -194,7 +194,7 @@ class blog_data
 			case 'random_blog_ids' : // this gets a few random blog_ids
 				$random_ids = array();
 				$all_blog_ids = $this->get_blog_data('all_ids', 0, $selection_data);
-				$total = count($all_blog_ids);
+				$total = sizeof($all_blog_ids);
 
 				if ($total == 0)
 				{
@@ -202,7 +202,7 @@ class blog_data
 				}
 
 				// if the limit is higher than the total number of blogs, just give them what we have (and shuffle it so it looks random)
-				if ($limit > count($all_blog_ids))
+				if ($limit > sizeof($all_blog_ids))
 				{
 					shuffle($all_blog_ids);
 					$this->get_blog_data('blog', $all_blog_ids);
@@ -311,7 +311,7 @@ class blog_data
 		$db->sql_freeresult($result);
 
 		// if there are no blogs, return false
-		if (count($blog_ids) == 0)
+		if (sizeof($blog_ids) == 0)
 		{
 			return false;
 		}
@@ -452,7 +452,7 @@ class blog_data
 
 			'S_CAN_VOTE'			=> $s_can_vote,
 			'S_DELETED'				=> ($blog['blog_deleted']) ? true : false,
-			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog['blog_attachment'] && count($blog['attachment_data'])) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $blog['blog_attachment'] && sizeof($blog['attachment_data'])) ? true : false,
 			'S_DISPLAY_RESULTS'		=> (!$s_can_vote || ($s_can_vote && sizeof($my_vote)) || (isset($_GET['view']) && $_GET['view'] == 'viewpoll')) ? true : false,
 			'S_HAS_ATTACHMENTS'		=> ($blog['blog_attachment']) ? true : false,
 			'S_HAS_POLL'			=> ($blog['poll_title']) ? true : false,
@@ -759,7 +759,7 @@ class blog_data
 		$db->sql_freeresult($result);
 
 		// if there are no replys, return false
-		if (count($reply_ids) == 0)
+		if (sizeof($reply_ids) == 0)
 		{
 			return false;
 		}
@@ -836,7 +836,7 @@ class blog_data
 			'S_DELETED'				=> ($reply['reply_deleted'] != 0) ? true : false,
 			'S_UNAPPROVED'			=> ($reply['reply_approved'] == 0) ? true : false,
 			'S_REPORTED'			=> ($reply['reply_reported'] && $auth->acl_get('m_blogreplyreport')) ? true : false,
-			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $reply['reply_attachment'] && count($reply['attachment_data'])) ? true : false,
+			'S_DISPLAY_NOTICE'		=> (!$auth->acl_get('u_download') && $reply['reply_attachment'] && sizeof($reply['attachment_data'])) ? true : false,
 			'S_HAS_ATTACHMENTS'		=> ($reply['reply_attachment']) ? true : false,
 
 			'attachment'			=> $attachments,
@@ -882,7 +882,7 @@ class blog_data
 				$id = array(intval($id));
 			}
 
-			if (!count($id))
+			if (!sizeof($id))
 			{
 				return;
 			}
@@ -897,7 +897,7 @@ class blog_data
 				}
 			}
 
-			if (!count($users_to_query))
+			if (!sizeof($users_to_query))
 			{
 				return;
 			}

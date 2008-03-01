@@ -54,7 +54,7 @@ if (confirm_box(true))
 	// Purge the cache and tell the user that we are finished.
 	$cache->purge();
 
-	if (count($error))
+	if (sizeof($error))
 	{
 		trigger_error(sprintf($user->lang['INSTALL_BLOG_DB_FAIL'], implode('<br/>', $error)));
 	}

@@ -98,7 +98,7 @@ function get_subscription_info($blog_id, $user_id = false)
 		$cache->put('_blog_subscription_' . $user->data['user_id'], $subscription_data);
 	}
 
-	if (count($subscription_data))
+	if (sizeof($subscription_data))
 	{
 		blog_plugins::plugin_do_arg('function_get_subscription_info', $subscription_data);
 
@@ -163,7 +163,7 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 			}
 		}
 
-		if (!count($to_query))
+		if (!sizeof($to_query))
 		{
 			return;
 		}
@@ -178,7 +178,7 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 			}
 		}
 
-		if (!count($to_query))
+		if (!sizeof($to_query))
 		{
 			return;
 		}

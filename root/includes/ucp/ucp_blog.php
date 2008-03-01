@@ -262,7 +262,7 @@ class ucp_blog
 
 		blog_plugins::plugin_do('ucp_end');
 
-		if ($submit && !count($error))
+		if ($submit && !sizeof($error))
 		{
 			$cache->destroy('_blog_settings_' . $user->data['user_id']);
 
@@ -274,7 +274,7 @@ class ucp_blog
 		$template->assign_vars(array(
 			'L_TITLE'				=> $user->lang[strtoupper($mode)],
 			'L_TITLE_EXPLAIN'		=> $user->lang[strtoupper($mode) . '_EXPLAIN'],
-			'ERROR'					=> (count($error)) ? implode($error, '<br/>') : false,
+			'ERROR'					=> (sizeof($error)) ? implode($error, '<br/>') : false,
 			'MODE'					=> $mode,
 		));
 

@@ -87,7 +87,7 @@ if ($keywords || $author)
 		}
 
 		$temp = array();
-		if (count($blog_ids))
+		if (sizeof($blog_ids))
 		{
 			$sql = 'SELECT blog_id, blog_time FROM ' . BLOGS_TABLE . '
 				WHERE ' . $db->sql_in_set('blog_id', $blog_ids);
@@ -102,7 +102,7 @@ if ($keywords || $author)
 			}
 		}
 
-		if (count($reply_ids))
+		if (sizeof($reply_ids))
 		{
 			$sql = 'SELECT reply_id, reply_time FROM ' . BLOGS_REPLY_TABLE . '
 				WHERE ' . $db->sql_in_set('reply_id', $reply_ids);
@@ -119,7 +119,7 @@ if ($keywords || $author)
 		krsort($temp);
 
 		$i = 0;
-		$matches = (count($ids));
+		$matches = (sizeof($ids));
 		$blog_ids = $reply_ids = $ids = array();
 		foreach ($temp as $time => $data)
 		{
@@ -149,11 +149,11 @@ if ($keywords || $author)
 			}
 		}
 
-		if (count($blog_ids))
+		if (sizeof($blog_ids))
 		{
 			$blog_data->get_blog_data('blog', $blog_ids);
 		}
-		if (count($reply_ids))
+		if (sizeof($reply_ids))
 		{
 			$blog_data->get_reply_data('reply', $reply_ids);
 		}

@@ -144,7 +144,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['style'] = $_GET['style'];
 		}
 
-		if (count($url_data))
+		if (sizeof($url_data))
 		{
 			foreach ($url_data as $name => $value)
 			{
@@ -213,7 +213,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	$extras .= (($blog_id) ? '&amp;b=' . $blog_id : ((isset($url_data['b'])) ? '&amp;b=' . $url_data['b'] : ''));
 	$extras .= (($reply_id) ? '&amp;r=' . $reply_id : ((isset($url_data['r'])) ? '&amp;r=' . $url_data['r'] : ''));
 
-	if (count($url_data))
+	if (sizeof($url_data))
 	{
 		foreach ($url_data as $name => $var)
 		{
@@ -309,7 +309,7 @@ function get_user_settings($user_ids)
 		}
 	}
 
-	if (count($to_query))
+	if (sizeof($to_query))
 	{
 		global $db;
 		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);

@@ -53,7 +53,7 @@ function archive_function_generate_menu(&$arg)
 			'DATE'			=> $user->format_date($row['blog_time']),
 		);
 
-		$archive_rows[count($archive_rows) - 1]['monthrow'][] = $archive_row_month;
+		$archive_rows[sizeof($archive_rows) - 1]['monthrow'][] = $archive_row_month;
 
 		// set the last month variable as the current month
 		$last_mon = $date['mon'];
@@ -66,7 +66,7 @@ function archive_function_generate_menu(&$arg)
 	}
 
 	$template->assign_vars(array(
-		'S_ARCHIVES'	=> (count($archive_rows)) ? true : false,
+		'S_ARCHIVES'	=> (sizeof($archive_rows)) ? true : false,
 		'T_THEME_PATH'	=> "{$phpbb_root_path}styles/" . $user->theme['theme_path'] . '/theme',
 
 		'IMG_PLUS'		=> $blog_images_path . 'plus.gif',

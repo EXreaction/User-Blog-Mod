@@ -101,7 +101,7 @@ if (!$feed)
 		}
 
 		// to update the read count, we are only doing this if the user is not the owner, and the user doesn't view the shortened version, and we are not viewing the deleted blogs page
-		if ($user->data['user_id'] != $user_id && $mode != 'deleted' && count($read_blogs))
+		if ($user->data['user_id'] != $user_id && $mode != 'deleted' && sizeof($read_blogs))
 		{
 			$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_read_count = blog_read_count + 1 WHERE ' . $db->sql_in_set('blog_id', $read_blogs);
 			$db->sql_query($sql);

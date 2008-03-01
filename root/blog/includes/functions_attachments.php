@@ -42,7 +42,7 @@ class blog_attachment
 
 		$attach_ids = array();
 
-		if (count($this->attachment_data))
+		if (sizeof($this->attachment_data))
 		{
 			foreach($this->attachment_data as $attach_row)
 			{

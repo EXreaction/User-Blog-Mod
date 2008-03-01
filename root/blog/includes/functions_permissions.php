@@ -262,7 +262,7 @@ function build_permission_sql($user_id, $add_where = false)
 		global $reverse_zebra_list;
 		get_zebra_info($user_id, true);
 
-		if (isset($reverse_zebra_list[$user_id]['foe']) && count($reverse_zebra_list[$user_id]['foe']))
+		if (isset($reverse_zebra_list[$user_id]['foe']) && sizeof($reverse_zebra_list[$user_id]['foe']))
 		{
 			foreach ($reverse_zebra_list[$user_id]['foe'] as $zid)
 			{
@@ -271,7 +271,7 @@ function build_permission_sql($user_id, $add_where = false)
 			}
 		}
 
-		if (isset($reverse_zebra_list[$user_id]['friend']) && count($reverse_zebra_list[$user_id]['friend']))
+		if (isset($reverse_zebra_list[$user_id]['friend']) && sizeof($reverse_zebra_list[$user_id]['friend']))
 		{
 			foreach ($reverse_zebra_list[$user_id]['friend'] as $zid)
 			{
@@ -280,7 +280,7 @@ function build_permission_sql($user_id, $add_where = false)
 			}
 		}
 
-		if (count($zebra_list))
+		if (sizeof($zebra_list))
 		{
 			$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > 0)";
 		}

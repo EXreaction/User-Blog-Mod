@@ -1016,8 +1016,8 @@ class acp_blogs
 					else
 					{
 						$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-							WHERE reply_deleted = \'0\'
-							AND reply_approved = \'1\'
+							WHERE reply_deleted = 0
+							AND reply_approved = 1
 								ORDER BY reply_id DESC
 									LIMIT ' . ($part * $limit) . ', ' . $limit;
 						$result = $db->sql_query($sql);
@@ -1027,8 +1027,8 @@ class acp_blogs
 						}
 
 						$sql = 'SELECT count(reply_id) AS cnt FROM ' . BLOGS_REPLY_TABLE . '
-							WHERE reply_deleted = \'0\'
-							AND reply_approved = \'1\'';
+							WHERE reply_deleted = 0
+							AND reply_approved = 1';
 						$result = $db->sql_query($sql);
 						$cnt = $db->sql_fetchrow($result);
 
@@ -1426,7 +1426,7 @@ class acp_blogs
 		global $db;
 
 		$sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_IN_CATEGORIES_TABLE . '
-			WHERE category_id = \'' . $from_id . '\'';
+			WHERE category_id = ' . $from_id;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		if ($row !== false)

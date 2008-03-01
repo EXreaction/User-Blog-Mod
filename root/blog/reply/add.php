@@ -122,7 +122,7 @@ if ( (!$submit) || (sizeof($error)) )
 
 			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
 
-			if (count($attachment_data))
+			if (sizeof($attachment_data))
 			{
 				foreach ($attachment_data as $row)
 				{
@@ -183,7 +183,7 @@ else // user submitted and there are no errors
 		'bbcode_bitfield'		=> $message_parser->bbcode_bitfield,
 		'bbcode_uid'			=> $message_parser->bbcode_uid,
 		'reply_edit_reason'		=> '',
-		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+		'reply_attachment'		=> (sizeof($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
 	blog_plugins::plugin_do_ref('reply_add_sql', $sql_data);

@@ -220,7 +220,7 @@ if (!$submit || sizeof($error))
 
 			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
 
-			if (count($attachment_data))
+			if (sizeof($attachment_data))
 			{
 				foreach ($attachment_data as $row)
 				{
@@ -297,7 +297,7 @@ else // user submitted and there are no errors
 		'perm_registered'			=> request_var('perm_registered', 2),
 		'perm_foe'					=> request_var('perm_foe', 0),
 		'perm_friend'				=> request_var('perm_friend', 2),
-		'blog_attachment'			=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+		'blog_attachment'			=> (sizeof($blog_attachment->attachment_data)) ? 1 : 0,
 		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
 		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : 0,
 		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 0,
@@ -347,7 +347,7 @@ else // user submitted and there are no errors
 	$db->sql_query($sql);
 
 	// Insert into the categories list
-	if (count($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))
+	if (sizeof($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))
 	{
 		$category_list = get_blog_categories('category_id');
 

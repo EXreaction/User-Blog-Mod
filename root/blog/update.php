@@ -166,7 +166,7 @@ if (confirm_box(true))
 			$sql_array[] = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'user_blog_force_prosilver\'';
 
 			// This is the last time it is used.
-			if (count($sql_array))
+			if (sizeof($sql_array))
 			{
 				foreach ($sql_array as $sql)
 				{

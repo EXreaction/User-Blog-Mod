@@ -120,7 +120,7 @@ if (!$submit || sizeof($error))
 
 			$blog_attachment->parse_attachments_for_view($preview_message, $attachment_data, $update_count, true);
 
-			if (count($attachment_data))
+			if (sizeof($attachment_data))
 			{
 				foreach ($attachment_data as $row)
 				{
@@ -184,7 +184,7 @@ else // user submitted and there are no errors
 		'reply_edit_user'		=> $user->data['user_id'],
 		'reply_edit_count'		=> blog_data::$reply[$reply_id]['reply_edit_count'] + 1,
 		'reply_edit_locked'		=> ($auth->acl_get('m_blogreplylockedit') && $user->data['user_id'] != $reply_user_id) ? request_var('lock_post', false) : false,
-		'reply_attachment'		=> (count($blog_attachment->attachment_data)) ? 1 : 0,
+		'reply_attachment'		=> (sizeof($blog_attachment->attachment_data)) ? 1 : 0,
 	);
 
 	$blog_search->index('edit', $blog_id, $reply_id, $message_parser->message, $reply_subject, blog_data::$reply[$reply_id]['user_id']);
