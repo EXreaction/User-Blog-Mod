@@ -61,7 +61,13 @@ if ($keywords || $author)
 	}
 	$highlight = urlencode($highlight_words);
 
-	if ($author)
+	if ($author && $keywords)
+	{
+		$uid = $blog_data->get_id_by_username($author);
+		$blog_search->split_keywords($keywords, $terms);
+		$ids = $blog_search->keyword_search($sf, $terms, 0);
+	}
+	else if ($author)
 	{
 		$uid = $blog_data->get_id_by_username($author);
 		$ids = $blog_search->author_search($uid);
@@ -162,21 +168,29 @@ if ($keywords || $author)
 
 		foreach ($ids as $id)
 		{
-			if (isset($id['blog_id']))
+			if (isset($id['reply_id']))
 			{
-				if (isset(blog_data::$blog[$id['blog_id']]))
+				if (!$author || ($uid == blog_data::$reply[$id['reply_id']]['user_id']))
+				{
+					$template->assign_block_vars('searchrow', $blog_data->handle_reply_data($id['reply_id']) + $blog_data->handle_user_data(blog_data::$reply[$id['reply_id']]['user_id']));
+				}
+				else
+				{
+					// they are selecting from a specific author and this is from a different author
+					$matches--;
+				}
+			}
+			else
+			{
+				if (isset(blog_data::$blog[$id['blog_id']]) && (!$author || ($uid == blog_data::$blog[$id['blog_id']]['user_id'])))
 				{
 					$template->assign_block_vars('searchrow', $blog_data->handle_blog_data($id['blog_id']) + $blog_data->handle_user_data(blog_data::$blog[$id['blog_id']]['user_id']));
 				}
 				else
 				{
-					// they don't have permission to view this blog...
+					// they don't have permission to view this blog, or they are selecting from a specific author and this is from a different author
 					$matches--;
 				}
-			}
-			else 
-			{
-				$template->assign_block_vars('searchrow', $blog_data->handle_reply_data($id['reply_id']) + $blog_data->handle_user_data(blog_data::$reply[$id['reply_id']]['user_id']));
 			}
 		}
 	}

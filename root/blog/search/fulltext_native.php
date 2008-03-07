@@ -67,7 +67,8 @@ class blog_fulltext_native extends blog_search
 		$this->delete_index();
 
 		$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-			WHERE blog_deleted = \'0\'';
+			WHERE blog_deleted = 0
+				AND blog_approved = 1';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -75,7 +76,8 @@ class blog_fulltext_native extends blog_search
 		}
 
 		$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
-			WHERE reply_deleted = \'0\'';
+			WHERE reply_deleted = 0
+				AND reply_approved = 1';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -447,7 +449,6 @@ class blog_fulltext_native extends blog_search
 				BLOG_SEARCH_WORDLIST_TABLE	=> array(),
 			),
 			'LEFT_JOIN'	=> array(),
-			'GROUP_BY'	=> 'm0.blog_id',
 		);
 		$sql_where = array();
 
