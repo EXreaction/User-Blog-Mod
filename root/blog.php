@@ -19,7 +19,7 @@
 define('IN_BLOG', true);
 
 // The Version #
-$user_blog_version = '0.7.0';
+$user_blog_version = '0.7.1_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -56,9 +56,15 @@ $sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', ($blog_id || $reply_id) ? 'a' : 'd');
 $order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
 
+// set some initial variables that we will use
+$s_hidden_fields = $subscribed_title = $username = '';
+$default = $inc_file = $user_style = $subscribed = false;
+$error = $blog_urls = $zebra_list = $user_settings = array();
+
 // include some files
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'blog/functions.' . $phpEx);
+$blog_data = new blog_data();
 
 // We need to use our own error handler which resets the template when trigger_error is called.
 set_error_handler('blog_error_handler');
@@ -73,12 +79,6 @@ else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) &
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
-
-// set some initial variables that we will use
-$blog_data = new blog_data();
-$error = $blog_urls = $zebra_list = $user_settings = array();
-$s_hidden_fields = $subscribed_title = '';
-$default = $inc_file = $user_style = $subscribed = false;
 
 blog_plugins::plugin_do('blog_start');
 
@@ -237,9 +237,10 @@ if ($user_id)
 	{
 		trigger_error('NO_USER');
 	}
+
+	$username = blog_data::$user[$user_id]['username'];
 }
 
-$username = ($user_id != 0) ? blog_data::$user[$user_id]['username'] : '';
 get_user_settings(array($user_id, $user->data['user_id']));
 get_zebra_info(array($user_id, $user->data['user_id']));
 
@@ -250,14 +251,15 @@ if ($blog_id && !handle_user_blog_permissions($blog_id))
 }
 
 // Put the template we want in $blog_template for easier access/use
-// style= overrides everything, blogstyle= overrides the user's requested style, then it is set to the user's style or blank if none set
+// style= to use a board style, blogstyle= to use a custom blog style, otherwise it is set to the user's style or blank if none set
 $blog_template = ((isset($_GET['style'])) ? intval($_GET['style']) : ((isset($_GET['blogstyle'])) ? request_var('blogstyle', '') : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '')));
+
 
 /**
 * Ok, now lets actually start setting up the page.
 */
 
-// If the user wants a blog template shown we will use that, else we will use the board template.
+
 /*
 * A slightly (weird) way it is that I have set this up.  Only on the view blog/user page can the user set a custom style except if that custom style is also a board style.
 * If the style they selected is also a board style we will also show that style on the posting/etc pages.  This is to keep it easier on the custom template developers.
@@ -266,6 +268,7 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 {
 	$user->setup('mods/blog/common');
 
+	// Do note style developers that dots and slashes in your style names are not allowed.
 	if (strpos($blog_template, '.') !== false || strpos($blog_template, '/') !== false)
 	{
 		trigger_error('You are not allowed to move around directories.');
@@ -299,7 +302,7 @@ else
 	$blog_images_path = $phpbb_root_path . 'styles/' . $user->theme['theme_path'] . '/theme/images/blog/';
 }
 
-//Update the edit and delete fields
+// Update the edit and delete fields for the blogs and replies we've gotten so far
 update_edit_delete();
 
 // Check to make sure the user has permission to get to this page
@@ -338,8 +341,8 @@ else
 	}
 }
 
-// Lets add credits for the User Blog mod...this is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
-$user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br/>' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
+// Lets add credits for the User Blog Mod.  This is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
+$user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br />' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
 // Add some data to the template
 $template->assign_vars(array(
@@ -354,6 +357,7 @@ $template->assign_vars(array(
  	'U_REPLY_BLOG'			=> ($blog_id && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
 	'U_VIEW_RESULTS'		=> $blog_urls['viewpoll'],
 
+	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 	'S_POST_ACTION'			=> $blog_urls['self'],
 	'S_POLL_ACTION'			=> $blog_urls['vote'],
 	'S_PRINT_MODE'			=> $print,
@@ -370,9 +374,7 @@ $template->assign_vars(array(
 	'UA_MAX_RATING'			=> $config['user_blog_max_rating'],
 	'UA_MIN_RATING'			=> $config['user_blog_min_rating'],
 
-	'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
-
-	// Stuff required for subsilver2
+	// Stuff required for subsilver2 based styles
 	'REPLY_IMG'				=> $user->img('button_topic_reply', 'POST_A_NEW_REPLY'),
 	'POLL_LEFT_CAP_IMG'		=> $user->img('poll_left'),
 	'POLL_RIGHT_CAP_IMG'	=> $user->img('poll_right'),

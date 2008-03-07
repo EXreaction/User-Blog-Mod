@@ -313,7 +313,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	global $db, $template, $user, $phpbb_root_path, $phpEx, $config;
 	global $reverse_zebra_list, $user_settings;
 
-	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'] || $user_id == ANONYMOUS)
+	if ($user_id == ANONYMOUS)
 	{
 		return;
 	}
@@ -1015,6 +1015,7 @@ function feed_output($ids, $feed_type)
 {
 	global $template, $phpbb_root_path, $phpEx, $page, $mode, $limit, $config, $user, $blog_data, $user_id, $blog_id;
 
+	// Feed explanation page
 	if ($feed_type == 'explain')
 	{
 		$available_feeds = array(

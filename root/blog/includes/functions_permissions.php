@@ -256,6 +256,7 @@ function build_permission_sql($user_id, $add_where = false)
 
 	$sql = " AND (user_id = {$user_id}";
 
+	// Here is where things get complicated with friend/foe permissions.
 	$zebra_list = array();
 	if ($config['user_blog_enable_zebra'])
 	{
@@ -279,15 +280,12 @@ function build_permission_sql($user_id, $add_where = false)
 				$zebra_list[] = $zid;
 			}
 		}
+	}
 
-		if (sizeof($zebra_list))
-		{
-			$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > 0)";
-		}
-		else
-		{
-			$sql .= " OR (perm_registered > 0)";
-		}
+	if (sizeof($zebra_list))
+	{
+		// Inverted sql_in_set.  For any user NOT in the zebra list.
+		$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > 0)";
 	}
 	else
 	{
@@ -424,7 +422,7 @@ function check_blog_permissions($page, $mode, $return = false, $blog_id = 0, $re
 			if (!$user->data['is_registered'])
 			{
 				global $template;
-				$template->set_template();
+				$template->set_template(); // reset the template.  Required because of user styles.
 				login_box();
 			}
 			else

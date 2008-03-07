@@ -97,7 +97,7 @@ class blog_data
 		{
 			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 		}
-		if ($sort_days != 0)
+		if ($sort_days)
 		{
 			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
 		}
@@ -107,6 +107,7 @@ class blog_data
 		}
 		if (build_permission_sql($user->data['user_id']))
 		{
+			// remove the first &amp;
 			$sql_where[] = substr(build_permission_sql($user->data['user_id']), 5);
 		}
 
@@ -133,9 +134,10 @@ class blog_data
 			break;
 
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
+				// Check to see if the blog has been queried already, if so we can skip it.
 				foreach ($id as $i)
 				{
-					if (!array_key_exists($i, self::$blog) && !in_array($id, $to_query))
+					if (!isset(self::$blog[$i]) && !in_array($id, $to_query))
 					{
 						$to_query[] = $i;
 					}
@@ -205,7 +207,6 @@ class blog_data
 				if ($limit > sizeof($all_blog_ids))
 				{
 					shuffle($all_blog_ids);
-					$this->get_blog_data('blog', $all_blog_ids);
 					return $all_blog_ids;
 				}
 				else
@@ -241,7 +242,7 @@ class blog_data
 				return $total['total'];
 			break;
 
-			case 'all_ids' : // select and return all ID's.  This does not get any data other than the blog_id's.
+			case 'all_ids' : // select and return all available ID's.  This does not get any data other than the blog_id's.
 				$all_ids = array();
 				$sql_array['SELECT'] = 'b.blog_id';
 				$sql_array['WHERE'] = implode(' AND ', $sql_where);
@@ -288,30 +289,30 @@ class blog_data
 			self::$blog[$row['blog_id']] = $row;
 
 			// add the blog owners' user_ids to the user_queue
-			array_push(self::$user_queue, $row['user_id']);
+			self::$user_queue[] = $row['user_id'];
 
 			// Add the edit user to the user_queue, if there is one
-			if ($row['blog_edit_count'] != 0)
+			if ($row['blog_edit_count'])
 			{
-				array_push(self::$user_queue, $row['blog_edit_user']);
+				self::$user_queue[] = $row['blog_edit_user'];
 			}
 
 			// Add the deleter user to the user_queue, if there is one
-			if ($row['blog_deleted'] != 0)
+			if ($row['blog_deleted'])
 			{
-				array_push(self::$user_queue, $row['blog_deleted']);
+				self::$user_queue[] = $row['blog_deleted'];
 			}
 
 			// make sure we don't record the same blog id in the list that we return more than once
 			if (!in_array($row['blog_id'], $blog_ids))
 			{
-				array_push($blog_ids, $row['blog_id']);
+				$blog_ids[] = $row['blog_id'];
 			}
 		}
 		$db->sql_freeresult($result);
 
 		// if there are no blogs, return false
-		if (sizeof($blog_ids) == 0)
+		if (!sizeof($blog_ids))
 		{
 			return false;
 		}
@@ -608,7 +609,7 @@ class blog_data
 		{
 			$sql_where[] = '(reply_deleted = 0 OR reply_deleted = ' . $user->data['user_id'] . ')';
 		}
-		if ($sort_days != 0)
+		if ($sort_days)
 		{
 			$sql_where[] = 'reply_time >= ' . (time() - $sort_days * 86400);
 		}
@@ -652,14 +653,14 @@ class blog_data
 					return self::$blog[$id[0]]['blog_real_reply_count'];
 				}
 
-				if ($sort_days == 0 && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
+				if (!$sort_days && ($auth->acl_get('m_blogreplyapprove') && $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete')))
 				{
 					return self::$blog[$id[0]]['blog_real_reply_count'];
 				}
-				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days != 0 || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
+				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
 					$sql_array['SELECT'] = 'count(reply_id) AS total';
-					$sql_where[] = 'blog_id = ' . $id[0] . '';
+					$sql_where[] = 'blog_id = ' . $id[0];
 					$sql_array['WHERE'] = implode(' AND ', $sql_where);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
 					$result = $db->sql_query($sql);
@@ -736,24 +737,24 @@ class blog_data
 			self::$reply[$row['reply_id']] = $row;
 
 			// Add this user's ID to the user_queue
-			array_push(self::$user_queue, $row['user_id']);
+			self::$user_queue[] = $row['user_id'];
 
 			// has the reply been edited?  If so add that user to the user_queue
 			if ($row['reply_edit_count'] != 0)
 			{
-				array_push(self::$user_queue, $row['reply_edit_user']);
+				self::$user_queue[] = $row['reply_edit_user'];
 			}
 	
 			// has the reply been deleted?  If so add that user to the user_queue
 			if ($row['reply_deleted'] != 0)
 			{
-				array_push(self::$user_queue, $row['reply_deleted']);
+				self::$user_queue[] = $row['reply_deleted'];
 			}
 
 			// make sure we don't record the same ID more than once
 			if (!in_array($row['reply_id'], $reply_ids))
 			{
-				array_push($reply_ids, $row['reply_id']);
+				$reply_ids[] = $row['reply_id'];
 			}
 		}
 		$db->sql_freeresult($result);
@@ -773,8 +774,9 @@ class blog_data
 	* To handle the raw data gotten from the database
 	*
 	* @param int $id The id of the reply we want to handle
+	* @param int|bool $trim_text If we want to trim the text or not(if true we will trim with the setting in $config['user_blog_user_text_limit'], else if it is an integer we will trim the text to that length)
 	*/
-	public function handle_reply_data($id)
+	public function handle_reply_data($id, $trim_text = false)
 	{
 		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
 		global $blog_attachment, $category_id;
@@ -790,12 +792,24 @@ class blog_data
 
 		blog_plugins::plugin_do('reply_handle_data_start');
 
+		if ($trim_text !== false)
+		{
+			$reply_text = trim_text_length(false, $id, ($trim_text === true) ? $config['user_blog_user_text_limit'] : intval($trim_text));
+			$shortened = ($reply_text === false) ? false : true;
+			$reply_text = ($reply_text === false) ? $reply['reply_text'] : $reply_text;
+		}
+		else
+		{
+			$reply_text = $reply['reply_text'];
+			$shortened = false;
+		}
+
 		// censor the text of the subject
 		$reply_subject = censor_text($reply['reply_subject']);
 
 		// Parse BBCode and prepare the message for viewing
 		$bbcode_options = (($reply['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($reply['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($reply['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
-		$reply_text = generate_text_for_display($reply['reply_text'], $reply['bbcode_uid'], $reply['bbcode_bitfield'], $bbcode_options);
+		$reply_text = generate_text_for_display($reply_text, $reply['bbcode_uid'], $reply['bbcode_bitfield'], $bbcode_options);
 
 		// For Highlighting
 		if ($highlight_match)
@@ -891,7 +905,7 @@ class blog_data
 
 			foreach ($id as $i)
 			{
-				if ($i && !array_key_exists($i, self::$user) && !in_array($i, $users_to_query))
+				if ($i && !isset(self::$user[$i]) && !in_array($i, $users_to_query))
 				{
 					$users_to_query[] = $i;
 				}

@@ -35,7 +35,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 	blog_plugins::plugin_do('function_blog_url');
 
-	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it!
+	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it
 	static $start_url = '';
 	$start_url = ($start_url == '') ? ((defined('BLOG_USE_ROOT')) ? generate_board_url(true) : generate_board_url()) . '/' : $start_url;
 	$extras = $anchor = '';
@@ -82,7 +82,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 		if (!isset($url_data['page']) && $user_id !== false)
 		{
-			// Do not do the str_replace for the username, it would break it! :P
+			// Do not do the url_replace for the username, it would break it!
 			$replace_page = false;
 
 			if ($user_id == $user->data['user_id'])
@@ -144,6 +144,12 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			$url_data['style'] = $_GET['style'];
 		}
 
+		// Add the Session ID if required.
+		if ($_SID)
+		{
+			$url_data['sid'] = $_SID;
+		}
+
 		if (sizeof($url_data))
 		{
 			foreach ($url_data as $name => $value)
@@ -157,14 +163,9 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			}
 		}
 
-		// Add the Session ID if required.
-		if ($_SID)
-		{
-			$extras .= "_sid-{$_SID}";
-		}
-
 		if (isset($url_data['page']) && $url_data['page'])
 		{
+			// URL replace the page if necessary
 			if ($replace_page)
 			{
 				$url_data['page'] = url_replace($url_data['page']);
@@ -233,6 +234,8 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 /**
 * generates the basic URL's used by this mod
+*
+* It is setup this way to allow easy changing of the url of some common pages
 */
 function generate_blog_urls()
 {
@@ -277,11 +280,6 @@ function get_user_settings($user_ids)
 {
 	global $cache, $config, $user_settings;
 
-	if (!isset($config['user_blog_enable']) || !$config['user_blog_enable'])
-	{
-		return;
-	}
-
 	if (!is_array($user_settings))
 	{
 		$user_settings = array();
@@ -292,6 +290,7 @@ function get_user_settings($user_ids)
 		$user_ids = array($user_ids);
 	}
 
+	// Only run the query if we have to.
 	$to_query = array();
 	foreach ($user_ids as $id)
 	{
@@ -328,6 +327,8 @@ function get_user_settings($user_ids)
 
 /**
 * Updates user settings
+*
+* ALWAYS use this function if you would like to update a user's blog settings on a different page!  Otherwise there may be security problems.
 */
 function update_user_blog_settings($user_id, $data, $resync = false)
 {
@@ -338,13 +339,35 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		get_user_settings($user_id);
 	}
 
+	// Filter the Blog CSS.
 	if (isset($data['blog_css']))
 	{
-		// This MUST be checked continuously until there are none left.
-		$replacements = 1;
-		while ($replacements > 0)
+		// Check for valid images if the user put in any urls.
+		$urls = array();
+		preg_match_all('#([a-zA-Z]+)://([^\.]+)\.([a-zA-Z0-9]+)([^\.]+)\.([a-zA-Z0-9]+)#', $data['blog_css'], $urls);
+		foreach ($urls[0] as $img)
 		{
-			$data['blog_css'] = str_replace(array('java', 'script', 'eval'), '', $data['blog_css'], $replacements);
+			if (@getimagesize($img) === false)
+			{
+				$data['blog_css'] = str_replace($img, ' ', $data['blog_css']);
+			}
+		}
+
+		// Replace quotes so they can be used.
+		$data['blog_css'] = str_replace('&quot;', '"', $data['blog_css']);
+
+		// Now we shall run our main filters.
+		$script_matches = array('#javascript#', '#vbscript#', '#manuscript#', "#[^a-zA-Z]java#", "#java[^a-zA-Z]#", "#[^a-zA-Z]script#", "#script[^a-zA-Z]#", "#[^a-zA-Z]expression#", "#expression[^a-zA-Z]#", "#[^a-zA-Z]eval#", "#eval[^a-zA-Z]#");
+		if (preg_replace($script_matches, ' ', strtolower($data['blog_css'])) != strtolower($data['blog_css']))
+		{
+			// If they are going to try something so obvious, instead of trying to filter it I'll just delete everything.
+			$data['blog_css'] = '';
+		}
+		else
+		{
+			// Remove HTML comments, HTML ASCII/HEX, and any other characters I do not think is needed.
+			$matches = array('#<!--.+-->#', '$&#?([a-zA-Z0-9]+);?$', '$([^a-zA-Z0-9",\*+%!_\.#{}()/:;-\s])$');
+			$data['blog_css'] = preg_replace($matches, ' ', $data['blog_css']);
 		}
 	}
 
@@ -381,6 +404,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		$db->sql_query($sql);
 	}
 
+	// Resyncronise the Blog Permissions
 	if ($resync && (array_key_exists('perm_guest', $data) || array_key_exists('perm_registered', $data) || array_key_exists('perm_foe', $data) || array_key_exists('perm_friend', $data)))
 	{
 		$sql_array = array(
@@ -407,12 +431,15 @@ function blog_error_handler($errno, $msg_text, $errfile, $errline)
 	if ($errno == E_USER_NOTICE)
 	{
 		global $user, $template;
+
+		// If we don't have the language setting needed we probably have not setup the page yet, so we must do it before we can continue.
 		if (!isset($user->lang['CLICK_INSTALL_BLOG']))
 		{
 			$user->setup('mods/blog/common');
 		}
 		else
 		{
+			// Set the template back to the user's default.  So custom style authors do not need to make a message_body template
 			$template->set_template();	
 		}
 	}
@@ -515,7 +542,7 @@ function get_blog_subscription_types()
 
 	if (!$config['user_blog_subscription_enabled'])
 	{
-		return;
+		return array();
 	}
 
 	// First is the subscription ID (which will use the bitwise operator), the second is the language variable.
