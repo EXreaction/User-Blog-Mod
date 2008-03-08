@@ -49,6 +49,7 @@ You may check for updated code in the repository, but the latest files in the re
           <change>A few bug fixes.  subsilver2 style is now included.  To update, upload the new files and point your browser to blog.php?page=update</change>
         </changelog>
       </entry>
+	  <entry>
         <date>2008-03-</date>
         <rev-version>
           <major>0</major>
@@ -138,7 +139,7 @@ Rewriterule ^blog/$						./blog/blog.php]]></action>
 		</edit>
 		<edit>
 			<find>// Load custom profile fields</find>
-			<action type="before-add">// Start Add User Blog Mod ------------------
+			<action type="before-add"><![CDATA[// Start Add User Blog Mod ------------------
 if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 {
 	include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
@@ -150,17 +151,17 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	get_zebra_info($user->data['user_id'], true);
 	get_user_settings($id_cache);
 }
-// End Add User Blog Mod --------------------</action>
+// End Add User Blog Mod --------------------]]></action>
 		</edit>
 		<edit>
 			<find>	// Dump vars into template
 	$template->assign_block_vars('postrow', $postrow);</find>
-			<action type="after-add">	// Start Add User Blog Mod ------------------
+			<action type="after-add"><![CDATA[	// Start Add User Blog Mod ------------------
 	if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	{
 		add_blog_links($poster_id, 'postrow.custom_fields', $user_cache[$poster_id]);
 	}
-	// End Add User Blog Mod --------------------</action>
+	// End Add User Blog Mod --------------------]]></action>
 		</edit>
 	</open>
     <diy-instructions lang="en">Go to blog.php?page=install in your web browser to install the database section.
