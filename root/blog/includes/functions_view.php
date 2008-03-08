@@ -827,7 +827,7 @@ function trim_text_length($blog_id, $reply_id, $str_limit, $always_return = fals
 		$text .= "\n \n <a href=\"";
 		if ($reply_id !== false)
 		{
-			$text .= blog_url(blog_data::$blog[$blog_id]['user_id'], $blog_id, $reply_id);
+			$text .= blog_url((isset(blog_data::$blog[$blog_id]) ? blog_data::$blog[$blog_id]['user_id'] : false), $blog_id, $reply_id);
 		}
 		else
 		{

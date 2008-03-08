@@ -778,7 +778,7 @@ class blog_data
 	*/
 	public function handle_reply_data($id, $trim_text = false)
 	{
-		global $user, $phpbb_root_path, $phpEx, $auth, $highlight_match;
+		global $user, $phpbb_root_path, $config, $phpEx, $auth, $highlight_match;
 		global $blog_attachment, $category_id;
 
 		if (!isset(self::$reply[$id]))
