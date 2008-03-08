@@ -19,7 +19,7 @@
 define('IN_BLOG', true);
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '0.7.1_dev';
+$user_blog_version = '0.7.2';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -72,6 +72,7 @@ set_error_handler('blog_error_handler');
 // check if the User Blog Mod is installed/enabled
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER)
 {
+	// Now we will just redirect to the install.php file.  Otherwise we have problems with some stuff trying to get data from non-existing tables.
 	redirect(append_sid("{$phpbb_root_path}blog/install.$phpEx"));
 }
 else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER)

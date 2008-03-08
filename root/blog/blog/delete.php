@@ -75,6 +75,7 @@ if (is_array($settings))
 			$db->sql_query($sql);
 
 			set_config('num_blogs', --$config['num_blogs'], true);
+			set_config('num_blog_replies', ($config['num_blog_replies'] - blog_data::$blog[$blog_id]['blog_real_reply_count']), true);
 
 			// Update the blog_count for all the categories it is in.
 			$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
@@ -150,6 +151,7 @@ if (is_array($settings))
 		$db->sql_query($sql);
 
 		set_config('num_blogs', --$config['num_blogs'], true);
+		set_config('num_blog_replies', ($config['num_blog_replies'] - blog_data::$blog[$blog_id]['blog_real_reply_count']), true);
 
 		// Update the blog_count for all the categories it is in.
 		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
