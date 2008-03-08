@@ -19,7 +19,7 @@
 define('IN_BLOG', true);
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '0.7.2';
+$user_blog_version = '0.7.1';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
