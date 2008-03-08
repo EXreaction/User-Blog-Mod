@@ -24,7 +24,7 @@ You may check for updated code in the repository, but the latest files in the re
     <mod-version>
       <major>0</major>
       <minor>7</minor>
-      <revision>1_dev</revision>
+      <revision>1</revision>
     </mod-version>
 
     <installation>
@@ -50,11 +50,11 @@ You may check for updated code in the repository, but the latest files in the re
         </changelog>
       </entry>
 	  <entry>
-        <date>2008-03-</date>
+        <date>2008-03-08</date>
         <rev-version>
           <major>0</major>
           <minor>7</minor>
-          <revision>1_dev</revision>
+          <revision>1</revision>
         </rev-version>
         <changelog lang="en-GB">
           <change>More bug fixes plus a much more secure Blog CSS filter.  To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
@@ -164,7 +164,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// End Add User Blog Mod --------------------]]></action>
 		</edit>
 	</open>
-    <diy-instructions lang="en">Go to blog.php?page=install in your web browser to install the database section.
+    <diy-instructions lang="en">Go to yoursite/blog/install.php in your web browser to install the database section.
 
 Go to ACP->Styles->Style components->Theme->prosilver->Refresh
 
