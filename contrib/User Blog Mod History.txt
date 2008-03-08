@@ -298,8 +298,8 @@
 ##		Beta 1
 ##			+ A few bug fixes.  subsilver2 style is now included.
 ##			+ To update, upload the new files and point your browser to blog.php?page=update
-## 2008-03-
-##		Beta 2_dev
+## 2008-03-08
+##		Beta 2
 ##			+ More bug fixes plus a much more secure Blog CSS filter.
 ##			+ To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.
 ##############################################################
