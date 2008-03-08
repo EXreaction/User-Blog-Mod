@@ -8,10 +8,21 @@
 *
 */
 
-// If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
-if (!defined('IN_PHPBB'))
+$user_blog_version = '0.7.1_dev';
+
+// Stuff required to work with phpBB3
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : '../';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include($phpbb_root_path . 'common.' . $phpEx);
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup(array('mods/blog/common', 'mods/blog/setup'));
+
+if ($user->data['user_type'] != USER_FOUNDER)
 {
-	exit;
+	trigger_error('MUST_BE_FOUNDER');
 }
 
 if (isset($config['user_blog_version']))
@@ -33,6 +44,8 @@ if (confirm_box(true))
 		include($phpbb_root_path . 'config.' . $phpEx);
 		unset($dbpasswd, $dbuser, $dbname);
 	}
+
+	include($phpbb_root_path . 'blog/functions.' . $phpEx);
 
 	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx); // Needed for remove_comments function for some DB types
 	include($phpbb_root_path . 'includes/functions_install.' . $phpEx);

@@ -18,7 +18,7 @@
 
 define('IN_BLOG', true);
 
-// The Version #
+// Remember to update this in the install.php file as well!
 $user_blog_version = '0.7.1_dev';
 
 // Stuff required to work with phpBB3
@@ -70,12 +70,11 @@ $blog_data = new blog_data();
 set_error_handler('blog_error_handler');
 
 // check if the User Blog Mod is installed/enabled
-if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER && $page != 'install')
+if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER)
 {
-	$user->setup('mods/blog/common');
-	trigger_error(sprintf($user->lang['CLICK_INSTALL_BLOG'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=install') . '">', '</a>'));
+	redirect(append_sid("{$phpbb_root_path}blog/install.$phpEx"));
 }
-else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $page != 'update' && $page != 'install' && $user->data['user_type'] != USER_FOUNDER)
+else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER)
 {
 	trigger_error('USER_BLOG_MOD_DISABLED');
 }
@@ -96,7 +95,6 @@ switch ($page)
 		$add_lang = 'mods/blog/misc';
 		$inc_file = $page;
 	break;
-	case 'install' : // to install the User Blog Mod
 	case 'update' : // for updating from previous versions of the User Blog Mod
 	case 'upgrade' : // for upgrading from other blog modifications
 	case 'dev' : // used for developmental purposes
