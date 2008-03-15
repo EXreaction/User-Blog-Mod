@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 */
 if ($dbms == 'mysql' || $dbms == 'mysqli')
 {
-	if (version_compare($db->mysql_version, '4.1.3', '>=') || $dbms == 'mysqli')
+	if ($dbms == 'mysqli' || version_compare($db->mysql_version, '4.1.3', '>='))
 	{
 		$dbms_schema = 'mysql_41_schema.sql';
 	}
