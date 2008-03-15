@@ -107,15 +107,6 @@ You may check for updated code in the repository, but the latest files in the re
 			<action type="after-add"><![CDATA[@import url("blog.css");]]></action>
 		</edit>
 	</open>
-	<open src="styles/subsilver2/template/overall_header.html">
-		<edit>
-			<comment lang="en">Do this for all subsilver2 based styles.</comment>
-			<find>{U_FAQ}</find>
-			<action type="before-add"><![CDATA[				<!-- BEGIN blog_links -->
-					<a href="{blog_links.URL}">{blog_links.IMG} {blog_links.TEXT}</a>&nbsp; &nbsp;
-				<!-- END blog_links -->]]></action>
-		</edit>
-	</open>
 	<open src=".htaccess">
 		<edit>
 			<comment lang="en">Only add this if your server has mod_rewrite enabled.  If you are not sure you may add it anyways but, if you get an internal server error, undo the edit.</comment>
