@@ -66,6 +66,7 @@ You may check for updated code in the repository, but the latest files in the re
   <action-group>
     <copy>
       <file from="../root/styles/subsilver2/*.*" to="styles/acidtech_tiger/*.*" />
+      <file from="root/styles/acidtech_tiger/*.*" to="styles/acidtech_tiger/*.*" />
     </copy>
 	<open src="styles/subsilver2/template/overall_header.html">
 		<edit>
