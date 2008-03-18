@@ -318,25 +318,15 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		return;
 	}
 
-	if (!function_exists('blog_url'))
-	{
-		include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
-	}
-
-	if (!isset($user->lang['BLOG']))
-	{
-		$user->add_lang('mods/blog/blog');
-	}
-
+	// If the $user_settings are set we check to make sure they have permission first
 	if (isset($user_settings[$user_id]))
 	{
-		$no_perm = false;
-
+		$allowed = true;
 		if ($user->data['user_id'] == ANONYMOUS)
 		{
 			if ($user_settings[$user_id]['perm_guest'] == 0)
 			{
-				$no_perm = true;
+				$allowed = false;
 			}
 		}
 		else
@@ -347,102 +337,80 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				{
 					if ($user_settings[$user_id]['perm_foe'] == 0)
 					{
-						$no_perm = true;
+						$allowed = false;
 					}
 				}
 				else if (isset($reverse_zebra_list[$user->data['user_id']]['friend']) && in_array($user_id, $reverse_zebra_list[$user->data['user_id']]['friend']))
 				{
 					if ($user_settings[$user_id]['perm_friend'] == 0)
 					{
-						$no_perm = true;
+						$allowed = false;
 					}
 				}
 				else
 				{
 					if ($user_settings[$user_id]['perm_registered'] == 0)
 					{
-						$no_perm = true;
+						$allowed = false;
 					}
 				}
 			}
-			else
+			else if ($user_settings[$user_id]['perm_registered'] == 0)
 			{
-				if ($user_settings[$user_id]['perm_registered'] == 0)
-				{
-					$no_perm = true;
-				}
+				$allowed = false;
 			}
 		}
 
-		if ($no_perm)
+		// If they are not allowed we only show them the link with a 0 count for blogs if it is always on
+		if (!$allowed)
 		{
 			if ($config['user_blog_always_show_blog_url'] || $force_output)
 			{
+				$url = ((isset($user_data['username'])) ? blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) : blog_url($user_id, false, false, array('c' => '*skip*')));
+				$data = array(
+					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+					'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+				);
 				if ($return)
 				{
-					return array(
-						'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-						'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
-					);
+					return $data;
 				}
 
-				$template->assign_block_vars($block, array(
-					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-					'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
-				));
-
-				return;
+				$template->assign_block_vars($block, $data);
 			}
-			else
-			{
-				return;
-			}
+			return;
 		}
 	}
 
-	// if they are not an anon user, and they blog_count row isn't set grab that data from the db.
-	if ($user_id > 1 && (!isset($user_data['blog_count']) || !isset($user_data['username'])) && $grab_from_db)
-	{
-		$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = ' . intval($user_id);
-		$result = $db->sql_query($sql);
-		$user_data = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-	}
-	else if (!isset($user_data['blog_count']))
+	// if the blog_count or username isn't set, grab that data from the db.
+	if (!isset($user_data['blog_count']) || !isset($user_data['username']))
 	{
 		$user_data['blog_count'] = -1;
-	}
-	
-	if ($user_data['blog_count'] > 0 || (($config['user_blog_always_show_blog_url'] || $force_output) && $user_data['blog_count'] >= 0))
-	{
-		if ($return)
+		if ($grab_from_db)
 		{
-			return array(
-				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
-			);
+			$sql = 'SELECT username, blog_count FROM ' . USERS_TABLE . ' WHERE user_id = ' . intval($user_id);
+			$result = $db->sql_query($sql);
+			$user_data = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
 		}
-
-		$template->assign_block_vars($block, array(
-			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . ' (' .$user_data['blog_count'] . ')</a>',
-		));
 	}
-	else if (!$grab_from_db && $user_data['blog_count'] == -1)
+
+	if ($user_data['blog_count'] < 1 && !($config['user_blog_always_show_blog_url'] || $force_output))
 	{
-		if ($return)
-		{
-			return array(
-				'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-				'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
-			);
-		}
-
-		$template->assign_block_vars($block, array(
-			'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-			'PROFILE_FIELD_VALUE'		=> '<a href="' . blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) . '">' . $user->lang['VIEW_BLOGS'] . '</a>',
-		));
+		return;
 	}
+
+	$url = ((isset($user_data['username'])) ? blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) : blog_url($user_id, false, false, array('c' => '*skip*')));
+	$data = array(
+		'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
+		'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOGS'] . (($user_data['blog_count'] != -1) ? ' (' . $user_data['blog_count'] . ')</a>' : '</a>'),
+	);
+	if ($return)
+	{
+		return $data;
+	}
+
+	$template->assign_block_vars($block, $data);	
 }
 
 /**

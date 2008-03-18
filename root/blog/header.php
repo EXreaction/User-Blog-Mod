@@ -80,6 +80,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// If we are viewing a users' profile add a link to view the users' blog in the custom profile section
 	if (request_var('mode', '') == 'viewprofile' && request_var('u', 0))
 	{
+		include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
 		include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
 		include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 		new blog_plugins();
