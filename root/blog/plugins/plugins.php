@@ -152,7 +152,7 @@ class blog_plugins
 	*/
 	public static function plugin_install($which)
 	{
-		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
+		global $auth, $auth_admin, $blog_plugins_path, $cache, $config, $db, $dbmd, $dbms, $db_tool, $phpbb_root_path, $phpEx, $table_prefix, $user;
 
 		if (!array_key_exists($which, self::$available_plugins))
 		{
@@ -194,7 +194,7 @@ class blog_plugins
 	*/
 	public static function plugin_uninstall($which)
 	{
-		global $cache, $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
+		global $auth, $auth_admin, $blog_plugins_path, $cache, $config, $db, $dbmd, $dbms, $db_tool, $phpbb_root_path, $phpEx, $table_prefix, $user;
 		if (!array_key_exists($which, self::$plugins))
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
@@ -225,7 +225,7 @@ class blog_plugins
 	*/
 	public static function plugin_update($which)
 	{
-		global $config, $db, $dbms, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix;
+		global $auth, $auth_admin, $blog_plugins_path, $cache, $config, $db, $dbmd, $dbms, $db_tool, $phpbb_root_path, $phpEx, $table_prefix, $user;
 		if (!array_key_exists($which, self::$plugins))
 		{
 			trigger_error('PLUGIN_NOT_INSTALLED');
