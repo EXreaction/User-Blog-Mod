@@ -11,7 +11,6 @@
 /*
 * Notes - To do
 * post revisions plugin
-* cash mod plugin
 * personal categories (tags) plugin
 * Memorable entry (like a sticky)?
 */
