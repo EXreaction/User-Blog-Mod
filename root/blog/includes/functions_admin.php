@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 /**
 * Get the User Blog Version
 *
-* Gets the latest version from lithiumstudios.org (once per day) and returns it
+* Gets the latest version from lithiumstudios.org (once every hour) and returns it
 */
 function get_latest_user_blog_version()
 {
@@ -34,7 +34,7 @@ function get_latest_user_blog_version()
 		$errstr = $errno = '';
 		$version = get_remote_file('lithiumstudios.org', '/updatecheck', 'user_blog_mod.txt', $errstr, $errno);
 
-		$cache->put('user_blog_version', $version, 86400);
+		$cache->put('user_blog_version', $version, 3600);
 	}
 
 	return $version;
