@@ -14,6 +14,33 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Get the User Blog Version
+*
+* Gets the latest version from lithiumstudios.org (once per day) and returns it
+*/
+function get_latest_user_blog_version()
+{
+	global $cache;
+
+	$version = $cache->get('user_blog_version');
+	if ($version === false)
+	{
+		if (!function_exists('get_remote_file'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+		}
+
+		$errstr = $errno = '';
+		$version = get_remote_file('lithiumstudios.org', '/updatecheck', 'user_blog_mod.txt', $errstr, $errno);
+
+		$cache->put('user_blog_version', $version, 86400);
+	}
+
+	return $version;
+}
+
+/**
 * Perform actions on a user's profile from the acp_users file
 */
 function blog_acp_profile($user_id, $submit)

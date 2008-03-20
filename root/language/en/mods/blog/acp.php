@@ -72,6 +72,7 @@ $lang = array_merge($lang, array(
 	'CATEGORY_SETTINGS'						=> 'Category Settings',
 	'CATEGORY_UPDATED'						=> 'Category successfully updated!',
 	'CLICK_CHECK_NEW_VERSION'				=> 'Click %shere%s to check for an updated version of the User Blog Mod',
+	'CLICK_GET_NEW_VERSION'					=> 'Click %shere%s to get the latest version of the User Blog Mod',
 	'CLICK_UPDATE'							=> 'Click %shere%s to update the database for the User Blog Mod',
 	'CONTINUE'								=> 'Continue',
 	'COPYRIGHT'								=> 'Copyright',
@@ -95,6 +96,7 @@ $lang = array_merge($lang, array(
 
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 
+	'LATEST_VERSION'						=> 'Latest Version',
 	'LOG_CATEGORY_ADD'						=> 'Added a new Blog Category.',
 	'LOG_CATEGORY_DELETE'					=> 'Deleted Blog Category',
 	'LOG_CATEGORY_EDIT'						=> 'Edited a Blog Category.',

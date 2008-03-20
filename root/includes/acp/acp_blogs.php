@@ -35,6 +35,7 @@ class acp_blogs
 		}
 
 		include($phpbb_root_path . 'blog/functions.' . $phpEx);
+		include($phpbb_root_path . 'blog/includes/functions_admin.' . $phpEx);
 		$user->add_lang(array('mods/blog/common', 'mods/blog/acp', 'mods/blog/setup'));
 
 		switch($mode)
@@ -241,15 +242,30 @@ class acp_blogs
 			fclose($handle);
 		}
 
-		$version = $user->lang['DATABASE_VERSION'] . ': ' . $value . '<br/>';
-		$version .= $user->lang['FILE_VERSION'] . ': ' . $file_version . '<br/><br/>';
+		$version = $user->lang['DATABASE_VERSION'] . ': ' . $value . '<br />';
+		$version .= $user->lang['FILE_VERSION'] . ': ' . $file_version . '<br /><br />';
+		$version .= $user->lang['LATEST_VERSION'] . ': ';
 
-		if ($file_version != $value)
+		$latest_version = get_latest_user_blog_version();
+		if ($latest_version === false)
 		{
-			$version .= sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br/>';
+			$version .= $user->lang['NOT_AVAILABLE'];
+			$version .= '<br />' . sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&t=433">', '</a>');
+		}
+		else
+		{
+			$version .= $latest_version;
+			if (version_compare($file_version, $latest_version, '<'))
+			{
+				$version .= '<br />' . sprintf($user->lang['CLICK_GET_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&t=433">', '</a>');
+			}
 		}
 
-		$version .= sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&t=433">', '</a>');
+		if (version_compare($file_version, $value, '>'))
+		{
+			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br/>';
+		}
+
 		return $version;
 	}
 
