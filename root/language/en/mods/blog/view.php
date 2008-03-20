@@ -28,20 +28,20 @@ $lang = array_merge($lang, array(
 	'CNT_COMMENTS'					=> '%s Comments',
 	'COMMENTS'						=> 'Comments',
 
-	'DELETED_MESSAGE'				=> 'These blogs have all been deleted.',
-	'DELETED_MESSAGE_EXPLAIN'		=> 'There is a link in every "This blog was deleted by..." section to un-delete the blog.',
-	'DELETED_REPLY_SHOW'			=> 'This reply has been soft deleted.  Click here to show the reply.',
+	'DELETED_MESSAGE'				=> 'These blog entries have all been deleted.',
+	'DELETED_MESSAGE_EXPLAIN'		=> 'There is a link in every "This blog entry was deleted by..." section to un-delete the blog.',
+	'DELETED_REPLY_SHOW'			=> 'This comment has been soft deleted.  Click here to show the comment.',
 
 	'MY_RATING'						=> 'My Rating',
 
-	'NO_DELETED_BLOGS'				=> 'There are no deleted blogs by this user.',
-	'NO_DELETED_BLOGS_SORT_DAYS'	=> 'No deleted blogs were posted by this user in the last %s.',
+	'NO_DELETED_BLOGS'				=> 'There are no deleted blog entries by this user.',
+	'NO_DELETED_BLOGS_SORT_DAYS'	=> 'No deleted blog entries were posted by this user in the last %s.',
 
 	'ONE_COMMENT'					=> '1 Comment',
 
 	'POSTED_BY_FOE'					=> 'This post was made by %s who is currently on your ignore list.',
 
-	'RANDOM_BLOG'					=> 'Random Blog',
+	'RANDOM_BLOG'					=> 'Random Blog Entry',
 	'RATE_ME'						=> '%1$s out of %2$s',
 	'RECENT_COMMENTS'				=> 'Recent Comments',
 	'RECENT_REPLIES'				=> 'Recent Replies',
@@ -52,7 +52,7 @@ $lang = array_merge($lang, array(
 	'SUBCATEGORIES'					=> 'Subcategories',
 	'SUBCATEGORY'					=> 'Subcategory',
 
-	'TOTAL_NUMBER_OF_BLOGS'			=> 'Total Blogs',
+	'TOTAL_NUMBER_OF_BLOGS'			=> 'Total Blog Entries',
 	'TOTAL_NUMBER_OF_REPLIES'		=> 'Total Blog Replies',
 
 	'UNAPPROVED'					=> 'This message needs approval.  Click here to approve this message.',

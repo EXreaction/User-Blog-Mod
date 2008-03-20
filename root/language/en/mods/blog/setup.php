@@ -62,7 +62,7 @@ $lang = array_merge($lang, array(
 	'REINDEX'						=> 'Re-Index',
 	'REMAINING_CONVERT_COMPLETE'	=> 'The remaining parts have been successfully converted.',
 	'REPLY_CONVERT_COMPLETE'		=> 'The replies have been successfully converted.',
-	'RESYNC'						=> 'Re-Sync',
+	'RESYNC'						=> 'Resync',
 	'RESYNC_COMPLETE'				=> 'The User Blog Mod has been Resyncronized.',
 	'RETURN_LAST_STEP'				=> 'Click here to return to the last step.',
 

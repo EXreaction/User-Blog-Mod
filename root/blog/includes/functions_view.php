@@ -369,7 +369,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				$url = ((isset($user_data['username'])) ? blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) : blog_url($user_id, false, false, array('c' => '*skip*')));
 				$data = array(
 					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-					'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOGS'] . ' (0)</a>',
+					'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . ' (0)</a>',
 				);
 				if ($return)
 				{
@@ -403,7 +403,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	$url = ((isset($user_data['username'])) ? blog_url($user_id, false, false, array('c' => '*skip*'), array('username' => $user_data['username'])) : blog_url($user_id, false, false, array('c' => '*skip*')));
 	$data = array(
 		'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
-		'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOGS'] . (($user_data['blog_count'] != -1) ? ' (' . $user_data['blog_count'] . ')</a>' : '</a>'),
+		'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . (($user_data['blog_count'] != -1) ? ' (' . $user_data['blog_count'] . ')</a>' : '</a>'),
 	);
 	if ($return)
 	{
@@ -426,7 +426,7 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 	global $blog_urls, $category_id;
 
 	$template->assign_block_vars('navlinks', array(
-		'FORUM_NAME'		=> $user->lang['USER_BLOGS'],
+		'FORUM_NAME'		=> $user->lang['BLOGS'],
 		'U_VIEW_FORUM'		=> $blog_urls['main'],
 	));
 
@@ -446,7 +446,7 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 		else if ($username != '')
 		{
 			$template->assign_block_vars('navlinks', array(
-				'FORUM_NAME'		=> sprintf($user->lang['USERNAMES_BLOGS'], $username),
+				'FORUM_NAME'		=> ($user->data['username'] == $username) ? $user->lang['MY_BLOG'] : sprintf($user->lang['USERNAMES_BLOGS'], $username),
 				'U_VIEW_FORUM'		=> $blog_urls['view_user'],
 			));
 		}

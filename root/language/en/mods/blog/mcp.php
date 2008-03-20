@@ -16,14 +16,9 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'MCP_BLOG'								=> 'Blog',
-	'MCP_BLOG_DISAPPROVED_BLOGS'			=> 'Unapproved Blogs',
 	'MCP_BLOG_DISAPPROVED_BLOGS_EXPLAIN'	=> 'Here you can view a list of blogs that need approval.',
-	'MCP_BLOG_DISAPPROVED_REPLIES'			=> 'Unaproved Replies',
 	'MCP_BLOG_DISAPPROVED_REPLIES_EXPLAIN'	=> 'Here you can view a list of replies that need approval.',
-	'MCP_BLOG_REPORTED_BLOGS'				=> 'Reported Blogs',
 	'MCP_BLOG_REPORTED_BLOGS_EXPLAIN'		=> 'Here you can view a list of reported blogs.',
-	'MCP_BLOG_REPORTED_REPLIES'				=> 'Reported Replies',
 	'MCP_BLOG_REPORTED_REPLIES_EXPLAIN'		=> 'Here you can view a list of reported replies.',
 ));
 

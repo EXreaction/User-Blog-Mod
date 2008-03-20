@@ -16,13 +16,8 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_BLOGS'								=> 'User Blog Mod',
-	'ACP_BLOG_CATEGORIES'					=> 'Blog Categories',
 	'ACP_BLOG_CATEGORIES_EXPLAIN'			=> 'Here you can add/edit/manage Blog Categories.',
-	'ACP_BLOG_PLUGINS'						=> 'Blog Plugins',
 	'ACP_BLOG_PLUGINS_EXPLAIN'				=> 'Here you can enable/disable/install/uninstall plugins for the User Blog Mod.<br /><br />You can also move plugins up/down in the list, which will move them up/down in priority (which ones get shown first).',
-	'ACP_BLOG_SEARCH'						=> 'Blog Search',
-	'ACP_BLOG_SETTINGS'						=> 'Blog Settings',
 	'ALLOWED_IN_BLOG'						=> 'Allowed in User Blogs',
 	'ALLOW_IN_BLOG'							=> 'Allow in User Blogs',
 
@@ -102,11 +97,6 @@ $lang = array_merge($lang, array(
 	'LOG_CATEGORY_EDIT'						=> 'Edited a Blog Category.',
 	'LOG_CONFIG_BLOG'						=> '<strong>Altered Blog Settings</strong>',
 
-	'MCP_BLOG'								=> 'Blog',
-	'MCP_BLOG_DISAPPROVED_BLOGS'			=> 'Unapproved Blogs',
-	'MCP_BLOG_DISAPPROVED_REPLIES'			=> 'Unaproved Replies',
-	'MCP_BLOG_REPORTED_BLOGS'				=> 'Reported Blogs',
-	'MCP_BLOG_REPORTED_REPLIES'				=> 'Reported Replies',
 	'MOVE_BLOGS_TO'							=> 'Move Blogs to',
 	'MOVE_SUBCATEGORIES_TO'					=> 'Move subcategories to',
 
@@ -134,10 +124,6 @@ $lang = array_merge($lang, array(
 
 	'SELECT_CATEGORY'						=> 'Select Category',
 
-	'UCP_BLOG'								=> 'Blog',
-	'UCP_BLOG_PERMISSIONS'					=> 'Blog Permissions',
-	'UCP_BLOG_SETTINGS'						=> 'Blog Settings',
-	'UCP_BLOG_TITLE_DESCRIPTION'			=> 'Blog Title and Description',
 	'UNINSTALLED_PLUGINS'					=> 'Uninstalled Plugins',
 	'USER_TEXT_LIMIT'						=> 'Default text limit for user blog page',
 	'USER_TEXT_LIMIT_EXPLAIN'				=> 'Same as Default text limit, except this is for the limit on the View User page',
