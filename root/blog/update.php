@@ -577,6 +577,7 @@ if (confirm_box(true))
 		case '0.3.41' :
 		case '0.3.42' :
 		case '0.7.0' :
+		case '0.7.1' :
 	}
 
 	// update the version
