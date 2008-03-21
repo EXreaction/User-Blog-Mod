@@ -363,7 +363,7 @@ $template->assign_vars(array(
 	'S_WATCH_FORUM_LINK'	=> ($subscribed) ? $blog_urls['unsubscribe'] : (($user->data['user_id'] != $user_id || $blog_id) ? $blog_urls['subscribe'] : ''),
 	'S_WATCHING_FORUM'		=> $subscribed,
 
-	'L_USERNAMES_BLOGS'		=> sprintf($user->lang['USERNAMES_BLOGS'], $username),
+	'L_USERNAMES_BLOGS'		=> ($username == $user->data['username']) ? $user->lang['MY_BLOG'] : sprintf($user->lang['USERNAMES_BLOGS'], $username),
 
 	'UA_GREY_STAR_SRC'		=> $blog_images_path . 'star_grey.gif',
 	'UA_GREEN_STAR_SRC'		=> $blog_images_path . 'star_green.gif',

@@ -44,10 +44,10 @@ $lang = array_merge($lang, array(
 	'CONTINUE'						=> 'Continue',
 	'CONTINUED'						=> 'Continued',
 
-	'DELETE_BLOG'					=> 'Delete Blog',
+	'DELETE_BLOG'					=> 'Delete Blog Entry',
 	'DELETE_REPLY'					=> 'Delete Comment',
 
-	'EDIT_BLOG'						=> 'Edit Blog',
+	'EDIT_BLOG'						=> 'Edit Blog Entry',
 	'EDIT_REPLY'					=> 'Edit Reply',
 
 	'FEED'							=> 'Feed',

@@ -158,19 +158,19 @@
 
 					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
 
+					<div class="blog_bottom_left">
+						{blogrow.REPLIES}
+					</div>
+
 					<div class="blog_bottom_right">
 						<!-- IF not blogrow.S_SHORTENED and (blogrow.U_EDIT or blogrow.U_DELETE or blogrow.U_REPORT or blogrow.U_WARN or blogrow.U_QUOTE) -->
 								<!-- IF blogrow.U_EDIT --><a href="{blogrow.U_EDIT}">{L_EDIT_BLOG}</a> | <!-- ENDIF -->
 								<!-- IF blogrow.U_DELETE --><a href="{blogrow.U_DELETE}">{L_DELETE_BLOG}</a> | <!-- ENDIF -->
 								<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}">{L_REPORT_BLOG}</a> | <!-- ENDIF -->
 								<!-- IF blogrow.U_WARN --><a href="{blogrow.U_WARN}">{L_WARN_USER}</a> | <!-- ENDIF -->
-								<!-- IF blogrow.U_QUOTE --><a href="{blogrow.U_QUOTE}">{L_REPLY_WITH_QUOTE}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_QUOTE --><a href="{blogrow.U_QUOTE}">{L_QUOTE}</a> | <!-- ENDIF -->
 								<!-- IF blogrow.U_REPLY --><a href="{blogrow.U_REPLY}">{L_REPLY}</a><!-- ENDIF -->
 						<!-- ENDIF -->
-					</div>
-
-					<div class="blog_bottom_left">
-						{blogrow.REPLIES}
 					</div>
 				</div>
 
@@ -225,19 +225,18 @@
 
 							<!-- IF replyrow.SIGNATURE --><div class="signature">{replyrow.SIGNATURE}</div><!-- ENDIF -->
 
+							<div class="reply_bottom_left">
+							</div>
+
 							<div class="reply_bottom_right">
 								<!-- IF not replyrow.S_SHORTENED and (replyrow.U_EDIT or replyrow.U_DELETE or replyrow.U_REPORT or replyrow.U_WARN or replyrow.U_QUOTE) -->
 										<!-- IF replyrow.U_EDIT --><a href="{replyrow.U_EDIT}">{L_EDIT_REPLY}</a> | <!-- ENDIF -->
 										<!-- IF replyrow.U_DELETE --><a href="{replyrow.U_DELETE}">{L_DELETE_REPLY}</a> | <!-- ENDIF -->
 										<!-- IF replyrow.U_REPORT and not replyrow.S_REPORTED --><a href="{replyrow.U_REPORT}">{L_REPORT_REPLY}</a> | <!-- ENDIF -->
 										<!-- IF replyrow.U_WARN --><a href="{replyrow.U_WARN}">{L_WARN_USER}</a> | <!-- ENDIF -->
-										<!-- IF replyrow.U_QUOTE --><a href="{replyrow.U_QUOTE}">{L_REPLY_WITH_QUOTE}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_QUOTE --><a href="{replyrow.U_QUOTE}">{L_QUOTE}</a> | <!-- ENDIF -->
 										<!-- IF replyrow.U_REPLY --><a href="{replyrow.U_REPLY}">{L_REPLY}</a><!-- ENDIF -->
 								<!-- ENDIF -->
-							</div>
-
-							<div class="reply_bottom_left">
-								<br />
 							</div>
 						</div>
 					<!-- END replyrow -->

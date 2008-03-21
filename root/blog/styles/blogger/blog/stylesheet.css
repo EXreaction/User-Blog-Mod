@@ -20,7 +20,7 @@ a:link {
 }
 
 a:visited {
-	color:#32527A;
+	color:#5588AA;
 	text-decoration:none;
 }
 
@@ -230,10 +230,10 @@ hr {
 }
 
 .blog_bottom_right {
-	float: right;
 }
 
 .blog_bottom_left {
+	margin-bottom: 4px;
 }
 
 /* Reply Classes */
@@ -258,10 +258,10 @@ hr {
 }
 
 .reply_bottom_right {
-	float: right;
 }
 
 .reply_bottom_left {
+	margin-bottom: 4px;
 }
 
 /* Footer Classes */
@@ -277,12 +277,13 @@ hr {
 
 /* Extra Classes */
 .deleted {
-	background-color: #33FF00;
+	padding: 5px;
+	background-color: #A19CA6;
 }
 
 .reported {
 	background-color: #FFF36F;
-	padding: 10px;
+	padding: 5px;
 }
 
 /*
