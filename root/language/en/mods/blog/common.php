@@ -56,12 +56,10 @@ $lang = array_merge($lang, array(
 
 	'GUEST_PERMISSIONS'				=> 'Guest Permissions',
 
-	'LAST_BLOG'						=> 'Last Blog',
 	'LIMIT'							=> 'Limit',
 
 	'MUST_BE_FOUNDER'				=> 'You must be a board founder to access this page.',
 	'MY_BLOG'						=> 'My Blog',
-	'MY_BLOGS'						=> 'My Blog Entries',
 
 	'NEW_BLOG'						=> 'New Blog Entry',
 	'NO_BLOGS'						=> 'There are no blog entries.',
@@ -87,7 +85,7 @@ $lang = array_merge($lang, array(
 	'REPLIES'						=> 'Comments',
 	'REPLY'							=> 'Comment',
 	'REPLY_COUNT'					=> 'Comment Count',
-	'REPLY_DELETED_BY_MSG'			=> 'This reply was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this reply.',
+	'REPLY_DELETED_BY_MSG'			=> 'This comment was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this comment.',
 	'REPLY_NOT_EXIST'				=> 'The requested reply does not exist.',
 	'REPORT_BLOG'					=> 'Report Blog Entry',
 	'REPORT_REPLY'					=> 'Report Comment',
@@ -113,7 +111,6 @@ $lang = array_merge($lang, array(
 	'USER_BLOG_RATINGS_DISABLED'	=> 'The ratings system has been disabled.',
 
 	'VIEW_BLOG'						=> 'View Blog',
-	'VIEW_DELETED_BLOGS'			=> 'View Deleted Blogs',
 	'VIEW_REPLY'					=> 'View Reply',
 
 	'WARNING'						=> 'Warning',

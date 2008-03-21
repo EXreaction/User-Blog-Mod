@@ -311,7 +311,7 @@ class acp_blogs
 						break;
 					}
 
-					add_log('admin', 'LOG_BLOG_CATEGORY_DELETED', $row['category_name']);
+					add_log('admin', 'LOG_BLOG_CATEGORY_DELETE', $row['category_name']);
 					trigger_error($user->lang['CATEGORY_DELETED'] . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
 	
 				break;

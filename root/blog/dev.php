@@ -36,15 +36,190 @@ switch ($mode)
 		*  You may also send the directory name and it will organize all language files in it and any subdirectories.
 		*/
 		organize_lang();
-		break;
+	break;
+
+	case 'check_lang' :
+		/**
+		* Checks language files for unused language keys.
+		*/
+		check_lang();
+	break;
+
 	case 'get_hooks' :
 		get_hooks(); // Gets all available hooks and lists them in a file.  For more detail, check the function directly.
-		break;
+	break;
+
 	case 'build_install' : // Build the Installation Schema Files
 		build_blog_install();
-		break;
+	break;
+
 	default :
 		trigger_error('NO_MODE');
+}
+
+/**
+* Checks for unused language keys
+*/
+function check_lang()
+{
+	global $phpbb_root_path, $phpEx;
+
+	$lang = $used_lang = array();
+	// The list of language files we will check for extra keys
+	$lang_list = array(
+		'mods/info_acp_blogs', 'mods/info_mcp_blogs', 'mods/info_ucp_blogs',
+		'mods/blog/acp', 'mods/blog/common', 'mods/blog/mcp', 'mods/blog/misc', 'mods/blog/posting', 'mods/blog/setup', 'mods/blog/ucp', 'mods/blog/view',
+	);
+	foreach ($lang_list as $file)
+	{
+		require($phpbb_root_path . 'language/en/' . $file . '.' . $phpEx);
+	}
+
+	if ($handle = opendir($phpbb_root_path . 'root'))
+	{
+	    while (false !== ($file = readdir($handle)))
+		{
+			if (strpos($file, '.'))
+			{
+				$file_list[] = $file;
+			}
+			else
+			{
+				$dir_list[] = $file;
+			}
+	    }
+	    closedir($handle);
+	}
+
+	// Looks a little strange, but it is being done this way so folders get listed first, then files (otherwise it just lists everything alphabetical file)
+	if (sizeof($dir_list))
+	{
+		foreach ($dir_list as $file)
+		{
+			check_lang_recusive($lang, $used_lang, $file, $phpbb_root_path . 'root', $phpbb_root_path . 'root');
+		}
+	}
+
+	if (sizeof($file_list))
+	{
+		foreach ($file_list as $file)
+		{
+			check_lang_recusive($lang, $used_lang, $file, $phpbb_root_path . 'root', $phpbb_root_path . 'root');
+		}
+	}
+
+	var_dump(array_diff(array_keys($lang), $used_lang));
+	die();
+}
+
+/**
+* Helper for check_lang()
+*/
+function check_lang_recusive(&$lang, &$used_lang, $file, $dir, $original_dir)
+{
+	global $phpEx;
+
+	if ($file == '.' || $file == '..')
+	{
+		return;
+	}
+
+	$file_list = $dir_list = array();
+
+	if (is_dir($dir . '/' . $file))
+	{
+		if ($handle = opendir($dir . '/' . $file))
+		{
+		    while (false !== ($file1 = readdir($handle)))
+			{
+				if (substr($file, -3) == $phpEx)
+				{
+					$file_list[] = $file1;
+				}
+				else
+				{
+					$dir_list[] = $file1;
+				}
+		    }
+
+		    closedir($handle);
+		}
+
+		if (sizeof($dir_list))
+		{
+			foreach ($dir_list as $file1)
+			{
+				check_lang_recusive($lang, $used_lang, $file1, $dir . '/' . $file, $original_dir);
+			}
+		}
+
+		if (sizeof($file_list))
+		{
+			foreach ($file_list as $file1)
+			{
+				check_lang_recusive($lang, $used_lang, $file1, $dir . '/' . $file, $original_dir);
+			}
+		}
+	}
+	else if (substr($file, -3) == $phpEx || substr($file, -4) == 'html') // Skip non .php/.html files
+	{
+		//echo $dir . '/' . $file . '<br />';
+		$patterns = array(
+			'#{L_([A-Z0-9_]+)}#',
+			'#lang\[\'([A-Z0-9_]+)\'\]#',
+			'#trigger_error\(\'([A-Z0-9_]+)\'#',
+			'#confirm_box\(false, \'([A-Z0-9_]+)\'#',
+			'#blog_confirm\(\'([A-Z0-9_]+)\'#',
+			'#this->page_title =([\s|\t]+)\'([A-Z0-9_]+)\'#',
+			'#\'legend([a-zA-Z0-9\'\s\t]+)=> \'([A-Z0-9_]+)\'#',
+			'#\'lang\'([\s|\t]+)=> \'([A-Z0-9_]+)\'#',
+			'#\'title\'([\s|\t]+)=> \'([A-Z0-9_]+)\'#',
+			'#add_log\(\'admin\', \'([A-Z0-9_]+)\'#',
+			'#add_log\(\'mod\', \'([A-Z0-9_]+)\'#',
+		);
+		$handle = @fopen($dir . '/' . $file, "r");
+		if ($handle)
+		{
+			while (!feof($handle))
+			{
+				$line = fgets($handle, 4096);
+
+				foreach ($patterns as $pattern)
+				{
+					$matches = array();
+					preg_match_all($pattern, $line, $matches);
+
+					if (sizeof($matches[1]))
+					{
+						foreach ($matches[1] as $key)
+						{
+							if (trim($key) != '' && !in_array($key, $used_lang))
+							{
+								// Add the key and explain, confirm to the list
+								$used_lang[] = $key;
+								$used_lang[] = $key . '_EXPLAIN';
+								$used_lang[] = $key . '_CONFIRM';
+							}
+						}
+					}
+					if (isset($matches[2]) && sizeof($matches[2]))
+					{
+						foreach ($matches[2] as $key)
+						{
+							if (trim($key) != '' && !in_array($key, $used_lang))
+							{
+								// Add the key and explain, confirm to the list
+								$used_lang[] = $key;
+								$used_lang[] = $key . '_EXPLAIN';
+								$used_lang[] = $key . '_CONFIRM';
+							}
+						}
+					}
+				}
+			}
+			fclose($handle);
+		}
+	}
 }
 
 /**

@@ -28,8 +28,6 @@ $lang = array_merge($lang, array(
 	'NOT_ALLOWED_CHANGE_VOTE'	=> 'You are not allowed to change your vote.',
 	'NOT_SUBSCRIBED'			=> 'You are not subscribed.',
 
-	'PM_AND_EMAIL'				=> 'Private message and E-mail',
-
 	'RESYNC_BLOG'				=> 'Synchronise Blog',
 	'RESYNC_BLOG_CONFIRM'		=> 'Are you sure you want to resynchronise all of the blog data?  This may take a while.',
 	'RESYNC_BLOG_SUCCESS'		=> 'The User Blog Mod has been successfully resynchronised.',

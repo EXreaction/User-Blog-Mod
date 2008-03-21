@@ -28,8 +28,6 @@ $lang = array_merge($lang, array(
 	'CNT_COMMENTS'					=> '%s Comments',
 	'COMMENTS'						=> 'Comments',
 
-	'DELETED_MESSAGE'				=> 'These blog entries have all been deleted.',
-	'DELETED_MESSAGE_EXPLAIN'		=> 'There is a link in every "This blog entry was deleted by..." section to un-delete the blog.',
 	'DELETED_REPLY_SHOW'			=> 'This comment has been soft deleted.  Click here to show the comment.',
 
 	'MY_RATING'						=> 'My Rating',
@@ -44,7 +42,6 @@ $lang = array_merge($lang, array(
 	'RANDOM_BLOG'					=> 'Random Blog Entry',
 	'RATE_ME'						=> '%1$s out of %2$s',
 	'RECENT_COMMENTS'				=> 'Recent Comments',
-	'RECENT_REPLIES'				=> 'Recent Replies',
 	'REMOVE_RATING'					=> 'Reset Rating',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',
 	'REPORTED'						=> 'This message has been reported.  Click here to close the report.',

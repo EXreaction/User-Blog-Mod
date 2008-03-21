@@ -29,22 +29,17 @@ $lang = array_merge($lang, array(
 	'CLEANUP'						=> 'Cleanup',
 	'CLEANUP_COMPLETE'				=> 'The tables have been cleaned successfully.',
 	'CONVERTED_BLOG_IDS_MISSING'	=> 'The converted blog ids are missing from the cache.  Please restore your backup data to the database and retry the upgrade.',
-	'CONVERT_BLOGS'					=> 'Convert Blogs',
 	'CONVERT_COMPLETE'				=> 'The conversion process has been completed successfully.',
 	'CONVERT_FOES'					=> 'Convert Foes',
 	'CONVERT_FOES_EXPLAIN'			=> 'Converts the users in the weblog_blocked to foes.',
 	'CONVERT_FRIENDS'				=> 'Convert Friends',
 	'CONVERT_FRIENDS_EXPLAIN'		=> 'Converts the users in the weblog_friends to friends.',
-	'CONVERT_REMAINING'				=> 'Convert Remaining',
-	'CONVERT_REPLIES'				=> 'Convert Replies',
 
-	'DATA_CONFIRMED'				=> 'The submitted information has been confirmed and we have successfully connected to the database!',
 	'DB_TABLE_NOT_EXIST'			=> 'The %s table is missing from the selected database.',
 
 	'FINAL'							=> 'Final',
 
 	'INDEX_COMPLETE'				=> 'The blogs and replies have now been indexed for the search system.',
-	'INSTALL'						=> 'Install',
 	'INSTALL_BLOG_DB'				=> 'Install User Blog Mod',
 	'INSTALL_BLOG_DB_CONFIRM'		=> 'Are you ready to install the database section of this mod?',
 	'INSTALL_BLOG_DB_FAIL'			=> 'Installation of the User Blog Mod failed.<br/>Please report the following errors to EXreaction:<br/>',
@@ -60,28 +55,23 @@ $lang = array_merge($lang, array(
 	'PRE_CONVERT_COMPLETE'			=> 'All pre-conversion steps have successfully been completed. You may now begin the actual conversion process. Please note that you may have to manually do and adjust several things after the automatic conversion, especially check the permissions assigned.',
 
 	'REINDEX'						=> 'Re-Index',
-	'REMAINING_CONVERT_COMPLETE'	=> 'The remaining parts have been successfully converted.',
-	'REPLY_CONVERT_COMPLETE'		=> 'The replies have been successfully converted.',
 	'RESYNC'						=> 'Resync',
 	'RESYNC_COMPLETE'				=> 'The User Blog Mod has been Resyncronized.',
 	'RETURN_LAST_STEP'				=> 'Click here to return to the last step.',
 
 	'SCHEMA_NOT_EXIST'				=> 'The database install schema file is missing.  Please download a fresh copy of this mod and reupload all required files.  If that does not fix the problem, contact EXreaction.',
 	'SEARCH_BREAK_CONTINUE_NOTICE'	=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before everything is finished.<br/>Click continue below if you are not automatically redirected to the next page.',
-	'STEP'							=> 'Step %s',
 	'SUCCESS'						=> 'Success',
 	'SUCCESSFULLY_UPDATED'			=> 'User blog mod has been updated to %1$s.<br/><br/>Click %2$shere%3$s to return to the main blog page.',
 
 	'TRUNCATE_TABLES'				=> 'Truncate existing tables',
 	'TRUNCATE_TABLES_EXPLAIN'		=> 'This will delete all of the data in the existing User Blog Mod tables.  If you select no the new data will be added along with your existing blogs and replies.',
 
-	'UPDATE_BLOG'					=> 'Update Blog',
 	'UPDATE_INSTRUCTIONS'			=> 'Update',
 	'UPDATE_INSTRUCTIONS_CONFIRM'	=> 'Make sure you read the upgrade instructions in the MOD History section of the main mod install document first <b>before</b> you do this.<br/><br/>Are you ready to upgrade the database for the User Blog Mod?',
 	'UPGRADE_BLOGS'					=> 'Upgrade Blogs',
 	'UPGRADE_BREAK_CONTINUE_NOTICE'	=> 'Stage %1$s, Section %2$s of %3$s, Part %4$s of %5$s has been completed, but there are more sections and/or parts that need to be finished before the converter is finished for this stage.<br/>Click continue below if you are not automatically redirected to the next page.',
 	'UPGRADE_COMPLETE'				=> 'The upgrade process has completed successfully!<br/>Please make sure you get backups of your finished conversion and check over the converted settings and data to be sure it is correct.',
-	'UPGRADE_INFO'					=> 'Version: %1$s; Built by: %2$s',
 	'UPGRADE_LIST'					=> 'Upgrade List',
 	'UPGRADE_REPLIES'				=> 'Upgrade Replies',
 

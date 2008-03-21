@@ -17,7 +17,7 @@ class ucp_blog_info
 	{
 		return array(
 			'filename'	=> 'ucp_blog',
-			'title'		=> 'BLOG',
+			'title'		=> 'UCP_BLOG',
 			'version'	=> '1.0.0',
 			'modes'		=> array(
 				'ucp_blog_settings'				=> array('title' => 'UCP_BLOG_SETTINGS', 'auth' => 'acl_u_blogpost', 'cat' => array('BLOG')),

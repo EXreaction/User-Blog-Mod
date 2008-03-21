@@ -51,14 +51,12 @@ $lang = array_merge($lang, array(
 	'BLOG_QUICK_REPLY_EXPLAIN'				=> 'Enable the display of the quick reply when viewing a blog.',
 	'BLOG_SETTINGS'							=> 'User Blog Settings',
 	'BLOG_SETTINGS_EXPLAIN'					=> 'Here you can set the settings for the User Blog mod.',
-	'BREAK_CONTINUE_NOTICE'					=> 'Section %1$s of %2$s, Part %3$s of %4$s has been completed, but there are more sections and/or parts that need to be finished before before we are done.<br/>Click continue below if you are not automatically redirected to the next page.',
 
 	'CATEGORY_CREATED'						=> 'Category successfully created!',
 	'CATEGORY_DELETE'						=> 'Delete Category',
 	'CATEGORY_DELETED'						=> 'The category has been successfully deleted!',
 	'CATEGORY_DELETE_EXPLAIN'				=> 'Are you sure you want to delete this category?',
 	'CATEGORY_DESCRIPTION_EXPLAIN'			=> 'Description of what the category is for.',
-	'CATEGORY_EDITED'						=> 'Category successfully edited.',
 	'CATEGORY_EDIT_EXPLAIN'					=> 'Here you can change category settings.',
 	'CATEGORY_INDEX'						=> 'Category Index',
 	'CATEGORY_NAME_EMPTY'					=> 'You must submit a name for the category',
@@ -92,10 +90,6 @@ $lang = array_merge($lang, array(
 	'INSTALLED_PLUGINS'						=> 'Installed Plugins',
 
 	'LATEST_VERSION'						=> 'Latest Version',
-	'LOG_CATEGORY_ADD'						=> 'Added a new Blog Category.',
-	'LOG_CATEGORY_DELETE'					=> 'Deleted Blog Category',
-	'LOG_CATEGORY_EDIT'						=> 'Edited a Blog Category.',
-	'LOG_CONFIG_BLOG'						=> '<strong>Altered Blog Settings</strong>',
 
 	'MOVE_BLOGS_TO'							=> 'Move Blogs to',
 	'MOVE_SUBCATEGORIES_TO'					=> 'Move subcategories to',
@@ -111,7 +105,6 @@ $lang = array_merge($lang, array(
 	'PLUGINS_NAME'							=> 'Plugin Name',
 	'PLUGIN_ACTIVATE'						=> 'Activate',
 	'PLUGIN_ALREADY_INSTALLED'				=> 'The selected plugin is already installed.',
-	'PLUGIN_ALREADY_UPDATED'				=> 'The selected plugin is already updated to the latest version.',
 	'PLUGIN_DEACTIVATE'						=> 'Deactivate',
 	'PLUGIN_INSTALL'						=> 'Install',
 	'PLUGIN_NOT_EXIST'						=> 'The selected plugin does not exist.',
