@@ -150,7 +150,8 @@ hr {
 }
 
 .blog_description {
-	padding: 5px 10px 15px 10px;
+	padding: 10px;
+	margin-bottom: 10px;
 }
 
 /* Pagination */
