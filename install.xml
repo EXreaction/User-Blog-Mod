@@ -60,14 +60,14 @@ You may check for updated code in the repository, but the latest files in the re
           <change>More bug fixes plus a much more secure Blog CSS filter.  To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
-        <date>2008-03-20</date>
+        <date>2008-03-21</date>
         <rev-version>
           <major>0</major>
           <minor>7</minor>
           <revision>2</revision>
         </rev-version>
         <changelog lang="en-GB">
-          <change>Adding an automatic version checker.  Cleaning up the language files, removing unused keys, plus renaming blogs to blog entries.  To update from Beta 2, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
+          <change>Adding an automatic version checker.  Cleaning up the language files, removing unused keys, plus renaming blogs to blog entries.  To update from Beta 2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
     </history>
