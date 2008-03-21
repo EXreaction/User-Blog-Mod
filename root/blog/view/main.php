@@ -50,11 +50,11 @@ switch ($mode)
 	case 'random_blogs' :
 	case 'recent_blogs' :
 	case 'popular_blogs' :
-	case 'recent_replies' :
+	case 'recent_comments' :
 		// for sorting and pagination
-		$sort_by_sql = (strpos($mode, 'replies') === false) ? array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject') : array('t' => 'reply_time');
+		$sort_by_sql = (strpos($mode, 'comments') === false) ? array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject') : array('t' => 'reply_time');
 
-		$ids = (strpos($mode, 'replies') === false) ? $blog_data->get_blog_data(str_replace('_blogs', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days)) : $blog_data->get_reply_data(str_replace('_replies', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+		$ids = (strpos($mode, 'comments') === false) ? $blog_data->get_blog_data(str_replace('_blogs', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days)) : $blog_data->get_reply_data(str_replace('_comments', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();
 
@@ -63,8 +63,8 @@ switch ($mode)
 			// for sorting and pagination
 			$limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 			$s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
-			$total = (strpos($mode, 'replies') === false) ? $blog_data->get_blog_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id)) : $blog_data->get_reply_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id));
-			$sort_by_text = (strpos($mode, 'replies') === false) ? array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']) : array('t' => $user->lang['POST_TIME']);
+			$total = (strpos($mode, 'comments') === false) ? $blog_data->get_blog_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id)) : $blog_data->get_reply_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id));
+			$sort_by_text = (strpos($mode, 'comments') === false) ? array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']) : array('t' => $user->lang['POST_TIME']);
 			gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 			$pagination = generate_blog_pagination($blog_urls['start_zero'], $total, $limit, $start, false);
 
@@ -72,7 +72,7 @@ switch ($mode)
 			$template->assign_vars(array(
 				'PAGINATION'			=> $pagination,
 				'PAGE_NUMBER' 			=> on_page($total, $limit, $start),
-				'TOTAL_POSTS'			=> (strpos($mode, 'replies') === false) ? (($total == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total)) : (($total == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $total)),
+				'TOTAL_POSTS'			=> (strpos($mode, 'comments') === false) ? (($total == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total)) : (($total == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $total)),
 
 				'S_SORT'				=> ($mode == 'random_blogs' || $mode == 'popular_blogs') ? false : true,
 				'S_SELECT_SORT_DIR' 	=> $s_sort_dir,
@@ -87,11 +87,11 @@ switch ($mode)
 				'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('mode' => $mode, 'feed' => 'explain')) : '',
 				'U_VIEW'			=> blog_url(false, false, false, array('mode' => $mode)),
 				'TITLE'				=> $user->lang[strtoupper($mode)],
-				'L_NO_MSG'			=> (strpos($mode, 'replies') === false) ? $user->lang['NO_BLOGS'] : $user->lang['NO_REPLIES'],
+				'L_NO_MSG'			=> (strpos($mode, 'comments') === false) ? $user->lang['NO_BLOGS'] : $user->lang['NO_REPLIES'],
 			));
 			if ($ids !== false)
 			{
-				if (strpos($mode, 'replies') === false)
+				if (strpos($mode, 'comments') === false)
 				{
 					foreach($ids as $id)
 					{
@@ -157,11 +157,11 @@ switch ($mode)
 			}
 		}
 
-		// Output the recent replies
+		// Output the recent comments
 		$template->assign_block_vars('column', array(
 			'SECTION_WIDTH'		=> '50',
-			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('mode' => 'recent_replies', 'feed' => 'explain')) : '',
-			'U_VIEW'			=> blog_url(false, false, false, array('mode' => 'recent_replies')),
+			'U_FEED'			=> ($config['user_blog_enable_feeds']) ? blog_url(false, false, false, array('mode' => 'recent_comments', 'feed' => 'explain')) : '',
+			'U_VIEW'			=> blog_url(false, false, false, array('mode' => 'recent_comments')),
 			'TITLE'				=> $user->lang['RECENT_COMMENTS'],
 			'L_NO_MSG'			=> $user->lang['NO_REPLIES'],
 		));
