@@ -53,7 +53,14 @@ if (!$feed)
 	}
 	else
 	{
-		page_header(sprintf($user->lang['USERNAMES_BLOGS'], blog_data::$user[$user_id]['username']));
+		if ($user->data['username'] == blog_data::$user[$user_id]['username'])
+		{
+			page_header($user->lang['MY_BLOG']);
+		}
+		else
+		{
+			page_header(sprintf($user->lang['USERNAMES_BLOGS'], blog_data::$user[$user_id]['username']));
+		}
 	}
 
 	// Output some data
