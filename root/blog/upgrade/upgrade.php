@@ -507,6 +507,11 @@ class blog_upgrade
 			$row = $db->sql_fetchrow($result);
 			set_config('num_blogs', $row['blog_count'], true);
 
+			$sql = 'SELECT count(reply_id) AS reply_count FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_deleted = 0 AND reply_approved = 1';
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			set_config('num_blog_replies', $row['reply_count'], true);
+
 			$part = 0;
 			$section++;
 		}

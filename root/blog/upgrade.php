@@ -14,8 +14,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-$user->add_lang('install');
-$user->add_lang('posting');
+$user->add_lang(array('install', 'posting'));
 
 generate_blog_urls();
 generate_blog_breadcrumbs($user->lang['UPGRADE_BLOGS'], append_sid("{$phpbb_root_path}blog.$phpEx", 'page=upgrade'));
@@ -58,7 +57,7 @@ switch ($stage)
 	case 2:
 		// This is checked above
 		$section++;
-		$message = $user->lang['PRE_CONVERT_COMPLETE'];
+		$message = $user->lang['PRE_UPGRADE_COMPLETE'];
 	break;
 	case 3:
 		$blog_upgrade->clean_tables();
