@@ -1049,7 +1049,7 @@ function feed_output($ids, $feed_type)
 		// the items section is only used in RSS 1.0
 		if ($feed_type == 'RSS_1.0')
 		{
-			if (strpos($mode, 'replies') === false)
+			if (strpos($mode, 'comments') === false)
 			{
 				// output the URLS for the items section
 				foreach ($ids as $id)
@@ -1071,7 +1071,7 @@ function feed_output($ids, $feed_type)
 			}
 		}
 
-		if (strpos($mode, 'replies') === false)
+		if (strpos($mode, 'comments') === false)
 		{
 			// Output the main data
 			foreach ($ids as $id)
