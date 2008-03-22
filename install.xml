@@ -60,6 +60,7 @@ You may check for updated code in the repository, but the latest files in the re
           <change>More bug fixes plus a much more secure Blog CSS filter.  To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
+	  <entry>
         <date>2008-03-21</date>
         <rev-version>
           <major>0</major>
