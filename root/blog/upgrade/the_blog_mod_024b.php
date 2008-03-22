@@ -65,6 +65,12 @@ if (isset($run_upgrade) && $run_upgrade)
 					}
 				}
 
+				$blog_titles = $cache->get('_blog_upgrade_titles');
+				if ($blog_titles == false)
+				{
+					$blog_titles = array();
+				}
+
 				$sql = 'SELECT * FROM ' . $this->selected_options['db_prefix'] . 'weblog_entries
 					ORDER BY entry_time ASC
 						LIMIT ' . $start . ', ' . $limit;
@@ -93,6 +99,7 @@ if (isset($run_upgrade) && $run_upgrade)
 						}
 					}
 
+					$blog_titles[$row['entry_id']] = utf8_normalize_nfc($row['entry_subject']);
 					$sql_array = array(
 						'user_id'				=> $user_id,
 						'user_ip'				=> '0.0.0.0',
@@ -141,6 +148,7 @@ if (isset($run_upgrade) && $run_upgrade)
 				{
 					$cache->put('_blog_upgrade_blog_ids', $new_ids);
 				}
+				$cache->put('_blog_upgrade_titles', $blog_titles);
 
 				$sql = 'SELECT count(entry_id) AS cnt FROM ' . $this->selected_options['db_prefix'] . 'weblog_entries';
 				$result = $old_db->sql_query($sql);
@@ -157,6 +165,10 @@ if (isset($run_upgrade) && $run_upgrade)
 					$section++;
 				}
 			}
+			else
+			{
+				$section++;
+			}
 		break;
 		case 1:
 			if ($this->selected_options['replies'])
@@ -169,7 +181,13 @@ if (isset($run_upgrade) && $run_upgrade)
 						trigger_error('CONVERTED_BLOG_IDS_MISSING');
 					}
 				}
-				
+
+				$blog_titles = $cache->get('_blog_upgrade_titles');
+				if ($blog_titles == false)
+				{
+					$blog_titles = array();
+				}
+
 				$bb2_users = $bb3_users = array();
 				$sql = 'SELECT user_id, username FROM ' . $this->selected_options['db_prefix'] . 'users';
 				$result = $old_db->sql_query($sql);
@@ -219,7 +237,7 @@ if (isset($run_upgrade) && $run_upgrade)
 						'blog_id'				=> ($this->selected_options['truncate']) ? $row['entry_id'] : $new_ids[$row['entry_id']],
 						'user_id'				=> $user_id,
 						'user_ip'				=> '0.0.0.0',
-						'reply_subject'			=> utf8_normalize_nfc($row['post_subject']),
+						'reply_subject'			=> (utf8_normalize_nfc($row['post_subject'])) ? utf8_normalize_nfc($row['post_subject']) : 'Re: ' . ((isset($blog_titles[$row['entry_id']])) ? $blog_titles[$row['entry_id']] : ''),
 						'reply_text'			=> $message_parser->message,
 						'reply_checksum'		=> md5($message_parser->message),
 						'reply_time'			=> $row['post_time'],
@@ -256,6 +274,10 @@ if (isset($run_upgrade) && $run_upgrade)
 					$part = 0;
 					$section++;
 				}
+			}
+			else
+			{
+				$section++;
 			}
 		break;
 		case 2:
