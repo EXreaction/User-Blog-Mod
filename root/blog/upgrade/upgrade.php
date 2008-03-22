@@ -502,15 +502,24 @@ class blog_upgrade
 		}
 		else
 		{
-			$sql = 'SELECT count(blog_id) AS blog_count FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1';
+			$sql = 'SELECT blog_id  FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1';
 			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			set_config('num_blogs', $row['blog_count'], true);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$ids[] = $row['blog_id'];
+			}
+			set_config('num_blogs', sizeof($ids), true);
 
-			$sql = 'SELECT count(reply_id) AS reply_count FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_deleted = 0 AND reply_approved = 1';
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			set_config('num_blog_replies', $row['reply_count'], true);
+			if (sizeof($ids))
+			{
+				$sql = 'SELECT count(reply_id) AS reply_count FROM ' . BLOGS_REPLY_TABLE . '
+					WHERE reply_deleted = 0
+					AND reply_approved = 1
+					AND ' . $db->sql_in_set('blog_id', $ids); // Make sure we only count the # of replies from non-deleted blogs.
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				set_config('num_blog_replies', $row['reply_count'], true);
+			}
 
 			$part = 0;
 			$section++;
