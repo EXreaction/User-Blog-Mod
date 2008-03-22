@@ -49,8 +49,8 @@ $lang = array_merge($lang, array(
 	'SUBCATEGORIES'					=> 'Subcategories',
 	'SUBCATEGORY'					=> 'Subcategory',
 
-	'TOTAL_NUMBER_OF_BLOGS'			=> 'Total Blog Entries',
-	'TOTAL_NUMBER_OF_REPLIES'		=> 'Total Blog Replies',
+	'TOTAL_NUMBER_OF_BLOGS'			=> 'Total Entries',
+	'TOTAL_NUMBER_OF_REPLIES'		=> 'Total Comments',
 
 	'UNAPPROVED'					=> 'This message needs approval.  Click here to approve this message.',
 ));

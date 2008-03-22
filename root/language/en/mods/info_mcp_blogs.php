@@ -26,9 +26,9 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'MCP_BLOG'						=> 'Blog',
 	'MCP_BLOG_DISAPPROVED_BLOGS'	=> 'Unapproved Blogs',
-	'MCP_BLOG_DISAPPROVED_REPLIES'	=> 'Unaproved Replies',
+	'MCP_BLOG_DISAPPROVED_REPLIES'	=> 'Unapproved Comments',
 	'MCP_BLOG_REPORTED_BLOGS'		=> 'Reported Blogs',
-	'MCP_BLOG_REPORTED_REPLIES'		=> 'Reported Replies',
+	'MCP_BLOG_REPORTED_REPLIES'		=> 'Reported Comments',
 ));
 
 ?>
