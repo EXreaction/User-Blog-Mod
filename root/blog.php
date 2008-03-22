@@ -13,9 +13,6 @@
 * post revisions plugin
 * personal categories (tags) plugin
 * Memorable entry (like a sticky)?
-*
-* Bugs:
-* Showing Comments from deleted blogs in recent blogs.
 */
 
 define('IN_BLOG', true);

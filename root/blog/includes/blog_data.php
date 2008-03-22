@@ -598,20 +598,27 @@ class blog_data
 		{
 			if ($user->data['is_registered'])
 			{
-				$sql_where[] = '(reply_approved = 1 OR reply_id = ' . $user->data['user_id'] . ')';
+				$sql_where[] = '(r.reply_approved = 1 OR r.reply_id = ' . $user->data['user_id'] . ')';
 			}
 			else
 			{
-				$sql_where[] = 'reply_approved = 1';
+				$sql_where[] = 'r.reply_approved = 1';
 			}
 		}
 		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
 		{
-			$sql_where[] = '(reply_deleted = 0 OR reply_deleted = ' . $user->data['user_id'] . ')';
+			$sql_where[] = '(r.reply_deleted = 0 OR r.reply_deleted = ' . $user->data['user_id'] . ')';
+
+			// Make sure we do not select replies from blogs that have been deleted (if the user isn't allowed to view deleted items)
+			$sql_array['LEFT_JOIN'] = array(array(
+				'FROM'		=> array(BLOGS_TABLE => 'b'),
+				'ON'		=> 'b.blog_id = r.blog_id',
+			));
+			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 		}
 		if ($sort_days)
 		{
-			$sql_where[] = 'reply_time >= ' . (time() - $sort_days * 86400);
+			$sql_where[] = 'r.reply_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
@@ -621,11 +628,11 @@ class blog_data
 		switch ($mode)
 		{
 			case 'blog' : // view all replys by a blog_id
-				$sql_where[] = $db->sql_in_set('blog_id', $id);
+				$sql_where[] = $db->sql_in_set('r.blog_id', $id);
 			break;
 
 			case 'reply' : // select replies by reply_id(s)
-				$sql_where[] = $db->sql_in_set('reply_id', $id);
+				$sql_where[] = $db->sql_in_set('r.reply_id', $id);
 				$limit = 0;
 			break;
 
@@ -635,7 +642,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] = 'reply_reported = 1';
+				$sql_where[] = 'r.reply_reported = 1';
 			break;
 
 			case 'disapproved' : // select disapproved replies
@@ -644,7 +651,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] = 'reply_approved = 0';
+				$sql_where[] = 'r.reply_approved = 0';
 			break;
 
 			case 'reply_count' : // for counting how many replies there are for a blog
@@ -659,7 +666,7 @@ class blog_data
 				}
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
-					$sql_array['SELECT'] = 'count(reply_id) AS total';
+					$sql_array['SELECT'] = 'count(r.reply_id) AS total';
 					$sql_where[] = 'blog_id = ' . $id[0];
 					$sql_array['WHERE'] = implode(' AND ', $sql_where);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
@@ -707,7 +714,7 @@ class blog_data
 			break;
 
 			case 'recent' :
-				$sql_array['ORDER_BY'] = 'reply_time DESC';
+				$sql_array['ORDER_BY'] = 'r.reply_time DESC';
 			break;
 		}
 
