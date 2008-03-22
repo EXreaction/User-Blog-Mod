@@ -13,12 +13,15 @@
 * post revisions plugin
 * personal categories (tags) plugin
 * Memorable entry (like a sticky)?
+*
+* Bugs:
+* Showing Comments from deleted blogs in recent blogs.
 */
 
 define('IN_BLOG', true);
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '0.7.2';
+$user_blog_version = '0.7.3_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
