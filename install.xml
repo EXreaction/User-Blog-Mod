@@ -24,7 +24,7 @@ You may check for updated code in the repository, but the latest files in the re
     <mod-version>
       <major>0</major>
       <minor>7</minor>
-      <revision>3_dev</revision>
+      <revision>3</revision>
     </mod-version>
 
     <installation>
@@ -72,14 +72,14 @@ You may check for updated code in the repository, but the latest files in the re
         </changelog>
       </entry>
 	  <entry>
-        <date>2008-03-00</date>
+        <date>2008-03-24</date>
         <rev-version>
           <major>0</major>
           <minor>7</minor>
-          <revision>3_dev</revision>
+          <revision>3</revision>
         </rev-version>
         <changelog lang="en-GB">
-          <change>Bug fixing.  Some fixes with the converter, language fixes, and other misc bugs fixed.  To update from Beta 3, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+          <change>Bug fixing.  Some fixes with the converter, language fixes, and other misc bugs fixed.  Now the blog category counts the number of blogs under it and it's subcategories.  To update from Beta 3, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
     </history>
