@@ -578,6 +578,44 @@ if (confirm_box(true))
 		case '0.3.42' :
 		case '0.7.0' :
 		case '0.7.1' :
+		case '0.7.2' :
+			// Resync the category blog counts
+			$db->sql_query('UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = 0');
+			$result = $db->sql_query('SELECT blog_id FROM ' . BLOGS_TABLE . ' WHERE blog_deleted = 0 AND blog_approved = 1');
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$to_query = $parent_list = array();
+				$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . $row['blog_id'];
+				$result1 = $db->sql_query($sql);
+				while ($row1 = $db->sql_fetchrow($result1))
+				{
+					$to_query[] = $row1['category_id'];
+				}
+				$db->sql_freeresult($result1);
+
+				while (sizeof($to_query))
+				{
+					$sql = 'SELECT category_id, parent_id FROM ' . BLOGS_CATEGORIES_TABLE . '
+						WHERE ' . $db->sql_in_set('category_id', $to_query);
+					$result1 = $db->sql_query($sql);
+					$to_query = array();
+					while ($row1 = $db->sql_fetchrow($result1))
+					{
+						$parent_list[] = $row1['category_id'];
+						if ($row1['parent_id'] && !in_array($row1['parent_id'], $to_query))
+						{
+							$to_query[] = $row1['parent_id'];
+						}
+					}
+					$db->sql_freeresult($result1);
+				}
+
+				if (sizeof($parent_list))
+				{
+					$db->sql_query('UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', array_unique($parent_list)));
+				}
+			}
+			$db->sql_freeresult($result);
 	}
 
 	// update the version
