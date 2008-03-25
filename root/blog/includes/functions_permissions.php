@@ -243,7 +243,7 @@ function build_permission_sql($user_id, $add_where = false, $prefix = '')
 
 	// We only want to build this query once per session...so if it is build already, don't do it again!
 	static $sql = '';
-	if ($sql != '')
+	if ($sql != '' && !$prefix)
 	{
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
