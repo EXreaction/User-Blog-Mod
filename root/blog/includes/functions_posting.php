@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 */
 function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add')
 {
-	global $auth, $blog_attachment, $blog_id, $blog_plugins, $config, $db, $template, $user, $phpbb_root_path, $phpEx;
+	global $auth, $blog_attachment, $blog_id, $config, $db, $template, $user, $phpbb_root_path, $phpEx, $category_ary;
 
 	$submit = (isset($_POST['submit'])) ? true : false;
 	$preview = (isset($_POST['preview'])) ? true : false;
@@ -56,13 +56,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 
 		if ($page == 'blog')
 		{
-			// The category display box
-			$category = request_var('category', array('' => ''));
-			if (!sizeof($category))
-			{
-				$category = request_var('c', 0);
-			}
-			$category_list = make_category_select($category);
+			$category_list = make_category_select($category_ary);
 
 			if ($category_list)
 			{
@@ -82,7 +76,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 			$template->assign_vars(array(
 				'CATEGORY_LIST'				=> $category_list,
 
-				'S_CAT_0_SELECTED'			=> ((is_array($category) && in_array(0, $category)) || $category === 0),
+				'S_CAT_0_SELECTED'			=> (is_array($category_ary) && in_array(0, $category_ary)),
 				'S_SHOW_POLL_BOX'			=> true,
 			));
 		}

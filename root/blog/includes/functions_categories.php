@@ -14,6 +14,99 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Handles putting blogs into categories
+*/
+function put_blogs_in_cats($blog_id, $category_ids, $no_approve = true, $mode = false)
+{
+	global $cache, $db;
+	$cache->destroy('_blog_categories');
+
+	if (!is_array($category_ids))
+	{
+		$category_ids = array($category_ids);
+	}
+
+	if ($mode != 'approve' && $mode != 'undelete')
+	{
+		// Update all of the cats and parents and add -1 to the blog count for each.
+		$to_query = $parent_list = array();
+		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$to_query[] = $row['category_id'];
+		}
+		$db->sql_freeresult($result);
+
+		while (sizeof($to_query))
+		{
+			$sql = 'SELECT category_id, parent_id FROM ' . BLOGS_CATEGORIES_TABLE . '
+				WHERE ' . $db->sql_in_set('category_id', $to_query);
+			$result = $db->sql_query($sql);
+			$to_query = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$parent_list[] = $row['category_id'];
+				if ($row['parent_id'] && !in_array($row['parent_id'], $to_query))
+				{
+					$to_query[] = $row['parent_id'];
+				}
+			}
+			$db->sql_freeresult($result);
+		}
+
+		if (sizeof($parent_list))
+		{
+			$db->sql_query('UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE ' . $db->sql_in_set('category_id', array_unique($parent_list)));
+
+			if ($mode != 'soft_delete')
+			{
+				// Delete the blogs in cats
+				$db->sql_query('DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id));
+			}
+		}
+	}
+
+	if (sizeof($category_ids) > 1 || (isset($category_ids[0]) && $category_ids[0] != 0))
+	{
+		if ($mode != 'approve' && $mode != 'undelete')
+		{
+			// Insert into the blogs_in_categories table
+			$sql_ary = array();
+			foreach ($category_ids as $category_id)
+			{
+				$sql_ary[] = array('blog_id' => intval($blog_id), 'category_id' => intval($category_id));
+			}
+			$db->sql_multi_insert(BLOGS_IN_CATEGORIES_TABLE, $sql_ary);
+		}
+
+		if ($no_approve)
+		{
+			// Update all of the cats parents and add +1 to the blog count for each.
+			$to_query = $category_ids;
+			$parent_list = array();
+			while(sizeof($to_query))
+			{
+				$sql = 'SELECT category_id, parent_id FROM ' . BLOGS_CATEGORIES_TABLE . '
+					WHERE ' . $db->sql_in_set('category_id', $to_query);
+				$result = $db->sql_query($sql);
+				$to_query = array();
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$parent_list[] = $row['category_id'];
+					if ($row['parent_id'] && !in_array($row['parent_id'], $to_query))
+					{
+						$to_query[] = $row['parent_id'];
+					}
+				}
+				$db->sql_freeresult($result);
+			}
+			$db->sql_query('UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $parent_list));
+		}
+	}
+}
+
+/**
 * Handle the categories
 *
 * @param int $parent_id If this is set to something other than 0 it will only list categories under the category_id given

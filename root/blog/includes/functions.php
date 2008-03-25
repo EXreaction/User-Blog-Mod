@@ -488,13 +488,12 @@ function handle_blog_cache($mode, $user_id = 0)
 
 	switch ($mode)
 	{
+/*		Not currently used...
 		case 'new_blog' :
+		case 'edit_blog' :
 		case 'approve_blog' :
 		case 'delete_blog' :
 		case 'undelete_blog' :
-			$cache->destroy('_blog_categories');
-		break;
-/*		Not currently used...
 		case 'report_blog' :
 		case 'new_reply' :
 		case 'approve_reply' :

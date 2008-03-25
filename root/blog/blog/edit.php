@@ -282,7 +282,7 @@ else // user submitted and there are no errors
 		'blog_subject'				=> $blog_subject,
 		'blog_text'					=> $message_parser->message,
 		'blog_checksum'				=> md5($message_parser->message),
-		'blog_approved' 			=> (blog_data::$blog[$blog_id]['blog_approved'] == 0) ? ($auth->acl_get('u_blognoapprove')) ? 1 : 0 : 1,
+		'blog_approved' 			=> (blog_data::$blog[$blog_id]['blog_approved'] == 1 || $auth->acl_get('u_blognoapprove')) ? 1 : 0,
 		'enable_bbcode' 			=> $post_options->enable_bbcode,
 		'enable_smilies'			=> $post_options->enable_smilies,
 		'enable_magic_url'			=> $post_options->enable_magic_url,
@@ -335,17 +335,6 @@ else // user submitted and there are no errors
 	// Handle the subscriptions
 	add_blog_subscriptions($blog_id, 'subscription_');
 
-	// First, delete the category in record for this blog
-	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-	$result = $db->sql_query($sql);
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
-		$db->sql_query($sql);
-	}
-	$sql = 'DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-	$db->sql_query($sql);
-
 	// Insert into the categories list
 	if (sizeof($category_ary) > 1 || (isset($category_ary[0]) && $category_ary[0] != 0))
 	{
@@ -353,20 +342,13 @@ else // user submitted and there are no errors
 
 		foreach ($category_ary as $i => $cat_id)
 		{
-			if (array_key_exists($cat_id, $category_list))
+			if (!isset($category_list[$cat_id]))
 			{
-				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => intval($blog_id), 'category_id' => $cat_id));
-				$db->sql_query($sql);
+				unset($category_ary[$i]);
 			}
 		}
-
-		// Update the blog_count for the categories
-		if ($auth->acl_get('u_blognoapprove'))
-		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category_ary);
-			$db->sql_query($sql);
-		}
 	}
+	put_blogs_in_cats($blog_id, $category_ary, ((blog_data::$blog[$blog_id]['blog_approved'] == 1 || $auth->acl_get('u_blognoapprove')) ? true : false));
 
 	// If it needs reapproval...
 	if (blog_data::$blog[$blog_id]['blog_approved'] == 0 && !$auth->acl_get('u_blognoapprove'))

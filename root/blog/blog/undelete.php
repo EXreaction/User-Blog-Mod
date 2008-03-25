@@ -58,13 +58,14 @@ if (confirm_box(true))
 	set_config('num_blog_replies', ($config['num_blog_replies'] + blog_data::$blog[$blog_id]['blog_real_reply_count']), true);
 
 	// Update the blog_count for all the categories it is in.
+	$category_ids = array();
 	$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = ' . $row['category_id'];
-		$db->sql_query($sql);
+		$category_ids[] = $row['category_id'];
 	}
+	put_blogs_in_cats($blog_id, $category_ids, true, 'undelete');
 
 	handle_blog_cache('undelete_blog', $user_id);
 

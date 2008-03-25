@@ -273,19 +273,12 @@ else // user submitted and there are no errors
 
 		foreach ($category_ary as $i => $cat_id)
 		{
-			if (array_key_exists($cat_id, $category_list))
+			if (!isset($category_list[$cat_id]))
 			{
-				$sql = 'INSERT INTO ' . BLOGS_IN_CATEGORIES_TABLE . ' ' . $db->sql_build_array('INSERT', array('blog_id' => $blog_id, 'category_id' => $cat_id));
-				$db->sql_query($sql);
+				unset($category_ary[$i]);
 			}
 		}
-
-		// Update the blog_count for the categories
-		if ($auth->acl_get('u_blognoapprove'))
-		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE ' . $db->sql_in_set('category_id', $category_ary);
-			$db->sql_query($sql);
-		}
+		put_blogs_in_cats($blog_id, $category_ary, (($auth->acl_get('u_blognoapprove')) ? true : false));
 	}
 
 	// regenerate the urls to include the blog_id

@@ -78,13 +78,7 @@ if (is_array($settings))
 			set_config('num_blog_replies', ($config['num_blog_replies'] - blog_data::$blog[$blog_id]['blog_real_reply_count']), true);
 
 			// Update the blog_count for all the categories it is in.
-			$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
-				$db->sql_query($sql);
-			}
+			put_blogs_in_cats($blog_id, array(), true, 'soft_delete');
 		}
 
 		// Delete the Attachments
@@ -139,6 +133,9 @@ if (is_array($settings))
 	}
 	else
 	{
+		// Update the blog_count for all the categories it is in.
+		put_blogs_in_cats($blog_id, array(), true, 'soft_delete');
+
 		// Remove the search index
 		$blog_search->index_remove($blog_id);
 

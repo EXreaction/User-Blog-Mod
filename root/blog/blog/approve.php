@@ -54,13 +54,14 @@ if (blog_data::$blog[$blog_id]['blog_approved'] == 0)
 		set_config('num_blogs', ++$config['num_blogs'], true);
 
 		// Update the blog_count for all the categories it is in.
+		$category_ids = array();
 		$sql = 'SELECT category_id FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . intval($blog_id);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count + 1 WHERE category_id = ' . $row['category_id'];
-			$db->sql_query($sql);
+			$category_ids[] = $row['category_id'];
 		}
+		put_blogs_in_cats($blog_id, $category_ids, true, 'approve');
 
 		handle_blog_cache('approve_blog', $user_id);
 
