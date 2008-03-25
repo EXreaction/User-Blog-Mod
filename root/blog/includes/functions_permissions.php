@@ -243,7 +243,7 @@ function build_permission_sql($user_id, $add_where = false, $prefix = '')
 
 	// We only want to build this query once per session...so if it is build already, don't do it again!
 	static $sql = '';
-	if ($sql != '' && !$prefix)
+	if ($sql && !$prefix)
 	{
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
@@ -253,6 +253,12 @@ function build_permission_sql($user_id, $add_where = false, $prefix = '')
 	if ($user_id == ANONYMOUS)
 	{
 		$sql = ' AND ' . $prefix . 'perm_guest > 0';
+		if ($prefix)
+		{
+			$temp = $sql;
+			$sql = '';
+			return (($add_where) ? fix_where_sql($temp) : $temp);
+		}
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
 
