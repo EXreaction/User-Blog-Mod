@@ -107,7 +107,7 @@ class blog_data
 		}
 		if (build_permission_sql($user->data['user_id']))
 		{
-			// remove the first &amp;
+			// remove the first AND
 			$sql_where[] = substr(build_permission_sql($user->data['user_id']), 5);
 		}
 
@@ -578,7 +578,7 @@ class blog_data
 		}
 
 		$sql_array = array(
-			'SELECT'	=> '*',
+			'SELECT'	=> 'r.*',
 			'FROM'		=> array(
 				BLOGS_REPLY_TABLE	=> array('r'),
 			),
@@ -588,10 +588,10 @@ class blog_data
 
 		if ($category_id)
 		{
-			$sql_array['LEFT_JOIN'] = array(array(
+			$sql_array['LEFT_JOIN'][] = array(
 				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
 				'ON'		=> 'bc.blog_id = r.blog_id',
-			));
+			);
 			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . $category_id;
 		}
 		if (!$auth->acl_get('m_blogreplyapprove'))
@@ -610,11 +610,17 @@ class blog_data
 			$sql_where[] = '(r.reply_deleted = 0 OR r.reply_deleted = ' . $user->data['user_id'] . ')';
 
 			// Make sure we do not select replies from blogs that have been deleted (if the user isn't allowed to view deleted items)
-			$sql_array['LEFT_JOIN'] = array(array(
+			$sql_array['LEFT_JOIN'][] = array(
 				'FROM'		=> array(BLOGS_TABLE => 'b'),
 				'ON'		=> 'b.blog_id = r.blog_id',
-			));
+			);
 			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
+			$permissions_sql = build_permission_sql($user->data['user_id'], false, 'b.');
+			if ($permissions_sql)
+			{
+				// remove the first AND
+				$sql_where[] = substr($permissions_sql, 5);
+			}
 		}
 		if ($sort_days)
 		{

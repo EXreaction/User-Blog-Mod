@@ -228,8 +228,10 @@ function permission_settings_builder($send_to_template = true, $mode = 'add')
 * Call this function to have it automatically build the user permissions check part of the SQL query
 *
 * @param int $user_id The user id of the user we will build the permissions sql query for
+* @param bool $add_where Puts a WHERE at the beginning instead of AND
+* @param string $prefix is to add a prefix to the column (for example, when used in a join and you need b.user_id)
 */
-function build_permission_sql($user_id, $add_where = false)
+function build_permission_sql($user_id, $add_where = false, $prefix = '')
 {
 	global $auth, $config, $db;
 
@@ -250,11 +252,11 @@ function build_permission_sql($user_id, $add_where = false)
 
 	if ($user_id == ANONYMOUS)
 	{
-		$sql = ' AND perm_guest > 0';
+		$sql = ' AND ' . $prefix . 'perm_guest > 0';
 		return (($add_where) ? fix_where_sql($sql) : $sql);
 	}
 
-	$sql = " AND (user_id = {$user_id}";
+	$sql = " AND ({$prefix}user_id = {$user_id}";
 
 	// Here is where things get complicated with friend/foe permissions.
 	$zebra_list = array();
@@ -267,7 +269,7 @@ function build_permission_sql($user_id, $add_where = false)
 		{
 			foreach ($reverse_zebra_list[$user_id]['foe'] as $zid)
 			{
-				$sql .= " OR (user_id = {$zid} AND perm_foe > 0)";
+				$sql .= " OR ({$prefix}user_id = {$zid} AND {$prefix}perm_foe > 0)";
 				$zebra_list[] = $zid;
 			}
 		}
@@ -276,7 +278,7 @@ function build_permission_sql($user_id, $add_where = false)
 		{
 			foreach ($reverse_zebra_list[$user_id]['friend'] as $zid)
 			{
-				$sql .= " OR (user_id = {$zid} AND perm_friend > 0)";
+				$sql .= " OR ({$prefix}user_id = {$zid} AND {$prefix}perm_friend > 0)";
 				$zebra_list[] = $zid;
 			}
 		}
@@ -285,17 +287,24 @@ function build_permission_sql($user_id, $add_where = false)
 	if (sizeof($zebra_list))
 	{
 		// Inverted sql_in_set.  For any user NOT in the zebra list.
-		$sql .= ' OR (' . $db->sql_in_set('user_id', $zebra_list, true) . " AND perm_registered > 0)";
+		$sql .= ' OR (' . $db->sql_in_set($prefix . 'user_id', $zebra_list, true) . " AND {$prefix}perm_registered > 0)";
 	}
 	else
 	{
-		$sql .= " OR (perm_registered > 0)";
+		$sql .= " OR ({$prefix}perm_registered > 0)";
 	}
 
 	$sql .= ')';
 
-	blog_plugins::plugin_do_ref('function_build_permission_sql', $sql);
+	blog_plugins::plugin_do_ref('function_build_permission_sql', compact('sql', 'prefix'));
 
+	// Do not put this in the static if we used a prefix
+	if ($prefix)
+	{
+		$temp = $sql;
+		$sql = '';
+		return (($add_where) ? fix_where_sql($temp) : $temp);
+	}
 	return (($add_where) ? fix_where_sql($sql) : $sql);
 }
 
