@@ -26,6 +26,9 @@ if ($user_blog_version == $config['user_blog_version'])
 
 if (confirm_box(true))
 {
+	// This may help...
+	@set_time_limit(120);
+
 	$sql_array = array();
 
 	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx); // Needed for remove_comments function for some DB types
@@ -616,6 +619,7 @@ if (confirm_box(true))
 				}
 			}
 			$db->sql_freeresult($result);
+		case '0.7.3' :
 	}
 
 	// update the version

@@ -8,7 +8,7 @@
 *
 */
 
-$user_blog_version = '0.7.3';
+$user_blog_version = '0.7.4';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -37,6 +37,9 @@ if (version_compare(PHP_VERSION, '5.1.0') < 0)
 
 if (confirm_box(true))
 {
+	// This may help...
+	@set_time_limit(120);
+
 	$error = array();
 
 	if (!isset($table_prefix))
