@@ -108,7 +108,7 @@ class blog_data
 		if (build_permission_sql($user->data['user_id']))
 		{
 			// remove the first AND
-			$sql_where[] = substr(build_permission_sql($user->data['user_id']), 5);
+			$sql_where[] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
 		}
 
 		// make sure $id is an array for consistency
@@ -615,11 +615,10 @@ class blog_data
 				'ON'		=> 'b.blog_id = r.blog_id',
 			);
 			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
-			$permissions_sql = build_permission_sql($user->data['user_id'], false, 'b.');
-			if ($permissions_sql)
+			if (build_permission_sql($user->data['user_id'], false))
 			{
 				// remove the first AND
-				$sql_where[] = substr($permissions_sql, 5);
+				$sql_where[] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
 			}
 		}
 		if ($sort_days)
@@ -673,7 +672,7 @@ class blog_data
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
 					$sql_array['SELECT'] = 'count(r.reply_id) AS total';
-					$sql_where[] = 'blog_id = ' . $id[0];
+					$sql_where[] = 'r.blog_id = ' . $id[0];
 					$sql_array['WHERE'] = implode(' AND ', $sql_where);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
 					$result = $db->sql_query($sql);

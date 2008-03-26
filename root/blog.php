@@ -11,10 +11,11 @@
 /*
 * Notes - To do
 * post revisions plugin
-* personal categories (tags) plugin
-* Memorable entry (like a sticky)?
-*
+* Personal Categories (tags) Plugin
+* Sticky Plugin
 * Advertisement Management Plugin
+* Trackbacks Plugin
+* http://lithiumstudios.org/forum/viewtopic.php?f=41&t=589
 */
 
 define('IN_BLOG', true);
