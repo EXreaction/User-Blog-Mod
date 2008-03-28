@@ -719,7 +719,10 @@ class blog_data
 			break;
 
 			case 'recent' :
-				$sql_array['ORDER_BY'] = 'r.reply_time DESC';
+				if (!isset($selection_data['order_by']))
+				{
+					$sql_array['ORDER_BY'] = 'r.reply_time DESC';
+				}
 			break;
 		}
 
