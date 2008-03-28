@@ -52,9 +52,21 @@ switch ($mode)
 	case 'popular_blogs' :
 	case 'recent_comments' :
 		// for sorting and pagination
-		$sort_by_sql = (strpos($mode, 'comments') === false) ? array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject') : array('t' => 'reply_time');
+		if (strpos($mode, 'comments') === false)
+		{
+			$sort_by_sql = array('t' => 'blog_time', 'c' => 'blog_reply_count', 'bt' => 'blog_subject');
+			$ids = $blog_data->get_blog_data(str_replace('_blogs', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+			$total = $blog_data->get_blog_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id));
+			$sort_by_text = array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']);
+		}
+		else
+		{
+			$sort_by_sql = array('t' => 'reply_time');
+			$ids = $blog_data->get_reply_data(str_replace('_comments', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
+			$total = $blog_data->get_reply_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id));
+			$sort_by_text = array('t' => $user->lang['POST_TIME']);
+		}
 
-		$ids = (strpos($mode, 'comments') === false) ? $blog_data->get_blog_data(str_replace('_blogs', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days)) : $blog_data->get_reply_data(str_replace('_comments', '', $mode), 0, array('start' => $start, 'limit' => $limit, 'category_id' => $category_id, 'order_by' => $sort_by_sql[$sort_key], 'order_dir' => $order_dir, 'sort_days' => $sort_days));
 		$blog_data->get_user_data(false, true);
 		update_edit_delete();
 
@@ -63,8 +75,6 @@ switch ($mode)
 			// for sorting and pagination
 			$limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 			$s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
-			$total = (strpos($mode, 'comments') === false) ? $blog_data->get_blog_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id)) : $blog_data->get_reply_data('count', 0, array('sort_days' => $sort_days, 'category_id' => $category_id));
-			$sort_by_text = (strpos($mode, 'comments') === false) ? array('t' => $user->lang['POST_TIME'], 'c' => $user->lang['REPLY_COUNT'], 'bt' => $user->lang['BLOG_SUBJECT']) : array('t' => $user->lang['POST_TIME']);
 			gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 			$pagination = generate_blog_pagination($blog_urls['start_zero'], $total, $limit, $start, false);
 
