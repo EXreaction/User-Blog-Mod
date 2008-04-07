@@ -597,6 +597,23 @@ function organize_lang($file = false, $skip_errors = false)
 function get_schema_struct()
 {
 	$schema_data = array();
+
+/* Blog Tags Plugin 
+	$schema_data['phpbb_blogs_tags'] = array(
+		'COLUMNS'		=> array(
+			'tag_id'		=> array('UINT', NULL, 'auto_increment'),
+			'tag_name'		=> array('MTEXT_UNI', ''),
+			'tag_count'		=> array('UINT', 0),
+		),
+		'PRIMARY_KEY'	=> 'tag_id',
+		'KEYS'			=> array(
+			'tag_count'		=> array('INDEX', 'tag_count'),
+		),
+	);
+
+	return $schema_data;
+*/
+
 /* Not currently used, probably won't ever be...
 	$schema_data['phpbb_blog_search_results'] = array(
 		'COLUMNS'		=> array(
