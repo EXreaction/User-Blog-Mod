@@ -30,7 +30,7 @@ class blog_plugins
 	*/
 	public function __construct()
 	{
-		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $user;
+		global $cache, $config, $db, $phpbb_root_path, $phpEx, $blog_plugins_path, $table_prefix, $user;
 
 		if (!isset($config['user_blog_enable_plugins']) || !$config['user_blog_enable_plugins'])
 		{
