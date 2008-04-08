@@ -93,12 +93,27 @@ class ucp_blog
 					if ($auth->acl_get('u_blog_style'))
 					{
 						$available_styles = array(array('name' => $user->lang['NONE'], 'value' => 0));
-						$sql = 'SELECT * FROM ' . STYLES_TABLE . ' WHERE style_active = 1';
+						$sql = 'SELECT * FROM ' . STYLES_TABLE . ' s, ' . STYLES_TEMPLATE_TABLE . ' st WHERE style_active = 1 AND s.template_id = st.template_id';
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
 						{
-							$available_styles[] = array('name' => $row['style_name'], 'value' => $row['style_id']);
+							$demo = '';
+							if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png'))
+							{
+								$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png';
+							}
+							else if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.gif'))
+							{
+								$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.gif';
+							}
+							else if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.jpg'))
+							{
+								$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.jpg';
+							}
+
+							$available_styles[] = array('name' => $row['style_name'], 'value' => $row['style_id'], 'demo' => $demo);
 						}
+						$db->sql_freeresult($result);
 
 						$dh = @opendir($phpbb_root_path . 'blog/styles/');
 
