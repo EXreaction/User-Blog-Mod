@@ -314,4 +314,8 @@
 ##		Beta 5
 ##			+ A few more bug fixes that were introduced by fixing some bugs the last time.
 ##			+ To update from Beta 4, upload all of the new files, then run the upgrade script at blog.php?page=update.
+## 2008-04-10
+##		Release Candidate 1
+##			+ Fixing 1 bug, plus a few minor changes.
+##			+ To update from Beta 5, upload all of the new files, then run the upgrade script at blog.php?page=update.
 ##############################################################

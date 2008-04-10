@@ -23,8 +23,8 @@ You may check for updated code in the repository, but the latest files in the re
 
     <mod-version>
       <major>0</major>
-      <minor>7</minor>
-      <revision>4</revision>
+      <minor>9</minor>
+      <revision>0</revision>
     </mod-version>
 
     <installation>
@@ -39,58 +39,14 @@ You may check for updated code in the repository, but the latest files in the re
 
     <history>
 	  <entry>
-        <date>2008-02-29</date>
+        <date>2008-04-10</date>
         <rev-version>
           <major>0</major>
-          <minor>7</minor>
+          <minor>9</minor>
           <revision>0</revision>
         </rev-version>
         <changelog lang="en-GB">
-          <change>A few bug fixes.  subsilver2 style is now included.  To update, upload the new files and point your browser to blog.php?page=update</change>
-        </changelog>
-      </entry>
-	  <entry>
-        <date>2008-03-08</date>
-        <rev-version>
-          <major>0</major>
-          <minor>7</minor>
-          <revision>1</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-          <change>More bug fixes plus a much more secure Blog CSS filter.  To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
-        </changelog>
-      </entry>
-	  <entry>
-        <date>2008-03-21</date>
-        <rev-version>
-          <major>0</major>
-          <minor>7</minor>
-          <revision>2</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-          <change>Adding an automatic version checker.  Cleaning up the language files, removing unused keys, plus renaming blogs to blog entries.  To update from Beta 2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
-        </changelog>
-      </entry>
-	  <entry>
-        <date>2008-03-24</date>
-        <rev-version>
-          <major>0</major>
-          <minor>7</minor>
-          <revision>3</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-          <change>Bug fixing.  Some fixes with the converter, language fixes, and other misc bugs fixed.  Now the blog category counts the number of blogs under it and it's subcategories.  To update from Beta 3, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
-        </changelog>
-      </entry>
-	  <entry>
-        <date>2008-03-26</date>
-        <rev-version>
-          <major>0</major>
-          <minor>7</minor>
-          <revision>4</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-          <change>A few more bug fixes that were introduced by fixing some bugs the last time.  To update from Beta 4, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+          <change>Fixing 1 bug, plus a few minor changes. To update from Beta 5, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
     </history>
