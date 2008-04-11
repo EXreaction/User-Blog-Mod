@@ -92,12 +92,12 @@ class ucp_blog
 
 					if ($auth->acl_get('u_blog_style'))
 					{
-						$available_styles = array(array('name' => $user->lang['NONE'], 'value' => 0));
+						$available_styles = array(array('name' => $user->lang['NONE'], 'value' => 0, 'demo' => $phpbb_root_path . 'images/spacer.gif'));
 						$sql = 'SELECT * FROM ' . STYLES_TABLE . ' s, ' . STYLES_TEMPLATE_TABLE . ' st WHERE style_active = 1 AND s.template_id = st.template_id';
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
 						{
-							$demo = '';
+							$demo = $phpbb_root_path . 'images/spacer.gif';
 							if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png'))
 							{
 								$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png';
@@ -153,7 +153,7 @@ class ucp_blog
 						'S_SUBSCRIPTIONS'			=> ($config['user_blog_subscription_enabled']) ? true : false,
 						'S_BLOG_STYLE'				=> (isset($available_styles) && sizeof($available_styles) > 1) ? true : false,
 						'S_BLOG_CSS'				=> ($auth->acl_get('u_blog_css')) ? true : false,
-						'DEFAULT_DEMO'				=> (isset($default_demo)) ? $default_demo : '',
+						'DEFAULT_DEMO'				=> (isset($default_demo)) ? $default_demo : $phpbb_root_path . 'images/spacer.gif',
 						'BLOG_CSS'					=> (isset($user_settings[$user->data['user_id']])) ? $user_settings[$user->data['user_id']]['blog_css'] : '',
 					));
 				}
