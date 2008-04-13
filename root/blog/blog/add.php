@@ -8,7 +8,6 @@
 *
 */
 
-// If the file that requested this does not have IN_PHPBB defined or the user requested this page directly exit.
 if (!defined('IN_PHPBB'))
 {
 	exit;

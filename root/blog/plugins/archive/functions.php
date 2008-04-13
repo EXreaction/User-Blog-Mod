@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 function archive_function_generate_menu(&$arg)
 {
 	global $auth, $db, $user, $template, $phpbb_root_path, $blog_images_path;

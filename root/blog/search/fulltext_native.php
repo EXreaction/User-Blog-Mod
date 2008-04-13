@@ -11,9 +11,6 @@
 * Most of this code is forked from the search code in phpBB3.
 */
 
-/**
-* @ignore
-*/
 if (!defined('IN_PHPBB'))
 {
 	exit;

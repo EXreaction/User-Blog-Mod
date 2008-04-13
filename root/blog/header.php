@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 {
 	if (!isset($user->lang['USER_BLOGS']) || !isset($user->lang['MY_BLOG']))

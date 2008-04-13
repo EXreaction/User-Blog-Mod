@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 $user->add_lang('mods/blog/plugins/' . $name);
 
 self::$available_plugins[$name]['plugin_title'] = $user->lang['ARCHIVES'];

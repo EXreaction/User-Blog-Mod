@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 function friends_function_generate_menu(&$arg)
 {
 	global $auth, $cache, $config, $db, $user, $template, $phpbb_root_path;

@@ -14,6 +14,11 @@
 
 //die("Please read the first lines of this script for instructions on how to enable it");
 
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 @set_time_limit(0);
 
 //$schema_path = './../install/schemas/';
