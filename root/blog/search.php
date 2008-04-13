@@ -206,7 +206,7 @@ if ($keywords || $author)
 		'TOTAL_POSTS'		=> ($matches == 1) ? $user->lang['ONE_REPLY'] : sprintf($user->lang['CNT_REPLIES'], $matches),
 		'SEARCH_MATCHES'	=> ($matches == 1) ? sprintf($user->lang['FOUND_SEARCH_MATCH'], $matches) : sprintf($user->lang['FOUND_SEARCH_MATCHES'], $matches),
 		'U_SEARCH_WORDS'	=> $search_url,
-		'SEARCH_WORDS'		=> (($author) ? $author : $keywords),
+		'SEARCH_WORDS'		=> $author . ' &bull; ' . $keywords,
 	));
 
 	$template->set_filenames(array(

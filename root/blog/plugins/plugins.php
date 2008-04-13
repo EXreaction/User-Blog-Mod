@@ -113,6 +113,47 @@ class blog_plugins
 		return true;
 	}
 
+	/**
+	* Parse a template and return the parsed text
+	*
+	* This function should be used for ALL plugins that normally use $template->assign_display to output data with the plugin system.
+	* This checks to verify that the template file exists in the current template path, and, if it does not, it uses the default one from prosilver.
+	*/
+	public static function parse_template($template_file)
+	{
+		global $blog_style, $blog_template, $phpbb_root_path, $template, $user;
+		static $tpl_id = 0;
+
+		// What's the current template path again?
+		if ($blog_style)
+		{
+			$tpl_path = $phpbb_root_path . 'blog/styles/' . $blog_template . '/';
+		}
+		else
+		{
+			$tpl_path = $phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/';
+		}
+
+		// If the template file does not exist, we will have the system fall back and use the one in the prosilver folder
+		if (!file_exists($tpl_path . $template_file))
+		{
+			$template_path = '../../../styles/prosilver/template/';
+		}
+		else
+		{
+			$template_path = '';
+		}
+
+		// $tpl_id is just used to keep a unique filename for the template.
+		$tpl_id++;
+		$template->set_filenames(array(
+			$tpl_id		=> $template_path . $template_file,
+		));
+
+		// return the output
+		return $template->assign_display($tpl_id);
+	}
+
 	public static function plugin_do($what)
 	{
 		if (isset(self::$to_do[$what]))

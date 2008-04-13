@@ -77,11 +77,7 @@ function archive_function_generate_menu(&$arg)
 		'IMG_MINUS'		=> $blog_images_path . 'minus.gif',
 	));
 
-	$template->set_filenames(array(
-		'archive_body'		=> 'blog/plugins/archive/archive_body.html',
-	));
-
-	$arg['user_menu_extra'] .= $template->assign_display('archive_body');
+	$arg['user_menu_extra'] .= blog_plugins::parse_template('blog/plugins/archive/archive_body.html');
 
 	unset($template->_tpldata['archiverow']);
 }

@@ -96,12 +96,6 @@ function friends_function_generate_menu(&$arg)
 		'S_MENU_ZEBRA_ENABLED'		=> ($menu_friends_online || $menu_friends_offline) ? true : false,
 	));
 
-	$template->set_filenames(array(
-		'friends_body'		=> 'blog/plugins/friends/friends_body.html',
-	));
-
-	$arg['user_menu_extra'] .= $template->assign_display('friends_body');
-
-	unset($template->_tpldata['menu_friends_online'], $template->_tpldata['menu_friends_offline']);
+	$arg['user_menu_extra'] .= blog_plugins::parse_template('blog/plugins/friends/friends_body.html');
 }
 ?>
