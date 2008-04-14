@@ -31,7 +31,7 @@ $lang = array_merge($lang, array(
 
 	'BLOG_ALREADY_APPROVED'		=> 'This blog entry is already approved.',
 	'BLOG_ALREADY_DELETED'		=> 'This blog entry has already been deleted.',
-	'BLOG_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just posted <a href="%2$s">this blog entry</a> and it needs approval before it is publically viewable.<br/>Please take the time to read over the comment and decide what needs to be done.',
+	'BLOG_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just posted <a href="%2$s">this blog entry</a> and it needs approval before it is publically viewable.<br/>Please take the time to read over the blog entry and decide what needs to be done.',
 	'BLOG_APPROVE_PM_SUBJECT'	=> 'Blog Entry Approval Needed!',
 	'BLOG_DELETED'				=> 'Blog entry has been deleted.',
 	'BLOG_EDIT_LOCKED'			=> 'This blog entry is locked for editing.',
