@@ -290,7 +290,7 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 }
 else
 {
-	if ($blog_template && is_numeric($blog_template) && $blog_template != 0)
+	if ($blog_template && is_numeric($blog_template))
 	{
 		$user->setup('mods/blog/common', $blog_template);
 	}
