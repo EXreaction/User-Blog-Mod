@@ -24,7 +24,7 @@ You may check for updated code in the repository, but the latest files in the re
     <mod-version>
       <major>0</major>
       <minor>9</minor>
-      <revision>0</revision>
+      <revision>1</revision>
     </mod-version>
 
     <installation>
@@ -47,6 +47,17 @@ You may check for updated code in the repository, but the latest files in the re
         </rev-version>
         <changelog lang="en-GB">
           <change>Fixing 1 bug, plus a few minor changes. To update from Beta 5, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+        </changelog>
+      </entry>
+	  <entry>
+        <date>2008-04-18</date>
+        <rev-version>
+          <major>0</major>
+          <minor>9</minor>
+          <revision>1</revision>
+        </rev-version>
+        <changelog lang="en-GB">
+          <change>A few minor changes; making plugins easier to code and manage with alternate blog styles.  A few small bugs fixed. To update from RC1, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
     </history>
