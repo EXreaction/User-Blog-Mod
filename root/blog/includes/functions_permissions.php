@@ -241,13 +241,13 @@ function build_permission_sql($user_id, $add_where = false, $prefix = '')
 		return '';
 	}
 
-	// Matches and replacements.  Make sure to add any field used below here
+	// Matches and replacements.  Make sure to add any field used below here.  It must be done this way to work with our static...otherwise the static is useless.
 	$matches = array('user_id', 'perm_guest', 'perm_registered', 'perm_friend', 'perm_foe');
 	$replacements = array($prefix . 'user_id', $prefix . 'perm_guest', $prefix . 'perm_registered', $prefix . 'perm_friend', $prefix . 'perm_foe');
 
-	// We only want to build this query once per session...so if it is build already, don't do it again!
+	// We only want to build this query once per session...so if it is built already, don't do it again!
 	static $sql = '';
-	if ($sql && !$prefix)
+	if ($sql)
 	{
 		return str_replace($matches, $replacements, (($add_where) ? fix_where_sql($sql) : $sql));
 	}
