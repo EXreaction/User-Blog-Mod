@@ -110,21 +110,24 @@ function tags_function_generate_menu(&$args)
 	$db->sql_freeresult($result);
 	ksort($tag_list);
 
-	$med = (int) $total / sizeof($tag_list);
-	foreach ($tag_list as $tag => $cnt)
+	if (sizeof($tag_list))
 	{
-		$template->assign_block_vars('tags', array(
-			'TAG'		=> $tag,
-			'CNT'		=> $cnt,
-			'SIZE'		=> min(26, 10 + (4 * $cnt / $med)),
+		$med = (int) $total / sizeof($tag_list);
+		foreach ($tag_list as $tag => $cnt)
+		{
+			$template->assign_block_vars('tags', array(
+				'TAG'		=> $tag,
+				'CNT'		=> $cnt,
+				'SIZE'		=> min(26, 10 + (4 * $cnt / $med)),
 
-			'U_VIEW'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=tag&amp;tag=' . $tag),
-		));
+				'U_VIEW'	=> append_sid("{$phpbb_root_path}blog.$phpEx", 'page=tag&amp;tag=' . $tag),
+			));
+		}
+
+		$tag_output = blog_plugins::parse_template('blog/plugins/tags/tags_menu.html');
+		$args['user_menu_extra'] .= $tag_output;
+		$args['extra'] .= $tag_output;
 	}
-
-	$tag_output = blog_plugins::parse_template('blog/plugins/tags/tags_menu.html');
-	$args['user_menu_extra'] .= $tag_output;
-	$args['extra'] .= $tag_output;
 }
 
 function tags_blog_page_switch(&$args)
