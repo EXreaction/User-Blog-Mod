@@ -16,8 +16,6 @@
 * Trackbacks Plugin - http://lithiumstudios.org/forum/viewtopic.php?f=41&t=589
 */
 
-define('IN_BLOG', true);
-
 // Remember to update this in the install.php file as well!
 $user_blog_version = '0.9.1';
 
@@ -388,10 +386,6 @@ $template->assign_vars(array(
 ));
 
 blog_plugins::plugin_do('blog_end');
-
-// DEBUG
-//$db->sql_report('display');
-//$cache->put('_a', $template);
 
 // setup the page footer
 page_footer();

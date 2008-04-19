@@ -33,7 +33,7 @@ $lang = array_merge($lang, array(
 	'SUBSCRIPTION_DEFAULT'					=> 'Default Subscription',
 	'SUBSCRIPTION_DEFAULT_EXPLAIN'			=> 'Select which subscription types you would like to recieve by default when someone comments on a blog entry you posted or commented on.  You can set this on each post you make as well.',
 
-	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br/>Note that the global board permissions override all permissions set here.',
+	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br />Note that the global board permissions override all permissions set here.',
 	'UCP_BLOG_SETTINGS_EXPLAIN'				=> '',
 	'UCP_BLOG_TITLE_DESCRIPTION_EXPLAIN'	=> 'Here you can set the title and description for your blog.',
 	'USER_PERMISSIONS_DISABLED'				=> 'The User Permissions System has been disabled by the Administrators.',

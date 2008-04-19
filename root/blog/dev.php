@@ -406,7 +406,7 @@ function lang_lines($lang, $max_length, &$output, $start = 0)
 	{
 		if ($name == $last_name)
 		{
-			echo 'Lang Duplicate: ' . $name . '<br/>';
+			echo 'Lang Duplicate: ' . $name . '<br />';
 		}
 		$last_name = $name;
 
@@ -564,7 +564,7 @@ function organize_lang($file = false, $skip_errors = false)
 		{
 			if ($skip_errors)
 			{
-				echo 'Bad line endings in ' . $phpbb_root_path . 'language/' . $file . '.' . $phpEx . '<br/>';
+				echo 'Bad line endings in ' . $phpbb_root_path . 'language/' . $file . '.' . $phpEx . '<br />';
 				return;
 			}
 

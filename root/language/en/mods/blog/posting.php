@@ -31,7 +31,7 @@ $lang = array_merge($lang, array(
 
 	'BLOG_ALREADY_APPROVED'		=> 'This blog entry is already approved.',
 	'BLOG_ALREADY_DELETED'		=> 'This blog entry has already been deleted.',
-	'BLOG_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just posted <a href="%2$s">this blog entry</a> and it needs approval before it is publically viewable.<br/>Please take the time to read over the blog entry and decide what needs to be done.',
+	'BLOG_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br /><br />%1$s has just posted <a href="%2$s">this blog entry</a> and it needs approval before it is publically viewable.<br />Please take the time to read over the blog entry and decide what needs to be done.',
 	'BLOG_APPROVE_PM_SUBJECT'	=> 'Blog Entry Approval Needed!',
 	'BLOG_DELETED'				=> 'Blog entry has been deleted.',
 	'BLOG_EDIT_LOCKED'			=> 'This blog entry is locked for editing.',
@@ -39,13 +39,13 @@ $lang = array_merge($lang, array(
 	'BLOG_NEED_APPROVE'			=> 'A moderator or administrator must approve your blog entries before they are public.',
 	'BLOG_NOT_DELETED'			=> 'This blog entry is not deleted.  Why are you trying to un-delete it?',
 	'BLOG_REPORT_CONFIRM'		=> 'Are you sure you want to report this blog entry?',
-	'BLOG_REPORT_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just reported <a href="%2$s">this blog entry</a>.<br/>Please take the time to read over the blog entry and decide what needs to be done.',
+	'BLOG_REPORT_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br /><br />%1$s has just reported <a href="%2$s">this blog entry</a>.<br />Please take the time to read over the blog entry and decide what needs to be done.',
 	'BLOG_REPORT_PM_SUBJECT'	=> 'Blog Entry Reported!',
 	'BLOG_SUBMIT_SUCCESS'		=> 'The blog entry was submitted successfully!',
-	'BLOG_SUBSCRIPTION_NOTICE'	=> 'This is an automatically dispatched message from the User Blog Mod notifying you that a comment has been made to [url=%1$s]this[/url] blog entry by %2$s.<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
+	'BLOG_SUBSCRIPTION_NOTICE'	=> 'This is an automatically dispatched message from the User Blog Mod notifying you that a comment has been made to [url=%1$s]this[/url] blog entry by %2$s.<br /><br />If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
 	'BLOG_UNDELETED'			=> 'The blog entry has been un-deleted.',
 
-	'CATEGORY_EXPLAIN'			=> 'You may select more than one category by holding CTRL and clicking more categories you would like to enter it in.<br/><br/>Blogs entries are <strong>always</strong> shown in your personal Blog.',
+	'CATEGORY_EXPLAIN'			=> 'You may select more than one category by holding CTRL and clicking more categories you would like to enter it in.<br /><br />Blogs entries are <strong>always</strong> shown in your personal Blog.',
 
 	'DELETE_BLOG_CONFIRM'		=> 'Are you sure you want to delete this blog entry?',
 	'DELETE_REPLY_CONFIRM'		=> 'Are you sure you want to delete this comment?',
@@ -61,7 +61,7 @@ $lang = array_merge($lang, array(
 	'PERMISSIONS'				=> 'Permissions',
 
 	'REPLY_ALREADY_APPROVED'	=> 'This comment is already approved.',
-	'REPLY_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just posted <a href="%2$s">this comment</a> and it needs approval before it is publically viewable.<br/>Please take the time to read over the comment and decide what needs to be done.',
+	'REPLY_APPROVE_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br /><br />%1$s has just posted <a href="%2$s">this comment</a> and it needs approval before it is publically viewable.<br />Please take the time to read over the comment and decide what needs to be done.',
 	'REPLY_APPROVE_PM_SUBJECT'	=> 'Blog Comment Approval Needed!',
 	'REPLY_DELETED'				=> 'Comment has been deleted.',
 	'REPLY_EDIT_LOCKED'			=> 'This comment is locked for editing.',
@@ -70,7 +70,7 @@ $lang = array_merge($lang, array(
 	'REPLY_NOT_DELETED'			=> 'This comment is not deleted.  Why are you trying to un-delete it?',
 	'REPLY_PERMISSIONS_SINGLE'	=> 'Can read and reply to this blog entry.',
 	'REPLY_REPORT_CONFIRM'		=> 'Are you sure you want to report this comment?',
-	'REPLY_REPORT_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br/><br/>%1$s has just reported <a href="%2$s">this comment</a>.<br/>Please take the time to read over the comment and decide what needs to be done.',
+	'REPLY_REPORT_PM'			=> 'This is an automatically dispatched message from the User Blog Mod.<br /><br />%1$s has just reported <a href="%2$s">this comment</a>.<br />Please take the time to read over the comment and decide what needs to be done.',
 	'REPLY_REPORT_PM_SUBJECT'	=> 'Blog Comment Reported!',
 	'REPLY_SUBMIT_SUCCESS'		=> 'The comment was submitted successfully!',
 	'REPLY_UNDELETED'			=> 'The comment has been un-deleted.',
@@ -81,7 +81,7 @@ $lang = array_merge($lang, array(
 	'UNDELETE_BLOG_CONFIRM'		=> 'Are you sure you want to un-delete this blog entry?',
 	'UNDELETE_REPLY'			=> 'Un-delete Comment',
 	'UNDELETE_REPLY_CONFIRM'	=> 'Are you sure you want to un-delete this comment?',
-	'USER_SUBSCRIPTION_NOTICE'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog entry has been posted by %1$s.  You can view the blog [url=%2$s]here[/url].<br/><br/>If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
+	'USER_SUBSCRIPTION_NOTICE'	=> 'This is an automatically dispatched message from the User Blog mod notifying you that a new blog entry has been posted by %1$s.  You can view the blog [url=%2$s]here[/url].<br /><br />If you would like to no longer recieve these notices click [url=%3$s]here[/url] to unsubscribe.',
 
 	'VIEW_PERMISSIONS_SINGLE'	=> 'Can read this blog entry.',
 ));

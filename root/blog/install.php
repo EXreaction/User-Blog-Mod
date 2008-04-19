@@ -72,7 +72,7 @@ if (confirm_box(true))
 
 	if (sizeof($error))
 	{
-		trigger_error(sprintf($user->lang['INSTALL_BLOG_DB_FAIL'], implode('<br/>', $error)));
+		trigger_error(sprintf($user->lang['INSTALL_BLOG_DB_FAIL'], implode('<br />', $error)));
 	}
 	else
 	{

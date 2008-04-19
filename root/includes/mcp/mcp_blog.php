@@ -59,8 +59,6 @@ class mcp_blog
 			$sort_by_sql = array('t' => 'reply_time');
 		}
 
-		define('IN_BLOG', true);
-
 		generate_blog_urls();
 
 		$this->tpl_name = 'blog/mcp_blog';

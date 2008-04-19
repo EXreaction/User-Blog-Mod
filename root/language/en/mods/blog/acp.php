@@ -110,7 +110,7 @@ $lang = array_merge($lang, array(
 	'PLUGIN_NOT_EXIST'						=> 'The selected plugin does not exist.',
 	'PLUGIN_NOT_INSTALLED'					=> 'The selected plugin is not installed.',
 	'PLUGIN_UNINSTALL'						=> 'Uninstall',
-	'PLUGIN_UNINSTALL_CONFIRM'				=> 'Are you sure you want to uninstall this plugin?<br/><strong>This will remove all added data by this mod from the database (so any saved data by it will be lost)!</strong><br/><br/>You must manually uninstall any file changes made by this plugin and delete the plugin files to completely remove this plugin.',
+	'PLUGIN_UNINSTALL_CONFIRM'				=> 'Are you sure you want to uninstall this plugin?<br /><strong>This will remove all added data by this mod from the database (so any saved data by it will be lost)!</strong><br /><br />You must manually uninstall any file changes made by this plugin and delete the plugin files to completely remove this plugin.',
 	'PLUGIN_UPDATE'							=> 'Update DB',
 
 	'REMOVE_ALL_BLOGS'						=> 'Just delete the category.',

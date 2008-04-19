@@ -263,7 +263,7 @@ class acp_blogs
 
 		if (version_compare($file_version, $value, '>'))
 		{
-			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br/>';
+			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br />';
 		}
 
 		return $version;
@@ -1069,7 +1069,7 @@ class acp_blogs
 					{
 						$redirect_url = $this->u_action . "&amp;search_type={$this->state[0]}&amp;action={$action}&amp;section={$section}&amp;part={$part}";
 						meta_refresh(1, $redirect_url);
-						trigger_error(sprintf($user->lang['SEARCH_BREAK_CONTINUE_NOTICE'], $section, 3, $part, $part_cnt) . '<br/><br/><a href="' . $redirect_url . '">' . $user->lang['CONTINUE'] . '</a>');
+						trigger_error(sprintf($user->lang['SEARCH_BREAK_CONTINUE_NOTICE'], $section, 3, $part, $part_cnt) . '<br /><br /><a href="' . $redirect_url . '">' . $user->lang['CONTINUE'] . '</a>');
 					}
 				break;
 			}
