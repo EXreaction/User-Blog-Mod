@@ -619,6 +619,9 @@ if (confirm_box(true))
 			}
 			$db->sql_freeresult($result);
 		case '0.7.3' :
+		case '0.7.4' :
+		case '0.9.0' :
+		case '0.9.1' :
 	}
 
 	// update the version
