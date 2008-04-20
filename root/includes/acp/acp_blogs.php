@@ -721,6 +721,7 @@ class acp_blogs
 		}
 
 		$i = 0;
+		$installed_plugins = array();
 		foreach (blog_plugins::$available_plugins as $name => $data)
 		{
 			$i++;
@@ -780,14 +781,33 @@ class acp_blogs
 				$s_actions[] = '<a href="' . $this->u_action . "&amp;action=install&amp;name=" . $name . '">' . $user->lang['PLUGIN_INSTALL'] . '</a>';
 			}
 
-			$template->assign_block_vars((($installed) ? 'installed' : 'uninstalled'), array(
-				'NAME'				=> (isset($data['plugin_title'])) ? $data['plugin_title'] : $name,
-				'DESCRIPTION'		=> (isset($data['plugin_description'])) ? $data['plugin_description'] : '',
-				'S_ACTIONS'			=> implode(' | ', $s_actions),
-				'COPYRIGHT'			=> (isset($data['plugin_copyright'])) ? $data['plugin_copyright'] : '',
-				'DATABASE_VERSION'	=> ($installed) ? blog_plugins::$plugins[$name]['plugin_version'] : false,
-				'FILES_VERSION'		=> (isset($data['plugin_version'])) ? $data['plugin_version'] : '',
-			));
+			if ($installed)
+			{
+				$installed_plugins[$name] = array(
+					'NAME'				=> (isset($data['plugin_title'])) ? $data['plugin_title'] : $name,
+					'DESCRIPTION'		=> (isset($data['plugin_description'])) ? $data['plugin_description'] : '',
+					'S_ACTIONS'			=> implode(' | ', $s_actions),
+					'COPYRIGHT'			=> (isset($data['plugin_copyright'])) ? $data['plugin_copyright'] : '',
+					'DATABASE_VERSION'	=> ($installed) ? blog_plugins::$plugins[$name]['plugin_version'] : false,
+					'FILES_VERSION'		=> (isset($data['plugin_version'])) ? $data['plugin_version'] : '',
+				);
+			}
+			else
+			{
+				$template->assign_block_vars('uninstalled', array(
+					'NAME'				=> (isset($data['plugin_title'])) ? $data['plugin_title'] : $name,
+					'DESCRIPTION'		=> (isset($data['plugin_description'])) ? $data['plugin_description'] : '',
+					'S_ACTIONS'			=> implode(' | ', $s_actions),
+					'COPYRIGHT'			=> (isset($data['plugin_copyright'])) ? $data['plugin_copyright'] : '',
+					'DATABASE_VERSION'	=> ($installed) ? blog_plugins::$plugins[$name]['plugin_version'] : false,
+					'FILES_VERSION'		=> (isset($data['plugin_version'])) ? $data['plugin_version'] : '',
+				));
+			}
+		}
+
+		foreach (blog_plugins::$plugins as $name => $row)
+		{
+			$template->assign_block_vars('installed', $installed_plugins[$name]);
 		}
 	}
 

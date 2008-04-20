@@ -48,7 +48,7 @@ class blog_plugins
 			{
 				include($phpbb_root_path . 'blog/includes/constants.' . $phpEx);
 			}
-			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE;
+			$sql = 'SELECT * FROM ' . BLOGS_PLUGINS_TABLE . ' ORDER BY plugin_id ASC';
 			$result = $db->sql_query($sql);
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -387,11 +387,10 @@ class blog_plugins
 			{
 				break;
 			}
-			$to = $plugin_name;
 			$to_id = $data['plugin_id'];
 		}
 
-		if ($to)
+		if ($to_id)
 		{
 			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_id = 0 WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 			$db->sql_query($sql);
