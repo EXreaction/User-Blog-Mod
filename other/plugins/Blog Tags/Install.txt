@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Allows users to set tags for blogs
 ##
-## MOD Version: 0.7.0
+## MOD Version: 0.7.1
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~1 Minutes
@@ -24,6 +24,9 @@
 ##		0.3.0 Released
 ## 2008-04-17
 ##		0.7.0 Released
+## 2008-04-19
+##		0.7.1 Released
+##			+ It should not show the tags: section in a post unless it has any tags in it.
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

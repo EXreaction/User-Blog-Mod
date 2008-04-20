@@ -149,7 +149,10 @@ function tags_blog_handle_data_end(&$args)
 		$tags[] = '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx", 'page=tag&amp;tag=' . $tag) . '">' . $tag . '</a>';
 	}
 
-	$args['EXTRA'] .= '<br /><strong>' . $user->lang['TAGS'] . '</strong>: ' . implode(' &#8226; ', $tags);
+	if (sizeof($tags))
+	{
+		$args['EXTRA'] .= '<br /><strong>' . $user->lang['TAGS'] . '</strong>: ' . implode(' &#8226; ', $tags);
+	}
 }
 
 function tags_function_handle_basic_posting_data(&$args)

@@ -18,7 +18,7 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_TAGS_TITLE']
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_TAGS_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '0.7.0';
+self::$available_plugins[$name]['plugin_version'] = '0.7.1';
 
 $to_do = array(
 	'function_handle_basic_posting_data'		=> array('tags_function_handle_basic_posting_data'),
