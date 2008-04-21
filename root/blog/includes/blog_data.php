@@ -65,9 +65,9 @@ class blog_data
 			'FROM'		=> array(
 				BLOGS_TABLE	=> array('b'),
 			),
+			'WHERE'		=> array(),
 			'ORDER_BY'	=> (($order_by != 'default') ? $order_by : 'b.blog_id') . ' ' . $order_dir,
 		);
-		$sql_where = array();
 
 		if ($category_id)
 		{
@@ -75,39 +75,39 @@ class blog_data
 				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
 				'ON'		=> 'bc.blog_id = b.blog_id',
 			));
-			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . intval($category_id) . '';
+			$sql_array['WHERE'][] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . intval($category_id) . '';
 		}
 		if (!$auth->acl_get('m_blogapprove'))
 		{
 			if ($user->data['is_registered'])
 			{
-				$sql_where[] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';
+				$sql_array['WHERE'][] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';
 			}
 			else
 			{
-				$sql_where[] = 'b.blog_approved = 1';
+				$sql_array['WHERE'][] = 'b.blog_approved = 1';
 			}
 		}
 		if ($auth->acl_gets('m_blogdelete', 'a_blogdelete') && $deleted)
 		{
-			$sql_where[] = 'b.blog_deleted != 0';
+			$sql_array['WHERE'][] = 'b.blog_deleted != 0';
 		}
 		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
+			$sql_array['WHERE'][] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 		}
 		if ($sort_days)
 		{
-			$sql_where[] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
+			$sql_array['WHERE'][] = 'b.blog_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
-			$sql_where[] = $custom_sql;
+			$sql_array['WHERE'][] = $custom_sql;
 		}
 		if (build_permission_sql($user->data['user_id']))
 		{
 			// remove the first AND
-			$sql_where[] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
+			$sql_array['WHERE'][] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
 		}
 
 		// make sure $id is an array for consistency
@@ -120,7 +120,7 @@ class blog_data
 		switch ($mode)
 		{
 			case 'user' : // select all the blogs by user(s)
-				$sql_where[] =  $db->sql_in_set('b.user_id', $id);
+				$sql_array['WHERE'][] =  $db->sql_in_set('b.user_id', $id);
 			break;
 
 			case 'user_deleted' : // select all the deleted blogs by user(s)
@@ -128,8 +128,8 @@ class blog_data
 				{
 					$sql_array['ORDER_BY'] = 'b.blog_deleted_time' . ' ' . $order_dir;
 				}
-				$sql_where[] =  $db->sql_in_set('b.user_id', $id);
-				$sql_where[] =  'b.blog_deleted != 0';
+				$sql_array['WHERE'][] =  $db->sql_in_set('b.user_id', $id);
+				$sql_array['WHERE'][] =  'b.blog_deleted != 0';
 			break;
 
 			case 'blog' : // select a single blog or blogs (if ID is an array) by the blog_id(s)
@@ -147,7 +147,7 @@ class blog_data
 					return;
 				}
 
-				$sql_where[] =  $db->sql_in_set('b.blog_id', $to_query);
+				$sql_array['WHERE'][] =  $db->sql_in_set('b.blog_id', $to_query);
 				$limit = 0;
 			break;
 
@@ -180,7 +180,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] =  'b.blog_reported = 1';
+				$sql_array['WHERE'][] =  'b.blog_reported = 1';
 			break;
 
 			case 'disapproved' : // select disapproved blogs
@@ -189,7 +189,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] =  'b.blog_approved = 0';
+				$sql_array['WHERE'][] =  'b.blog_approved = 0';
 			break;
 
 			case 'random_blog_ids' : // this gets a few random blog_ids
@@ -232,7 +232,7 @@ class blog_data
 
 			case 'count' : // this just does a count of the number of blogs
 				$sql_array['SELECT'] = 'count(b.blog_id) AS total';
-				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 
 				$result = $db->sql_query($sql);
@@ -244,7 +244,7 @@ class blog_data
 			case 'all_ids' : // select and return all available ID's.  This does not get any data other than the blog_id's.
 				$all_ids = array();
 				$sql_array['SELECT'] = 'b.blog_id';
-				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 
 				$result = $db->sql_query($sql);
@@ -258,12 +258,9 @@ class blog_data
 			break;
 		}
 
-		$temp = compact('sql_array', 'sql_where');
-		blog_plugins::plugin_do_ref('blog_data_sql', $temp);
-		extract($temp);
-		unset($temp);
+		blog_plugins::plugin_do_ref('blog_data_sql', $sql_array);
 
-		$sql_array['WHERE'] = implode(' AND ', $sql_where);
+		$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		if ($limit)
 		{
@@ -581,9 +578,9 @@ class blog_data
 			'FROM'		=> array(
 				BLOGS_REPLY_TABLE	=> array('r'),
 			),
-			'ORDER_BY'	=> $order_by . ' ' . $order_dir
+			'WHERE'		=> array(),
+			'ORDER_BY'	=> $order_by . ' ' . $order_dir,
 		);
-		$sql_where = array();
 
 		if ($category_id)
 		{
@@ -591,52 +588,52 @@ class blog_data
 				'FROM'		=> array(BLOGS_IN_CATEGORIES_TABLE => 'bc'),
 				'ON'		=> 'bc.blog_id = r.blog_id',
 			);
-			$sql_where[] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . $category_id;
+			$sql_array['WHERE'][] = (is_array($category_id)) ? $db->sql_in_set('bc.category_id', $category_id) : 'bc.category_id = ' . $category_id;
 		}
 		if (!$auth->acl_get('m_blogreplyapprove'))
 		{
 			if ($user->data['is_registered'])
 			{
-				$sql_where[] = '(r.reply_approved = 1 OR r.reply_id = ' . $user->data['user_id'] . ')';
+				$sql_array['WHERE'][] = '(r.reply_approved = 1 OR r.reply_id = ' . $user->data['user_id'] . ')';
 			}
 			else
 			{
-				$sql_where[] = 'r.reply_approved = 1';
+				$sql_array['WHERE'][] = 'r.reply_approved = 1';
 			}
 		}
 		if (!$auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete'))
 		{
-			$sql_where[] = '(r.reply_deleted = 0 OR r.reply_deleted = ' . $user->data['user_id'] . ')';
+			$sql_array['WHERE'][] = '(r.reply_deleted = 0 OR r.reply_deleted = ' . $user->data['user_id'] . ')';
 
 			// Make sure we do not select replies from blogs that have been deleted (if the user isn't allowed to view deleted items)
 			$sql_array['LEFT_JOIN'][] = array(
 				'FROM'		=> array(BLOGS_TABLE => 'b'),
 				'ON'		=> 'b.blog_id = r.blog_id',
 			);
-			$sql_where[] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
+			$sql_array['WHERE'][] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
 			if (build_permission_sql($user->data['user_id'], false))
 			{
 				// remove the first AND
-				$sql_where[] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
+				$sql_array['WHERE'][] = substr(build_permission_sql($user->data['user_id'], false, 'b.'), 5);
 			}
 		}
 		if ($sort_days)
 		{
-			$sql_where[] = 'r.reply_time >= ' . (time() - $sort_days * 86400);
+			$sql_array['WHERE'][] = 'r.reply_time >= ' . (time() - $sort_days * 86400);
 		}
 		if ($custom_sql)
 		{
-			$sql_where[] = $custom_sql;
+			$sql_array['WHERE'][] = $custom_sql;
 		}
 
 		switch ($mode)
 		{
 			case 'blog' : // view all replys by a blog_id
-				$sql_where[] = $db->sql_in_set('r.blog_id', $id);
+				$sql_array['WHERE'][] = $db->sql_in_set('r.blog_id', $id);
 			break;
 
 			case 'reply' : // select replies by reply_id(s)
-				$sql_where[] = $db->sql_in_set('r.reply_id', $id);
+				$sql_array['WHERE'][] = $db->sql_in_set('r.reply_id', $id);
 				$limit = 0;
 			break;
 
@@ -646,7 +643,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] = 'r.reply_reported = 1';
+				$sql_array['WHERE'][] = 'r.reply_reported = 1';
 			break;
 
 			case 'disapproved' : // select disapproved replies
@@ -655,7 +652,7 @@ class blog_data
 					return false;
 				}
 
-				$sql_where[] = 'r.reply_approved = 0';
+				$sql_array['WHERE'][] = 'r.reply_approved = 0';
 			break;
 
 			case 'reply_count' : // for counting how many replies there are for a blog
@@ -671,8 +668,8 @@ class blog_data
 				else if ($auth->acl_get('m_blogreplyapprove') || $auth->acl_gets('m_blogreplydelete', 'a_blogreplydelete') || $sort_days || (self::$blog[$id[0]]['user_id'] == $user->data['user_id'] && $auth->acl_get('u_blogmoderate')))
 				{
 					$sql_array['SELECT'] = 'count(r.reply_id) AS total';
-					$sql_where[] = 'r.blog_id = ' . $id[0];
-					$sql_array['WHERE'] = implode(' AND ', $sql_where);
+					$sql_array['WHERE'][] = 'r.blog_id = ' . $id[0];
+					$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 					$sql = $db->sql_build_query('SELECT', $sql_array);
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
@@ -708,7 +705,7 @@ class blog_data
 
 			case 'count' : // this just does a count of the number of replies
 				$sql_array['SELECT'] = 'count(r.reply_id) AS total';
-				$sql_array['WHERE'] = implode(' AND ', $sql_where);
+				$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 
 				$result = $db->sql_query($sql);
@@ -729,7 +726,7 @@ class blog_data
 		blog_plugins::plugin_do_ref('reply_data_sql', $temp);
 		extract($temp);
 
-		$sql_array['WHERE'] = implode(' AND ', $sql_where);
+		$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		if ($limit)
 		{
