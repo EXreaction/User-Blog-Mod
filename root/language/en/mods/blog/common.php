@@ -21,7 +21,7 @@ $lang = array_merge($lang, array(
 	'BLOG'							=> 'Blog',
 	'BLOGS'							=> 'Blogs',
 	'BLOG_CONTROL_PANEL'			=> 'Blog Control Panel',
-	'BLOG_CREDITS'					=> 'Blog System powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
+	'BLOG_CREDITS'					=> 'Blogs powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
 	'BLOG_DELETED_BY_MSG'			=> 'This blog entry was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
 	'BLOG_DESCRIPTION'				=> 'Blog Description',
 	'BLOG_LINKS'					=> 'Blog Links',
