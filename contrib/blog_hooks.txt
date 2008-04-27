@@ -171,8 +171,6 @@
 /blog/view/main.php
 	view_main_start
 	view_main_end
-	view_main_end
-	view_main_feed_end
 
 /blog/view/single.php
 	view_blog_start
