@@ -37,7 +37,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 	// don't call the generate_board_url function a whole bunch of times, get it once and keep using it
 	static $start_url = '';
-	$start_url = ($start_url == '') ? ((defined('BLOG_USE_ROOT')) ? generate_board_url(true) : generate_board_url()) . '/' : $start_url;
+	$start_url = ($start_url == '') ? ((defined('BLOG_ROOT')) ? generate_board_url(true) . BLOG_ROOT : generate_board_url()) . '/' : $start_url;
 	$extras = $anchor = '';
 
 	// Add the category stuff if c is in the url
