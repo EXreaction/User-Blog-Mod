@@ -68,6 +68,7 @@ You may check for updated code in the repository, but the latest files in the re
           <revision>0</revision>
         </rev-version>
         <changelog lang="en-GB">
+		  <change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
 		  <change>Fixing the (previously broken) output ordering of plugins.</change>
 		  <change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
 		  <change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
