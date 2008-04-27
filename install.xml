@@ -22,9 +22,9 @@ You may check for updated code in the repository, but the latest files in the re
     </author-group>
 
     <mod-version>
-      <major>0</major>
-      <minor>9</minor>
-      <revision>1</revision>
+      <major>1</major>
+      <minor>0</minor>
+      <revision>0</revision>
     </mod-version>
 
     <installation>
@@ -58,6 +58,22 @@ You may check for updated code in the repository, but the latest files in the re
         </rev-version>
         <changelog lang="en-GB">
           <change>A few minor changes; making plugins easier to code and manage with alternate blog styles.  A few small bugs fixed. To update from RC1, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+        </changelog>
+      </entry>
+	  <entry>
+        <date>2008-04-</date>
+        <rev-version>
+          <major>1</major>
+          <minor>0</minor>
+          <revision>0</revision>
+        </rev-version>
+        <changelog lang="en-GB">
+		  <change>Fixing the (previously broken) output ordering of plugins.</change>
+		  <change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
+		  <change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
+		  <change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
+		  <change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
+          <change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
         </changelog>
       </entry>
     </history>

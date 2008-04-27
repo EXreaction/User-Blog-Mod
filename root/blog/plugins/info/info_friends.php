@@ -19,7 +19,7 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_FRIENDS_TITL
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_FRIENDS_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '0.9.0';
+self::$available_plugins[$name]['plugin_version'] = '1.0.0';
 
 $to_do = array(
 	'function_generate_menu'	=> array('friends_function_generate_menu'),

@@ -19,7 +19,7 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['ARCHIVES'];
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_ARCHIVES_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '0.9.0';
+self::$available_plugins[$name]['plugin_version'] = '1.0.0';
 
 $to_do = array(
 	'function_generate_menu'		=> array('archive_function_generate_menu'),

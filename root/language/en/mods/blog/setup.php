@@ -73,21 +73,16 @@ $lang = array_merge($lang, array(
 	'UPGRADE_BREAK_CONTINUE_NOTICE'	=> 'Stage %1$s, Section %2$s of %3$s, Part %4$s of %5$s has been completed, but there are more sections and/or parts that need to be finished before the converter is finished for this stage.<br />Click continue below if you are not automatically redirected to the next page.',
 	'UPGRADE_COMPLETE'				=> 'The upgrade process has completed successfully!<br />Please make sure you get backups of your finished conversion and check over the converted settings and data to be sure it is correct.',
 	'UPGRADE_LIST'					=> 'Upgrade List',
+	'UPGRADE_PHP'					=> 'You are running an unsupported PHP version. You must be running PHP 5.1.0 or higher to use this modification.',
 	'UPGRADE_REPLIES'				=> 'Upgrade Replies',
 
-	'WELCOME_MESSAGE'				=> 'Welcome to the RC release of the User Blog Mod!
-
-A big thanks to all the beta/alpha testers of this software and others who have helped me get this far.
+	'WELCOME_MESSAGE'				=> 'Welcome to the User Blog Mod!
 
 Release Topic:
 http://lithiumstudios.org/forum/viewtopic.php?f=41&t=433
 
 Support will only be given at lithiumstudios.org.  If you have any comments or need support ask in this forum:
-http://lithiumstudios.org/forum/viewforum.php?f=41
-
-If you would like to get the latest development code, you may do so at:
-http://userblogmod.googlecode.com/svn/trunk/
-Support will not be given for code gotten from the subversion repository.',
+http://lithiumstudios.org/forum/viewforum.php?f=41',
 	'WELCOME_SUBJECT'				=> 'Welcome to the User Blog Mod!',
 ));
 

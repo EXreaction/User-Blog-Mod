@@ -8,7 +8,7 @@
 *
 */
 
-$user_blog_version = '0.9.1';
+$user_blog_version = '1.0.0';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -32,7 +32,7 @@ if (isset($config['user_blog_version']))
 
 if (version_compare(PHP_VERSION, '5.1.0') < 0)
 {
-	trigger_error('You are running an unsupported PHP version. Please upgrade to PHP 5.1.0 or higher.');
+	trigger_error('UPGRADE_PHP');
 }
 
 if (confirm_box(true))
