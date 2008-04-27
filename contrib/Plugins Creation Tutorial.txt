@@ -86,7 +86,8 @@ Instead of the normal method of:
 Use something like this:
 [code]$args['menu'] .= blog_plugins::parse_template('blog/plugins/custom_title/custom_title.html');[/code]
 
-Not only does this make things shorter and simpler to develop, but that function verifies that the template file you are using exists in the style the user is viewing and uses the one from prosilver in the event that the file is missing from where it should be.[/list]
+Not only does this make things shorter and simpler to develop, but that function verifies that the template file you are using exists in the style the user is viewing and uses the one from prosilver in the event that the file is missing from where it should be.
+[b]Note that this only works in the User Blog Mod RC2 or newer.[/b][/list]
 
 I hope this helps you start to create your own plugins for the User Blog modification, if you have any further questions do not hesitate to ask.
 
