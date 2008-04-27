@@ -268,7 +268,7 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 	// Do note style developers that dots and slashes in your style names are not allowed.
 	if (strpos($blog_template, '.') !== false || strpos($blog_template, '/') !== false)
 	{
-		trigger_error('You are not allowed to move around directories.');
+		trigger_error('You may not have a . or / in the blog template name.');
 	}
 
 	// Lets use our own custom template path so we can have our own templates
