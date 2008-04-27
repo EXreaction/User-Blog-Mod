@@ -489,46 +489,62 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 */
 function generate_menu($user_id = false)
 {
-	global $config, $db, $template, $blog_data, $user, $phpbb_root_path, $phpEx;
+	global $auth, $config, $db, $template, $blog_data, $user, $phpbb_root_path, $phpEx;
 
 	$extra = $user_menu_extra = '';
 	$stats = ($user_id) ? array() : array(
 		$user->lang['TOTAL_NUMBER_OF_BLOGS'] => $config['num_blogs'],
 		$user->lang['TOTAL_NUMBER_OF_REPLIES'] => $config['num_blog_replies'],
 	);
-	$links = ($user_id) ? array() : array(
-		array(
-			'URL'		=> blog_url($user->data['user_id']),
-			'NAME'		=> $user->lang['MY_BLOG'],
-			'IMG'		=> 'icon_mini_profile.gif',
-			'CLASS'		=> 'icon-ucp',
-		),
-		array(
-			'URL'		=>append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=blog'),
-			'NAME'		=> $user->lang['BLOG_CONTROL_PANEL'],
-			'IMG'		=> 'icon_mini_register.gif',
-			'CLASS'		=> 'icon-register',
-		),
-		array('URL' => 'spacer', 'NAME' => 'spacer',),
-		array(
+
+	$links = array();
+	if (!$user_id)
+	{
+		if ($auth->acl_get('u_blogpost'))
+		{
+			$links[] = array(
+				'URL'		=> blog_url($user->data['user_id']),
+				'NAME'		=> $user->lang['MY_BLOG'],
+				'IMG'		=> 'icon_mini_profile.gif',
+				'CLASS'		=> 'icon-ucp',
+				'auth'		=> ($auth->acl_get('u_blogpost')) ? true : false,
+			);
+
+			if ($user->data['is_registered'])
+			{
+				$links[] = array(
+					'URL'		=>append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=blog'),
+					'NAME'		=> $user->lang['BLOG_CONTROL_PANEL'],
+					'IMG'		=> 'icon_mini_register.gif',
+					'CLASS'		=> 'icon-register',
+				);
+			}
+		}
+
+		if (sizeof($links))
+		{
+			$links[] = array('URL' => 'spacer', 'NAME' => 'spacer');
+		}
+		
+		$links[] = array(
 			'URL'		=> blog_url(false, false, false, array('mode' => 'recent_blogs')),
 			'NAME'		=> $user->lang['RECENT_BLOGS'],
 			'IMG'		=> 'icon_mini_groups.gif',
 			'CLASS'		=> 'icon-bump',
-		),
-		array(
+		);
+		$links[] = array(
 			'URL'		=> blog_url(false, false, false, array('mode' => 'random_blogs')),
 			'NAME'		=> $user->lang['RANDOM_BLOGS'],
 			'IMG'		=> 'icon_mini_message.gif',
 			'CLASS'		=> 'icon-bookmark',
-		),
-		array(
+		);
+		$links[] = array(
 			'URL'		=> blog_url(false, false, false, array('mode' => 'popular_blogs')),
 			'NAME'		=> $user->lang['POPULAR_BLOGS'],
 			'IMG'		=> 'icon_mini_members.gif',
 			'CLASS'		=> 'icon-members',
-		),
-	);
+		);
+	}
 
 	$temp = compact('user_id', 'user_menu_extra', 'extra', 'stats', 'links');
 	blog_plugins::plugin_do_ref('function_generate_menu', $temp);
@@ -564,7 +580,10 @@ function generate_menu($user_id = false)
 
 		foreach ($links as $data)
 		{
-			$template->assign_block_vars('left_blog_links', $data);
+			if (!isset($data['auth']) || $data['auth'])
+			{
+				$template->assign_block_vars('left_blog_links', $data);
+			}
 		}
 	}
 
