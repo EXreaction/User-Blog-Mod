@@ -322,7 +322,7 @@
 ##		Release Candidate 2
 ##			+ A few minor changes; making plugins easier to code and manage with alternate blog styles.  A few small bugs fixed.
 ##			+ To update from RC1, upload all of the new files, then run the upgrade script at blog.php?page=update.
-## 2008-04-
+## 2008-04-29
 ##		1.0.0
 ##			+ Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.
 ##			+ Fixing the (previously broken) output ordering of plugins.
