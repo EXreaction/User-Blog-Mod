@@ -349,8 +349,8 @@ $template->assign_vars(array(
 	'BLOG_DESCRIPTION'		=> (isset($user_settings[$user_id])) ? generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7) : false,
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
-	'U_BLOG'				=> $blog_urls['self_minus_print'],
 	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=blog') : '',
+	'U_BLOG_SELF'			=> $blog_urls['self_minus_print'],
  	'U_REPLY_BLOG'			=> ($blog_id && check_blog_permissions('reply', 'add', true, $blog_id)) ? $blog_urls['add_reply'] : '',
 	'U_VIEW_RESULTS'		=> $blog_urls['viewpoll'],
 
