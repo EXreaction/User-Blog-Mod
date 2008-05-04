@@ -1,4 +1,7 @@
 <!-- INCLUDE ucp_header.html -->
+</form>
+
+<form name="postform" id="postform" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
 
 <!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
 
@@ -88,7 +91,7 @@
 			<td class="row1" valign="top">
 				<script type="text/javascript">
 				// <![CDATA[
-					var form_name = 'ucp';
+					var form_name = 'postform';
 					var text_name = 'message';
 				// ]]>
 				</script>
