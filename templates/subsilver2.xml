@@ -24,7 +24,7 @@ You may check for updated code in the repository, but the latest files in the re
     <mod-version>
       <major>1</major>
       <minor>0</minor>
-      <revision>0</revision>
+      <revision>1_dev</revision>
     </mod-version>
 
     <installation>
@@ -53,6 +53,20 @@ You may check for updated code in the repository, but the latest files in the re
 		  <change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
 		  <change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
           <change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+        </changelog>
+      </entry>
+	  <entry>
+        <date>2008-05-</date>
+        <rev-version>
+          <major>1</major>
+          <minor>0</minor>
+          <revision>1_dev</revision>
+        </rev-version>
+        <changelog lang="en-GB">
+		  <change>Outputting the blog link to PROFILE_BLOG in the parent block as well with add_blog_links.</change>
+		  <change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
+		  <change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
+          <change>To update from 1.0.1 follow the instructions in contrib/update/100_to_101.xml.</change>
         </changelog>
       </entry>
     </history>
