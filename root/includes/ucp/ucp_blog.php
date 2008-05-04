@@ -289,8 +289,11 @@ class ucp_blog
 		$template->assign_vars(array(
 			'L_TITLE'				=> $user->lang[strtoupper($mode)],
 			'L_TITLE_EXPLAIN'		=> $user->lang[strtoupper($mode) . '_EXPLAIN'],
+
 			'ERROR'					=> (sizeof($error)) ? implode($error, '<br />') : false,
 			'MODE'					=> $mode,
+
+			'S_UCP_ACTION'			=> $this->u_action,
 		));
 
 		$this->tpl_name = 'blog/ucp_blog';
