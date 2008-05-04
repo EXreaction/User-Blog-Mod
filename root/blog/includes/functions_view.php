@@ -377,6 +377,14 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				}
 
 				$template->assign_block_vars($block, $data);
+				if (!substr($block, 0, strpos($block, '.')))
+				{
+					$template->assign_var('PROFILE_BLOG', $data['PROFILE_FIELD_VALUE']);
+				}
+				else
+				{
+					$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE']), true, 'change');
+				}
 			}
 			return;
 		}
@@ -410,7 +418,15 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		return $data;
 	}
 
-	$template->assign_block_vars($block, $data);	
+	$template->assign_block_vars($block, $data);
+	if (!substr($block, 0, strpos($block, '.')))
+	{
+		$template->assign_var('PROFILE_BLOG', $data['PROFILE_FIELD_VALUE']);
+	}
+	else
+	{
+		$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE']), true, 'change');
+	}
 }
 
 /**
