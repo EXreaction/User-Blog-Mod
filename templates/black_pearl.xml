@@ -40,14 +40,14 @@ You may check for updated code in the repository, but the latest files in the re
 
   <action-group>
     <copy>
-      <file from="root/styles/subsilver2/*.*" to="styles/acidtech_tiger/*.*" />
-      <file from="root/styles/acidtech_tiger/*.*" to="styles/acidtech_tiger/*.*" />
+      <file from="root/styles/subsilver2/*.*" to="styles/black_pearl/*.*" />
+      <file from="root/styles/black_pearl/*.*" to="styles/black_pearl/*.*" />
     </copy>
-	<open src="styles/acidtech_tiger/template/overall_header.html">
+	<open src="styles/black_pearl/template/overall_header.html">
 		<edit>
 			<find>{U_FAQ}</find>
 			<action type="before-add"><![CDATA[		<!-- BEGIN blog_links -->
-			<a href="{blog_links.URL}">{blog_links.TEXT}</a> &#8226; 
+			<a href="{blog_links.URL}">{blog_links.TEXT}</a>&nbsp; &nbsp;<img src="{T_THEME_PATH}/images/menu_sep.png" alt="" />&nbsp;
 		<!-- END blog_links -->]]></action>
 		</edit>
 	</open>
