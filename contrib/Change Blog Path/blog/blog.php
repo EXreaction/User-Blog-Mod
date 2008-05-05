@@ -2,7 +2,7 @@
 /**
 *
 * @package phpBB3 User Blog
-* @version $Id: blog.php 256 2008-02-13 21:42:05Z exreaction@gmail.com $
+* @version $Id: blog.php 295 2008-03-01 00:03:25Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -19,14 +19,14 @@ $page = (isset($_GET['page'])) ? $_GET['page'] : '';
 $extras = explode('_', $page);
 $_GET['page'] = $_REQUEST['page'] = array_shift($extras);
 
-if (count($extras))
+if (sizeof($extras))
 {
 	$last = array();
 	foreach ($extras as $extra)
 	{
 		$var = explode('-', $extra, 2);
 
-		if (count($var) == 1)
+		if (sizeof($var) == 1)
 		{
 			if (!empty($last))
 			{
@@ -39,7 +39,7 @@ if (count($extras))
 			}
 		}
 
-		if (count($var) == 2)
+		if (sizeof($var) == 2)
 		{
 			$_GET[$var[0]] = $_REQUEST[$var[0]] = $var[1];
 
