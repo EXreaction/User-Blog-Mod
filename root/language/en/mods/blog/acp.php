@@ -100,6 +100,9 @@ $lang = array_merge($lang, array(
 	'NO_PARENT'								=> 'No Parent',
 	'NO_UNINSTALLED_PLUGINS'				=> 'No Uninstalled Plugins',
 
+	'OUTPUT_CPLINKS_BLOCK'					=> 'Output profile Blog links in Custom Profile Fields',
+	'OUTPUT_CPLINKS_BLOCK_EXPLAIN'			=> 'If this is set to No the View Blogs link in each profile will not be outputted using the custom profile fields.  You will need to manually add the links in the template if you wish to display them if this is set to No.',
+
 	'PARENT_NOT_EXIST'						=> 'The selected parent does not exist.',
 	'PLUGINS_DISABLED'						=> 'Plugins are disabled.',
 	'PLUGINS_NAME'							=> 'Plugin Name',

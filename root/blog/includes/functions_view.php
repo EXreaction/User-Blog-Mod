@@ -376,14 +376,17 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 					return $data;
 				}
 
-				$template->assign_block_vars($block, $data);
+				if ($config['user_blog_links_output_block'])
+				{
+					$template->assign_block_vars($block, $data);
+				}
 				if (!substr($block, 0, strpos($block, '.')))
 				{
-					$template->assign_var('PROFILE_BLOG', $data['PROFILE_FIELD_VALUE']);
+					$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url));
 				}
 				else
 				{
-					$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE']), true, 'change');
+					$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url), true, 'change');
 				}
 			}
 			return;
@@ -418,14 +421,17 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		return $data;
 	}
 
-	$template->assign_block_vars($block, $data);
+	if ($config['user_blog_links_output_block'])
+	{
+		$template->assign_block_vars($block, $data);
+	}
 	if (!substr($block, 0, strpos($block, '.')))
 	{
-		$template->assign_var('PROFILE_BLOG', $data['PROFILE_FIELD_VALUE']);
+		$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url));
 	}
 	else
 	{
-		$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE']), true, 'change');
+		$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url), true, 'change');
 	}
 }
 

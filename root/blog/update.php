@@ -622,6 +622,8 @@ if (confirm_box(true))
 		case '0.7.4' :
 		case '0.9.0' :
 		case '0.9.1' :
+		case '1.0.0' :
+			set_config('user_blog_links_output_block', 1);
 	}
 
 	// update the version

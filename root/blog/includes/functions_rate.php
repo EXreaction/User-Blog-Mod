@@ -117,7 +117,7 @@ function get_star_rating($start_url, $delete_url, $average_rating, $num_ratings,
 	$final_code .= '<div>';
 	for ($i = $config['user_blog_min_rating']; $i <= $config['user_blog_max_rating']; $i++)
 	{
-		$title = ($user_rating !== false && !$force_average) ? sprintf($user->lang['RATE_ME'], $i, $config['user_blog_max_rating']) : sprintf($user->lang['RATE_ME'], $average_rating, $config['user_blog_max_rating']);
+		$title = ($user_rating === false && !$force_average) ? sprintf($user->lang['RATE_ME'], $i, $config['user_blog_max_rating']) : sprintf($user->lang['RATE_ME'], $average_rating, $config['user_blog_max_rating']);
 
 		$final_code .= ($can_rate) ? '<a href="' . str_replace('*rating*', $i, $start_url) . '">' : '';
 		$final_code .= '<img id="' . $unique_str . $i . '" ';

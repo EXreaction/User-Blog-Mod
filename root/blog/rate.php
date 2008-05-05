@@ -28,7 +28,7 @@ $rating = request_var('rating', ($config['user_blog_min_rating'] - 1));
 $rating_data = get_user_blog_rating_data($user->data['user_id']);
 $did_something = false;
 
-if (!$delete_id && $rating != $config['user_blog_min_rating'] - 1 && !isset($rating_data[$blog_id]))
+if (!$delete_id && $rating != $config['user_blog_min_rating'] - 1 && !isset($rating_data[$blog_id]) && $rating >= $config['user_blog_min_rating'] && $rating <= $config['user_blog_max_rating'])
 {
 	$sql_data = array(
 		'blog_id'		=> intval($blog_id),
