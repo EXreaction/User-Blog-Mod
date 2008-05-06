@@ -143,7 +143,7 @@ else
 }
 
 /**
-* EAMM (Easy Automatic Module Insertion)
+* EAMI (Easy Automatic Module Insertion)
 *
 * Created By: EXreaction
 * http://www.lithiumstudios.org
@@ -246,27 +246,21 @@ class eami
 		), $data);
 
 		// Update the left and right ID's in this classes data
-		foreach ($this->{$class} as $id => &$row)
+		foreach ($this->{$class} as $id => $row)
 		{
 			if ($row['left_id'] >= $left_id)
 			{
-				$row['left_id'] += 2;
+				$this->{$class}[$id]['left_id'] += 2;
 			}
 			if ($row['right_id'] >= $left_id)
 			{
-				$row['right_id'] += 2;
+				$this->{$class}[$id]['right_id'] += 2;
 			}
 		}
 
 		// Update the left and right ID's in the database
-		$sql = 'UPDATE ' . MODULES_TABLE . "
-			SET left_id = left_id + 2
-				WHERE left_id >= '{$left_id}'";
-		$db->sql_query($sql);
-		$sql = 'UPDATE ' . MODULES_TABLE . "
-			SET right_id = right_id + 2
-				WHERE right_id >= '{$left_id}'";
-		$db->sql_query($sql);
+		$db->sql_query('UPDATE ' . MODULES_TABLE . ' SET left_id = left_id + 2 WHERE left_id >= ' . $left_id . ' AND module_class = \'' . $class . '\'');
+		$db->sql_query('UPDATE ' . MODULES_TABLE . ' SET right_id = right_id + 2 WHERE right_id >= ' . $left_id . ' AND module_class = \'' . $class . '\'');
 
 		// Insert the new module into the DB
 		$sql = 'INSERT INTO ' . MODULES_TABLE . ' ' . $db->sql_build_array('INSERT', $data);
