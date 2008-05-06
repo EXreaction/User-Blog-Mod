@@ -67,6 +67,9 @@ $lang = array_merge($lang, array(
 	'TRUNCATE_TABLES'				=> 'Truncate existing tables',
 	'TRUNCATE_TABLES_EXPLAIN'		=> 'This will delete all of the data in the existing User Blog Mod tables.  If you select no the new data will be added along with your existing blogs and replies.',
 
+	'UNINSTALL_BLOG_DB'				=> 'Uninstall User Blog Mod',
+	'UNINSTALL_BLOG_DB_CONFIRM'		=> 'Are you sure you want to remove the User Blog Mod data?<br /><br /><strong>If you do this ALL data from the User Blog Mod will be lost.</strong>',
+	'UNINSTALL_BLOG_DB_SUCCESS'		=> 'The User Blog Mod data has been removed from the database.  To completely remove the User Blog Mod you must undo any edits and remove any files you added during the installation.',
 	'UPDATE_INSTRUCTIONS'			=> 'Update',
 	'UPDATE_INSTRUCTIONS_CONFIRM'	=> 'Make sure you read the upgrade instructions in the MOD History section of the main mod install document first <b>before</b> you do this.<br /><br />Are you ready to upgrade the database for the User Blog Mod?',
 	'UPGRADE_BLOGS'					=> 'Upgrade Blogs',
