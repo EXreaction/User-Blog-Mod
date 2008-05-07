@@ -63,12 +63,14 @@ You may check for updated code in the repository, but the latest files in the re
           <revision>1_dev</revision>
         </rev-version>
         <changelog lang="en-GB">
+		  <change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
 		  <change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
 		  <change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
 		  <change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
 		  <change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
 		  <change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
 		  <change>Fixing the alt text on rating images.</change>
+		  <change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file.</change>
           <change>To update from 1.0.1 follow the instructions in contrib/update/100_to_101.xml.</change>
         </changelog>
       </entry>
