@@ -291,11 +291,6 @@ function inform_approve_report($mode, $id)
 {
 	global $phpbb_root_path, $phpEx, $config, $user, $blog_plugins;
 	
-	if ($config['user_blog_inform'] == '')
-	{
-		return;
-	}
-
 	switch ($mode)
 	{
 		case 'blog_report' :
@@ -320,44 +315,52 @@ function inform_approve_report($mode, $id)
 
 	$to = explode(",", $config['user_blog_inform']);
 
-	if (!function_exists('submit_pm'))
-	{
-		// include the private messages functions page
-		include("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
-	}
-
-	if (!class_exists('parse_message'))
-	{
-		include("{$phpbb_root_path}includes/message_parser.$phpEx");
-	}
-
-	$message_parser = new parse_message();
-	$message_parser->message = $message;
-	$message_parser->parse(true, true, true, true, true, true, true);
-
 	// setup out to address list
+	$address_list = array();
 	foreach ($to as $id)
 	{
-		$address_list[$id] = 'to';
+		$id = (int) $id;
+
+		if ($id)
+		{
+			$address_list[$id] = 'to';
+		}
 	}
 
-	$pm_data = array(
-		'from_user_id'		=> 2,
-		'from_username'		=> $user->lang['ADMINISTRATOR'],
-		'address_list'		=> array('u' => $address_list),
-		'icon_id'			=> 10,
-		'from_user_ip'		=> '0.0.0.0',
-		'enable_bbcode'		=> true,
-		'enable_smilies'	=> true,
-		'enable_urls'		=> true,
-		'enable_sig'		=> false,
-		'message'			=> $message_parser->message,
-		'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
-		'bbcode_uid'		=> $message_parser->bbcode_uid,
-	);
+	if (sizeof($address_list))
+	{
+		if (!function_exists('submit_pm'))
+		{
+			// include the private messages functions page
+			include("{$phpbb_root_path}includes/functions_privmsgs.$phpEx");
+		}
 
-	submit_pm('post', $subject, $pm_data, false);
-	unset($message_parser, $address_list, $to, $pm_data);
+		if (!class_exists('parse_message'))
+		{
+			include("{$phpbb_root_path}includes/message_parser.$phpEx");
+		}
+
+		$message_parser = new parse_message();
+		$message_parser->message = $message;
+		$message_parser->parse(true, true, true, true, true, true, true);
+
+		$pm_data = array(
+			'from_user_id'		=> 2,
+			'from_username'		=> $user->lang['ADMINISTRATOR'],
+			'address_list'		=> array('u' => $address_list),
+			'icon_id'			=> 10,
+			'from_user_ip'		=> '0.0.0.0',
+			'enable_bbcode'		=> true,
+			'enable_smilies'	=> true,
+			'enable_urls'		=> true,
+			'enable_sig'		=> false,
+			'message'			=> $message_parser->message,
+			'bbcode_bitfield'	=> $message_parser->bbcode_bitfield,
+			'bbcode_uid'		=> $message_parser->bbcode_uid,
+		);
+
+		submit_pm('post', $subject, $pm_data, false);
+	}
 }
 
 /**
@@ -593,6 +596,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$message_parser->parse(true, true, true);
 
 		// setup out to address list
+		$address_list = array();
 		foreach ($send[1] as $id)
 		{
 			$address_list[$id] = 'to';
