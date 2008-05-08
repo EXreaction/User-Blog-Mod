@@ -340,6 +340,7 @@
 ##			+ Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.
 ##			+ Fixing the alt text on rating images.
 ##			+ Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&t=691
+##			+ A few other minor changes/fixes.
 ##			+ NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file.
 ##			+ To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.
 ##############################################################
