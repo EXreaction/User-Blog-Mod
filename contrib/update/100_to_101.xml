@@ -63,10 +63,16 @@ You may check for updated code in the repository, but the latest files in the re
           <revision>1_dev</revision>
         </rev-version>
         <changelog lang="en-GB">
-		  <change>Outputting the blog link to PROFILE_BLOG in the parent block as well with add_blog_links.</change>
+		  <change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
+		  <change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
+		  <change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
 		  <change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
 		  <change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
-          <change>To update from 1.0.1 follow the instructions in contrib/update/100_to_101.xml.</change>
+		  <change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
+		  <change>Fixing the alt text on rating images.</change>
+		  <change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
+		  <change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file.</change>
+          <change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
         </changelog>
       </entry>
     </history>
@@ -76,6 +82,10 @@ You may check for updated code in the repository, but the latest files in the re
     <copy>
       <file from="root/*.*" to="*.*" />
     </copy>
-    <diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
+    <diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.
+
+Because of the bug in previous versions of EAMI that were used to install the modules, the left and right id's for your modules are likely messed up.
+To fix this, go to this page and follow the instructions on how to run the script (and run it for your board):
+http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</diy-instructions>
   </action-group>
 </mod>
