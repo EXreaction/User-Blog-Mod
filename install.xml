@@ -71,6 +71,7 @@ You may check for updated code in the repository, but the latest files in the re
 		  <change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
 		  <change>Fixing the alt text on rating images.</change>
 		  <change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
+		  <change>Fixing a bug in pagination where the last page link was not going to the actual last page.</change>
 		  <change>A few other minor changes/fixes.</change>
 		  <change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file.</change>
           <change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>

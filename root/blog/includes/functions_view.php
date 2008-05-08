@@ -271,7 +271,7 @@ function generate_blog_pagination($base_url, $num_items, $per_page, $start_item,
 		}
 	}
 
-	$page_string .= ($on_page == $total_pages) ? '<strong>' . $total_pages . '</strong>' : '<a href="' . str_replace('*start*', (($i - 1) * $per_page), $base_url) . '">' . $total_pages . '</a>';
+	$page_string .= ($on_page == $total_pages) ? '<strong>' . $total_pages . '</strong>' : '<a href="' . str_replace('*start*', (($total_pages - 1) * $per_page), $base_url) . '">' . $total_pages . '</a>';
 
 	if ($add_prevnext_text)
 	{
