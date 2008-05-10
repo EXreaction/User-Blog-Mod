@@ -2,88 +2,91 @@
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
 <mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.0.1.xsd">
-  <header>
-    <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-    <title lang="en-GB">User Blog Mod</title>
-    <description lang="en-GB">Adds Blogs to a phpBB3 board.</description>
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en-GB">User Blog Mod</title>
+	<description lang="en-GB">Adds Blogs to a phpBB3 board.</description>
 
-    <author-notes lang="en-GB">PHP versions less than 5.1.0 are NOT supported.  
+	<author-notes lang="en-GB">PHP versions less than 5.1.0 are NOT supported.  
 Please report any bugs/problems at my website: http://www.lithiumstudios.org.  
 The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/  
 You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.</author-notes>
 
-    <author-group>
-      <author>
-        <username>EXreaction</username>
-        <realname>Nathan Guse</realname>
-        <homepage>http://www.lithiumstudios.org/</homepage>
-        <email>exreaction@lithiumstidos.org</email>
-      </author>
-    </author-group>
+	<author-group>
+		<author>
+			<username>EXreaction</username>
+			<realname>Nathan Guse</realname>
+			<homepage>http://www.lithiumstudios.org/</homepage>
+			<email>exreaction@lithiumstidos.org</email>
+		</author>
+	</author-group>
 
-    <mod-version>
-      <major>1</major>
-      <minor>0</minor>
-      <revision>1_dev</revision>
-    </mod-version>
+	<mod-version>
+		<major>1</major>
+		<minor>0</minor>
+		<revision>1_dev</revision>
+	</mod-version>
 
-    <installation>
-      <level>easy</level>
-      <time>420</time>
-      <target-version>
-        <target-primary>3.0</target-primary>
-        <target-major allow="exact">3</target-major>
-        <target-minor allow="exact">0</target-minor>
-      </target-version>
-    </installation>
+	<installation>
+		<level>easy</level>
+		<time>420</time>
+		<target-version>
+			<target-primary>3.0</target-primary>
+			<target-major allow="exact">3</target-major>
+			<target-minor allow="exact">0</target-minor>
+		</target-version>
+	</installation>
 
-    <history>
-	  <entry>
-        <date>2008-04-29</date>
-        <rev-version>
-          <major>1</major>
-          <minor>0</minor>
-          <revision>0</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-		  <change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
-		  <change>Fixing the (previously broken) output ordering of plugins.</change>
-		  <change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
-		  <change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
-		  <change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
-		  <change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
-          <change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
-        </changelog>
-      </entry>
-	  <entry>
-        <date>2008-05-</date>
-        <rev-version>
-          <major>1</major>
-          <minor>0</minor>
-          <revision>1_dev</revision>
-        </rev-version>
-        <changelog lang="en-GB">
-		  <change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
-		  <change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
-		  <change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
-		  <change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
-		  <change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
-		  <change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
-		  <change>Fixing the alt text on rating images.</change>
-		  <change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
-		  <change>Fixing a bug in pagination where the last page link was not going to the actual last page.</change>
-		  <change>A few other minor changes/fixes.</change>
-		  <change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file.</change>
-          <change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
-        </changelog>
-      </entry>
-    </history>
-  </header>
+	<history>
+		<entry>
+			<date>2008-04-29</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>0</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
+				<change>Fixing the (previously broken) output ordering of plugins.</change>
+				<change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
+				<change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
+				<change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
+				<change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
+				<change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-05-</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>1_dev</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
+				<change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
+				<change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
+				<change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
+				<change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
+				<change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
+				<change>Fixing the alt text on rating images.</change>
+				<change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
+				<change>Fixing a bug in pagination where the last page link was not going to the actual last page.</change>
+				<change>Adding an output for the total blog entries in the header.</change>
+				<change>Adding function to delete all blogs by a user.</change>
+				<change>Adding instructions to more fully integrate the User Blog Mod with phpBB3.  Those instructions can be found in contrib/install_extended.xml.</change>
+				<change>A few other minor changes/fixes.</change>
+				<change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file, 1 new language field was added to mods/blog/common.php, and a new language file, mods/blog/viewonline.php, was added.</change>
+				<change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
 
-  <action-group>
-    <copy>
-      <file from="root/*.*" to="*.*" />
-    </copy>
+<action-group>
+	<copy>
+		<file from="root/*.*" to="*.*" />
+	</copy>
 	<open src="adm/style/acp_users_profile.html">
 		<edit>
 			<find><![CDATA[</fieldset>]]></find>
@@ -177,5 +180,5 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 Go to ACP->Styles->Style components->Theme, then hit the Refresh button next to prosilver.
 
 Set the user/group permissions and configuration settings.</diy-instructions>
-  </action-group>
+</action-group>
 </mod>
