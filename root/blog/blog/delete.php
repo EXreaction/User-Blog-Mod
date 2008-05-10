@@ -88,6 +88,7 @@ if (is_array($settings))
 		{
 			$rids[] = $row['reply_id'];
 		}
+		$db->sql_freeresult($result);
 		if (sizeof($rids))
 		{
 			$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . intval($blog_id) . ' OR ' . $db->sql_in_set('reply_id', $rids);
@@ -101,6 +102,7 @@ if (is_array($settings))
 		{
 			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row['physical_filename']);
 		}
+		$db->sql_freeresult($result);
 
 		if (sizeof($rids))
 		{
@@ -157,6 +159,7 @@ if (is_array($settings))
 			$sql = 'UPDATE ' . BLOGS_CATEGORIES_TABLE . ' SET blog_count = blog_count - 1 WHERE category_id = ' . $row['category_id'] . ' AND blog_count > 0';
 			$db->sql_query($sql);
 		}
+		$db->sql_freeresult($result);
 	}
 
 	handle_blog_cache('delete_blog', $user_id);

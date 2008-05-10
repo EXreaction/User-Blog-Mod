@@ -14,6 +14,91 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Delete user
+*
+* This function deletes the needed stuff when a user is deleted
+*/
+function blog_delete_user($user_id)
+{
+	global $config, $db, $phpbb_root_path, $phpEx;
+
+	$user_id = (int) $user_id;
+
+	if (!function_exists('setup_blog_search'))
+	{
+		include("{$phpbb_root_path}blog/includes/functions.$phpEx");
+	}
+	$blog_search = setup_blog_search();
+
+	$num_blogs = $num_blog_replies = 0;
+	$result = $db->sql_query('SELECT * FROM ' . BLOGS_TABLE . ' WHERE user_id = ' . $user_id);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$num_blogs++;
+		$num_blog_replies += $row['blog_real_reply_count'];
+
+		$blog_search->index_remove($row['blog_id']);
+		put_blogs_in_cats($row['blog_id'], array(), true, 'soft_delete');
+
+		// Delete the Attachments
+		$rids = array();
+		$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . $row['blog_id'];
+		$result1 = $db->sql_query($sql);
+		while ($row1 = $db->sql_fetchrow($result1))
+		{
+			$rids[] = $row['reply_id'];
+		}
+		$db->sql_freeresult($result1);
+		if (sizeof($rids))
+		{
+			$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . $row['blog_id'] . ' OR ' . $db->sql_in_set('reply_id', $rids);
+		}
+		else
+		{
+			$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . $row['blog_id'];
+		}
+		$result1 = $db->sql_query($sql);
+		while ($row1 = $db->sql_fetchrow($result1))
+		{
+			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row1['physical_filename']);
+		}
+		$db->sql_freeresult($result1);
+
+		if (sizeof($rids))
+		{
+			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . $row['blog_id'] . ' OR ' . $db->sql_in_set('reply_id', $rids));
+		}
+		else
+		{
+			$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+		}
+
+		// delete the blog
+		$db->sql_query('DELETE FROM ' . BLOGS_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+
+		// delete the replies
+		$db->sql_query('DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+
+		// delete from the blogs_in_categories
+		$db->sql_query('DELETE FROM ' . BLOGS_IN_CATEGORIES_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+
+		// delete from the blogs_ratings
+		$db->sql_query('DELETE FROM ' . BLOGS_RATINGS_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+
+		// Delete the subscriptions
+		$db->sql_query('DELETE FROM ' . BLOGS_SUBSCRIPTION_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+
+		// Delete the Polls
+		$db->sql_query('DELETE FROM ' . BLOGS_POLL_OPTIONS_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+		$db->sql_query('DELETE FROM ' . BLOGS_POLL_VOTES_TABLE . ' WHERE blog_id = ' . $row['blog_id']);
+	}
+	$db->sql_freeresult($result);
+
+	set_config('num_blogs', ($config['num_blogs'] - $num_blogs), true);
+	set_config('num_blog_replies', ($config['num_blog_replies'] - $num_blog_replies), true);
+}
+
+/**
 * Get the User Blog Version
 *
 * Gets the latest version from lithiumstudios.org (once every hour) and returns it
