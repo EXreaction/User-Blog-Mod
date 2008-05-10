@@ -75,6 +75,7 @@ You may check for updated code in the repository, but the latest files in the re
 				<change>Adding an output for the total blog entries in the header.</change>
 				<change>Adding function to delete all blogs by a user.</change>
 				<change>Adding instructions to more fully integrate the User Blog Mod with phpBB3.  Those instructions can be found in contrib/install_extended.xml.</change>
+				<change>Fixing the blog_posting_layout to get rid of a javascript error when submitting.</change>
 				<change>A few other minor changes/fixes.</change>
 				<change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file, 1 new language field was added to mods/blog/common.php, and a new language file, mods/blog/viewonline.php, was added.</change>
 				<change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
