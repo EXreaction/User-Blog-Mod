@@ -4,7 +4,7 @@
 }
 
 body {
-	background: #E1D4C0 url({T_BLOG_IMAGESET_PATH}/sides_body.png) repeat-y scroll center top;
+	background: #E1D4C0 url({T_BLOG_IMAGESET_PATH}sides_body.png) repeat-y scroll center top;
 	font-family: "Trebuchet MS", sans-serif;
 	font-size: small;
 	font-style: normal;
@@ -127,11 +127,11 @@ hr {
 .header_inner {
 	width: 810px;
 	margin: 0 auto;
-	background-image: url({T_BLOG_IMAGESET_PATH}/sides_head.png);
+	background-image: url({T_BLOG_IMAGESET_PATH}sides_head.png);
 }
 
 .header_img {
-	background: transparent url({T_BLOG_IMAGESET_PATH}/logo.gif) no-repeat 50px center;
+	background: transparent url({T_BLOG_IMAGESET_PATH}logo.gif) no-repeat 50px center;
 	height: 120px;
 }
 
@@ -166,12 +166,12 @@ hr {
 }
 
 #sidebar .post {
-	background: transparent url({T_BLOG_IMAGESET_PATH}/bg_mod_top.png) no-repeat scroll left top;
+	background: transparent url({T_BLOG_IMAGESET_PATH}bg_mod_top.png) no-repeat scroll left top;
 	margin-bottom: 15px;
 }
 
 #sidebar .inner {
-	background: transparent url({T_BLOG_IMAGESET_PATH}/bg_mod_bot.png) no-repeat scroll left bottom;
+	background: transparent url({T_BLOG_IMAGESET_PATH}bg_mod_bot.png) no-repeat scroll left bottom;
 }
 
 #sidebar .left_menu_title {
@@ -382,7 +382,7 @@ fieldset.polls dd div {
 
 /* Quote block */
 blockquote {
-	background: #EBEADD url("{T_BLOG_IMAGESET_PATH}/quote.gif") 6px 8px no-repeat;
+	background: #EBEADD url("{T_BLOG_IMAGESET_PATH}quote.gif") 6px 8px no-repeat;
 	border: 1px solid #DBDBCE;
 	font-size: 0.95em;
 	margin: 0.5em 1px 0 25px;

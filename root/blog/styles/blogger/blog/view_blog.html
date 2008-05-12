@@ -29,7 +29,7 @@
 
 <body>
 	<div class="nav">
-		<img class="nav_icon" src="{T_BLOG_IMAGESET_PATH}/mini_logo.png" alt="Icon" />
+		<img class="nav_icon" src="{T_BLOG_IMAGESET_PATH}mini_logo.png" alt="Icon" />
 		<!-- IF S_DISPLAY_BLOG_SEARCH -->
 			<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
 				<fieldset class="nav_search">
@@ -42,7 +42,7 @@
 			<a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks -->
 		</span>
 		<span class="nav_links_right">
-			<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_BLOG_IMAGESET_PATH}/feed.gif" alt="{L_FEED}" class="feed_icon" /></a> | <!-- ENDIF -->
+			<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_BLOG_IMAGESET_PATH}feed.gif" alt="{L_FEED}" class="feed_icon" /></a> | <!-- ENDIF -->
 			<!-- IF U_MY_BLOG --><a href="{U_MY_BLOG}">{L_MY_BLOG}</a> | <!-- ENDIF -->
 			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}">{L_NEW_BLOG}</a> | <!-- ENDIF -->
 			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>
@@ -121,7 +121,7 @@
 
 				<div id="b{blogrow.ID}" class="blog<!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF -->">
 					<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div class="blog_rating">{blogrow.RATING_STRING}</div><!-- ENDIF -->
-					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_BLOG_IMAGESET_PATH}/icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
+					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_BLOG_IMAGESET_PATH}icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
 					<h4 class="blog_date"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE}</h4>
 
 					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->

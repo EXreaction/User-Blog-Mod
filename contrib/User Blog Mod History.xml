@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="../modx.prosilver.en.xsl"?>
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.0.1.xsd">
+<header>
+	<title lang="en-GB">User Blog Mod History/Changelog</title>
+	<history>
+		<entry>
+			<date>2007-05-07</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>1</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-05-12</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>2</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 1, just upload all of the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-05-21</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>3</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 2, upload all the new files, run the following SQL query to update your database, and then clear phpBB3's cache
+			INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('m_blogreport', 1, 0, 0);</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-06-02</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>4</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 3 upload all the new files, and clear phpBB3's cache</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-06-07</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>5</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 4 upload all the new files, and clear phpBB3's cache</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-06-30</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>6</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 5 upload all the new files, visit yoursite.com/blog.php?page=update, then re-edit the code added in viewtopic.php from this mod.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-08</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>7</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 6 upload all the new files.  Then use the upgrade file as was done last time.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-12</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>8</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade from Alpha 7 upload all the new files.  Then use the upgrade file as was done last time.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-28</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>9</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Structure and code overhaul.  Cleaned up a lot of the code.  This release may be a bit buggy. :P</change>
+				<change>To upgrade from Alpha 8 upload all the new files.  Then update the constants.php file and add the new defined variables.  Then use the upgrade file as was done last time</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-29</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>9a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing some problems with the update script.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-30</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>10</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing many bugs that were introduced with the code overhaul in Alpha 9.</change>
+				<change>To upgrade, first apply the code changes to adm/index.php, then make sure the code is updated for includes/constants.php and viewtopic.php
+			Then upload the new files and go to blog.php?page=update in your web browser</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-07-31</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>10a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Had an oops in blog.php. :P</change>
+				<change>To upgrade just upload the new blog.php file</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-04</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>11</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade upload the new files, then point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-07</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>12</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>To upgrade upload the new files, then point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-12</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>13</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Say hello to Attachments. :)</change>
+				<change>Because of all the major changes that were put in this release may be buggy.  Attachments will probably be buggy for sure,
+			since I had to do a lot of quick hacks over the existing phpBB3 attachment code to get it to work.</change>
+				<change>To upgrade, first do the new file edits to adm/style/acp_attachments.html and includes/acp/acp_attachments.php, then re-do the edits to includes/constants.php then upload the new files, and finally, point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-14</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>13a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing a bug where certain users couldn't view attachments even if they had the correct permissions.</change>
+				<change>To upgrade just upload the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-13</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>13b</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing the bug where blogs/replies are always approved even though they shouldn't be via permissions for the user</change>
+				<change>To upgrade just upload the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-26</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>14</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing a few bugs mostly.</change>
+				<change>To upgrade, upload the new files, remove the old file edits from includes/constants.php, and then point your browser to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-08-27</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>14a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing a bug with the way I changed constants.php around (strange how I didn't get this error yesterday yet I did first thing this morning).</change>
+				<change>To upgrade just upload the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-09-10</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>14b</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing a few bugs.</change>
+				<change>To upgrade just upload the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-9-30</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>15</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>New Plugins System</change>
+				<change>To update, copy the new files over, update adm/index.php, update viewtopic.php, run the update script, and then manually add the new plugins module to the ACP.
+			Then copy the files required to install the attachments plugin, then run this sql query manually:
+			INSERT INTO phpbb_blogs_plugins (plugin_name, plugin_enabled, plugin_version) VALUES ('attachments', 1, '0.7.0');
+			Then clear phpBB3's cache.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-09</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>16</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Say hello to SEO Url's! :D</change>
+				<change>Also, the included upgrade script for The Blog Mod 0.24b to the User Blog Mod has been updated (thanks IngerK for letting me know about the bugs)</change>
+				<change>To update, copy the new files over, make the file changes to the .htaccess file as required, then the update script by going to blog.php?page=update
+				If you have the Attachments plugin installed make sure you update it as well (just upload the new files).</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-15</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>17</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Bug fixes &amp; updates to work with RC7</change>
+				<change>To update, copy the new files over, then the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have the Attachments plugin installed make sure you update it as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-17</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>18</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Optimizations (uses about 1.3MB less memory), file layout changes</change>
+				<change>To update, copy the new files over, update the .htaccess, includes/functions.php, and viewtopic.php files, then the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-21</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>19</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>New UCP Panel &amp; more!</change>
+				<change>To update, copy the new files over, make the changes to the ucp.php file, then the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-22</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>20</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixes for the user permissions (it wasn't complete for A19)</change>
+				<change>To update, copy the new files over, make the changes to viewtopic.php, then the update script by going to blog.php?page=update.
+			You can also remove the file edit for includes/ucp/ucp_zebra.php that was put in for A19 (if you want, you can just leave the file edit that was put in, it doesn't matter).
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-22</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>20a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing the install/update scripts.</change>
+				<change>No need to upgrade if you've already upgraded to Alpha 20.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-24</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>21</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Some updates to the user permissions, the upgrade script, and a few other misc things...</change>
+				<change>To update, copy the new files over, then run the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-26</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>22</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Added instant redirect option for users.  Fixing bugs in upgrade script.</change>
+				<change>To update, copy the new files over, update the code in viewtopic.php, then run the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-10-30</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>23</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Bug fixes mainly</change>
+				<change>To update, copy the new files over, update the code in .htaccess, then run the update script by going to blog.php?page=update.
+			Also make sure to check for new permissions/settings.
+			If you have any plugins installed make sure you update them as well.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-01</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>24</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Added option to change permissions per blog.</change>
+				<change>To update, copy the new files over, update the code in .htaccess, then run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-03</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>25</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Now we should support all DB types (at least the ones that are natively supported by phpBB3).</change>
+				<change>To update, copy the new files over, then run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-04</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>26</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Extended the plugins system a little, also removed the archives list from the default package (it is now available as a plugin)</change>
+				<change>To update, copy the new files over, then run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-06</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>27</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>New Blog Search System!</change>
+				<change>To update, copy the new files over, then run the update script by going to blog.php?page=update.
+			Please note that the automatic update script will take longer than usual because it needs to build a search index.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-07</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>27a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Forgot to delete a line in ucp_blog.php</change>
+				<change>To update, copy the new includes/ucp/ucp_blog.php file over.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-11</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>28</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Some bug fixes and the new upgrade script.</change>
+				<change>To update, copy the new files over, then run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-12</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>28a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing the upgrade script and some other misc stuff.  Upgrades using the upgrade script will now be (mostly) supported.</change>
+				<change>To update, copy the new files over.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-13</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>28b</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Some more changes to the Upgrade script.</change>
+				<change>To update, copy the new files over.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-17</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>29</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Some misc updates.  The Blog MCP has now been moved into the MCP.</change>
+				<change>To update, make the changes to language/en/mcp.php, copy the new files over, then run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-11-24</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>30</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Updates to the search system and some other stuff.  New plugin available named Friends for listing a users' friends on their blog page.</change>
+				<change>To update, copy the new files over, run the update script by going to blog.php?page=update, then add the new Blog Search ACP Module.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-13</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>31</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Lots of small updates and bug fixes.  With all of the changes made, there may be some things broken.  Please report anything you find wrong.</change>
+				<change>To update, copy over the new files, re-edit adm/index.php, ucp.php, and viewtopic.php to have the right code, do the edit in mcp.php, and run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-14</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>31a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixed a bug.</change>
+				<change>To update, just copy over the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-14</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>31b</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Oops, I packaged A31a wrong with older files. :o</change>
+				<change>To update, just copy over the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-19</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>32</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few bug fixes.  Lots of language changes (sorry translators :P)</change>
+				<change>To update, copy over the new files, update viewtopic.php, and run the upgrade script by going to blog.php?page=update.
+			Make sure to check for updates for any plugins.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-21</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>33</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>I can has categories?  You can also now edit users' Blog Title and Blog Description in the ACP->Manage Users. :D</change>
+				<change>To update, FIRST delete all of the ACP modules (and the Blog Module Category) added by previous versions of the User Blog Mod in ACP->System->Module Management.
+			Then copy over the new files, delete includes/acp/blog_plugins.php, includes/acp/blog_search.php, includes/acp/info/blog_plugins.php, and includes/acp/info/blog_search.php.
+			Then do the edits for adm/style/acp_users_profile.html and includes/acp/acp_users.php.
+			Finally run the upgrade script by going to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-22</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>34</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Some bug fixes, more work on the display of categories, plus HoL told me of a way to auto-include language files for the modules, so 3 less file edits! :D</change>
+				<change>To update, remove the edits done to adm/index.php, mcp.php, and ucp.php made by previous versions (there is just one edit in each).
+			Then update adm/style/acp_users_profile.html with the new code.
+			Then copy over the new files, and run the upgrade script by going to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-22</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>34a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few quick bug fixes.</change>
+				<change>To update, just copy over the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-23</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>34b</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few more bug fixes.</change>
+				<change>If everything is already working for you, ignore this release.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-24</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>35</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few more bug fixes and some more misc things.</change>
+				<change>Copy the new files over and run the upgrade script by going to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-27</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>36</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Now you can give blogs ratings!</change>
+				<change>Copy the new files over and run the upgrade script by going to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-28</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>36a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Had some bugs in the header file.</change>
+				<change>To update, copy the new files over.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-30</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>37</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Bug fixes.</change>
+				<change>To update, copy the new files over, update viewtopic.php, and run the update script by going to blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2007-12-31</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>37a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Oops, the install file did not have the correct instructions for viewtopic.php.</change>
+				<change>To update, update viewtopic.php.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-02</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>38</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Less than PHP 5.1.0 and less than MySQL 4.1.3 is no longer supported.</change>
+				<change>Plenty of bug fixes (hopefully not too many new bugs) and lots of updates, to name a few:</change>
+				<change>Added DB2 support.</change>
+				<change>Re-integrated the Attachments plugin and created a new module for managing blog attachment extensions.</change>
+				<change>Simplified getting the blog/reply/user data by putting all 3 classes into the blog_data class.</change>
+				<change>Lots of code cleanup and a bunch more hooks for the plugins system (some old hooks were renamed/removed).</change>
+				<change>Added easier access for subscriptions by putting it in as you add a reply and a default setting for it in UCP.</change>
+				<change>Added a hard delete option on the first delete page for deleting blogs/replies for users who can hard delete.</change>
+				<change>Added Polls for blogs.</change>
+				<change>Now there is a new setup on the templating system!  Each user can easily select what template they want to be displayed for their blog, and you can easily add more templates for the blog without installing new templates for the forums.</change>
+				<change>You can now change the priority of plugins by moving them up/down in the Blog Plugins ACP.</change>
+				<change>The Javascript output feed has been finished and there is a feed icon on supporting pages to bring you to a page with the available feed options.</change>
+				<change>The upgrade script no longer supports upgrades from versions older than Alpha 33 (0.3.33).</change>
+				<change>To update, update the edits in viewtopic.php and the prosilver/theme/stylesheet.css, copy the new files over, and then run the upgrade script by going to blog.php?page=update
+			If you had the attachment plugin installed you should delete every file you had to upload to install it, and remove all of the edits you had to make to install it.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-03</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>38a</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few minor bug fixes.</change>
+				<change>To update, simply upload the new files.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-07</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>39</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Adding the option to allow users to enter their own CSS to customize their blogs the way they want (for supporting styles).</change>
+			<change>Going back to the 3.0.x style of adding/managing tables.</change>
+			<change>Removing DB2 support in the process (it isn't supported by 3.0.x anyways)</change>
+				<change>To update, upload the new files and point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-09</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>40</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Ok, a few bug fixes from changing to the 3.0.x style of adding/managing tables and a few other places fixed.</change>
+				<change>To update, upload the new files and point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-17</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>41</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few more bug fixes and you can now edit a user's blog CSS in the ACP->Manage Users.</change>
+			<change>Rebuilt the main blog page.  Changed the bright green post deleted color to a dull grey.</change>
+				<change>To update, upload the new files, update the code in includes/acp/acp_users.php, and point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-26</date>
+			<rev-version>
+				<major>0</major>
+				<minor>3</minor>
+				<revision>42</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>More bug fixes.  A security fix as well with the blog CSS.  Update ASAP.</change>
+				<change>To update, upload the new files and point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-02-29</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>1</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few bug fixes.  subsilver2 style is now included.</change>
+				<change>To update, upload the new files and point your browser to blog.php?page=update</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-03-08</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>2</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>More bug fixes plus a much more secure Blog CSS filter.</change>
+				<change>To update from Beta 1, redo the edits to viewtopic.php, upload all of the new files, and run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-03-21</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>3</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Adding an automatic version checker.  Cleaning up the language files, removing unused keys, plus renaming blogs to blog entries.</change>
+				<change>To update from Beta 2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-03-24</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>4</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Bug fixing.  Some fixes with the converter, language fixes, and other misc bugs fixed.  Now the blog category counts the number of blogs under it and it's subcategories.</change>
+				<change>To update from Beta 3, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-03-26</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>5</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few more bug fixes that were introduced by fixing some bugs the last time.</change>
+				<change>To update from Beta 4, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-04-10</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>1</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing 1 bug, plus a few minor changes.</change>
+				<change>To update from Beta 5, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-04-18</date>
+			<rev-version>
+				<major>0</major>
+				<minor>7</minor>
+				<revision>2</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>A few minor changes; making plugins easier to code and manage with alternate blog styles.  A few small bugs fixed.</change>
+				<change>To update from RC1, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-04-29</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>0</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
+				<change>Fixing the (previously broken) output ordering of plugins.</change>
+				<change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
+				<change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
+				<change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
+				<change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
+				<change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-05-11</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>1_dev</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
+				<change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
+				<change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
+				<change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
+				<change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
+				<change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
+				<change>Fixing the alt text on rating images.</change>
+				<change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
+				<change>Fixing a bug in pagination where the last page link was not going to the actual last page.</change>
+				<change>Adding an output for the total blog entries in the header.</change>
+				<change>Adding function to delete all blogs by a user.</change>
+				<change>Adding instructions to more fully integrate the User Blog Mod with phpBB3.  Those instructions can be found in contrib/install_extended.xml.</change>
+				<change>Fixing the blog_posting_layout to get rid of a javascript error when submitting.</change>
+				<change>Fixing the T_BLOG_TEMPLATE_PATH, etc (exact change noted below in NOTE FOR BLOG STYLERS).  Adding a / at the end of them, like they should have had in the first place.</change>
+				<change>A few other minor changes/fixes.</change>
+				<change>NOTE FOR BLOG STYLERS: The paths for T_BLOG_TEMPLATE_PATH, T_BLOG_IMAGESET_PATH, and T_BLOG_IMAGESET_LANG_PATH have been altered.  They now have a / at the end of them.</change>
+				<change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file, 1 new language field was added to mods/blog/common.php, and a new language file, mods/blog/viewonline.php, was added.</change>
+				<change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
+</mod>

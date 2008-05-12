@@ -17,7 +17,7 @@
 */
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '1.0.1_dev';
+$user_blog_version = '1.0.1';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -276,9 +276,9 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 
 	// Some template links we will need...
 	$template->assign_vars(array(
-		'T_BLOG_TEMPLATE_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template,
-		'T_BLOG_IMAGESET_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images',
-		'T_BLOG_IMAGESET_LANG_PATH'		=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/' . $user->data['user_lang'],
+		'T_BLOG_TEMPLATE_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/',
+		'T_BLOG_IMAGESET_PATH'			=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/',
+		'T_BLOG_IMAGESET_LANG_PATH'		=> $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/' . $user->data['user_lang'] . '/',
 	));
 
 	$blog_style = true;

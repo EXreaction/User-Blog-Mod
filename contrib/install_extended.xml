@@ -21,11 +21,11 @@
     <mod-version>
       <major>1</major>
       <minor>0</minor>
-      <revision>1_dev</revision>
+      <revision>1</revision>
     </mod-version>
 
     <installation>
-      <level>easy</level>
+      <level>intermediate</level>
       <time>300</time>
       <target-version>
         <target-primary>3.0</target-primary>

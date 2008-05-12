@@ -24,11 +24,11 @@ You may check for updated code in the repository, but the latest files in the re
 	<mod-version>
 		<major>1</major>
 		<minor>0</minor>
-		<revision>1_dev</revision>
+		<revision>1</revision>
 	</mod-version>
 
 	<installation>
-		<level>easy</level>
+		<level>intermediate</level>
 		<time>420</time>
 		<target-version>
 			<target-primary>3.0</target-primary>
@@ -56,7 +56,7 @@ You may check for updated code in the repository, but the latest files in the re
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-05-</date>
+			<date>2008-05-11</date>
 			<rev-version>
 				<major>1</major>
 				<minor>0</minor>
@@ -76,7 +76,9 @@ You may check for updated code in the repository, but the latest files in the re
 				<change>Adding function to delete all blogs by a user.</change>
 				<change>Adding instructions to more fully integrate the User Blog Mod with phpBB3.  Those instructions can be found in contrib/install_extended.xml.</change>
 				<change>Fixing the blog_posting_layout to get rid of a javascript error when submitting.</change>
+				<change>Fixing the T_BLOG_TEMPLATE_PATH, etc (exact change noted below in NOTE FOR BLOG STYLERS).  Adding a / at the end of them, like they should have had in the first place.</change>
 				<change>A few other minor changes/fixes.</change>
+				<change>NOTE FOR BLOG STYLERS: The paths for T_BLOG_TEMPLATE_PATH, T_BLOG_IMAGESET_PATH, and T_BLOG_IMAGESET_LANG_PATH have been altered.  They now have a / at the end of them.</change>
 				<change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file, 1 new language field was added to mods/blog/common.php, and a new language file, mods/blog/viewonline.php, was added.</change>
 				<change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
 			</changelog>
