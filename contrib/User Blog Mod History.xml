@@ -853,7 +853,7 @@
 			<rev-version>
 				<major>1</major>
 				<minor>0</minor>
-				<revision>1_dev</revision>
+				<revision>1</revision>
 			</rev-version>
 			<changelog lang="en-GB">
 				<change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
