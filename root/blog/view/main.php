@@ -45,7 +45,7 @@ handle_categories($category_id);
 
 switch ($mode)
 {
-	// If you send one of the following options via mode you will be able to just view a list of them.
+	case 'last_visit_blogs' :
 	case 'random_blogs' :
 	case 'recent_blogs' :
 	case 'popular_blogs' :

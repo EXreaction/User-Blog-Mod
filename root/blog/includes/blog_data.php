@@ -151,6 +151,8 @@ class blog_data
 				$limit = 0;
 			break;
 
+			case 'last_visit' :
+				$sql_array['WHERE'][] = 'b.blog_time >= ' . $user->data['session_last_visit'];
 			case 'recent' : // select recent blogs
 				if ($order_by == 'default')
 				{
