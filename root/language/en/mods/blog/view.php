@@ -30,6 +30,8 @@ $lang = array_merge($lang, array(
 
 	'DELETED_REPLY_SHOW'			=> 'This comment has been soft deleted.  Click here to show the comment.',
 
+	'LAST_VISIT_BLOGS'				=> 'Blog entries since last visit',
+
 	'MY_RATING'						=> 'My Rating',
 
 	'NO_DELETED_BLOGS'				=> 'There are no deleted blog entries by this user.',
