@@ -24,6 +24,7 @@ function blog_delete_user($user_id)
 
 	$user_id = (int) $user_id;
 
+	include("{$phpbb_root_path}blog/includes/constants.$phpEx");
 	if (!function_exists('setup_blog_search'))
 	{
 		include("{$phpbb_root_path}blog/includes/functions.$phpEx");
