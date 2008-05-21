@@ -17,7 +17,7 @@
 */
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '1.0.1';
+$user_blog_version = '1.0.2_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -283,6 +283,16 @@ if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpb
 
 	$blog_style = true;
 	$blog_images_path = $phpbb_root_path . 'blog/styles/' . $blog_template . '/images/';
+
+	/*
+	* We now allow blog styles to have special plugins used for that specific style.
+	* This should not be used as a normal plugin, but mostly to alter outputted data to fit the way the style author wants it to.
+	* For example, the style author may want to force the date/time outputted to a specific format, etc for this specific style.
+	*/
+	if (file_exists($phpbb_root_path . 'blog/styles/' . $blog_template . '/style_plugin.' . $phpEx))
+	{
+		include($phpbb_root_path . 'blog/styles/' . $blog_template . '/style_plugin.' . $phpEx);
+	}
 }
 else
 {
