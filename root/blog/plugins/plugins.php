@@ -154,6 +154,21 @@ class blog_plugins
 		return $template->assign_display($tpl_id);
 	}
 
+	public static function add_to_do($to_do)
+	{
+		foreach($to_do as $do => $what)
+		{
+			if (!array_key_exists($do, self::$to_do))
+			{
+				self::$to_do[$do] = $what;
+			}
+			else
+			{
+				self::$to_do[$do] = array_merge(self::$to_do[$do], $what);
+			}
+		}
+	}
+
 	public static function plugin_do($what)
 	{
 		if (isset(self::$to_do[$what]))
