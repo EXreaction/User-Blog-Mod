@@ -28,6 +28,18 @@ function url_replace($url)
 
 /**
 * URL handler
+*
+* @param int $user_id - The user_id
+* @param int $blog_id - The blog_id
+* @param int $reply_id - The reply_id
+* @param array $url_data - Data to put in the url's.  Everything will get built in the url from this array.
+*	For exmaple, if array('page' => 'blog', 'mode' => 'add') is sent it would be built as blog.php?page=blog&mode=add
+*	Send 'anchor' (if needed) as the anchor for the page which will get added to the end of the url as # . $url_data['anchor']
+* @param array $extra_data - Extra data that will be used in the URL when required.
+*	When building the url this function checks the blog_data::$(user|blog|reply) arrays to see if the username, blog title, and/or reply title exist for that (user|blog|reply)_id.
+*	If they do not exist in that array and you would like to manually send it you can send it in this array.  array('username' => (the username), 'blog_subject' => (blog title), 'reply_subject' => (reply title))
+*	These are not required to be sent, just send them if you want/need to.
+* @param bool $force_no_seo - If set to true this will build a normal url (needed for some places), not the pretty ones with the username, title, etc in.
 */
 function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = array(), $extra_data = array(), $force_no_seo = false)
 {
