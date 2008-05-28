@@ -144,7 +144,7 @@ else
 	// Polls
 	$poll_title			= blog_data::$blog[$blog_id]['poll_title'];
 	$poll_start			= blog_data::$blog[$blog_id]['poll_start'];
-	$poll_length		= ((blog_data::$blog[$blog_id]['poll_length'] - $poll_start) / 86400);
+	$poll_length		= (blog_data::$blog[$blog_id]['poll_length']) ? ((blog_data::$blog[$blog_id]['poll_length'] - $poll_start) / 86400) : 0;
 	$poll_max_options	= blog_data::$blog[$blog_id]['poll_max_options'];
 	$poll_vote_change	= blog_data::$blog[$blog_id]['poll_vote_change'];
 	decode_message($poll_title, blog_data::$blog[$blog_id]['bbcode_uid']);
@@ -299,7 +299,7 @@ else // user submitted and there are no errors
 		'blog_attachment'			=> (sizeof($blog_attachment->attachment_data)) ? 1 : 0,
 		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
 		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : 0,
-		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 0,
+		'poll_max_options'			=> (!empty($poll)) ? $poll_max_options : 1,
 		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
 
