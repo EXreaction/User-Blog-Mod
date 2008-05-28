@@ -624,6 +624,8 @@ if (confirm_box(true))
 		case '0.9.1' :
 		case '1.0.0' :
 			set_config('user_blog_links_output_block', 1);
+		case '1.0.1' :
+			$db->sql_query('UPDATE ' . BLOGS_TABLE . ' SET poll_max_options = 1 WHERE poll_max_options < 1');
 	}
 
 	// update the version
