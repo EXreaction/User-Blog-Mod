@@ -240,7 +240,7 @@ else // user submitted and there are no errors
 		'poll_title'				=> (!empty($poll)) ? $poll_title : '',
 		'poll_start'				=> (!empty($poll)) ? time() : 0,
 		'poll_length'				=> (!empty($poll) && $poll_length) ? (time() + ($poll_length * 86400)) : 0,
-		'poll_max_options'			=> (!empty($poll)) ? max($poll_max_options, 1) : 0,
+		'poll_max_options'			=> (!empty($poll)) ? max($poll_max_options, 1) : 1,
 		'poll_vote_change'			=> (!empty($poll)) ? $poll_vote_change : 0,
 	);
 
