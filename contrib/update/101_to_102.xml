@@ -25,12 +25,12 @@ There is an extension that can be installed with this mod to extend it's integra
 	<mod-version>
 		<major>1</major>
 		<minor>0</minor>
-		<revision>1</revision>
+		<revision>2_dev</revision>
 	</mod-version>
 
 	<installation>
 		<level>easy</level>
-		<time>420</time>
+		<time>60</time>
 		<target-version>
 			<target-primary>3.0</target-primary>
 			<target-major allow="exact">3</target-major>
@@ -43,10 +43,6 @@ There is an extension that can be installed with this mod to extend it's integra
 	<copy>
 		<file from="root/*.*" to="*.*" />
 	</copy>
-	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.
-
-Because of the bug in previous versions of EAMI that were used to install the modules, the left and right id's for your modules are likely messed up.
-To fix this, go to this page and follow the instructions on how to run the script (and run it for your board):
-http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</diy-instructions>
+	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
 </action-group>
 </mod>

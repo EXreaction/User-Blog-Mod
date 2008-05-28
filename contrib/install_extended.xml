@@ -33,6 +33,32 @@
         <target-minor allow="exact">0</target-minor>
       </target-version>
     </installation>
+
+	<history>
+		<entry>
+			<date>2008-05-11</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>1</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Initial Release of Extended Install</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-05-</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>2_dev</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Fixing a bug in the viewonline.php code.</change>
+				<change>To update from 1.0.1 follow the instructions in contrib/update/101_to_102_extended.xml.</change>
+			</changelog>
+		</entry>
+	</history>
   </header>
 
   <action-group>
@@ -110,7 +136,8 @@ $db->sql_freeresult($result);
 		</edit>
  		<edit>
 			<find>case 'index':</find>
-			<action type="before-add"><![CDATA[		case 'blog' :
+			<action type="before-add"><![CDATA[		// Start Add User Blog Mod ------------------
+		case 'blog' :
 			$user->add_lang('mods/blog/viewonline');
 			$vars = array();
 			foreach (explode('&', substr($row['session_page'], strpos($row['session_page'], '?') + 1)) as $var)
@@ -142,8 +169,14 @@ $db->sql_freeresult($result);
 				$location = sprintf($user->lang['VIEWING_USERS_BLOG'], $users[$vars['u']]['username']);
 				$location_url = append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $vars['u']);
 			}
+			else
+			{
+				$location = $user->lang['VIEWING_BLOGS'];
+				$location_url = append_sid("{$phpbb_root_path}blog.$phpEx");
+			}
 			unset($vars, $users);
-		break;]]></action>
+		break;
+		// End Add User Blog Mod --------------------]]></action>
 		</edit>
     </open>
   </action-group>
