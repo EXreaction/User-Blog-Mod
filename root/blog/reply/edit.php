@@ -197,7 +197,7 @@ else // user submitted and there are no errors
 
 	$db->sql_query($sql);
 
-	$blog_attachment->update_attachment_data($blog_id);
+	$blog_attachment->update_attachment_data(false, $reply_id);
 
 	blog_plugins::plugin_do_arg('reply_edit_after_sql', $reply_id);
 
