@@ -429,6 +429,7 @@ class blog_data
 			'EXTRA'					=> '',
 			'POLL_QUESTION'			=> generate_text_for_display($blog['poll_title'], $blog['bbcode_uid'], $blog['bbcode_bitfield'], $bbcode_options),
 			'RATING_STRING'			=> ($config['user_blog_enable_ratings']) ? get_star_rating($rate_url, $delete_rate_url, $blog['rating'], $blog['num_ratings'], ((isset($rating_data[$id])) ? $rating_data[$id] : false), (($user->data['user_id'] == $user_id) ? true : false)) : false,
+			'NUM_REPLIES'			=> $reply_count,
 			'REPLIES'				=> '<a href="' . blog_url($user_id, $id, false, array('anchor' => 'replies')) . '">' . (($reply_count == 1) ? $user->lang['ONE_COMMENT'] : sprintf($user->lang['CNT_COMMENTS'], $reply_count)) . '</a>',
 			'TITLE'					=> $blog_subject,
 			'TOTAL_VOTES'			=> $total_votes,
