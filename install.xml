@@ -24,7 +24,7 @@ There is an extension that can be installed with this mod to extend it's integra
 	<mod-version>
 		<major>1</major>
 		<minor>0</minor>
-		<revision>2_dev</revision>
+		<revision>2</revision>
 	</mod-version>
 
 	<installation>
@@ -84,11 +84,11 @@ There is an extension that can be installed with this mod to extend it's integra
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-05-</date>
+			<date>2008-05-30</date>
 			<rev-version>
 				<major>1</major>
 				<minor>0</minor>
-				<revision>2_dev</revision>
+				<revision>2</revision>
 			</rev-version>
 			<changelog lang="en-GB">
 				<change>Adding an output of the last blogs since last visit.  There is currently no link to it, but it is available at blog/view/last_visit_blogs.html</change>
@@ -98,6 +98,7 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>Allowing the option for each style to have access to the plugins system.  If a file named style_plugin.php exists in the style directory it will be loaded when somebody accesses a blog with that style.  This allows style authors to make changes to the output data for their specific style and make styling much more flexible and powerful.</change>
 				<change>Fixing 2 bugs when adding/editing a poll.</change>
 				<change>Fixing another bug in attachements while editing a comment.</change>
+				<change>Adding a new style named Coda.  This was copied and modified from the wordpress style on http://coda.co.za/blog/</change>
 				<change>NOTE FOR TRANSLATORS: 1 new language field has been added in the mods/blog/view.php file and the acp/permissions_blog.php file has been re-done.</change>
 				<change>To update from 1.0.1 follow the instructions in contrib/update/101_to_102.xml.</change>
 			</changelog>
