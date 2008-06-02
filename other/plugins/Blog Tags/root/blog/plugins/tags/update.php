@@ -43,7 +43,7 @@ switch (self::$plugins[$which]['plugin_version'])
 						'tag_count'		=> 1,
 					);
 					$db->sql_query('INSERT INTO ' . BLOGS_TAGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
-					$all_tags[$tag] = true;
+					$all_tags[$tag] = array('tag_id' => $db->sql_nextid());
 				}
 			}
 		}
