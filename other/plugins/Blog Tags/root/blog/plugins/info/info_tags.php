@@ -18,12 +18,14 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_TAGS_TITLE']
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_TAGS_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '0.7.1';
+self::$available_plugins[$name]['plugin_version'] = '0.7.2';
 
 $to_do = array(
 	'function_handle_basic_posting_data'		=> array('tags_function_handle_basic_posting_data'),
 	'blog_add_sql'								=> array('tags_blog_add_sql'),
 	'blog_edit_sql'								=> array('tags_blog_edit_sql'),
+//	'blog_delete_confirm'						=> array('tags_blog_delete_confirm'),
+//	'blog_undelete_confirm'						=> array('tags_blog_undelete_confirm'),
 	'blog_handle_data_end'						=> array('tags_blog_handle_data_end'),
 	'blog_page_switch'							=> array('tags_blog_page_switch'),
 	'function_generate_menu'					=> array('tags_function_generate_menu'),

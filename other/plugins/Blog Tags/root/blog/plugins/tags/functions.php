@@ -19,6 +19,9 @@ function get_blogs_with_tag($tag)
 {
 	global $db;
 
+	// Correct the case
+	$tag = mb_convert_case($tag, MB_CASE_TITLE, "UTF-8");
+
 	$blog_ids = array();
 	$sql = 'SELECT blog_id FROM ' . BLOGS_TABLE . '
 		WHERE blog_tags LIKE \'%[tag_delim]' . $db->sql_escape($tag) . '[tag_delim]%\'';
@@ -70,7 +73,7 @@ function get_tags_from_text($text)
 		$tag = trim($tag);
 		if ($tag != '')
 		{
-			$tag_ary[] = $tag;
+			$tag_ary[] = mb_convert_case($tag, MB_CASE_TITLE, "UTF-8");
 		}
 	}
 
@@ -263,4 +266,66 @@ function tags_blog_edit_sql(&$args)
 	tags_blog_add_sql($args, $new_tags);
 	$args['blog_tags'] = '[tag_delim]' . implode('[tag_delim]', $tag_ary) . '[tag_delim]';
 }
+/*
+function tags_blog_delete_confirm()
+{
+	global $db, $blog_id, $cache;
+
+	if (!blog_data::$blog[$blog_id]['blog_deleted'])
+	{
+		$tag_ary = get_tags_from_text(blog_data::$blog[$blog_id]['blog_tags']);
+
+		if (!sizeof($tag_ary))
+		{
+			return;
+		}
+
+		$all_tags = get_blog_tags();
+		foreach ($tag_ary as $tag)
+		{
+			if ($all_tags[$tag]['tag_count'] > 1)
+			{
+				$db->sql_query('UPDATE ' . BLOGS_TAGS_TABLE . ' SET tag_count = tag_count - 1 WHERE tag_id = ' . $all_tags[$tag]['tag_id']);
+			}
+			else
+			{
+				$db->sql_query('DELETE FROM ' . BLOGS_TAGS_TABLE . ' WHERE tag_id = ' . $all_tags[$tag]['tag_id']);
+			}
+		}
+	}
+
+	$cache->destroy('_blog_tags');
+}
+
+function tags_blog_undelete_confirm()
+{
+	global $db, $blog_id, $cache;
+
+	$tag_ary = get_tags_from_text(blog_data::$blog[$blog_id]['blog_tags']);
+
+	if (!sizeof($tag_ary))
+	{
+		return;
+	}
+
+	$all_tags = get_blog_tags();
+	foreach ($tag_ary as $tag)
+	{
+		if (isset($all_tags[$tag]))
+		{
+			$db->sql_query('UPDATE ' . BLOGS_TAGS_TABLE . ' SET tag_count = tag_count + 1 WHERE tag_id = ' . $all_tags[$tag]['tag_id']);
+		}
+		else
+		{
+			$sql_ary = array(
+				'tag_name'		=> $tag,
+				'tag_count'		=> 1,
+			);
+			$db->sql_query('INSERT INTO ' . BLOGS_TAGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+		}
+	}
+
+	$cache->destroy('_blog_tags');
+}
+*/
 ?>
