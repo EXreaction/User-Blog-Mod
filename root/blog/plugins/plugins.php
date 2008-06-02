@@ -317,6 +317,8 @@ class blog_plugins
 			$dbmd = get_available_dbms($dbms);
 			define('PLUGIN_UPDATE', true);
 
+			$current_version = self::$plugins[$which]['plugin_version'];
+
 			include($blog_plugins_path . $which . '/update.' . $phpEx);
 
 			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . self::$available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
