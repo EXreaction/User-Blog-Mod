@@ -227,7 +227,10 @@ class blog_plugins
 		$dbmd = get_available_dbms($dbms);
 		define('PLUGIN_INSTALL', true);
 
-		include($blog_plugins_path . $which . '/install.' . $phpEx);
+		if (file_exists($blog_plugins_path . $which . '/install.' . $phpEx))
+		{
+			include($blog_plugins_path . $which . '/install.' . $phpEx);
+		}
 
 		$sql_data = array(
 			'plugin_name'		=> $which,
@@ -263,7 +266,10 @@ class blog_plugins
 		$dbmd = get_available_dbms($dbms);
 		define('PLUGIN_UNINSTALL', true);
 
-		include($blog_plugins_path . $which . '/uninstall.' . $phpEx);
+		if (file_exists($blog_plugins_path . $which . '/uninstall.' . $phpEx))
+		{
+			include($blog_plugins_path . $which . '/uninstall.' . $phpEx);
+		}
 
 		$sql = 'DELETE FROM ' . BLOGS_PLUGINS_TABLE . ' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 		$db->sql_query($sql);
@@ -319,7 +325,10 @@ class blog_plugins
 
 			$current_version = self::$plugins[$which]['plugin_version'];
 
-			include($blog_plugins_path . $which . '/update.' . $phpEx);
+			if (file_exists($blog_plugins_path . $which . '/update.' . $phpEx))
+			{
+				include($blog_plugins_path . $which . '/update.' . $phpEx);
+			}
 
 			$sql = 'UPDATE ' . BLOGS_PLUGINS_TABLE . ' SET plugin_version = \'' . self::$available_plugins[$which]['plugin_version'] . '\' WHERE plugin_name = \'' . $db->sql_escape($which) . '\'';
 			$db->sql_query($sql);
