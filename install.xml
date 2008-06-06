@@ -24,7 +24,7 @@ There is an extension that can be installed with this mod to extend it's integra
 	<mod-version>
 		<major>1</major>
 		<minor>0</minor>
-		<revision>2</revision>
+		<revision>3_dev</revision>
 	</mod-version>
 
 	<installation>
@@ -101,6 +101,19 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>Adding a new style named Coda.  This was copied and modified from the wordpress style on http://coda.co.za/blog/</change>
 				<change>NOTE FOR TRANSLATORS: 1 new language field has been added in the mods/blog/view.php file and the acp/permissions_blog.php file has been re-done.</change>
 				<change>To update from 1.0.1 follow the instructions in contrib/update/101_to_102.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-06-</date>
+			<rev-version>
+				<major>1</major>
+				<minor>0</minor>
+				<revision>3_dev</revision>
+			</rev-version>
+			<changelog lang="en-GB">
+				<change>Adding $current_version variable in the plugin update function just before the update script for the plugin is called.</change>
+				<change>Fixing the "Go to extension management screen" url in the Manage extension groups ACP panel.</change>
+				<change>To update from 1.0.2 follow the instructions in contrib/update/102_to_103.xml.</change>
 			</changelog>
 		</entry>
 	</history>

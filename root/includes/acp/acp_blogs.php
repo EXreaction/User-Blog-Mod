@@ -2072,7 +2072,7 @@ class acp_blogs
 					'S_NO_IMAGE'				=> $no_image_select,
 					'S_FORUM_IDS'				=> (sizeof($forum_ids)) ? true : false,
 
-					'U_EXTENSIONS'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=$id&amp;mode=extensions"),
+					'U_EXTENSIONS'		=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=attachments&amp;mode=extensions"),
 					'U_BACK'			=> $this->u_action,
 
 					'L_LEGEND'			=> $user->lang[strtoupper($action) . '_EXTENSION_GROUP'])
