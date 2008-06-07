@@ -43,8 +43,8 @@
 				<div class="c">&nbsp;</div>
 				<div id="dash">
 					<div id="intro">
-						<a href="{USER_BLOG_URL}"><h1>{BLOG_TITLE}</h1></a>
-						<p>{BLOG_DESCRIPTION}</p>
+						<a href="{USER_BLOG_URL}"><h1><!-- IF BLOG_TITLE -->{BLOG_TITLE}<!-- ELSE -->{L_USERNAMES_BLOGS}<!-- ENDIF --></h1></a>
+						<p><!-- IF BLOG_DESCRIPTION -->{BLOG_DESCRIPTION}<!-- ELSE -->&nbsp;<!-- ENDIF --></p>
 					</div>
 					<div class="c">&nbsp;</div>
 				</div>
