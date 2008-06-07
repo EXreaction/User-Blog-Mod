@@ -114,6 +114,7 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>Adding $current_version variable in the plugin update function just before the update script for the plugin is called.</change>
 				<change>Fixing the "Go to extension management screen" url in the Manage extension groups ACP panel.</change>
 				<change>When installing/updating/uninstalling a plugin check to see if the install/update/uninstall file exists before trying to include it.</change>
+				<change>Putting in some code for the Blog Title, Blog Description to prevent having a messed up page when neither is entered in by the user.</change>
 				<change>To update from 1.0.2 follow the instructions in contrib/update/102_to_103.xml.</change>
 			</changelog>
 		</entry>
