@@ -93,6 +93,7 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>When installing/updating/uninstalling a plugin check to see if the install/update/uninstall file exists before trying to include it.</change>
 				<change>Putting in some code for the Blog Title, Blog Description to prevent having a messed up page when neither is entered in by the user.</change>
 				<change>Saving 2 SQL queries when there are no polls in the requested blogs.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
 				<change>To update from 1.0.2 follow the instructions in contrib/update/102_to_103.xml.</change>
 			</changelog>
 		</entry>
