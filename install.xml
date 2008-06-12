@@ -1,13 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.0.1.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.0.xsd">
 <header>
 	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-	<title lang="en-GB">User Blog Mod</title>
-	<description lang="en-GB">Adds Blogs to a phpBB3 board.</description>
+	<title lang="en">User Blog Mod</title>
+	<description lang="en">Adds Blogs to a phpBB3 board.</description>
 
-	<author-notes lang="en-GB">PHP versions less than 5.1.0 are NOT supported.  
+	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.  
 Support will only be given at my website - http://www.lithiumstudios.org.  
 
 There is an extension that can be installed with this mod to extend it's integration with phpBB3.  Those instructions are in contrib/install_extended.xml</author-notes>
@@ -21,31 +21,19 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>
-		<major>1</major>
-		<minor>0</minor>
-		<revision>3_dev</revision>
-	</mod-version>
+	<mod-version>1.0.3</mod-version>
 
 	<installation>
 		<level>intermediate</level>
 		<time>420</time>
-		<target-version>
-			<target-primary>3.0</target-primary>
-			<target-major allow="exact">3</target-major>
-			<target-minor allow="exact">0</target-minor>
-		</target-version>
+		<target-version>3.0.1</target-version>
 	</installation>
 
 	<history>
 		<entry>
 			<date>2008-04-29</date>
-			<rev-version>
-				<major>1</major>
-				<minor>0</minor>
-				<revision>0</revision>
-			</rev-version>
-			<changelog lang="en-GB">
+			<rev-version>1.0.0</rev-version>
+			<changelog lang="en">
 				<change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
 				<change>Fixing the (previously broken) output ordering of plugins.</change>
 				<change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
@@ -57,12 +45,8 @@ There is an extension that can be installed with this mod to extend it's integra
 		</entry>
 		<entry>
 			<date>2008-05-11</date>
-			<rev-version>
-				<major>1</major>
-				<minor>0</minor>
-				<revision>1</revision>
-			</rev-version>
-			<changelog lang="en-GB">
+			<rev-version>1.0.1</rev-version>
+			<changelog lang="en">
 				<change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
 				<change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
 				<change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
@@ -85,12 +69,8 @@ There is an extension that can be installed with this mod to extend it's integra
 		</entry>
 		<entry>
 			<date>2008-05-30</date>
-			<rev-version>
-				<major>1</major>
-				<minor>0</minor>
-				<revision>2</revision>
-			</rev-version>
-			<changelog lang="en-GB">
+			<rev-version>1.0.2</rev-version>
+			<changelog lang="en">
 				<change>Adding an output of the last blogs since last visit.  There is currently no link to it, but it is available at blog/view/last_visit_blogs.html</change>
 				<change>Fixing a bug in the blog_delete_user function (forgot to include the constants file).</change>
 				<change>Correcting a lot of entries in the permissions language file.</change>
@@ -104,13 +84,10 @@ There is an extension that can be installed with this mod to extend it's integra
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-06-</date>
-			<rev-version>
-				<major>1</major>
-				<minor>0</minor>
-				<revision>3_dev</revision>
-			</rev-version>
-			<changelog lang="en-GB">
+			<date>2008-06-12</date>
+			<rev-version>1.0.3</rev-version>
+			<changelog lang="en">
+				<change>Updating to ModX 1.2.0.</change>
 				<change>Adding $current_version variable in the plugin update function just before the update script for the plugin is called.</change>
 				<change>Fixing the "Go to extension management screen" url in the Manage extension groups ACP panel.</change>
 				<change>When installing/updating/uninstalling a plugin check to see if the install/update/uninstall file exists before trying to include it.</change>
