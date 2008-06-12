@@ -490,6 +490,21 @@ class blog_data
 			$blog_ids = array($blog_ids);
 		}
 
+		$ids = $blog_ids;
+		$blog_ids = array();
+		foreach ($ids as $blog_id)
+		{
+			if (!isset(self::$blog[$blog_id]) || self::$blog[$blog_id]['poll_title'])
+			{
+				$blog_ids[] = $blog_id;
+			}
+		}
+
+		if (!sizeof($blog_ids))
+		{
+			return;
+		}
+
 		// Get the options and store it in $blog[$blog_id]['poll_options'][$poll_option_id]
 		$sql = 'SELECT * FROM ' . BLOGS_POLL_OPTIONS_TABLE . ' WHERE ' . $db->sql_in_set('blog_id', $blog_ids);
 		$result = $db->sql_query($sql);
