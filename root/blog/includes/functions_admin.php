@@ -4,13 +4,25 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
 if (!defined('IN_PHPBB'))
 {
 	exit;
+}
+
+/**
+* Delete a board style style
+*/
+function blog_remove_style($style_id, $new_id)
+{
+	global $db, $phpbb_root_path, $phpEx;
+
+	include("{$phpbb_root_path}blog/includes/constants.$phpEx");
+
+	$db->sql_query('UPDATE ' . BLOGS_USERS_TABLE . ' SET blog_style = ' . (int) $new_id . ' WHERE blog_style = ' . (int) $style_id);
 }
 
 /**
@@ -205,8 +217,8 @@ function resync_blog($mode)
 		foreach($blog_data as $row)
 		{
 			// count all the replies (an SQL query seems the easiest way to do it)
-			$sql = 'SELECT count(reply_id) AS total 
-				FROM ' . BLOGS_REPLY_TABLE . ' 
+			$sql = 'SELECT count(reply_id) AS total
+				FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = ' . $row['blog_id'] . '
 						AND reply_deleted = 0
 						AND reply_approved = 1';
@@ -231,8 +243,8 @@ function resync_blog($mode)
 		foreach($blog_data as $row)
 		{
 			// count all the replies (an SQL query seems the easiest way to do it)
-			$sql = 'SELECT count(reply_id) AS total 
-				FROM ' . BLOGS_REPLY_TABLE . ' 
+			$sql = 'SELECT count(reply_id) AS total
+				FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE blog_id = ' . $row['blog_id'];
 			$result = $db->sql_query($sql);
 			$total = $db->sql_fetchrow($result);
@@ -278,9 +290,9 @@ function resync_blog($mode)
 		while($row = $db->sql_fetchrow($result))
 		{
 			// count all the replies (an SQL query seems the easiest way to do it)
-			$sql2 = 'SELECT count(blog_id) AS total 
-				FROM ' . BLOGS_TABLE . ' 
-					WHERE user_id = \'' . $row['user_id'] . '\' 
+			$sql2 = 'SELECT count(blog_id) AS total
+				FROM ' . BLOGS_TABLE . '
+					WHERE user_id = \'' . $row['user_id'] . '\'
 						AND blog_deleted = 0
 						AND blog_approved = 1';
 			$result2 = $db->sql_query($sql2);

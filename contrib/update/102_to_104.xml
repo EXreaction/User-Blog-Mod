@@ -22,7 +22,7 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.0.4</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -35,6 +35,18 @@ There is an extension that can be installed with this mod to extend it's integra
 	<copy>
 		<file from="root/*.*" to="*.*" />
 	</copy>
+	<open src="includes/acp/acp_style.php">
+		<edit>
+			<find>				$sql = 'UPDATE ' . FORUMS_TABLE . "
+					SET forum_style = $new_id
+					WHERE forum_style = $style_id";
+				$db->sql_query($sql);</find>
+			<action type="after-add">				// Start User Blog Mod ----------------------
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_remove_style($style_id, $new_id);
+				// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
 	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
 </action-group>
 </mod>

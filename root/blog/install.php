@@ -4,11 +4,11 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
-$user_blog_version = '1.0.3';
+$user_blog_version = '1.0.4_dev';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);

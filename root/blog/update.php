@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -626,6 +626,17 @@ if (confirm_box(true))
 			set_config('user_blog_links_output_block', 1);
 		case '1.0.1' :
 			$db->sql_query('UPDATE ' . BLOGS_TABLE . ' SET poll_max_options = 1 WHERE poll_max_options < 1');
+		case '1.0.2' :
+		case '1.0.3' :
+			$style_ids = array();
+			$result = $db->sql_query('SELECT style_id FROM ' . STYLES_TABLE);
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$style_ids[] = $row['style_id'];
+			}
+			$db->sql_freeresult($result);
+
+			$db->sql_query('UPDATE ' . BLOGS_USERS_TABLE . ' SET blog_style = ' . $style_ids[0] . ' WHERE ' . $db->sql_in_set('blog_style', $style_ids, true));
 	}
 
 	// update the version

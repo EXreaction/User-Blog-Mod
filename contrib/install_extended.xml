@@ -18,7 +18,7 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.0.4</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -39,7 +39,7 @@
 			<rev-version>1.0.2</rev-version>
 			<changelog lang="en">
 				<change>Fixing a bug in the viewonline.php code.</change>
-				<change>To update from 1.0.1 follow the instructions in contrib/update/101_to_102_extended.xml.</change>
+				<change>To update from 1.0.1 follow the instructions in contrib/update/extended/101_to_102_extended.xml.</change>
 			</changelog>
 		</entry>
 		<entry>
@@ -48,6 +48,13 @@
 			<changelog lang="en">
 				<change>Updating to ModX 1.2.0.</change>
 				<change>No changes were made to the extended install version since 1.0.2.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-06-</date>
+			<rev-version>1.0.4_dev</rev-version>
+			<changelog lang="en">
+				<change>No changes were made to the extended install version since 1.0.3.</change>
 			</changelog>
 		</entry>
 	</history>

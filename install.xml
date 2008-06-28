@@ -97,6 +97,15 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>To update from 1.0.2 follow the instructions in contrib/update/102_to_103.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-06-</date>
+			<rev-version>1.0.4_dev</rev-version>
+			<changelog lang="en">
+				<change>Fixing the bug where a user's blog style could cause a no style error when deleting a style from the ACP.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 
@@ -116,6 +125,18 @@ There is an extension that can be installed with this mod to extend it's integra
 			<action type="before-add">				// Start User Blog Mod ----------------------
 				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
 				blog_acp_profile($user_id, $submit);
+				// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="includes/acp/acp_style.php">
+		<edit>
+			<find>				$sql = 'UPDATE ' . FORUMS_TABLE . "
+					SET forum_style = $new_id
+					WHERE forum_style = $style_id";
+				$db->sql_query($sql);</find>
+			<action type="after-add">				// Start User Blog Mod ----------------------
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_remove_style($style_id, $new_id);
 				// End User Blog Mod ------------------------</action>
 		</edit>
 	</open>
