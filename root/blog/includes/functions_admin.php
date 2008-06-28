@@ -59,7 +59,7 @@ function blog_delete_user($user_id)
 		$result1 = $db->sql_query($sql);
 		while ($row1 = $db->sql_fetchrow($result1))
 		{
-			$rids[] = $row['reply_id'];
+			$rids[] = $row1['reply_id'];
 		}
 		$db->sql_freeresult($result1);
 		if (sizeof($rids))

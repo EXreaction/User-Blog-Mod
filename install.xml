@@ -21,7 +21,7 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.0.4_dev</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -102,6 +102,7 @@ There is an extension that can be installed with this mod to extend it's integra
 			<rev-version>1.0.4_dev</rev-version>
 			<changelog lang="en">
 				<change>Fixing the bug where a user's blog style could cause a no style error when deleting a style from the ACP.</change>
+				<change>Fixing the bug which occured when deleting a user's blogs with the blog_delete_user function.</change>
 				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
 				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
 			</changelog>
