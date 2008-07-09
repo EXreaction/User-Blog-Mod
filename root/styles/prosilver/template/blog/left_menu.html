@@ -69,7 +69,7 @@
 			<div class="left_menu_title">{L_BLOG_STATS}</div>
 			<!-- BEGIN stats -->
 				<div style="padding-bottom: <!-- IF stats.S_LAST_ROW -->6<!-- ELSE -->3<!-- ENDIF -->px;">
-					<!-- IF stats.URL == 'spacer' && stats.NAME == 'spacer' -->&nbsp;<!-- ELSE --><span style="float: right;">{stats.VALUE}</span><span>{stats.NAME}</span><!-- ENDIF -->
+					<!-- IF stats.URL == 'spacer' && stats.NAME == 'spacer' -->&nbsp;<!-- ELSE --><span class="right-box">{stats.VALUE}</span><span>{stats.NAME}</span><!-- ENDIF -->
 				</div>
 			<!-- END stats -->
 			<span class="corners-bottom"><span></span></span>
@@ -84,7 +84,7 @@
 			<div class="left_menu_title">{L_SEARCH_BLOGS}</div>
 			<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
 				<fieldset>
-					<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" /> 
+					<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
 					<input class="button2" value="{L_SEARCH}" type="submit" /><br />
 					{S_HIDDEN_FIELDS}
 				</fieldset>
