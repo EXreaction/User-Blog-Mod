@@ -1,0 +1,449 @@
+<!-- INCLUDE overall_header.html -->
+
+<style type="text/css">
+/* Menu */
+#menu {
+	float: left;
+	width: 20%;
+	font-size: 1.00em;
+	padding: 0;
+	border-right: 1px solid #CCCFD3;
+}
+
+.rtl #menu {
+	float: right;
+	border: none;
+	border-left: 1px solid #CCCFD3;
+}
+
+#menu p {
+	font-size: 0.85em;
+}
+
+#menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Default list state */
+#menu li {
+	padding: 0;
+	margin: 0;
+	font-size: 0.85em;
+	font-weight: bold;
+	display: inline;
+}
+
+/* Link styles for the sub-section links */
+#menu li span {
+	display: block;
+	padding: 3px 3px 3px 8px;
+	margin: 1px 0;
+	text-decoration: none;
+	font-weight: normal;
+	color: #138ECB;
+}
+
+.rtl #menu li span {
+	padding: 3px 8px 3px 3px;
+}
+
+#menu li a:hover, #menu li a:hover span {
+	text-decoration: none;
+	background-color: #FFFFFF;
+	color: #BC2A4D;
+}
+
+#menu li a:active, #menu li a:active span {
+	color: #F632A0;
+}
+
+#menu li#activemenu a span {
+	text-decoration: none;
+	font-weight: bold;
+	color: #1180B7;
+	background: transparent url("../images/arrow_right.gif") 0% 50% no-repeat;
+}
+
+.rtl #menu li#activemenu a span {
+	background: transparent url("../images/arrow_left.gif") 100% 50% no-repeat;
+}
+
+#menu li#activemenu a:hover span, #menu li#activemenu span {
+	text-decoration: none;
+	font-weight: bold;
+	color: #BC2A4D;
+	background: #FFFFFF url("../images/arrow_right.gif") 1% 50% no-repeat;
+}
+
+.rtl #menu li#activemenu a:hover span, .rtl #menu li#activemenu span {
+	background: #FFFFFF url("../images/arrow_left.gif") 99% 50% no-repeat;
+}
+
+#menu li a:active, #menu li a:active span, #menu li#activemenu a:active span {
+	color: #F632A0;
+}
+
+#menu li span.completed {
+	text-decoration: none;
+	padding: 3px 3px 3px 12px;
+	background: url("../images/arrow_down.gif") 1% 50% no-repeat;
+}
+
+.rtl #menu li span.completed {
+	text-decoration: none;
+	padding: 3px 12px 3px 3px;
+	background: url("../images/arrow_down.gif") 99% 50% no-repeat;
+}
+
+#menu li.header {
+	font-family: Tahoma, Helvetica, sans-serif;
+	display: block;
+	font-weight: bold;
+	color: #115098;
+	border-bottom: 1px solid #327AA5;
+	padding: 4px 0 2px;
+	margin-top: 15px;
+	text-transform: uppercase;
+	font-size: 0.75em;
+}
+
+#main {
+	float: left;
+	width: 76%;
+	margin: 0 0 0 3%;
+	min-height: 350px;
+}
+
+.rtl #main {
+	float: right;
+	margin: 0 3% 0 0;
+}
+
+/* Table styles
+---------------------------------------- */
+
+table {
+	width: 100%;
+	border: 1px solid #CCCFD3;
+	background-color: #FFFFFF;
+	padding: 1px;
+}
+
+th {
+	padding: 3px 4px;
+	color: #FFFFFF;
+	background: #70AED3 url("../images/gradient2b.gif") bottom left repeat-x;
+	border-top: 1px solid #6DACD2;
+	border-bottom: 1px solid #327AA5;
+	text-align: left;
+	font-size: 0.75em;
+	text-transform: uppercase;
+}
+
+td {
+	text-align: left;
+	font-size: 0.85em;
+	padding: 4px;
+	line-height: 1.20em;
+}
+
+.rtl th, .rtl td {
+	text-align: right;
+}
+
+table.type2 {
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+table.type2 th {
+	background: none;
+	border-top: none;
+	text-align: center;
+	color: #115098;
+	padding: 2px 0;
+}
+
+table.type2 td {
+	padding: 0;
+	font-size: 1em;
+}
+
+table.type2 td.name {
+	padding: 2px;
+	vertical-align: middle;
+}
+
+table.type3  {
+	float: right;
+	width: 300px;
+	border: none;
+	background-color: transparent;
+	padding: 0;
+}
+
+.rtl table.type3 {
+	float: left;
+}
+
+table.type3 thead th {
+	background-color: transparent;
+	border-top: none;
+	text-align: center;
+	color: #115098;
+	padding: 0 3px;
+	font-size: 0.85em;
+	font-weight: normal;
+	text-transform: none;
+}
+
+table.type3 tbody th {
+	border-top: none;
+	text-align: left;
+	text-transform: none;
+	padding: 0;
+	border: none;
+	font-size: 0.90em;
+	font-weight: normal;
+	width: 100%;
+}
+
+.rtl table.type3 tbody th {
+	text-align: right;
+}
+
+table.type3 td {
+	text-align: center;
+	padding: 1px;
+}
+
+th.name {
+	text-align: left;
+	width: auto;
+}
+
+.rtl th.name {
+	text-align: right;
+}
+
+td.name {
+	text-align: left;
+	font-weight: bold;
+}
+
+.rtl td.name {
+	text-align: right;
+}
+
+.entry {
+	text-align: left;
+	font-weight: normal;
+}
+
+.rtl .entry {
+	text-align: right;
+}
+
+.row1 { background-color: #F9F9F9; }
+.row2 { background-color: #DCEBFE; }
+.row3 { background-color: #DBDFE2; }
+.row4 { background-color: #E4E8EB; }
+.col1 { background-color: #DCEBFE; }
+.col2 { background-color: #F9F9F9; }
+
+.spacer {
+	background-color: #DBDFE2;
+	height: 1px;
+	line-height: 1px;
+}
+
+h2, caption {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 1.40em;
+	font-weight: normal;
+	color: #115098;
+	text-align: left;
+	margin-top: 25px;
+}
+
+.rtl h2, .rtl caption {
+	text-align: right;
+}
+
+legend {
+	padding: 1px 0;
+	font-family: Tahoma,arial,Verdana,Sans-serif;
+	font-size: .9em;
+	font-weight: bold;
+	color: #115098;
+	margin-top: -.4em;
+	position: relative;
+	text-transform: none;
+	line-height: 1.2em;
+	top: 0;
+	vertical-align: middle;
+}
+
+/* Hide from macIE \*/
+legend { top: -1.2em; }
+/* end */
+
+* html legend {
+	margin: 0 0 -10px -7px;
+	line-height: 1em;
+	font-size: .85em;
+}
+
+.successbox, .errorbox {
+	padding: 8px;
+	margin: 10px 0;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.success {
+	color: #228822;
+}
+
+.error {
+	color: #BC2A4D;
+}
+
+.successbox {
+	background-color: #228822;
+}
+
+.errorbox {
+	background-color: #BC2A4D;
+}
+
+* html .errorbox, * html .successbox { height: 1%; } /* Pixel shift fix for IE */
+
+.successbox h3, .errorbox h3 {
+	color: #FFFFFF;
+	margin: 0 0 0.5em;
+	font-size: 1.10em;
+	font-family: "Lucida Grande",Verdana,Helvetica,Arial,sans-serif;
+}
+
+.successbox p, .errorbox p {
+	color: #FFFFFF;
+	font-size: 0.85em;
+	margin-bottom: 0;
+}
+
+.errorbox a:link, .errorbox a:active, .errorbox a:visited,
+.successbox a:link, .successbox a:active, .successbox a:visited {
+	color: #DBD7D1;
+	text-decoration: underline;
+	font-weight: bold;
+}
+</style>
+
+<div class="panel">
+	<span class="corners-top"><span></span></span>
+		<div id="content">
+			<div id="menu">
+				<ul>
+				<!-- BEGIN l_block1 -->
+					<li<!-- IF l_block1.S_SELECTED --> id="activemenu"<!-- ENDIF -->><a href="{l_block1.U_TITLE}"><span>{l_block1.L_TITLE}</span></a></li>
+				<!-- END l_block1 -->
+				</ul>
+			</div>
+
+			<div id="main">
+
+<!-- IF STAGE == 0 -->
+	<p class="error">{L_BACKUP_NOTICE}</p>
+
+	<table cellspacing="1">
+		<caption>{L_AVAILABLE_CONVERTORS}</caption>
+		<col class="col1" /><col class="col2" /><col class="col1" /><col class="col2" />
+	<thead>
+	<tr>
+		<th>{L_SOFTWARE}</th>
+		<th>{L_VERSION}</th>
+		<th>{L_AUTHOR}</th>
+		<th>{L_OPTIONS}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<!-- IF .convertors -->
+		<!-- BEGIN convertors -->
+		<tr>
+			<td>{convertors.SOFTWARE}</td>
+			<td>{convertors.VERSION}</td>
+			<td>{convertors.AUTHOR}</td>
+			<td><a href="{convertors.U_CONVERT}">{L_CONVERT}</a></td>
+		</tr>
+		<!-- END convertors -->
+	<!-- ELSE -->
+		<tr>
+			<td>{L_NO_CONVERTORS}</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>
+	<!-- ENDIF -->
+	</tbody>
+	</table>
+<!-- ENDIF -->
+<!-- IF STAGE == 1 -->
+	<form id="blog_upgrade" method="post" action="{U_ACTION}">
+	<!-- BEGIN options -->
+		<!-- IF options.S_LEGEND -->
+			<!-- IF not options.S_FIRST_ROW -->
+				</fieldset>
+			<!-- ENDIF -->
+			<fieldset>
+				<legend>{options.LEGEND}</legend>
+		<!-- ELSE -->
+
+			<dl>
+				<dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
+				<dd>{options.CONTENT}</dd>
+			</dl>
+
+		<!-- ENDIF -->
+	<!-- END options -->
+
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		</p>
+
+	</fieldset>
+
+	{S_FORM_TOKEN}
+	</form>
+<!-- ENDIF -->
+<!-- IF STAGE != 0 and STAGE != 1 -->
+	<!-- IF ERROR -->
+		<h2>{L_ERROR}</h2>
+		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+
+		<a href="{U_BACK}">{L_RETURN_LAST_STEP}</a>
+	<!-- ELSE -->
+	<div class="successbox">
+		<h3>{L_SUCCESS}</h3>
+		<p>{MESSAGE}</p>
+		<!-- IF STAGE != 7 -->
+			<!-- IF S_NEXT_PART -->
+				<a href="{U_ACTION}">{L_NEXT_PART}</a>
+			<!-- ELSE -->
+				<a href="{U_ACTION}">{L_NEXT_STEP}</a>
+			<!-- ENDIF -->
+		<!-- ENDIF -->
+	</div>
+	<!-- ENDIF -->
+<!-- ENDIF -->
+
+			</div>
+		</div>
+	<span class="corners-bottom"><span></span></span>
+</div>
+
+<!-- INCLUDE overall_footer.html -->

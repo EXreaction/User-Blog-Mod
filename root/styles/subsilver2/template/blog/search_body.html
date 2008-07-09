@@ -1,0 +1,41 @@
+<!-- INCLUDE overall_header.html -->
+
+<div id="pagecontent">
+
+	<form method="post" action="{U_BLOG_SEARCH}">
+	
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<th colspan="2">{L_SEARCH_QUERY}</th>
+	</tr>
+	<tr>
+		<td class="row1" width="50%"><b class="genmed">{L_SEARCH_KEYWORDS}: </b><br /><span class="gensmall">{L_SEARCH_KEYWORDS_EXPLAIN}</span></td>
+		<td class="row2" width="50%" valign="top"><input type="text" style="width: 300px" class="post" name="keywords" size="30" /><br /><input type="radio" class="radio" name="terms" value="all" checked="checked" /> <span class="genmed">{L_SEARCH_ALL_TERMS}</span><br /><input type="radio" class="radio" name="terms" value="any" /> <span class="genmed">{L_SEARCH_ANY_TERMS}</span></td>
+	</tr>
+	<tr>
+		<td class="row1"><b class="genmed">{L_SEARCH_AUTHOR}:</b><br /><span class="gensmall">{L_SEARCH_AUTHOR_EXPLAIN}</span></td>
+		<td class="row2" valign="middle"><input type="text" style="width: 300px" class="post" name="author" size="30" /></td>
+	</tr>
+	<tr>
+		<th colspan="2">{L_SEARCH_OPTIONS}</th>
+	</tr>
+	<tr>
+		<td class="row1" nowrap="nowrap"><b class="genmed">{L_SEARCH_WITHIN}: </b></td>
+		<td class="row2" nowrap="nowrap"><input type="radio" name="sf" id="sf1" value="all" checked="checked" /> <span class="genmed">{L_SEARCH_TITLE_MSG}</span><br /><input type="radio" name="sf" id="sf2" value="msgonly" /> <span class="genmed">{L_SEARCH_MSG_ONLY}</span><br /><input type="radio" name="sf" id="sf3" value="titleonly" /> <span class="genmed">{L_SEARCH_BLOG_TITLE_ONLY}</span><br /><input type="radio" name="sf" id="sf4" value="blog" /> <span class="genmed">{L_SEARCH_BLOG_ONLY}</span></td>
+	</tr>
+	<tr>
+		<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input class="btnmain" name="submit" type="submit" value="{L_SEARCH}" />&nbsp;&nbsp;<input class="btnlite" type="reset" value="{L_RESET}" /></td>
+	</tr>
+	</table>
+	
+	</form>
+
+	<br clear="all" />
+
+	</div>
+
+	<!-- INCLUDE breadcrumbs.html -->
+
+	<br clear="all" />
+
+<!-- INCLUDE overall_footer.html -->

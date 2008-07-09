@@ -1,0 +1,47 @@
+<!-- INCLUDE mcp_header.html -->
+
+<h2>{L_TITLE}</h2>
+
+<form id="mcp" method="post" action="{S_MCP_ACTION}">
+	<p>{L_EXPLAIN}</p>
+
+	<!-- IF PAGINATION -->
+		<br />
+		<table width="100%" cellspacing="1">
+		<tr>
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;{PAGE_NUMBER}<br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ <!-- IF TOTAL_TOPICS -->{TOTAL_TOPICS}<!-- ELSEIF TOTAL_POSTS -->{TOTAL_POSTS}<!-- ELSE -->{TOTAL}<!-- ENDIF --> ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="{S_CONTENT_FLOW_END}" nowrap="nowrap"><!-- INCLUDE pagination.html --></td>
+		</tr>
+		</table>
+		<br />
+	<!-- ENDIF -->
+
+	<br />
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr>
+			<th>&nbsp;{L_SUBJECT}&nbsp;</th>
+			<th style="width: 20%;">&nbsp;{L_AUTHOR}&nbsp;</th>
+			<th style="width: 20%;">&nbsp;{L_POST_TIME}&nbsp;</th>
+		</tr>
+		<!-- BEGIN postrow -->
+			<tr>
+				<td class="row1" valign="top"><span class="gen"><a href="{postrow.U_VIEW}">{postrow.SUBJECT}</a></span></td>
+				<td class="row2" align="center" width="15%" nowrap="nowrap" valign="top"><span class="gen">{postrow.AUTHOR}</span></td>
+				<td class="row1" align="center" width="15%" nowrap="nowrap" valign="top"><span class="gensmall">{postrow.TIME}</span></td>
+			</tr>
+		<!-- BEGINELSE -->
+			<tr>
+				<td class="row1" valign="top" colspan="3" align="center"><span class="gen"><!-- IF S_BLOGS -->{L_NO_BLOGS}<!-- ELSE -->{L_NO_REPLIES}<!-- ENDIF --></span></td>
+			</tr>
+		<!-- END postrow -->
+
+		<tr>
+			<td class="cat" colspan="3" align="center"><span class="gensmall">{L_DISPLAY_POSTS}:</span> {S_SELECT_SORT_DAYS}&nbsp;<span class="gensmall">{L_SORT_BY}</span> {S_SELECT_SORT_KEY} {S_SELECT_SORT_DIR}&nbsp;<input class="btnlite" type="submit" value="{L_GO}" name="sort" /></td>
+		</tr>
+	</table>
+
+{S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE mcp_footer.html -->

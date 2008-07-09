@@ -1,0 +1,38 @@
+<!-- IF CATEGORY_RULES -->
+	<div class="forumrules">
+		<h3>{L_CATEGORY_RULES}</h3><br />
+		{CATEGORY_RULES}
+	</div>
+	<br clear="all" />
+<!-- ENDIF -->
+
+<!-- BEGIN category_row -->
+	<!-- IF category_row.S_FIRST_ROW  -->
+		<table class="tablebg" cellspacing="1" width="100%">
+		<tr>
+			<th><!-- IF CURRENT_CATEGORY --><a href="{U_CURRENT_CATEGORY}">{CURRENT_CATEGORY}</a><!-- ELSE -->{L_CATEGORY}<!-- ENDIF --></th>
+			<th style="width: 120px;">{L_BLOGS}&nbsp;</th>
+		</tr>
+	<!-- ENDIF -->
+		<tr class="row1">
+			<td style="padding: 4px 6px;">
+				<a href="{category_row.U_CATEGORY}" class="forumlink">{category_row.CATEGORY_NAME}</a>
+				<p class="forumdesc">{category_row.CATEGORY_DESCRIPTION}</p>
+				<!-- IF category_row.S_SUBCATEGORY -->
+					<p class="forumdesc">
+						<strong>{category_row.L_SUBCATEGORY} :</strong>
+						<!-- BEGIN subcategory -->
+							<a href="{category_row.subcategory.U_CATEGORY}">{category_row.subcategory.CATEGORY_NAME}</a>
+						<!-- END subcategory -->
+					</p>
+				<!-- ENDIF -->
+			</td>
+			<td class="row2" align="center">
+				<p class="topicdetails">{category_row.BLOGS}</p>
+			</td>
+		</tr>
+
+	<!-- IF category_row.S_LAST_ROW -->
+		</table><br />
+	<!-- ENDIF -->
+<!-- END category_row -->
