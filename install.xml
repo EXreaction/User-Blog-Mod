@@ -98,13 +98,15 @@ There is an extension that can be installed with this mod to extend it's integra
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-06-</date>
-			<rev-version>1.0.4_dev</rev-version>
+			<date>2008-07-09</date>
+			<rev-version>1.0.4</rev-version>
 			<changelog lang="en">
 				<change>Fixing the bug where a user's blog style could cause a no style error when deleting a style from the ACP.</change>
 				<change>Fixing the bug which occured when deleting a user's blogs with the blog_delete_user function.</change>
+				<change>Fixing the conflict with one of the Feed Mods by renaming U_FEED to U_BLOG_FEED.</change>
 				<change>Fixing a lot of things for re-submission to the ModDB.</change>
-				<change>NOTE FOR TRANSLATORS: Added 1 new language entry in mods/blog/common.php.</change>
+				<change>NOTE FOR BLOG STYLERS: U_FEED has been changed to U_BLOG_FEED.</change>
+				<change>NOTE FOR TRANSLATORS: Added 1 new language entry in mods/blog/common.php and 2 new entries in mods/blog/acp.php.</change>
 				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
 			</changelog>
 		</entry>
