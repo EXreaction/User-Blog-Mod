@@ -17,7 +17,7 @@
 */
 
 // Remember to update this in the install.php file as well!
-$user_blog_version = '1.0.4_dev';
+$user_blog_version = '1.0.4';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -31,7 +31,7 @@ $auth->acl($user->data);
 // Do not do $user->setup here!
 
 // Get some variables
-$page = request_var('page', '');
+$page = utf8_normalize_nfc(request_var('page', '', true)); // Normalize for usernames
 $mode = request_var('mode', '');
 $user_id = request_var('u', 0);
 $blog_id = request_var('b', 0);
@@ -139,21 +139,20 @@ switch ($page)
 if ($default)
 {
 	// for highlighting
+	$highlight_match = $highlight = '';
 	if ($hilit_words)
 	{
-		$highlight_match = $highlight = '';
 		foreach (explode(' ', trim($hilit_words)) as $word)
 		{
 			if (trim($word))
 			{
-				$highlight_match .= (($highlight_match != '') ? '|' : '') . str_replace('*', '\w*?', preg_quote($word, '#'));
+				$word = str_replace('\*', '\w+?', preg_quote($word, '#'));
+				$word = preg_replace('#(^|\s)\\\\w\*\?(\s|$)#', '$1\w+?$2', $word);
+				$highlight_match .= (($highlight_match != '') ? '|' : '') . $word;
 			}
 		}
+
 		$highlight = urlencode($hilit_words);
-	}
-	else
-	{
-		$highlight_match = false;
 	}
 
 	// If you are adding your own page with this, make sure to set $default to false if the page matches yours, otherwise it will load the default page below
@@ -349,7 +348,8 @@ else
 }
 
 // Lets add credits for the User Blog Mod.  This is not the best way to do it, but it makes it so the person installing it has 1 less edit to do per style
-$user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br />' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
+// Sounds like the mod team will not accept this, so we are commenting it out for now and having the user just do the extra edit for each style.
+//$user->lang['TRANSLATION_INFO'] = (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['BLOG_CREDITS'] . '<br />' . $user->lang['TRANSLATION_INFO'] : $user->lang['BLOG_CREDITS'];
 
 // Add some data to the template
 $template->assign_vars(array(
@@ -357,6 +357,7 @@ $template->assign_vars(array(
 	'PAGE'					=> $page,
 	'BLOG_TITLE'			=> (isset($user_settings[$user_id])) ? censor_text($user_settings[$user_id]['title']) : false,
 	'BLOG_DESCRIPTION'		=> (isset($user_settings[$user_id])) ? generate_text_for_display($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid'], $user_settings[$user_id]['description_bbcode_bitfield'], 7) : false,
+	'BLOG_CREDITS'			=> $user->lang['BLOG_CREDITS'],
 
 	'U_ADD_BLOG'			=> (check_blog_permissions('blog', 'add', true)) ? $blog_urls['add_blog'] : '',
 	'U_BLOG_MCP'			=> ($auth->acl_gets('m_blogapprove', 'm_blogreport', 'm_blogreplyapprove', 'm_blogreplyreport')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=blog') : '',

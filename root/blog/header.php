@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -36,7 +36,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			// Add the style if required
 			if (isset($_GET['style']) && !isset($url_data['style']))
 			{
-				$extras .= '_style-' . $_GET['style'];
+				$extras .= '_style-' . request_var('style', '');
 			}
 
 			// Add the Session ID if required, do not add it for guests.

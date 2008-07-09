@@ -48,7 +48,7 @@
 		<table class="tablebg" width="100%" cellspacing="0">
 			<tr>
 				<td class="cat" align="center"><!-- IF S_SORT --><form name="sort_blog" method="post" action="{S_POST_ACTION}"><span class="gensmall">{L_DISPLAY_POSTS}:</span> {S_SELECT_SORT_DAYS}&nbsp;<span class="gensmall">{L_SORT_BY}</span> {S_SELECT_SORT_KEY} {S_SELECT_SORT_DIR}&nbsp;<input class="btnlite" type="submit" value="{L_GO}" name="sort" /></form><!-- ENDIF --></td>
-				<td class="cat" align="right"><!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a> &nbsp;<!-- ENDIF --></td>
+				<td class="cat" align="right"><!-- IF U_BLOG_FEED --><a href="{U_BLOG_FEED}"><img src="{T_THEME_PATH}/images/blog/feed.gif" alt="{L_FEED}" /></a> &nbsp;<!-- ENDIF --></td>
 			</tr>
 		</table>
 
@@ -235,8 +235,8 @@
 										<tr valign="middle">
 											<td class="gensmall" align="{S_CONTENT_FLOW_END}">
 											<!-- IF not blogrow.S_SHORTENED and not S_IS_BOT -->
-												<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF --> 
-												<!-- IF blogrow.U_WARN --><a href="{blogrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF --> 
+												<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF -->
+												<!-- IF blogrow.U_WARN --><a href="{blogrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF -->
 												<!-- IF blogrow.U_DELETE --><a href="{blogrow.U_DELETE}">{DELETE_IMG}</a> <!-- ENDIF -->
 											<!-- ENDIF -->
 											</td>
@@ -412,8 +412,8 @@
 										<tr valign="middle">
 											<td class="gensmall" align="{S_CONTENT_FLOW_END}">
 											<!-- IF not S_IS_BOT -->
-												<!-- IF replyrow.U_REPORT and not replyrow.S_REPORTED --><a href="{replyrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF --> 
-												<!-- IF replyrow.U_WARN --><a href="{replyrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF --> 
+												<!-- IF replyrow.U_REPORT and not replyrow.S_REPORTED --><a href="{replyrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF -->
+												<!-- IF replyrow.U_WARN --><a href="{replyrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF -->
 												<!-- IF replyrow.U_DELETE --><a href="{replyrow.U_DELETE}">{DELETE_IMG}</a> <!-- ENDIF -->
 											<!-- ENDIF -->
 											</td>

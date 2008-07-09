@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -24,7 +24,7 @@ class blog_plugins
 
 	/**
 	* Constructor
-	* 
+	*
 	* Load all installed and enabled plugins
 	*/
 	public function __construct()
@@ -138,6 +138,11 @@ class blog_plugins
 		if (!file_exists($tpl_path . $template_file))
 		{
 			$template_path = '../../../styles/prosilver/template/';
+
+			if (!file_exists($template_path . $template_file))
+			{
+				trigger_error('PLUGIN_TEMPLATE_MISSING');
+			}
 		}
 		else
 		{
@@ -388,7 +393,7 @@ class blog_plugins
 
 	/**
 	* Move a plugin
-	* 
+	*
 	* This is used for the menu order on the User's blog page.
 	*/
 	public static function plugin_move($which, $action)

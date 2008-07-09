@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -73,7 +73,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	// Add the blogstyle setting if required
 	if (isset($_GET['blogstyle']) && !isset($url_data['blogstyle']))
 	{
-		$url_data['blogstyle'] = $_GET['blogstyle'];
+		$url_data['blogstyle'] = request_var('blogstyle', '');
 	}
 
 	// Handle the anchor
@@ -153,7 +153,7 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		// Add style= to the url data if it is in there
 		if (isset($_GET['style']) && !isset($url_data['style']))
 		{
-			$url_data['style'] = $_GET['style'];
+			$url_data['style'] = request_var('style', '');
 		}
 
 		// Add the Session ID if required.
@@ -452,7 +452,7 @@ function blog_error_handler($errno, $msg_text, $errfile, $errline)
 		else
 		{
 			// Set the template back to the user's default.  So custom style authors do not need to make a message_body template
-			$template->set_template();	
+			$template->set_template();
 		}
 	}
 

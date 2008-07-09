@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -214,7 +214,7 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 			}
 		}
 	}
-	$db->sql_freeresult($result);	
+	$db->sql_freeresult($result);
 }
 
 /**
@@ -275,7 +275,7 @@ function generate_blog_pagination($base_url, $num_items, $per_page, $start_item,
 
 	if ($add_prevnext_text)
 	{
-		if ($on_page != 1) 
+		if ($on_page != 1)
 		{
 			$page_string = '<a href="' . str_replace('*start*', (($on_page - 2) * $per_page), $base_url) . '">' . $user->lang['PREVIOUS'] . '</a>&nbsp;&nbsp;' . $page_string;
 		}
@@ -483,7 +483,7 @@ function generate_blog_breadcrumbs($crumb_lang = '', $crumb_url = '')
 			if ($reply_id != 0 && $page == 'reply')
 			{
 				$c_text = censor_text(blog_data::$reply[$reply_id]['reply_subject']);
-				
+
 				if ($c_text)
 				{
 					$template->assign_block_vars('navlinks', array(
@@ -547,7 +547,7 @@ function generate_menu($user_id = false)
 		{
 			$links[] = array('URL' => 'spacer', 'NAME' => 'spacer');
 		}
-		
+
 		$links[] = array(
 			'URL'		=> blog_url(false, false, false, array('mode' => 'recent_blogs')),
 			'NAME'		=> $user->lang['RECENT_BLOGS'],
@@ -589,7 +589,7 @@ function generate_menu($user_id = false)
 	}
 	else
 	{
-		
+
 		$template->assign_vars(array(
 			'S_MAIN_BLOG_MENU'		=> true,
 			'MENU_EXTRA'			=> $extra,
@@ -703,7 +703,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 
 	  // Append three dots indicating that this is not the real end of the text
 	  $text .= '...';
-	  
+
 	  if (!$enable_bbcode)
 	  {
 		 return $text;
@@ -789,7 +789,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 	  // Close remaining open BBCode tags
 	  foreach ($open_tags as $tag)
 	  {
-		 $text .= '[/' . $tag['name'] . $tag['plus'] . ':' . $uid . ']';   
+		 $text .= '[/' . $tag['name'] . $tag['plus'] . ':' . $uid . ']';
 	  }
    }
 
@@ -885,7 +885,7 @@ function update_edit_delete($mode = 'all')
 
 				// has the blog been edited?
 				if ($row['blog_edit_count'] != 0)
-				{	
+				{
 					if ($row['blog_edit_count'] == 1)
 					{
 						if ($auth->acl_get('u_viewprofile'))
@@ -896,7 +896,7 @@ function update_edit_delete($mode = 'all')
 						{
 							if (blog_data::$user[$row['blog_edit_user']]['user_colour'] != '')
 							{
-								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . blog_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<strong style="color: ' . blog_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['blog_edit_user']]['username'] . '</strong>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 							else
 							{
@@ -914,7 +914,7 @@ function update_edit_delete($mode = 'all')
 						{
 							if (blog_data::$user[$row['blog_edit_user']]['user_colour'] != '')
 							{
-								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . blog_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['blog_edit_user']]['username'] . '</b>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
+								blog_data::$blog[$blog_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<strong style="color: ' . blog_data::$user[$row['blog_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['blog_edit_user']]['username'] . '</strong>', $user->format_date($row['blog_edit_time']), $row['blog_edit_count']);
 							}
 							else
 							{
@@ -922,7 +922,7 @@ function update_edit_delete($mode = 'all')
 							}
 						}
 					}
-		
+
 					blog_data::$blog[$blog_id]['edit_reason'] = censor_text($row['blog_edit_reason']);
 				}
 				else
@@ -930,7 +930,7 @@ function update_edit_delete($mode = 'all')
 					blog_data::$blog[$blog_id]['edited_message'] = '';
 					blog_data::$blog[$blog_id]['edit_reason'] = '';
 				}
-	
+
 				// has the blog been deleted?
 				if ($row['blog_deleted'] != 0)
 				{
@@ -954,7 +954,7 @@ function update_edit_delete($mode = 'all')
 
 				// has the reply been edited?
 				if ($row['reply_edit_count'] != 0)
-				{	
+				{
 					if ($row['reply_edit_count'] == 1)
 					{
 						if ($auth->acl_get('u_viewprofile'))
@@ -965,7 +965,7 @@ function update_edit_delete($mode = 'all')
 						{
 							if (blog_data::$user[$row['reply_edit_user']]['user_colour'] != '')
 							{
-								blog_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<b style="color: ' . blog_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								blog_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIME_TOTAL'], '<strong style="color: ' . blog_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['reply_edit_user']]['username'] . '</strong>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 							else
 							{
@@ -983,7 +983,7 @@ function update_edit_delete($mode = 'all')
 						{
 							if (blog_data::$user[$row['reply_edit_user']]['user_colour'] != '')
 							{
-								blog_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<b style="color: ' . blog_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['reply_edit_user']]['username'] . '</b>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
+								blog_data::$reply[$reply_id]['edited_message'] = sprintf($user->lang['EDITED_TIMES_TOTAL'], '<strong style="color: ' . blog_data::$user[$row['reply_edit_user']]['user_colour'] . '">' . blog_data::$user[$row['reply_edit_user']]['username'] . '</strong>', $user->format_date($row['reply_edit_time']), $row['reply_edit_count']);
 							}
 							else
 							{
@@ -991,7 +991,7 @@ function update_edit_delete($mode = 'all')
 							}
 						}
 					}
-		
+
 					blog_data::$reply[$reply_id]['edit_reason'] = censor_text($row['reply_edit_reason']);
 				}
 				else
@@ -999,7 +999,7 @@ function update_edit_delete($mode = 'all')
 					blog_data::$reply[$reply_id]['edited_message'] = '';
 					blog_data::$reply[$reply_id]['edit_reason'] = '';
 				}
-	
+
 				// has the reply been deleted?
 				if ($row['reply_deleted'] != 0)
 				{
@@ -1050,7 +1050,7 @@ function feed_output($ids, $feed_type)
 			}
 			else
 			{
-				$message .= '<br /><h2><a href="' . $data['url'] . '">' . $feed_name . '</a></h2><div><dl class="codebox"><dt>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data['text'] . '</code></dd></dl></div><br />';
+				$message .= '<br /><h2><a href="' . $data['url'] . '">' . $feed_name . '</a></h2><div><dl class="codebox"><dt>' . $user->lang['CODE'] . ': <a href="#" onclick="selectCode(this); return false;">Select all</a></dt><dd><code style="font-size: 12px;">' . $data['text'] . '</code></dd></dl></div><br />';
 
 				if (isset($data['demo']))
 				{
@@ -1250,7 +1250,7 @@ function parse_attachments_for_view(&$message, &$attachments, &$update_count, $p
 		$template->destroy_block_vars('_file');
 
 		$block_array = array();
-		
+
 		// Some basics...
 		$attachment['extension'] = strtolower(trim($attachment['extension']));
 		$filename = $phpbb_root_path . $config['upload_path'] . '/blog_mod/' . basename($attachment['physical_filename']);

@@ -4,10 +4,15 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
+/*
+* WARNING: This script probably does not support any database backend other than MySQL.
+*
+* USE AT YOUR OWN RISK.
+*/
 // Comment out or delete the following line if you are sure you would like to uninstall this.  You can comment it out by adding two / in front of it like it is at the beginning of this line.
 die('You must comment this line out from the blog/uninstall.php file to continue with the uninstallation.');
 
@@ -20,6 +25,11 @@ include($phpbb_root_path . 'common.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup(array('mods/blog/common', 'mods/blog/setup'));
+
+if (!$user->data['is_registered'])
+{
+	login_box();
+}
 
 if ($user->data['user_type'] != USER_FOUNDER)
 {
@@ -90,11 +100,11 @@ if (confirm_box(true))
 		$db->sql_query('DELETE FROM ' . ACL_OPTIONS_TABLE . ' WHERE auth_option = \'' . $auth_option . '\'');
 	}
 
-	$blog_config = array('user_blog_enable', 'user_blog_custom_profile_enable', 'user_blog_text_limit', 'user_blog_user_text_limit', 'user_blog_inform', 
+	$blog_config = array('user_blog_enable', 'user_blog_custom_profile_enable', 'user_blog_text_limit', 'user_blog_user_text_limit', 'user_blog_inform',
 		'user_blog_always_show_blog_url', 'user_blog_subscription_enabled', 'user_blog_enable_zebra', 'user_blog_enable_feeds', 'user_blog_enable_plugins',
 		'user_blog_seo', 'user_blog_guest_captcha', 'user_blog_user_permissions', 'user_blog_search', 'user_blog_search_type', 'user_blog_enable_ratings',
 		'user_blog_min_rating', 'user_blog_max_rating', 'user_blog_enable_attachments', 'user_blog_max_attachments', 'num_blogs', 'num_blog_replies',
-		'user_blog_quick_reply', 'user_blog_links_output_block', 'user_blog_version');
+		'user_blog_quick_reply', 'user_blog_links_output_block', 'user_blog_message_from', 'user_blog_version');
 	foreach ($blog_config as $config)
 	{
 		$db->sql_query('DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'' . $config . '\'');

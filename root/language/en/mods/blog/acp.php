@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -31,7 +31,7 @@ $lang = array_merge($lang, array(
 	'BLOG_ENABLE_RATINGS_EXPLAIN'			=> 'Disable to not allow ratings for Blogs.',
 	'BLOG_ENABLE_SEARCH'					=> 'Search',
 	'BLOG_ENABLE_SEARCH_EXPLAIN'			=> 'Enable the search system for the User Blog Mod (this search system is separate from the forum search system).',
-	'BLOG_ENABLE_SEO'						=> 'SEO Url\'s',
+	'BLOG_ENABLE_SEO'						=> 'SEO Urls',
 	'BLOG_ENABLE_SEO_EXPLAIN'				=> 'You MUST have mod rewrite enabled in order for this to work.  If the blog url\'s do not work, disable this.',
 	'BLOG_ENABLE_USER_PERMISSIONS'			=> 'User Permissions',
 	'BLOG_ENABLE_USER_PERMISSIONS_EXPLAIN'	=> 'Enable the User Permissions system to allow users to specify permissions on a per blog basis (for guests, registered users, foes, and friends).  Administrators and moderators are always allowed to view/reply to blogs.',
@@ -44,6 +44,8 @@ $lang = array_merge($lang, array(
 	'BLOG_MAX_ATTACHMENTS_EXPLAIN'			=> 'Note that this can be over ridden per user in user permissions.',
 	'BLOG_MAX_RATING'						=> 'Maximum Blog Rating',
 	'BLOG_MAX_RATING_EXPLAIN'				=> 'The maximum rating allowed to be given.',
+	'BLOG_MESSAGE_FROM'						=> 'Messages sent from',
+	'BLOG_MESSAGE_FROM_EXPLAIN'				=> 'The user_id of the user you want the subscription and notification messages from.  If this user does not exist you will have errors.',
 	'BLOG_MIN_RATING'						=> 'Minimum Blog Rating',
 	'BLOG_MIN_RATING_EXPLAIN'				=> 'The minimum rating allowed to be given.',
 	'BLOG_POST_VIEW_SETTINGS'				=> 'Blog Viewing and Posting Settings',

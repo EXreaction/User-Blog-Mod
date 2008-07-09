@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -40,6 +40,7 @@ set_config('num_blogs', 1, true);
 set_config('num_blog_replies', 0, true);
 set_config('user_blog_quick_reply', 1);
 set_config('user_blog_links_output_block', 1);
+set_config('user_blog_message_from', 2);
 
 set_config('user_blog_version', $user_blog_version);
 ?>

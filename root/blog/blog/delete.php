@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -46,7 +46,7 @@ $display_vars = array();
 if ($auth->acl_get('a_blogdelete') && blog_data::$blog[$blog_id]['blog_deleted'] == 0)
 {
 	$display_vars = array(
-		'legend1'			=> 'Hard Delete',
+		'legend1'			=> $user->lang['HARD_DELETE'],
 		'hard_delete'		=> array('lang' => 'HARD_DELETE',	'validate' => 'bool',	'type' => 'checkbox',	'default' => false,	'explain' => true),
 	);
 }

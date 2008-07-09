@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -81,7 +81,7 @@ else
 	{
 		if ($reply_id != 0)
 		{
-			$reply_subject = 'RE: ' . blog_data::$reply[$reply_id]['reply_subject'];
+			$reply_subject = blog_data::$reply[$reply_id]['reply_subject'];
 			decode_message(blog_data::$reply[$reply_id]['reply_text'], blog_data::$reply[$reply_id]['bbcode_uid']);
 			$reply_text = '[quote="' . blog_data::$user[$reply_user_id]['username'] . '"]' . blog_data::$reply[$reply_id]['reply_text'] . '[/quote]';;
 		}
@@ -225,7 +225,7 @@ else // user submitted and there are no errors
 		inform_approve_report('reply_approve', $reply_id);
 	}
 
-	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_SUBMIT_SUCCESS']) . '<br /><br />'; 
+	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_SUBMIT_SUCCESS']) . '<br /><br />';
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br />';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br />';
 	if ($user_id == $user->data['user_id'])

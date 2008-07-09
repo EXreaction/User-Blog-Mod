@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -15,7 +15,7 @@ if (!defined('IN_PHPBB'))
 
 $this->available_upgrades[$name]['upgrade_title'] = 'The Blog Mod 0.2.4b';
 $this->available_upgrades[$name]['upgrade_copyright'] = 'EXreaction';
-$this->available_upgrades[$name]['upgrade_version'] = '0.7.2';
+$this->available_upgrades[$name]['upgrade_version'] = '1.0.0';
 
 $this->available_upgrades[$name]['custom_options'] = array(
 	'replies'			=> array('lang' => 'UPGRADE_REPLIES',	'type' => 'radio:yes_no',	'explain' => false,		'default' => true),
@@ -25,6 +25,9 @@ $this->available_upgrades[$name]['custom_options'] = array(
 
 $this->available_upgrades[$name]['requred_tables'] = array('users', 'weblog_entries', 'weblog_replies', 'weblog_blocked', 'weblog_friends');
 $this->available_upgrades[$name]['section_cnt'] = 4;
+
+global $dbms;
+$insert_into = ($dbms == 'mysql' || $dbms == 'mysqli') ? 'INSERT IGNORE INTO ' : 'INSERT INTO ';
 
 if (isset($run_upgrade) && $run_upgrade)
 {
@@ -71,9 +74,9 @@ if (isset($run_upgrade) && $run_upgrade)
 				}
 
 				$sql = 'SELECT * FROM ' . $this->selected_options['db_prefix'] . 'weblog_entries
-					ORDER BY entry_time ASC
-						LIMIT ' . $start . ', ' . $limit;
-				$result = $old_db->sql_query($sql);
+					ORDER BY entry_time ASC';
+				$result = $old_db->sql_query_limit($sql, $limit, $start);
+				$db->sql_return_on_error(true);
 				while ($row = $old_db->sql_fetchrow($result))
 				{
 					$row['entry_text'] = str_replace(':' . $row['bbcode_uid'], '', $row['entry_text']);
@@ -131,7 +134,7 @@ if (isset($run_upgrade) && $run_upgrade)
 						$sql_array['blog_id'] = $row['entry_id'];
 					}
 
-					$sql = 'INSERT IGNORE INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
+					$sql = $insert_into . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
 					$db->sql_query($sql);
 
 					if (!$this->selected_options['truncate'])
@@ -142,6 +145,7 @@ if (isset($run_upgrade) && $run_upgrade)
 
 					unset($message_parser, $sql_array);
 				}
+				$db->sql_return_on_error(false);
 
 				if (!$this->selected_options['truncate'])
 				{
@@ -205,9 +209,9 @@ if (isset($run_upgrade) && $run_upgrade)
 				$db->sql_freeresult($result);
 
 				$sql = 'SELECT * FROM ' . $this->selected_options['db_prefix'] . 'weblog_replies
-					ORDER BY post_time ASC
-						LIMIT ' . $start . ', ' . $limit;
-				$result = $old_db->sql_query($sql);
+					ORDER BY post_time ASC';
+				$result = $old_db->sql_query_limit($sql, $limit, $start);
+				$db->sql_return_on_error(true);
 				while ($row = $old_db->sql_fetchrow($result))
 				{
 					$row['reply_text'] = str_replace(':' . $row['bbcode_uid'], '', $row['reply_text']);
@@ -253,11 +257,12 @@ if (isset($run_upgrade) && $run_upgrade)
 						$sql_array['reply_id'] = $row['reply_id'];
 					}
 
-					$sql = 'INSERT IGNORE INTO ' . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
+					$sql = $insert_into . BLOGS_REPLY_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_array);
 					$db->sql_query($sql);
 
 					unset($message_parser, $sql_array);
 				}
+				$db->sql_return_on_error(false);
 
 				$sql = 'SELECT count(reply_id) AS cnt FROM ' . $this->selected_options['db_prefix'] . 'weblog_replies';
 				$result = $old_db->sql_query($sql);
@@ -300,9 +305,9 @@ if (isset($run_upgrade) && $run_upgrade)
 				$db->sql_freeresult($result);
 
 				$sql = 'SELECT * FROM ' . $this->selected_options['db_prefix'] . 'weblog_friends
-					ORDER BY owner_id ASC, friend_id ASC
-						LIMIT ' . $start . ', ' . $limit;
-				$result = $old_db->sql_query($sql);
+					ORDER BY owner_id ASC, friend_id ASC';
+				$result = $old_db->sql_query_limit($sql, $limit, $start);
+				$db->sql_return_on_error(true);
 				while ($row = $old_db->sql_fetchrow($result))
 				{
 					if (array_key_exists($row['owner_id'], $bb2_users) && array_key_exists($bb2_users[$row['owner_id']], $bb3_users) && array_key_exists($row['friend_id'], $bb2_users) && array_key_exists($bb2_users[$row['friend_id']], $bb3_users))
@@ -324,12 +329,13 @@ if (isset($run_upgrade) && $run_upgrade)
 							'foe'		=> 0,
 						);
 
-						$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+						$sql = $insert_into . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 						$db->sql_query($sql);
 					}
 
 					unset($user_id, $zebra_id);
 				}
+				$db->sql_return_on_error(false);
 
 				$sql = 'SELECT count(owner_id) AS cnt FROM ' . $this->selected_options['db_prefix'] . 'weblog_friends';
 				$result = $old_db->sql_query($sql);
@@ -372,9 +378,9 @@ if (isset($run_upgrade) && $run_upgrade)
 				$db->sql_freeresult($result);
 
 				$sql = 'SELECT * FROM ' . $this->selected_options['db_prefix'] . 'weblog_blocked
-					ORDER BY owner_id ASC, blocked_id ASC
-						LIMIT ' . $start . ', ' . $limit;
-				$result = $old_db->sql_query($sql);
+					ORDER BY owner_id ASC, blocked_id ASC';
+				$result = $old_db->sql_query_limit($sql, $limit, $start);
+				$db->sql_return_on_error(true);
 				while ($row = $old_db->sql_fetchrow($result))
 				{
 					if (array_key_exists($row['owner_id'], $bb2_users) && array_key_exists($bb2_users[$row['owner_id']], $bb3_users) && array_key_exists($row['blocked_id'], $bb2_users) && array_key_exists($bb2_users[$row['blocked_id']], $bb3_users))
@@ -396,12 +402,13 @@ if (isset($run_upgrade) && $run_upgrade)
 							'foe'		=> 1,
 						);
 
-						$sql = 'INSERT IGNORE INTO ' . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+						$sql = $insert_into . ZEBRA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 						$db->sql_query($sql);
 					}
 
 					unset($user_id, $zebra_id);
 				}
+				$db->sql_return_on_error(false);
 
 				$sql = 'SELECT count(owner_id) AS cnt FROM ' . $this->selected_options['db_prefix'] . 'weblog_blocked';
 				$result = $old_db->sql_query($sql);

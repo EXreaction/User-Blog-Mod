@@ -637,6 +637,8 @@ if (confirm_box(true))
 			$db->sql_freeresult($result);
 
 			$db->sql_query('UPDATE ' . BLOGS_USERS_TABLE . ' SET blog_style = ' . $style_ids[0] . ' WHERE ' . $db->sql_in_set('blog_style', $style_ids, true));
+
+			set_config('user_blog_message_from', 2);
 	}
 
 	// update the version

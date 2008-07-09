@@ -1,9 +1,9 @@
 <?php
 /**
-* EAMI (Easy Automatic Module Insertion)
+* @package EAMI (Easy Automatic Module Insertion)
 *
-* Created By: EXreaction
-* http://www.lithiumstudios.org
+* @copyright (c) 2008 EXreaction, Lithium Studios
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
 if (!defined('IN_PHPBB'))

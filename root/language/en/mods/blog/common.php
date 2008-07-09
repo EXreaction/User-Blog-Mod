@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -75,6 +75,7 @@ $lang = array_merge($lang, array(
 	'ONE_VIEW'						=> 'Viewed 1 time',
 
 	'PERMANENT_LINK'				=> 'Permanent Link',
+	'PLUGIN_TEMPLATE_MISSING'		=> 'The plugin template file is missing.',
 	'POPULAR_BLOGS'					=> 'Popular Blog Entries',
 	'POST_A_NEW_BLOG'				=> 'Post a Blog Entry',
 	'POST_A_NEW_REPLY'				=> 'Post a Comment',

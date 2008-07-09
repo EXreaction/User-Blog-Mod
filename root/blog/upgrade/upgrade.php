@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -313,17 +313,16 @@ class blog_upgrade
 				$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
 					WHERE blog_deleted = 0
 					AND blog_approved = 1
-						ORDER BY blog_id DESC
-							LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
-				$result = $db->sql_query($sql);
+						ORDER BY blog_id DESC';
+				$result = $db->sql_query_limit($sql, $this->selected_options['limit'], ($part * $this->selected_options['limit']));
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$blog_search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
 				}
 
 				$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE . '
-					WHERE blog_deleted = \'0\'
-					AND blog_approved = \'1\'';;
+					WHERE blog_deleted = 0
+					AND blog_approved = 1';;
 				$result = $db->sql_query($sql);
 				$cnt = $db->sql_fetchrow($result);
 
@@ -343,9 +342,8 @@ class blog_upgrade
 				$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
 					WHERE reply_deleted = 0
 					AND reply_approved = 1
-						ORDER BY reply_id DESC
-							LIMIT ' . ($part * $this->selected_options['limit']) . ', ' . $this->selected_options['limit'];
-				$result = $db->sql_query($sql);
+						ORDER BY reply_id DESC';
+				$result = $db->sql_query_limit($sql, $this->selected_options['limit'], ($part * $this->selected_options['limit']));
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$blog_search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
@@ -411,8 +409,8 @@ class blog_upgrade
 					}
 
 					// count all the replies (an SQL query seems the easiest way to do it)
-					$sql = 'SELECT count(reply_id) AS total 
-						FROM ' . BLOGS_REPLY_TABLE . ' 
+					$sql = 'SELECT count(reply_id) AS total
+						FROM ' . BLOGS_REPLY_TABLE . '
 							WHERE blog_id = ' . $row['blog_id'] . '
 								AND reply_deleted = 0
 								AND reply_approved = 1';
@@ -442,8 +440,8 @@ class blog_upgrade
 					}
 
 					// count all the replies (an SQL query seems the easiest way to do it)
-					$sql = 'SELECT count(reply_id) AS total 
-						FROM ' . BLOGS_REPLY_TABLE . ' 
+					$sql = 'SELECT count(reply_id) AS total
+						FROM ' . BLOGS_REPLY_TABLE . '
 							WHERE blog_id = ' . $row['blog_id'];
 					$result = $db->sql_query($sql);
 					$total = $db->sql_fetchrow($result);
@@ -474,8 +472,8 @@ class blog_upgrade
 					}
 
 					// count all the replies (an SQL query seems the easiest way to do it)
-					$sql2 = 'SELECT count(blog_id) AS total 
-						FROM ' . BLOGS_TABLE . ' 
+					$sql2 = 'SELECT count(blog_id) AS total
+						FROM ' . BLOGS_TABLE . '
 							WHERE user_id = ' . $row['user_id'] . '
 								AND blog_deleted = 0
 								AND blog_approved = 1';

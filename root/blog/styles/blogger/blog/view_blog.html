@@ -42,7 +42,7 @@
 			<a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks -->
 		</span>
 		<span class="nav_links_right">
-			<!-- IF U_FEED --><a href="{U_FEED}"><img src="{T_BLOG_IMAGESET_PATH}feed.gif" alt="{L_FEED}" class="feed_icon" /></a> | <!-- ENDIF -->
+			<!-- IF U_BLOG_FEED --><a href="{U_BLOG_FEED}"><img src="{T_BLOG_IMAGESET_PATH}feed.gif" alt="{L_FEED}" class="feed_icon" /></a> | <!-- ENDIF -->
 			<!-- IF U_MY_BLOG --><a href="{U_MY_BLOG}">{L_MY_BLOG}</a> | <!-- ENDIF -->
 			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}">{L_NEW_BLOG}</a> | <!-- ENDIF -->
 			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>
@@ -74,7 +74,7 @@
 					{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
 				</div>
 			<!-- ENDIF -->
-				
+
 			<h1>{L_USERNAMES_BLOGS}</h1>
 
 			<!-- BEGIN blogrow -->

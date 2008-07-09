@@ -8,7 +8,7 @@
 *
 */
 
-$user_blog_version = '1.0.4_dev';
+$user_blog_version = '1.0.4';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
@@ -19,6 +19,11 @@ include($phpbb_root_path . 'common.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup(array('mods/blog/common', 'mods/blog/setup'));
+
+if (!$user->data['is_registered'])
+{
+	login_box();
+}
 
 if ($user->data['user_type'] != USER_FOUNDER)
 {

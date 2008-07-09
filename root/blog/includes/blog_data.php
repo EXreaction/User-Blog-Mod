@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -460,7 +460,7 @@ class blog_data
 			'S_REPORTED'			=> ($blog['blog_reported'] && ($auth->acl_get('m_blogreport'))) ? true : false,
 			'S_SHORTENED'			=> $shortened,
 			'S_UNAPPROVED'			=> (!$blog['blog_approved'] && ($user_id == $user->data['user_id'] || $auth->acl_get('m_blogapprove'))) ? true : false,
-	
+
 			'attachment'			=> $attachments,
 			'poll_option'			=> $poll_options,
 		);
@@ -476,9 +476,9 @@ class blog_data
 
 	/**
 	* Get polls
-	* 
+	*
 	* The gotten data will be put in $blog['poll_options'] and $blog['poll_votes']
-	* 
+	*
 	* @param array $blog_ids The blog ID's you would like to look up.
 	*/
 	public function get_polls($blog_ids)
@@ -703,7 +703,7 @@ class blog_data
 			case 'page' : // Special mode for trying to find out what page the reply is on
 				$cnt = 0;
 				$sql = 'SELECT reply_id FROM ' . BLOGS_REPLY_TABLE . '
-					WHERE blog_id = ' . $id[0] . 
+					WHERE blog_id = ' . $id[0] .
 						(($sort_days != 0) ? ' AND reply_time >= ' . (time() - ($sort_days * 86400)) : '') .
 							' ORDER BY ' . $order_by . ' ' . $order_dir;
 				$result = $db->sql_query($sql);
@@ -773,7 +773,7 @@ class blog_data
 			{
 				self::$user_queue[] = $row['reply_edit_user'];
 			}
-	
+
 			// has the reply been deleted?  If so add that user to the user_queue
 			if ($row['reply_deleted'] != 0)
 			{
@@ -991,32 +991,32 @@ class blog_data
 
 			// view profile link
 			$row['view_profile'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=viewprofile&amp;u=" . $user_id);
-	
+
 			// Full username, with colour
 			$row['username_full'] = get_username_string('full', $user_id, $row['username'], $row['user_colour']);
-	
+
 			// format the color correctly
 			$row['user_colour'] = get_username_string('colour', $user_id, $row['username'], $row['user_colour']);
 
 			// Online/Offline Status
 			$row['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
-	
+
 			// Avatar
 			$row['avatar'] = get_user_avatar($row['user_avatar'], $row['user_avatar_type'], $row['user_avatar_width'], $row['user_avatar_height']);
-	
+
 			// Rank
 			get_user_rank($row['user_rank'], $row['user_posts'], $row['rank_title'], $row['rank_img'], $row['rank_img_src']);
-	
+
 			// IM Links
 			$row['aim_url'] = ($row['user_aim']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=aim&amp;u=$user_id") : '';
 			$row['icq_url'] = ($row['user_icq']) ? 'http://www.icq.com/people/webmsg.php?to=' . $row['user_icq'] : '';
 			$row['jabber_url'] = ($row['user_jabber']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=jabber&amp;u=$user_id") : '';
 			$row['msn_url'] = ($row['user_msnm']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=msnm&amp;u=$user_id") : '';
 			$row['yim_url'] = ($row['user_yim']) ? 'http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg' : '';
-	
+
 			// PM and email links
 			$row['email_url'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id")  : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
-			$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_viewemail'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
+			$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_pm'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
 
 			// get the custom profile fields if the admin wants them
 			if ($config['user_blog_custom_profile_enable'])
@@ -1103,7 +1103,7 @@ class blog_data
 
 		return $row['user_id'];
 	}
-	
+
 	/**
 	* Handle User Data
 	*
@@ -1121,7 +1121,7 @@ class blog_data
 
 		$custom_fields = array();
 		if ($config['user_blog_custom_profile_enable'])
-		{	
+		{
 			// output the custom profile fields
 			if (isset(self::$user[$user_id]['cp_row']['blockrow']))
 			{
@@ -1143,7 +1143,7 @@ class blog_data
 		$output_data = array(
 			'USER_ID'			=> $user_id,
 
-			'AVATAR'			=> self::$user[$user_id]['avatar'],
+			'AVATAR'			=> ($user->optionget('viewavatars')) ? self::$user[$user_id]['avatar'] : '',
 			'POSTER_FROM'		=> self::$user[$user_id]['user_from'],
 			'POSTER_JOINED'		=> $user->format_date(self::$user[$user_id]['user_regdate']),
 			'POSTER_POSTS'		=> self::$user[$user_id]['user_posts'],

@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -200,7 +200,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 * @param string $mode The mode, build or check, to either build the captcha/confirm box, or to check if the user entered the correct confirm_code
 *
 * @return Returns
-*	- True if the captcha code is correct and $mode is check or they do not need to view the captcha (permissions) 
+*	- True if the captcha code is correct and $mode is check or they do not need to view the captcha (permissions)
 *	- False if the captcha code is incorrect, or not given and $mode is check
 */
 function handle_captcha($mode)
@@ -238,7 +238,7 @@ function handle_captcha($mode)
 			return false;
 		}
 
-		// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code if 
+		// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code if
 		if (strpos($s_hidden_fields, 'confirm_id') === false)
 		{
 			$s_hidden_fields .= build_hidden_fields(array('confirm_id' => $confirm_id, 'confirm_code' => $confirm_code));
@@ -290,7 +290,7 @@ function handle_captcha($mode)
 function inform_approve_report($mode, $id)
 {
 	global $phpbb_root_path, $phpEx, $config, $user, $blog_plugins;
-	
+
 	switch ($mode)
 	{
 		case 'blog_report' :
@@ -345,7 +345,7 @@ function inform_approve_report($mode, $id)
 		$message_parser->parse(true, true, true, true, true, true, true);
 
 		$pm_data = array(
-			'from_user_id'		=> 2,
+			'from_user_id'		=> $config['user_blog_message_from'],
 			'from_username'		=> $user->lang['ADMINISTRATOR'],
 			'address_list'		=> array('u' => $address_list),
 			'icon_id'			=> 10,
@@ -365,7 +365,7 @@ function inform_approve_report($mode, $id)
 
 /**
 * Submit Poll
-* 
+*
 * @param array $poll All of the poll data required to submit it.
 * @param int $blog_id The ID of the blog this is for
 * @param string $mode The mode (edit or add)
@@ -433,9 +433,9 @@ function submit_blog_poll($poll, $blog_id, $mode = 'add')
 
 /**
 * Add Blog Subscriptions
-* 
+*
 * Automatically adds subscriptions for a blog depending on what settings were sent
-* 
+*
 * @param int $blog_id The blog_id this is for
 * @param string $prefix The prefix for the $_POST setting
 */
@@ -519,7 +519,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 	blog_plugins::plugin_do_ref('function_handle_subscription', $temp);
 	extract($temp);
 
-	// Fix the URL's...
+	// Fix the URLs...
 	if (isset($config['user_blog_seo']) && $config['user_blog_seo'])
 	{
 		$view_url = ($rid) ? blog_url($uid, $bid, $rid) : blog_url($uid, $bid);
@@ -574,7 +574,7 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		$message = sprintf($user->lang['USER_SUBSCRIPTION_NOTICE'], $user->data['username'], $view_url, $unsubscribe_url);
 	}
 
-	$blog_data->get_user_data('2');
+	$blog_data->get_user_data($config['user_blog_message_from']);
 
 	// Send the PM
 	if (isset($send[1]) && sizeof($send[1]))
@@ -603,8 +603,8 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 		}
 
 		$pm_data = array(
-			'from_user_id'		=> 2,
-			'from_username'		=> blog_data::$user[2]['username'],
+			'from_user_id'		=> $config['user_blog_message_from'],
+			'from_username'		=> blog_data::$user[$config['user_blog_message_from']]['username'],
 			'address_list'		=> array('u' => $address_list),
 			'icon_id'			=> 10,
 			'from_user_ip'		=> '0.0.0.0',
@@ -641,9 +641,9 @@ function handle_subscription($mode, $post_subject, $uid = 0, $bid = 0, $rid = 0)
 			$messenger->to(blog_data::$user[$uid]['user_email'], blog_data::$user[$uid]['username']);
 
 			$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
-			$messenger->headers('X-AntiAbuse: User_id - ' . blog_data::$user[2]['user_id']);
-			$messenger->headers('X-AntiAbuse: Username - ' . blog_data::$user[2]['username']);
-			$messenger->headers('X-AntiAbuse: User IP - ' . blog_data::$user[2]['user_ip']);
+			$messenger->headers('X-AntiAbuse: User_id - ' . blog_data::$user[$config['user_blog_message_from']]['user_id']);
+			$messenger->headers('X-AntiAbuse: Username - ' . blog_data::$user[$config['user_blog_message_from']]['username']);
+			$messenger->headers('X-AntiAbuse: User IP - ' . blog_data::$user[$config['user_blog_message_from']]['user_ip']);
 
 			$messenger->assign_vars(array(
 				'BOARD_CONTACT'	=> $config['board_contact'],

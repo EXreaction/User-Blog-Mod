@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
 * @package language(permissions)
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
 // Create the lang array if it does not already exist
@@ -30,7 +30,7 @@ $lang = array_merge($lang, array(
 	'acl_u_blogbbcode'			=> array('lang' => 'Can use BBCode in blog entries and comments', 'cat' => 'blog'),
 	'acl_u_blogsmilies'			=> array('lang' => 'Can use smilies in blog entries and comments', 'cat' => 'blog'),
 	'acl_u_blogimg'				=> array('lang' => 'Can post images in blog entries and comments', 'cat' => 'blog'),
-	'acl_u_blogurl'				=> array('lang' => 'Can post URL\'s in blogs entrie and comments', 'cat' => 'blog'),
+	'acl_u_blogurl'				=> array('lang' => 'Can post URLs in blogs entrie and comments', 'cat' => 'blog'),
 	'acl_u_blogflash'			=> array('lang' => 'Can post flash in blog entries and comments', 'cat' => 'blog'),
 	'acl_u_blogmoderate'		=> array('lang' => 'Can moderate (edit and delete) comments in own blog.', 'cat' => 'blog'),
 	'acl_u_blogattach'			=> array('lang' => 'Can post attachments in blog entries and comments', 'cat' => 'blog'),

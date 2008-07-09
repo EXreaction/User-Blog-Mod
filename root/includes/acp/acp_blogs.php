@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -104,6 +104,7 @@ class acp_blogs
 			'user_blog_text_limit'				=> array('lang' => 'DEFAULT_TEXT_LIMIT', 			'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_user_text_limit'			=> array('lang' => 'USER_TEXT_LIMIT', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_inform'					=> array('lang' => 'BLOG_INFORM', 					'validate' => 'string',	'type' => 'text:25:100',				'explain' => true),
+			'user_blog_message_from'			=> array('lang' => 'BLOG_MESSAGE_FROM',				'validate' => 'string',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_min_rating'				=> array('lang' => 'BLOG_MIN_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_max_rating'				=> array('lang' => 'BLOG_MAX_RATING', 				'validate' => 'int',	'type' => 'text:5:5',					'explain' => true),
 			'user_blog_quick_reply'				=> array('lang' => 'BLOG_QUICK_REPLY',				'validate' => 'bool',	'type' => 'radio:yes_no',				'explain' => true),
@@ -148,25 +149,11 @@ class acp_blogs
 
 				$this->new_config[$config_key] = $config_value = $cfg_array[$config_key];
 
-				// Make sure the style_id they selected for the force style exists
-				if ($config_key == 'user_blog_force_style' && $config_value != 0)
-				{
-					$sql = 'SELECT style_name FROM ' . STYLES_TABLE . '
-						WHERE style_id = \'' . intval($config_value) . '\'';
-					$result = $db->sql_query($sql);
-					$exists = $db->sql_fetchrow($result);
-					$db->sql_freeresult($result);
-					if (!$exists)
-					{
-						continue;
-					}
-				}
-
 				set_config($config_key, $config_value);
 			}
 			else
 			{
-				if (!is_array($vars) && strpos($config_key, 'legend') === false)
+				if ((!is_array($vars) || !isset($this->new_config[$config_key])) && strpos($config_key, 'legend') === false)
 				{
 					continue;
 				}
@@ -314,7 +301,7 @@ class acp_blogs
 
 					add_log('admin', 'LOG_BLOG_CATEGORY_DELETE', $row['category_name']);
 					trigger_error($user->lang['CATEGORY_DELETED'] . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));
-	
+
 				break;
 
 				case 'edit':
@@ -1023,19 +1010,18 @@ class acp_blogs
 					else if ($section == 1)
 					{
 						$sql = 'SELECT * FROM ' . BLOGS_TABLE . '
-							WHERE blog_deleted = \'0\'
-							AND blog_approved = \'1\'
-								ORDER BY blog_id DESC
-									LIMIT ' . ($part * $limit) . ', ' . $limit;
-						$result = $db->sql_query($sql);
+							WHERE blog_deleted = 0
+							AND blog_approved = 1
+								ORDER BY blog_id DESC';
+						$result = $db->sql_query_limit($sql, $limit, ($part * $limit));
 						while ($row = $db->sql_fetchrow($result))
 						{
 							$this->search->index('add', $row['blog_id'], 0, $row['blog_text'], $row['blog_subject'], $row['user_id']);
 						}
 
 						$sql = 'SELECT count(blog_id) AS cnt FROM ' . BLOGS_TABLE . '
-							WHERE blog_deleted = \'0\'
-							AND blog_approved = \'1\'';
+							WHERE blog_deleted = 0
+							AND blog_approved = 1';
 						$result = $db->sql_query($sql);
 						$cnt = $db->sql_fetchrow($result);
 
@@ -1055,9 +1041,8 @@ class acp_blogs
 						$sql = 'SELECT * FROM ' . BLOGS_REPLY_TABLE . '
 							WHERE reply_deleted = 0
 							AND reply_approved = 1
-								ORDER BY reply_id DESC
-									LIMIT ' . ($part * $limit) . ', ' . $limit;
-						$result = $db->sql_query($sql);
+								ORDER BY reply_id DESC';
+						$result = $db->sql_query_limit($sql, $limit, ($part * $limit));
 						while ($row = $db->sql_fetchrow($result))
 						{
 							$this->search->index('add', $row['blog_id'], $row['reply_id'], $row['reply_text'], $row['reply_subject'], $row['user_id']);
@@ -1926,7 +1911,7 @@ class acp_blogs
 						SET group_id = 0
 						WHERE group_id = $group_id";
 					$db->sql_query($sql);
-			
+
 					add_log('admin', 'LOG_ATTACH_EXTGROUP_DEL', $group_name);
 
 					$cache->destroy('_extensions');
@@ -2212,7 +2197,7 @@ class acp_blogs
 			ATTACHMENT_CATEGORY_FLASH		=> $user->lang['CAT_FLASH_FILES'],
 			ATTACHMENT_CATEGORY_QUICKTIME	=> $user->lang['CAT_QUICKTIME_FILES'],
 		);
-		
+
 		if ($group_id)
 		{
 			$sql = 'SELECT cat_id
@@ -2228,7 +2213,7 @@ class acp_blogs
 		{
 			$cat_type = ATTACHMENT_CATEGORY_NONE;
 		}
-		
+
 		$group_select = '<select name="' . $select_name . '"' . (($key) ? ' id="' . $key . '"' : '') . '>';
 
 		foreach ($types as $type => $mode)
