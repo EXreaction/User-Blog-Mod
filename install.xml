@@ -21,12 +21,12 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>1.0.4_dev</mod-version>
+	<mod-version>1.0.4</mod-version>
 
 	<installation>
 		<level>intermediate</level>
 		<time>420</time>
-		<target-version>3.0.1</target-version>
+		<target-version>3.0.2</target-version>
 	</installation>
 
 	<history>
@@ -103,11 +103,18 @@ There is an extension that can be installed with this mod to extend it's integra
 			<changelog lang="en">
 				<change>Fixing the bug where a user's blog style could cause a no style error when deleting a style from the ACP.</change>
 				<change>Fixing the bug which occured when deleting a user's blogs with the blog_delete_user function.</change>
-				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>Fixing a lot of things for re-submission to the ModDB.</change>
+				<change>NOTE FOR TRANSLATORS: Added 1 new language entry in mods/blog/common.php.</change>
 				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
 			</changelog>
 		</entry>
 	</history>
+
+	<link-group>
+		<link type="template" href="subsilver2.xml" lang="en">subsilver2</link>
+		<link type="template" href="acidtech_tiger.xml" lang="en">Acid Tech Tiger</link>
+		<link type="template" href="black_pearl.xml" lang="en">Black Pearl</link>
+	</link-group>
 </header>
 
 <action-group>
@@ -148,6 +155,13 @@ There is an extension that can be installed with this mod to extend it's integra
 			<action type="before-add">	// Start User Blog Mod ----------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="styles/prosilver/template/overall_footer.html">
+		<edit>
+			<comment lang="en">Do this for all prosilver based styles.</comment>
+			<find><![CDATA[<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->]]></find>
+			<action type="after-add"><![CDATA[<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
 		</edit>
 	</open>
 	<open src="styles/prosilver/template/overall_header.html">

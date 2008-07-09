@@ -23,7 +23,7 @@
 	<installation>
 		<level>easy</level>
 		<time>300</time>
-		<target-version>3.0.1</target-version>
+		<target-version>3.0.2</target-version>
 	</installation>
 
 	<history>
@@ -51,8 +51,8 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-06-</date>
-			<rev-version>1.0.4_dev</rev-version>
+			<date>2008-07-</date>
+			<rev-version>1.0.4</rev-version>
 			<changelog lang="en">
 				<change>No changes were made to the extended install version since 1.0.3.</change>
 			</changelog>

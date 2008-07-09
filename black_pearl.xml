@@ -21,12 +21,12 @@ You may check for updated code in the repository, but the latest files in the re
 		</author>
 	</author-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.0.4</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.1</target-version>
+		<target-version>3.0.2</target-version>
 	</installation>
 </header>
 
@@ -35,6 +35,12 @@ You may check for updated code in the repository, but the latest files in the re
 	  <file from="root/styles/subsilver2/*.*" to="styles/black_pearl/*.*" />
 	  <file from="root/styles/black_pearl/*.*" to="styles/black_pearl/*.*" />
 	</copy>
+	<open src="styles/black_pearl/template/overall_footer.html">
+		<edit>
+			<find><![CDATA[<br /><!-- IF TRANSLATION_INFO -->{TRANSLATION_INFO}<br /><!-- ENDIF -->]]></find>
+			<action type="after-add"><![CDATA[<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
+		</edit>
+	</open>
 	<open src="styles/black_pearl/template/overall_header.html">
 		<edit>
 			<find>{U_FAQ}</find>
