@@ -130,16 +130,7 @@ There is an extension that can be installed with this mod to extend it's integra
 			<action type="after-add"><![CDATA[<!-- INCLUDE acp_blog_users.html -->]]></action>
 		</edit>
     </open>
-	<open src="includes/acp/acp_users.php">
-		<edit>
-			<find>$cp = new custom_profile();</find>
-			<action type="before-add">				// Start User Blog Mod ----------------------
-				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
-				blog_acp_profile($user_id, $submit);
-				// End User Blog Mod ------------------------</action>
-		</edit>
-	</open>
-	<open src="includes/acp/acp_style.php">
+	<open src="includes/acp/acp_styles.php">
 		<edit>
 			<find>				$sql = 'UPDATE ' . FORUMS_TABLE . "
 					SET forum_style = $new_id
@@ -148,6 +139,15 @@ There is an extension that can be installed with this mod to extend it's integra
 			<action type="after-add">				// Start User Blog Mod ----------------------
 				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
 				blog_remove_style($style_id, $new_id);
+				// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="includes/acp/acp_users.php">
+		<edit>
+			<find>$cp = new custom_profile();</find>
+			<action type="before-add">				// Start User Blog Mod ----------------------
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_acp_profile($user_id, $submit);
 				// End User Blog Mod ------------------------</action>
 		</edit>
 	</open>
@@ -164,7 +164,7 @@ There is an extension that can be installed with this mod to extend it's integra
 		<edit>
 			<comment lang="en">Do this for all prosilver based styles.</comment>
 			<find><![CDATA[<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->]]></find>
-			<action type="after-add"><![CDATA[<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
+			<action type="after-add"><![CDATA[		<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
 		</edit>
 	</open>
 	<open src="styles/prosilver/template/overall_header.html">

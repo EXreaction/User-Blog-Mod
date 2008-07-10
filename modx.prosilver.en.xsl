@@ -1620,7 +1620,7 @@ function sql_dropdown()
 				<span class="corners-top"><span></span></span>
 					<div class="mod-about-padding">
 					<p><span id="lang-ontt1">Before adding this MOD to your forum, you should back up all files related to this MOD</span></p>
-					<p><span id="lang-ontt2">This MOD was designed for phpBB</span>&nbsp;<xsl:value-of select="mod:installation/mod:target-version/mod:target-primary" /><span id="lang-ontt3"> and may not function as stated on other phpBB versions. MODs for phpBB3.0 will <strong>not</strong> work on phpBB2.0 and vice versa.</span></p>
+					<p><span id="lang-ontt2">This MOD was designed for phpBB</span>&nbsp;<xsl:value-of select="mod:installation/mod:target-version" /><span id="lang-ontt3"> and may not function as stated on other phpBB versions. MODs for phpBB3.0 will <strong>not</strong> work on phpBB2.0 and vice versa.</span></p>
 					<xsl:for-each select="./mod:mod-version">
 						<xsl:if test="substring(current(), 3, 1) mod 2 != 0 or substring(current(), 0, 1) = 0">
 							<p><strong class="red"><span id="lang-onttq">This MOD is development quality. It is not recommended that you install it on a live forum.</span></strong></p>
