@@ -370,6 +370,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				$data = array(
 					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 					'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . ' (0)</a>',
+					'S_FIELD_VT'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
 				);
 				if ($return)
 				{
@@ -415,6 +416,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	$data = array(
 		'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 		'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . (($user_data['blog_count'] != -1) ? ' (' . $user_data['blog_count'] . ')</a>' : '</a>'),
+		'S_FIELD_VT'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
 	);
 	if ($return)
 	{
