@@ -205,7 +205,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 */
 function handle_captcha($mode)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields, $blog_plugins;
+	global $db, $template, $phpbb_root_path, $phpEx, $user, $config, $s_hidden_fields;
 
 	if ($user->data['user_id'] != ANONYMOUS || !$config['user_blog_guest_captcha'])
 	{
@@ -238,7 +238,7 @@ function handle_captcha($mode)
 			return false;
 		}
 
-		// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code if
+		// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code
 		if (strpos($s_hidden_fields, 'confirm_id') === false)
 		{
 			$s_hidden_fields .= build_hidden_fields(array('confirm_id' => $confirm_id, 'confirm_code' => $confirm_code));
@@ -289,7 +289,7 @@ function handle_captcha($mode)
 */
 function inform_approve_report($mode, $id)
 {
-	global $phpbb_root_path, $phpEx, $config, $user, $blog_plugins;
+	global $phpbb_root_path, $phpEx, $config, $user;
 
 	switch ($mode)
 	{
@@ -697,7 +697,7 @@ class post_options
 	 */
 	function post_options()
 	{
-		global $auth, $blog_plugins;
+		global $auth;
 
 		$this->auth_bbcode = ($auth->acl_get('u_blogbbcode')) ? true : false;
 		$this->auth_smilies = ($auth->acl_get('u_blogsmilies')) ? true : false;
@@ -713,7 +713,7 @@ class post_options
 	 */
 	function set_status($bbcode, $smilies, $url)
 	{
-		global $config, $auth, $blog_plugins;
+		global $config, $auth;
 
 		$this->bbcode_status = ($config['allow_bbcode'] && $this->auth_bbcode) ? true : false;
 		$this->smilies_status = ($config['allow_smilies'] && $this->auth_smilies) ? true : false;
