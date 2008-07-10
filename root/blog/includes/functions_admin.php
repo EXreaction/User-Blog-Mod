@@ -14,7 +14,7 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* Delete a board style style
+* Delete a board style
 */
 function blog_remove_style($style_id, $new_id)
 {
