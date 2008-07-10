@@ -139,7 +139,7 @@ class blog_plugins
 		{
 			$template_path = '../../../styles/prosilver/template/';
 
-			if (!file_exists($template_path . $template_file))
+			if (!file_exists($tpl_path . $template_path . $template_file))
 			{
 				trigger_error('PLUGIN_TEMPLATE_MISSING');
 			}
