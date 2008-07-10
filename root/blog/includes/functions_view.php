@@ -371,6 +371,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 					'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 					'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . ' (0)</a>',
 					'S_FIELD_VT'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
+					'S_FIELD_VP'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
 				);
 				if ($return)
 				{
@@ -383,11 +384,11 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 				}
 				if (!substr($block, 0, strpos($block, '.')))
 				{
-					$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url));
+					$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url, 'BLOG_COUNT' => 0));
 				}
 				else
 				{
-					$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url), true, 'change');
+					$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url, 'BLOG_COUNT' => 0), true, 'change');
 				}
 			}
 			return;
@@ -417,6 +418,7 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 		'PROFILE_FIELD_NAME'		=> $user->lang['BLOG'],
 		'PROFILE_FIELD_VALUE'		=> '<a href="' . $url . '">' . $user->lang['VIEW_BLOG'] . (($user_data['blog_count'] != -1) ? ' (' . $user_data['blog_count'] . ')</a>' : '</a>'),
 		'S_FIELD_VT'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
+		'S_FIELD_VP'				=> true, // For compatibility with the Select viewable Custom Profiles Mod
 	);
 	if ($return)
 	{
@@ -429,11 +431,11 @@ function add_blog_links($user_id, $block, $user_data = false, $grab_from_db = fa
 	}
 	if (!substr($block, 0, strpos($block, '.')))
 	{
-		$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url));
+		$template->assign_vars(array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url, 'BLOG_COUNT' => (($user_data['blog_count'] != -1) ? $user_data['blog_count'] : '')));
 	}
 	else
 	{
-		$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url), true, 'change');
+		$template->alter_block_array(substr($block, 0, strpos($block, '.')), array('PROFILE_BLOG' => $data['PROFILE_FIELD_VALUE'], 'U_VIEW_BLOG' => $url, 'BLOG_COUNT' => (($user_data['blog_count'] != -1) ? $user_data['blog_count'] : '')), true, 'change');
 	}
 }
 
