@@ -7,10 +7,8 @@
 	<title lang="en">User Blog Mod</title>
 	<description lang="en">Adds Blogs to a phpBB3 board.</description>
 
-	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.  
-Support will only be given at my website - http://www.lithiumstudios.org.  
-
-There is an extension that can be installed with this mod to extend it's integration with phpBB3.  Those instructions are in contrib/install_extended.xml</author-notes>
+	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
+Support will only be given at my website - http://www.lithiumstudios.org.</author-notes>
 
 	<author-group>
 		<author>
@@ -21,7 +19,7 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>1.0.4</mod-version>
+	<mod-version>1.0.5</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -111,12 +109,22 @@ There is an extension that can be installed with this mod to extend it's integra
 				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-07-18</date>
+			<rev-version>1.0.5</rev-version>
+			<changelog lang="en">
+				<change>Fixing a bug in the new code added last time for preventing errors when deleting styles.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>To update from 1.0.4 follow the instructions in contrib/update/104_to_105.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
 		<link type="template" href="subsilver2.xml" lang="en">subsilver2</link>
 		<link type="template" href="acidtech_tiger.xml" lang="en">Acid Tech Tiger</link>
 		<link type="template" href="black_pearl.xml" lang="en">Black Pearl</link>
+		<link type="contrib" href="contrib/install_extended.xml" lang="en">Extended Install</link>
 	</link-group>
 </header>
 
@@ -137,6 +145,7 @@ There is an extension that can be installed with this mod to extend it's integra
 					WHERE forum_style = $style_id";
 				$db->sql_query($sql);</find>
 			<action type="after-add">				// Start User Blog Mod ----------------------
+				global $phpEx;
 				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
 				blog_remove_style($style_id, $new_id);
 				// End User Blog Mod ------------------------</action>

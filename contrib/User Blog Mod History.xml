@@ -649,6 +649,15 @@
 				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-07-18</date>
+			<rev-version>1.0.5</rev-version>
+			<changelog lang="en">
+				<change>Fixing a bug in the new code added last time for preventing errors when deleting styles.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>To update from 1.0.4 follow the instructions in contrib/update/104_to_105.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 </mod>

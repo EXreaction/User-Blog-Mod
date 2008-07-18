@@ -7,11 +7,8 @@
 	<title lang="en">User Blog Mod</title>
 	<description lang="en">Adds Blogs to a phpBB3 board.</description>
 
-	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.  
-Support will only be given at my website - http://www.lithiumstudios.org.  
-
-There is an extension that can be installed with this mod to extend it's integration with phpBB3.  Those instructions are in contrib/install_extended.xml</author-notes>
-
+	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
+Support will only be given at my website - http://www.lithiumstudios.org.</author-notes>
 
 	<author-group>
 		<author>
@@ -22,7 +19,7 @@ There is an extension that can be installed with this mod to extend it's integra
 		</author>
 	</author-group>
 
-	<mod-version>1.0.4</mod-version>
+	<mod-version>1.0.5</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -42,6 +39,7 @@ There is an extension that can be installed with this mod to extend it's integra
 					WHERE forum_style = $style_id";
 				$db->sql_query($sql);</find>
 			<action type="after-add">				// Start User Blog Mod ----------------------
+				global $phpEx;
 				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
 				blog_remove_style($style_id, $new_id);
 				// End User Blog Mod ------------------------</action>
@@ -54,6 +52,10 @@ There is an extension that can be installed with this mod to extend it's integra
 			<action type="after-add"><![CDATA[		<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
 		</edit>
 	</open>
-	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
+	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.
+
+Because of the bug in previous versions of EAMI that were used to install the modules, the left and right id's for your modules are likely messed up.
+To fix this, go to this page and follow the instructions on how to run the script (and run it for your board):
+http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</diy-instructions>
 </action-group>
 </mod>

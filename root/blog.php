@@ -8,16 +8,8 @@
 *
 */
 
-/*
-* Notes - To do
-* post revisions plugin
-* Sticky Plugin
-* Advertisement Management Plugin
-* Trackbacks Plugin - http://lithiumstudios.org/forum/viewtopic.php?f=41&t=589
-*/
-
 // Remember to update this in the install.php file as well!
-$user_blog_version = '1.0.4';
+$user_blog_version = '1.0.5';
 
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
