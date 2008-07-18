@@ -16,12 +16,12 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ADDING_BLOG_ENTRY'			=> 'Posting a new Blog Entry',
-	'ADDING_BLOG_REPLY'			=> 'Commenting on a Blog Entry',
+	'ADDING_BLOG_ENTRY'		=> 'Posting a new Blog Entry',
+	'ADDING_BLOG_REPLY'		=> 'Commenting on a Blog Entry',
 
-	'VIEWING_BLOGS'				=> 'Viewing Blogs',
-	'VIEWING_BLOG_ENTRY'		=> 'Viewing Blog Entry',
-	'VIEWING_USERS_BLOG'		=> 'Viewing %s\'s Blog',
+	'VIEWING_BLOGS'			=> 'Viewing Blogs',
+	'VIEWING_BLOG_ENTRY'	=> 'Viewing Blog Entry',
+	'VIEWING_USERS_BLOG'	=> 'Viewing %s\'s Blog',
 ));
 
 ?>
