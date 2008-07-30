@@ -1,0 +1,66 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- IF U_BLOG_MCP -->
+	<p>[&nbsp;<a href="{U_BLOG_MCP}">{L_BLOG_MCP}</a>&nbsp;]</p>
+<!-- ELSE -->
+<br />
+<!-- ENDIF -->
+
+<table style="width: 100%">
+	<tr>
+		<td id="left_menu">
+			<!-- INCLUDE blog/left_menu.html -->
+		</td>
+		<td style="vertical-align: top; padding-left: 10px;">
+
+			<!-- IF S_SORT -->
+				<form id="sortblogs" method="post" action="{S_POST_ACTION}">
+				<fieldset class="display-options" style="margin-top: 0;">
+					<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
+					<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
+					<label>{L_DISPLAY_POSTS}: {S_SELECT_SORT_DAYS}</label>
+					<label>{L_SORT_BY} {S_SELECT_SORT_KEY}</label> <label>{S_SELECT_SORT_DIR} <input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
+				</fieldset>
+				</form>
+			<!-- ENDIF -->
+
+			<div class="forabg">
+				<div class="inner"><span class="corners-top"><span></span></span>
+					<ul class="topiclist">
+						<li class="header">
+							<dl class="icon">
+								<dt>{L_BLOG_NAME}</dt>
+								<dd class="topics">{L_USERNAME}</dd>
+								<dd class="posts">{L_POSTS}</dd>
+							</dl>
+						</li>
+					</ul>
+					<ul class="topiclist forums">
+						<!-- BEGIN userrow -->
+							<li class="row">
+								<dl class="icon" style="background-image: url({FORUM_FOLDER_IMG_SRC}); background-repeat: no-repeat;">
+									<dt title="{userrow.FORUM_FOLDER_IMG_ALT}">
+										<a href="{userrow.U_VIEW_BLOG}" class="forumtitle">{userrow.BLOG_TITLE}</a><br /><br />
+					                    <a href="{userrow.U_VIEW_LAST_BLOG}">{userrow.LAST_BLOG_SUBJECT}</a> {L_POSTED_ON_DATE} {userrow.LAST_BLOG_TIME}<br />
+										{userrow.LAST_BLOG}
+									</dt>
+									<dd class="topics">{userrow.USERNAME}</dd>
+									<dd class="posts">{userrow.BLOG_COUNT}</dd>
+								</dl>
+							</li>
+						<!-- END userrow -->
+					</ul>
+				<span class="corners-bottom"><span></span></span></div>
+			</div>
+
+			<!-- IF PAGINATION or TOTAL_POSTS -->
+				<div class="pagination">
+					{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
+				</div>
+			<!-- ENDIF -->
+
+		</td>
+	</tr>
+</table>
+
+<!-- INCLUDE overall_footer.html -->
