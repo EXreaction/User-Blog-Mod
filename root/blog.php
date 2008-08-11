@@ -196,7 +196,7 @@ if ($reply_id)
 	$blog_id = blog_data::$reply[$reply_id]['blog_id'];
 
 	// Now let us try to figure out what page the requested reply is on and show that set of replies.
-	if (intval(request_var('start', -1)) == -1)
+	if (request_var('start', -1) == -1)
 	{
 		$total_replies = $blog_data->get_reply_data('page', array($blog_id, $reply_id), array('order_dir' => $order_dir, 'sort_days' => $sort_days));
 		$start = (intval($total_replies / $limit) * $limit);
