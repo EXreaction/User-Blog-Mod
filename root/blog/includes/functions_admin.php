@@ -162,6 +162,7 @@ function blog_acp_profile($user_id, $submit)
 			'description'					=> $blog_description,
 			'description_bbcode_bitfield'	=> $blog_description_bitfield,
 			'description_bbcode_uid'		=> $blog_description_uid,
+			'blog_style'					=> request_var('blog_style', ''),
 			'blog_css'						=> request_var('blog_css', ''),
 		);
 		update_user_blog_settings($user_id, $blog_data);
@@ -171,12 +172,68 @@ function blog_acp_profile($user_id, $submit)
 		global $user_settings;
 		get_user_settings($user_id);
 
+		$available_styles = array(array('name' => $user->lang['NONE'], 'value' => 0, 'demo' => $phpbb_root_path . 'images/spacer.gif'));
+		$sql = 'SELECT * FROM ' . STYLES_TABLE . ' s, ' . STYLES_TEMPLATE_TABLE . ' st WHERE style_active = 1 AND s.template_id = st.template_id';
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$demo = $phpbb_root_path . 'images/spacer.gif';
+			if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png'))
+			{
+				$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.png';
+			}
+			else if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.gif'))
+			{
+				$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.gif';
+			}
+			else if (@file_exists($phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.jpg'))
+			{
+				$demo = $phpbb_root_path . 'styles/' . $row['template_path'] . '/template/blog/demo.jpg';
+			}
+
+			$available_styles[] = array('name' => $row['style_name'], 'value' => $row['style_id'], 'demo' => $demo);
+		}
+		$db->sql_freeresult($result);
+
+		$dh = @opendir($phpbb_root_path . 'blog/styles/');
+
+		if ($dh)
+		{
+			while (($file = readdir($dh)) !== false)
+			{
+				if (file_exists($phpbb_root_path . 'blog/styles/' . $file . '/style.' . $phpEx))
+				{
+					// Inside of the style.php file, add to the $available_styles array
+					include($phpbb_root_path . 'blog/styles/' . $file . '/style.' . $phpEx);
+				}
+			}
+
+			closedir($dh);
+		}
+
+		foreach ($available_styles as $row)
+		{
+			if (isset($user_settings[$user_id]) && $user_settings[$user_id]['blog_style'] == $row['value'] && isset($row['demo']) && $row['demo'])
+			{
+				$default_demo = $row['demo'];
+			}
+
+			$template->assign_block_vars('blog_styles', array(
+				'VALUE'			=> $row['value'],
+				'SELECTED'		=> (isset($user_settings[$user_id]) && $user_settings[$user_id]['blog_style'] == $row['value']) ? true : false,
+				'NAME'			=> $row['name'],
+				'BLOG_CSS'		=> (isset($row['blog_css']) && $row['blog_css']) ? true : false,
+				'DEMO'			=> (isset($row['demo']) && $row['demo']) ? $row['demo'] : '',
+			));
+		}
+
 		if (isset($user_settings[$user_id]))
 		{
 			decode_message($user_settings[$user_id]['description'], $user_settings[$user_id]['description_bbcode_uid']);
 			$template->assign_vars(array(
 				'BLOG_TITLE'		=> $user_settings[$user_id]['title'],
 				'BLOG_DESCRIPTION'	=> $user_settings[$user_id]['description'],
+				'DEFAULT_DEMO'		=> (isset($default_demo)) ? $default_demo : $phpbb_root_path . 'images/spacer.gif',
 				'BLOG_CSS'			=> $user_settings[$user_id]['blog_css'],
 			));
 		}
