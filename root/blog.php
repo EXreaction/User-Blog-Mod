@@ -237,7 +237,7 @@ if ($blog_id && !handle_user_blog_permissions($blog_id))
 
 // Put the template we want in $blog_template for easier access/use
 // style= to use a board style, blogstyle= to use a custom blog style, otherwise it is set to the user's style or blank if none set
-$blog_template = ((isset($_GET['style'])) ? intval($_GET['style']) : ((isset($_GET['blogstyle'])) ? request_var('blogstyle', '') : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '')));
+$blog_template = ((isset($_GET['style'])) ? request_var('style', 0) : ((isset($_GET['blogstyle'])) ? request_var('blogstyle', '') : (($user_id && isset($user_settings[$user_id])) ? $user_settings[$user_id]['blog_style'] : '')));
 
 
 /**
