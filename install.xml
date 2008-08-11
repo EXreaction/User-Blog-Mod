@@ -19,7 +19,7 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 		</author>
 	</author-group>
 
-	<mod-version>1.0.5</mod-version>
+	<mod-version>1.0.6_dev</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -118,6 +118,16 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 				<change>To update from 1.0.4 follow the instructions in contrib/update/104_to_105.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-00-00</date>
+			<rev-version>1.0.6_dev</rev-version>
+			<changelog lang="en">
+				<change>Adding the option to change a user's style when editing a profile in the ACP.</change>
+				<change>Making the version number a constant in blog/inclueds/constants.php.</change>
+				<change>Other misc changes suggested by the Mod Team.</change>
+				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
@@ -194,7 +204,7 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 	</open>
 	<open src=".htaccess">
 		<edit>
-			<comment lang="en">Only add this if your server has mod_rewrite enabled.  If you are not sure you may add it anyways but, if you get an internal server error, undo the edit.</comment>
+			<comment lang="en">Only add this if your server has mod_rewrite enabled (there may be other requirements for this to work as well, but mod_rewrite is all I know of).  If you get an internal server error because of adding this mod, remove the changes made to the .htaccess file because the likely reason is that your server does not support this.</comment>
 			<find><![CDATA[<Files "common.php">
 Order Allow,Deny
 Deny from All
@@ -209,8 +219,7 @@ Rewriterule ^blog/$						./blog/blog.php]]></action>
 	</open>
 	<open src="viewtopic.php">
 		<edit>
-			<comment lang="en">If you do not want the blog count or link for each user shown on viewtopic you may skip editing this file.</comment>
-			<find>'search'		=> ($auth->acl_get('u_search'))</find>
+			<find>'search'		=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", 'search_author=' . urlencode($row['username']) .'&amp;sr=posts') : '',</find>
 			<action type="after-add">				'blog_count'	=> ((isset($row['blog_count'])) ? $row['blog_count'] : 0),</action>
 		</edit>
 		<edit>

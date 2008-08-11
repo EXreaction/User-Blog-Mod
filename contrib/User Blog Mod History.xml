@@ -658,6 +658,16 @@
 				<change>To update from 1.0.4 follow the instructions in contrib/update/104_to_105.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-00-00</date>
+			<rev-version>1.0.6_dev</rev-version>
+			<changelog lang="en">
+				<change>Adding the option to change a user's style when editing a profile in the ACP.</change>
+				<change>Making the version number a constant in blog/inclueds/constants.php.</change>
+				<change>Other misc changes suggested by the Mod Team.</change>
+				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 </mod>
