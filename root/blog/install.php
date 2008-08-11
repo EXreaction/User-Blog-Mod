@@ -8,8 +8,6 @@
 *
 */
 
-$user_blog_version = '1.0.5';
-
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : '../';
@@ -71,6 +69,9 @@ if (confirm_box(true))
 	include("{$phpbb_root_path}blog/install/permissions.$phpEx");
 	include("{$phpbb_root_path}blog/install/config.$phpEx");
 	include("{$phpbb_root_path}blog/install/data.$phpEx");
+
+	// Set the version.
+	set_config('user_blog_version', USER_BLOG_MOD_VERSION);
 
 	// Purge the cache and tell the user that we are finished.
 	$cache->purge();

@@ -18,7 +18,7 @@ if (!isset($config['user_blog_version']))
 	trigger_error('NOT_INSTALLED');
 }
 
-if ($user_blog_version == $config['user_blog_version'])
+if (USER_BLOG_MOD_VERSION == $config['user_blog_version'])
 {
 	trigger_error(sprintf($user->lang['ALREADY_UPDATED'], '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>'));
 }
@@ -639,18 +639,20 @@ if (confirm_box(true))
 			$db->sql_query('UPDATE ' . BLOGS_USERS_TABLE . ' SET blog_style = ' . $style_ids[0] . ' WHERE ' . $db->sql_in_set('blog_style', $style_ids, true));
 
 			set_config('user_blog_message_from', 2);
+		case '1.0.4' :
+		case '1.0.5' :
 	}
 
 	// update the version
-	if (!strpos($user_blog_version, 'dev'))
+	if (!strpos(USER_BLOG_MOD_VERSION, 'dev'))
 	{
-		set_config('user_blog_version', $user_blog_version);
+		set_config('user_blog_version', USER_BLOG_MOD_VERSION);
 	}
 
 	// clear the cache
 	$cache->purge();
 
-	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], $user_blog_version, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
+	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], USER_BLOG_MOD_VERSION, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
 	trigger_error($message);
 }
 else

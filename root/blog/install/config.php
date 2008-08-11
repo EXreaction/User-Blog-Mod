@@ -42,5 +42,4 @@ set_config('user_blog_quick_reply', 1);
 set_config('user_blog_links_output_block', 1);
 set_config('user_blog_message_from', 2);
 
-set_config('user_blog_version', $user_blog_version);
 ?>

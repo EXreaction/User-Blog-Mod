@@ -206,32 +206,8 @@ class acp_blogs
 	{
 		global $user, $config, $phpbb_root_path, $phpEx;
 
-		$handle = @fopen($phpbb_root_path . 'blog.' . $phpEx, "r");
-		if ($handle)
-		{
-			while (!feof($handle))
-			{
-				$line = fgets($handle, 4096);
-
-				if (strpos($line, 'user_blog_version'))
-				{
-					// If we are using the Windows line ending, we need to remove 1 more character...
-					if (strpos($line, "\r\n"))
-					{
-						$file_version = substr($line, (strpos($line, "'") + 1), -4);
-					}
-					else
-					{
-						$file_version = substr($line, (strpos($line, "'") + 1), -3);
-					}
-					break;
-				}
-			}
-			fclose($handle);
-		}
-
 		$version = $user->lang['DATABASE_VERSION'] . ': ' . $value . '<br />';
-		$version .= $user->lang['FILE_VERSION'] . ': ' . $file_version . '<br /><br />';
+		$version .= $user->lang['FILE_VERSION'] . ': ' . USER_BLOG_MOD_VERSION . '<br /><br />';
 		$version .= $user->lang['LATEST_VERSION'] . ': ';
 
 		$latest_version = get_latest_user_blog_version();
@@ -243,13 +219,13 @@ class acp_blogs
 		else
 		{
 			$version .= $latest_version;
-			if (version_compare($file_version, $latest_version, '<'))
+			if (version_compare(USER_BLOG_MOD_VERSION, $latest_version, '<'))
 			{
 				$version .= '<br />' . sprintf($user->lang['CLICK_GET_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&amp;t=433">', '</a>');
 			}
 		}
 
-		if (version_compare($file_version, $value, '>'))
+		if (version_compare(USER_BLOG_MOD_VERSION, $value, '>'))
 		{
 			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br />';
 		}

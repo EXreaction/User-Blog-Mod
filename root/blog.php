@@ -8,9 +8,6 @@
 *
 */
 
-// Remember to update this in the install.php file as well!
-$user_blog_version = '1.0.5';
-
 // Stuff required to work with phpBB3
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';

@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -22,6 +22,8 @@ if (!defined('BLOGS_TABLE'))
 		include($phpbb_root_path . 'config.' . $phpEx);
 		unset($dbpasswd);
 	}
+
+	define('USER_BLOG_MOD_VERSION', '1.0.6_dev');
 
 	define('BLOGS_TABLE',					$table_prefix . 'blogs');
 	define('BLOGS_ATTACHMENT_TABLE',		$table_prefix . 'blogs_attachment');
