@@ -8,6 +8,14 @@
 *
 */
 
+/**
+* @ignore
+*/
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 // Create the lang array if it does not already exist
 if (empty($lang) || !is_array($lang))
 {
