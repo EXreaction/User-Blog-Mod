@@ -44,6 +44,7 @@
 		<channel>
 			<title><![CDATA[{TITLE}]]></title>
 			<link>{SITE_URL}</link>
+			<atom:link href="{SITE_URL}" rel="self" type="application/rss+xml" />
 			<description><![CDATA[{SITE_DESC}]]></description>
 			<language>{SITE_LANG}</language>
 			<lastBuildDate>{CURRENT_TIME}</lastBuildDate>
@@ -69,14 +70,14 @@
 		<!-- BEGIN item -->
 			<entry>
 				<title><![CDATA[{item.TITLE}]]></title>
-				<link href="{item.URL}" />
+				<link rel="self" href="{item.URL}" />
 				<id>{item.URL}</id>
 				<published>{item.DATE_3339}</published>
 				<updated>{item.DATE_3339}</updated>
 				<author>
 					<name><![CDATA[{item.USERNAME}]]></name>
 				</author>
-				<summary>
+				<summary type="html">
 					<![CDATA[{item.MESSAGE}]]>
 				</summary>
 			</entry>
