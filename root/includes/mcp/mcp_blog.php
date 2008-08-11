@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -92,7 +92,14 @@ class mcp_blog
 				blog_plugins::plugin_do_arg('mcp_default', $mode);
 		}
 
-		$cnt_sql = 'SELECT count(' . (($blog) ? 'blog_id' : 'reply_id') . ') AS total FROM ' . (($blog) ? BLOGS_TABLE : BLOGS_REPLY_TABLE) . ' WHERE ' . (($blog) ? 'blog_' : 'reply_') . ((strpos($mode, 'reported') !== false) ? 'reported = 1' : 'approved = 0');
+		if ($blog)
+		{
+			$cnt_sql = 'SELECT count(blog_id) AS total FROM ' . BLOGS_TABLE . ' WHERE blog_' . ((strpos($mode, 'reported') !== false) ? 'reported = 1' : 'approved = 0');
+		}
+		else
+		{
+			$cnt_sql = 'SELECT count(reply_id) AS total FROM ' . BLOGS_REPLY_TABLE . ' WHERE ' . 'reply_' . ((strpos($mode, 'reported') !== false) ? 'reported = 1' : 'approved = 0');
+		}
 		$result = $db->sql_query($cnt_sql);
 		$row = $db->sql_fetchrow($result);
 		if ($row)
