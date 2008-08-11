@@ -557,7 +557,12 @@ function get_blog_subscription_types()
 	}
 
 	// First is the subscription ID (which will use the bitwise operator), the second is the language variable.
-	$subscription_types = array(1 => 'PRIVATE_MESSAGE', 2 => 'EMAIL');
+	$subscription_types = array(1 => 'PRIVATE_MESSAGE');
+
+	if ($config['enable_email'])
+	{
+		$subscription_types[2] = 'EMAIL';
+	}
 
 	/* Remember, we use the bitwise operator to find out what subscription type is the users default, like the bbcode options.
 	So if you add more, use 1,2,4,8,16,32,64,etc and make sure to use the next available number, don't assume 4 is available! */
