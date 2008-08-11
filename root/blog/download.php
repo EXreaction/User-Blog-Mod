@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -17,7 +17,7 @@ include($phpbb_root_path . 'blog/includes/functions_attachments.' . $phpEx);
 $blog_attachment = new blog_attachment();
 
 $user->add_lang('viewtopic');
-$download_id = intval(request_var('id', 0));
+$download_id = request_var('id', 0);
 $mode = request_var('mode', '');
 
 if (!$download_id)
@@ -95,8 +95,8 @@ if ($mode == 'thumbnail')
 else if (($display_cat == ATTACHMENT_CATEGORY_NONE || $display_cat == ATTACHMENT_CATEGORY_IMAGE) && !$attachment['is_orphan'])
 {
 	// Update download count
-	$sql = 'UPDATE ' . BLOGS_ATTACHMENT_TABLE . ' 
-		SET download_count = download_count + 1 
+	$sql = 'UPDATE ' . BLOGS_ATTACHMENT_TABLE . '
+		SET download_count = download_count + 1
 		WHERE attach_id = ' . $attachment['attach_id'];
 	$db->sql_query($sql);
 }
@@ -117,7 +117,7 @@ else
 		{
 			trigger_error($user->lang['PHYSICAL_DOWNLOAD_NOT_POSSIBLE']);
 		}
-		
+
 		redirect($phpbb_root_path . $config['upload_path'] . '/' . $attachment['physical_filename']);
 		exit;
 	}
@@ -214,7 +214,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 
 	// Send out the Headers. Do not set Content-Disposition to inline please, it is a security measure for users using the Internet Explorer.
 	header('Content-Type: ' . $attachment['mimetype']);
- 
+
 	if (empty($user->browser) || (strpos(strtolower($user->browser), 'msie') !== false))
 	{
 		header('Content-Disposition: attachment; ' . header_filename(htmlspecialchars_decode($attachment['real_filename'])));
@@ -227,7 +227,7 @@ function send_file_to_browser($attachment, $upload_dir, $category)
 	{
 		header('Content-Disposition: ' . ((strpos($attachment['mimetype'], 'image') === 0) ? 'inline' : 'attachment') . '; ' . header_filename(htmlspecialchars_decode($attachment['real_filename'])));
 	}
-	
+
 	if ($size)
 	{
 		header("Content-Length: $size");
@@ -316,7 +316,7 @@ function download_allowed()
 			}
 		}
 	}
-	
+
 	// Check for own server...
 	$server_name = (!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME');
 
@@ -330,7 +330,7 @@ function download_allowed()
 	{
 		$allowed = true;
 	}
-	
+
 	// Get IP's and Hostnames
 	if (!$allowed)
 	{
@@ -380,7 +380,7 @@ function download_allowed()
 		}
 		$db->sql_freeresult($result);
 	}
-	
+
 	return $allowed;
 }
 
