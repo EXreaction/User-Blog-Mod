@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog Search
 * @version $Id$
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction, Lithium Studios; phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
 * Custom Search class for Blogs
