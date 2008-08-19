@@ -77,6 +77,9 @@ img_button_blog_new = button_blog_new.gif*25*96]]></action>
 			<action type="after-add"><![CDATA[		<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
 		</edit>
 	</open>
-	<diy-instructions lang="en">Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
+	<diy-instructions lang="en">Go to ACP->Styles->Style Components->Theme, then hit the Refresh button next to prosilver.
+Go to ACP->Styles->Style Components->Imageset, then hit the Refresh button next to prosilver.
+
+Go to yoursite/blog.php?page=update in your web browser to update the database.</diy-instructions>
 </action-group>
 </mod>
