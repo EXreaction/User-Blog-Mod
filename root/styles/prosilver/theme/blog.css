@@ -47,10 +47,10 @@
 */
 .blog-icon span {
 	background: transparent none 0 0 no-repeat;
-	background-image: url("{T_IMAGESET_LANG_PATH}/button_blog_new.gif");
+	background-image: url("{IMG_BUTTON_BLOG_NEW_SRC}");
 }
 
 .buttons div.blog-icon {
-	width: 96px;
-	height: 25px;
+	width: {IMG_BUTTON_BLOG_NEW_WIDTH}px;
+	height: {IMG_BUTTON_BLOG_NEW_HEIGHT}px;
 }
