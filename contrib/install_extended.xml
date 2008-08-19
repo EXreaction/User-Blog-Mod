@@ -18,7 +18,7 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.6_dev</mod-version>
+	<mod-version>1.0.6</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -65,8 +65,8 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-00-00</date>
-			<rev-version>1.0.6_dev</rev-version>
+			<date>2008-08-20</date>
+			<rev-version>1.0.6</rev-version>
 			<changelog lang="en">
 				<change>No changes were made to the extended install version since 1.0.5.</change>
 			</changelog>

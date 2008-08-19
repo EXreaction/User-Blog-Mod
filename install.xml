@@ -19,11 +19,11 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 		</author>
 	</author-group>
 
-	<mod-version>1.0.6_dev</mod-version>
+	<mod-version>1.0.6</mod-version>
 
 	<installation>
 		<level>intermediate</level>
-		<time>420</time>
+		<time>600</time>
 		<target-version>3.0.2</target-version>
 	</installation>
 
@@ -119,11 +119,12 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-00-00</date>
-			<rev-version>1.0.6_dev</rev-version>
+			<date>2008-08-20</date>
+			<rev-version>1.0.6</rev-version>
 			<changelog lang="en">
 				<change>Adding the option to change a user's style when editing a profile in the ACP.</change>
 				<change>Making the version number a constant in blog/inclueds/constants.php.</change>
+				<change>Using the Imageset for the New Entry Icon (only for prosilver based styles).</change>
 				<change>Other misc changes suggested by the Mod Team.</change>
 				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
 			</changelog>
@@ -148,7 +149,23 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 			<action type="after-add"><![CDATA[<!-- INCLUDE acp_blog_users.html -->]]></action>
 		</edit>
     </open>
+	<open src="includes/acp/acp_language.php">
+		<edit>
+			<find><![CDATA[, 'button_topic_reply']]></find>
+			<inline-edit>
+				<inline-find><![CDATA[, 'button_topic_reply']]></inline-find>
+				<inline-action type="after-add"><![CDATA[, 'button_blog_new']]></inline-action>
+			</inline-edit>
+		</edit>
+	</open>
 	<open src="includes/acp/acp_styles.php">
+		<edit>
+			<find><![CDATA[, 'button_topic_reply']]></find>
+			<inline-edit>
+				<inline-find><![CDATA[, 'button_topic_reply']]></inline-find>
+				<inline-action type="after-add"><![CDATA[, 'button_blog_new']]></inline-action>
+			</inline-edit>
+		</edit>
 		<edit>
 			<find>				$sql = 'UPDATE ' . FORUMS_TABLE . "
 					SET forum_style = $new_id
@@ -177,6 +194,15 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 			<action type="before-add">	// Start User Blog Mod ----------------------
 	include($phpbb_root_path . 'blog/header.' . $phpEx);
 	// End User Blog Mod ------------------------</action>
+		</edit>
+	</open>
+	<open src="styles/prosilver/imageset/en/imageset.cfg">
+		<edit>
+			<comment lang="en">Do this for all prosilver based styles and all languages.</comment>
+			<find><![CDATA[img_button_topic_reply = button_topic_reply.gif*25*96]]></find>
+			<action type="after-add"><![CDATA[
+# User Blog Mod
+img_button_blog_new = button_blog_new.gif*25*96]]></action>
 		</edit>
 	</open>
 	<open src="styles/prosilver/template/overall_footer.html">
@@ -249,9 +275,10 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// End Add User Blog Mod --------------------]]></action>
 		</edit>
 	</open>
-    <diy-instructions lang="en">Go to yoursite/blog/install.php in your web browser to install the database section.
+    <diy-instructions lang="en">Go to ACP->Styles->Style Components->Theme, then hit the Refresh button next to prosilver.
+Go to ACP->Styles->Style Components->Imageset, then hit the Refresh button next to prosilver.
 
-Go to ACP->Styles->Style components->Theme, then hit the Refresh button next to prosilver.
+Go to yoursite/blog/install.php in your web browser to install the database section.
 
 Set the user/group permissions and configuration settings.</diy-instructions>
 </action-group>

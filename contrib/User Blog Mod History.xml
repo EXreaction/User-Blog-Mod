@@ -659,11 +659,12 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-00-00</date>
-			<rev-version>1.0.6_dev</rev-version>
+			<date>2008-08-20</date>
+			<rev-version>1.0.6</rev-version>
 			<changelog lang="en">
 				<change>Adding the option to change a user's style when editing a profile in the ACP.</change>
 				<change>Making the version number a constant in blog/inclueds/constants.php.</change>
+				<change>Using the Imageset for the New Entry Icon (only for prosilver based styles).</change>
 				<change>Other misc changes suggested by the Mod Team.</change>
 				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
 			</changelog>
