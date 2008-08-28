@@ -63,7 +63,7 @@ function handle_basic_posting_data($check = false, $page = 'blog', $mode = 'add'
 				$panels['categories-panel'] = $user->lang['CATEGORIES'];
 			}
 
-			$panels['poll-panel'] = $user->lang['POLL_OPTIONS'];
+			$panels['poll-panel'] = $user->lang['ADD_POLL'];
 
 			if ($user->data['is_registered'])
 			{

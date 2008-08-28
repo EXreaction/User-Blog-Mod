@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id$
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -29,6 +29,8 @@ $lang = array_merge($lang, array(
 	'ACP_BLOG_PLUGINS'				=> 'Blog Plugins',
 	'ACP_BLOG_SEARCH'				=> 'Blog Search',
 	'ACP_BLOG_SETTINGS'				=> 'Blog Settings',
+
+	'IMG_BUTTON_BLOG_NEW'			=> 'New Blog Entry',
 
 	'LOG_BLOG_CATEGORY_ADD'			=> '<strong>Added New Blog Category</strong><br />» %s',
 	'LOG_BLOG_CATEGORY_DELETE'		=> '<strong>Deleted Blog Category</strong><br />» %s',
