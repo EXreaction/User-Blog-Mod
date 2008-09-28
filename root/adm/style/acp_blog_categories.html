@@ -1,0 +1,204 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<!-- IF S_EDIT_CATEGORY -->
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_TITLE} :: {CATEGORY_NAME}</h1>
+
+	<p>{L_CATEGORY_EDIT_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<form id="categoryedit" method="post" action="{U_EDIT_ACTION}">
+
+	<fieldset>
+		<legend>{L_CATEGORY_SETTINGS}</legend>
+	<dl>
+		<dt><label for="parent">{L_CATEGORY_PARENT}:</label></dt>
+		<dd><select id="parent" name="category_parent_id"><option value="0"<!-- IF not S_CATEGORY_PARENT_ID --> selected="selected"<!-- ENDIF -->>{L_NO_PARENT}</option>{S_PARENT_OPTIONS}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="category_name">{L_CATEGORY_NAME}:</label></dt>
+		<dd><input class="text medium" type="text" id="category_name" name="category_name" value="{CATEGORY_NAME}" maxlength="255" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="category_description">{L_CATEGORY_DESCRIPTION}:</label><br /><span>{L_CATEGORY_DESCRIPTION_EXPLAIN}</span></dt>
+		<dd><textarea id="category_description" name="category_description" rows="5" cols="45">{CATEGORY_DESCRIPTION}</textarea></dd>
+		<dd><label><input type="checkbox" class="radio" name="desc_parse_bbcode"<!-- IF S_DESC_BBCODE_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_BBCODE}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_smilies"<!-- IF S_DESC_SMILIES_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_SMILIES}</label>
+			<label><input type="checkbox" class="radio" name="desc_parse_urls"<!-- IF S_DESC_URLS_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_URLS}</label></dd>
+	</dl>
+	</fieldset>
+
+	<div id="category_rules_options">
+		<fieldset>
+			<legend>{L_CATEGORY_RULES}</legend>
+	<!-- IF CATEGORY_RULES_PREVIEW -->
+		<dl>
+			<dt><label>{L_CATEGORY_RULES_PREVIEW}:</label></dt>
+			<dd>{CATEGORY_RULES_PREVIEW}</dd>
+		</dl>
+	<!-- ENDIF -->
+		<dl>
+			<dt><label for="rules">{L_CATEGORY_RULES}:</label><br /><span>{L_CATEGORY_RULES_EXPLAIN}</span></dt>
+			<dd><textarea id="rules" name="rules" rows="4" cols="70">{RULES_PLAIN}</textarea></dd>
+			<dd><label><input type="checkbox" class="radio" name="rules_parse_bbcode"<!-- IF S_BBCODE_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_BBCODE}</label>
+				<label><input type="checkbox" class="radio" name="rules_parse_smilies"<!-- IF S_SMILIES_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_SMILIES}</label>
+				<label><input type="checkbox" class="radio" name="rules_parse_urls"<!-- IF S_URLS_CHECKED --> checked="checked"<!-- ENDIF --> /> {L_PARSE_URLS}</label></dd>
+		</dl>
+		</fieldset>
+	</div>
+
+	<fieldset class="submit-buttons">
+		<legend>{L_SUBMIT}</legend>
+		<input class="button1" type="submit" id="submit" name="update" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+<!-- ELSEIF S_DELETE_CATEGORY -->
+
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_CATEGORY_DELETE}</h1>
+
+	<p>{L_CATEGORY_DELETE_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<form id="acp_category" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_CATEGORY_DELETE}</legend>
+	<dl>
+		<dt><label>{L_CATEGORY_NAME}:</label></dt>
+		<dd><strong>{CATEGORY_NAME}</strong></dd>
+	</dl>
+
+	<dl>
+		<dt><label for="delete_action">{L_ACTION}:</label></dt>
+		<dd><label><input type="radio" class="radio" id="delete_action" name="action_blogs" value="delete" checked="checked" /> {L_REMOVE_ALL_BLOGS}</label></dd>
+		<!-- IF S_MOVE_CATEGORY_OPTIONS -->
+			<dd><label><input type="radio" class="radio" name="action_blogs" value="move" /> {L_MOVE_BLOGS_TO}</label> <select name="blogs_to_id">{S_MOVE_CATEGORY_OPTIONS}</select></dd>
+		<!-- ENDIF -->
+	</dl>
+
+	<!-- IF S_HAS_SUBCATEGORYS -->
+		<dl>
+			<dt><label for="sub_delete_action">{L_ACTION}:</label></dt>
+			<dd><label><input type="radio" class="radio" id="sub_delete_action" name="action_subcategories" value="delete" checked="checked" /> {L_DELETE_SUBCATEGORIES}</label></dd>
+			<!-- IF S_CATEGORIES_LIST -->
+				<dd><label><input type="radio" class="radio" name="action_subcategories" value="move" /> {L_MOVE_SUBCATEGORIES_TO}</label> <select name="subcategories_to_id">{S_CATEGORIES_LIST}</select></dd>
+			<!-- ENDIF -->
+		</dl>
+	<!-- ENDIF -->
+
+	<p class="quick">
+		<input class="button1" type="submit" name="update" value="{L_SUBMIT}" />
+	</p>
+	{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+<!-- ELSE -->
+	<h1>{L_ACP_BLOG_CATEGORIES}</h1>
+
+	<p>{L_ACP_BLOG_CATEGORIES_EXPLAIN}</p>
+
+	<!-- IF ERROR_MSG -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<!-- IF S_RESYNCED -->
+		<script type="text/javascript">
+		// <![CDATA[
+			var close_waitscreen = 1;
+		// ]]>
+		</script>
+
+		<div class="successbox">
+			<h3>{L_NOTIFY}</h3>
+			<p>{L_CATEGORY_RESYNCED}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<p><strong>{NAVIGATION}<!-- IF S_NO_CATEGORYS --> [<a href="{U_EDIT}">{L_EDIT}</a> | <a href="{U_DELETE}">{L_DELETE}</a><!-- IF not S_LINK --> | <a href="{U_SYNC}">{L_RESYNC}</a><!-- ENDIF --->]<!-- ENDIF --></strong></p>
+
+	<table cellspacing="1">
+		<col class="row1" /><col class="row1" /><col class="row2" />
+	<tbody>
+	<!-- BEGIN categories -->
+		<tr>
+			<td>
+				<strong><a href="{categories.U_CATEGORY}">{categories.CATEGORY_NAME}</a></strong>
+				<!-- IF categories.CATEGORY_DESCRIPTION --><br /><span>{categories.CATEGORY_DESCRIPTION}</span><!-- ENDIF -->
+				<!-- IF categories.S_CATEGORY_POST --><br /><br /><span>{L_TOPICS}: <strong>{categories.CATEGORY_TOPICS}</strong> / {L_POSTS}: <strong>{categories.CATEGORY_POSTS}</strong></span><!-- ENDIF -->
+			</td>
+			<td style="vertical-align: top; width: 100px; text-align: right; white-space: nowrap;">
+				<!-- IF categories.S_FIRST_ROW && not categories.S_LAST_ROW -->
+					{ICON_MOVE_UP_DISABLED}
+					<a href="{categories.U_MOVE_DOWN}">{ICON_MOVE_DOWN}</a>
+				<!-- ELSEIF not categories.S_FIRST_ROW && not categories.S_LAST_ROW-->
+					<a href="{categories.U_MOVE_UP}">{ICON_MOVE_UP}</a>
+					<a href="{categories.U_MOVE_DOWN}">{ICON_MOVE_DOWN}</a>
+				<!-- ELSEIF categories.S_LAST_ROW && not categories.S_FIRST_ROW -->
+					<a href="{categories.U_MOVE_UP}">{ICON_MOVE_UP}</a>
+					{ICON_MOVE_DOWN_DISABLED}
+				<!-- ELSE -->
+					{ICON_MOVE_UP_DISABLED}
+					{ICON_MOVE_DOWN_DISABLED}
+				<!-- ENDIF -->
+				<a href="{categories.U_EDIT}">{ICON_EDIT}</a>
+				<a href="{categories.U_DELETE}">{ICON_DELETE}</a>
+			</td>
+		</tr>
+	<!-- BEGINELSE -->
+		<tr>
+			<td>
+				{L_NO_CATEGORIES}
+			</td>
+		</tr>
+	<!-- END categories -->
+	</tbody>
+	</table>
+
+	<form id="fselect" method="post" action="{U_SEL_ACTION}">
+
+	<fieldset class="quick">
+		{L_SELECT_CATEGORY}: <select name="parent_id" onchange="if(this.options[this.selectedIndex].value != -1){ this.form.submit(); }">{CATEGORY_BOX}</select>
+
+		<input class="button2" type="submit" value="{L_GO}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+	<form id="categories" method="post" action="{U_ACTION}">
+
+	<fieldset class="quick">
+		<input type="hidden" name="action" value="add" />
+
+		<input type="text" name="category_name" value="" maxlength="255" />
+		<input class="button2" name="addcategory" type="submit" value="{L_CREATE_CATEGORY}" />
+		{S_FORM_TOKEN}
+	</fieldset>
+	</form>
+
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->

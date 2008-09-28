@@ -1,0 +1,32 @@
+	<fieldset>
+		<legend>{L_BLOG}</legend>
+		<dl>
+			<dt><label for="blog_title">{L_BLOG_TITLE}:</label></dt>
+			<dd><input type="text" name="blog_title" id="blog_title" value="{BLOG_TITLE}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="blog_description">{L_BLOG_DESCRIPTION}:</label></dt>
+			<dd><textarea name="blog_description" id="blog_description" rows="3" cols="30">{BLOG_DESCRIPTION}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="blog_style">{L_BLOG_STYLE}:</label><br /><span>{L_BLOG_STYLE_EXPLAIN}</span></dt>
+			<dd>
+				<label for="blog_style">
+					<select name="blog_style" onchange="document.getElementById('style_demo').src = this.options[selectedIndex].id;">
+						<!-- BEGIN blog_styles -->
+							<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF --> id="{blog_styles.DEMO}">
+								{blog_styles.NAME}<!-- IF blog_styles.BLOG_CSS --> *<!-- ENDIF -->
+							</option>
+						<!-- END blog_styles -->
+					</select>
+				</label>
+			</dd>
+			<dd>
+				<img id="style_demo" src="{DEFAULT_DEMO}" />
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="blog_css">{L_BLOG_CSS}:</label><span>{L_BLOG_CSS_EXPLAIN}</span></dt>
+			<dd><textarea name="blog_css" id="blog_css" rows="15" cols="76" tabindex="3" class="inputbox">{BLOG_CSS}</textarea></dd>
+		</dl>
+	</fieldset>

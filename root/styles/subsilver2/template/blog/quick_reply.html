@@ -1,0 +1,20 @@
+<br />
+<a name="quick_reply"></a>
+<form action="{U_QUICK_REPLY}" method="post" id="postform">
+	<table width="100%" cellspacing="1" class="tablebg">
+		<th>{L_POST_A_NEW_REPLY}</th>
+		<tr class="row2" align="center">
+			<td>
+				<textarea name="message" id="message" rows="6" cols="100" class="inputbox" ></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat" colspan="2" align="center">
+				<input class="btnlite" type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" />
+				&nbsp; <input class="btnmain" type="submit" accesskey="s" tabindex="6" name="post" value="{L_SUBMIT}" />
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="subject" value="Re: <!-- BEGIN blogrow(0,0) -->{blogrow.TITLE}<!-- END blogrow -->" />
+	{S_FORM_TOKEN}
+</form>

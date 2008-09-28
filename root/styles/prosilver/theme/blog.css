@@ -1,0 +1,56 @@
+.deleted {
+	background-color: #A19CA6;
+}
+
+.foe {
+	background-color: #FF6600;
+}
+
+.num_replies {
+	float: right;
+}
+
+.no_blogs {
+	text-align: center;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+#replies {
+	text-align: center;
+	margin-top: 15px;
+}
+
+/**
+* Left menu
+*/
+#left_menu {
+	width: 240px;
+	vertical-align: top;
+}
+
+.left_menu_title {
+	font-weight: bold;
+	font-size: 11px;
+	text-align: center;
+	padding: 1px 0 5px 0;
+}
+
+#blog_searchform {
+	color: #FFFFFF;
+	margin-top: 5px;
+	white-space: nowrap;
+}
+
+/**
+* Buttons
+*/
+.blog-icon span {
+	background: transparent none 0 0 no-repeat;
+	background-image: url("{IMG_BUTTON_BLOG_NEW_SRC}");
+}
+
+.buttons div.blog-icon {
+	width: {IMG_BUTTON_BLOG_NEW_WIDTH}px;
+	height: {IMG_BUTTON_BLOG_NEW_HEIGHT}px;
+}

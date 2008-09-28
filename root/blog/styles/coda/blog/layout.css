@@ -1,0 +1,109 @@
+/*--- page layout framework ------------*/
+
+html {
+	min-height: 102%; /* force vertical scrollbar - browser support flaky, doesn't work in Opera */
+	/*overflow-y: scroll;*/
+}
+
+body {
+	background: #474c52 url("{T_BLOG_IMAGESET_PATH}/background.jpg") center center fixed;
+}
+
+div#gradient {
+	/*background: transparent url("/img/global/glowy.png") 0 0 no-repeat;*/
+}
+
+div#container {
+	width: 81em;
+	margin: 0 auto;
+}
+
+div#header {
+	padding-top: 1em;
+}
+
+object#navigation {
+	display: block;
+	margin: 0.5em 0 0 2em;
+}
+
+object#logo {
+	float: right;
+	display: block;
+	margin: 1.8em 2.2em 0 0;
+}
+
+div#dash {
+	padding: 30px;
+	background: transparent url("{T_BLOG_IMAGESET_PATH}/headerbg.png") center 0 no-repeat;
+}
+
+div#content {
+	margin-bottom: 1em;
+	padding: 0 1em 1em 1em;
+}
+
+/*--- intro ------------*/
+
+div#intro {
+	margin: 0;
+}
+
+div#intro h1 {
+	padding: 0 5px;
+	color: #A1E35C;
+	font-size: 1.3em;
+	float: left;
+}
+
+div#intro p {
+	font-size: 1.1em;
+	text-align: right;
+	color: #d8dfe5;
+	line-height: 1.5em;
+}
+
+div#intro a:link, div#intro a:visited {
+	text-decoration: none;
+	color: #a3c095;
+}
+
+div#intro a:hover {
+	text-decoration: underline;
+	color: #79ff25;
+}
+
+/*--- footer ------------*/
+
+div#footer {
+	clear: both;
+	margin: 0 1em 2em 1em;
+	background: transparent url("{T_BLOG_IMAGESET_PATH}/opaque_10.png") 0 0 repeat;
+}
+
+div#footer p {
+	width: 40em;
+	padding: 0.6em 1em;
+	font-size: 1em;
+}
+
+div#footer p#poweredby {
+	float: left;
+	text-align: left;
+}
+
+div#footer p#copyright {
+	float: right;
+	text-align: right;
+}
+
+div#footer p#poweredby span.stats {
+	color: #8a959e;
+}
+
+/*--- images ------------*/
+
+object#logo img {
+	width: 316px;
+	height: 52px;
+}

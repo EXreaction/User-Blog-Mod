@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}" xml:lang="{S_USER_LANG}">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
+	<meta http-equiv="content-style-type" content="text/css" />
+	<meta http-equiv="content-language" content="{S_USER_LANG}" />
+	<meta http-equiv="imagetoolbar" content="no" />
+	<meta name="resource-type" content="document" />
+	<meta name="distribution" content="global" />
+	<meta name="copyright" content="2007-2008 EXreaction" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="{PAGE_TITLE}" />
+	{META}
+
+	<style type="text/css">
+	<!-- INCLUDE blog/stylesheet.css -->
+	</style>
+
+	<!-- IF BLOG_CSS -->
+	<style type="text/css">
+	{BLOG_CSS}
+	</style>
+	<!-- ENDIF -->
+
+	<!-- INCLUDE blog/blog.js -->
+
+	<title>{PAGE_TITLE}</title>
+</head>
+
+<body>
+	<div class="nav">
+		<img class="nav_icon" src="{T_BLOG_IMAGESET_PATH}mini_logo.png" alt="Icon" />
+		<!-- IF S_DISPLAY_BLOG_SEARCH -->
+			<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
+				<fieldset class="nav_search">
+					<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="nav_search_input" style="width: 140px" />
+						<input class="nav_search_submit" value="{L_SEARCH}" type="submit" />
+				</fieldset>
+			</form>
+		<!-- ENDIF -->
+		<span class="nav_links">
+			<a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks -->
+		</span>
+		<span class="nav_links_right">
+			<!-- IF U_BLOG_FEED --><a href="{U_BLOG_FEED}"><img src="{T_BLOG_IMAGESET_PATH}feed.gif" alt="{L_FEED}" class="feed_icon" /></a> | <!-- ENDIF -->
+			<!-- IF U_MY_BLOG --><a href="{U_MY_BLOG}">{L_MY_BLOG}</a> | <!-- ENDIF -->
+			<!-- IF U_ADD_BLOG --><a href="{U_ADD_BLOG}">{L_NEW_BLOG}</a> | <!-- ENDIF -->
+			<a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>
+			<!-- IF not S_USER_LOGGED_IN --> | <a href="{U_REGISTER}">{L_REGISTER}</a><!-- ENDIF -->
+		</span>
+	</div>
+	<div class="header">
+		<div class="header_inner">
+			<div class="header_img"></div>
+		</div>
+	</div>
+	<div class="main">
+		<!-- IF USER_MENU_EXTRA -->
+		<div id="sidebar">
+			{USER_MENU_EXTRA}
+		</div>
+		<!-- ENDIF -->
+
+		<div class="content">
+			<!-- IF BLOG_TITLE or BLOG_DESCRIPTION-->
+				<h1>{BLOG_TITLE}</h1>
+				<div class="blog_description">
+					{BLOG_DESCRIPTION}
+				</div>
+			<!-- ENDIF -->
+
+			<!-- IF PAGINATION or TOTAL_POSTS -->
+				<div class="pagination">
+					{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
+				</div>
+			<!-- ENDIF -->
+
+			<h1>{L_USERNAMES_BLOGS}</h1>
+
+			<!-- BEGIN blogrow -->
+				<!-- IF blogrow.S_HAS_POLL and S_SINGLE -->
+					<form method="post" action="{S_POLL_ACTION}">
+						<h3>{blogrow.POLL_QUESTION}</h3>
+						<div class="poll_info">{blogrow.L_POLL_LENGTH}<!-- IF blogrow.S_CAN_VOTE and blogrow.L_POLL_LENGTH --><br /><!-- ENDIF --><!-- IF blogrow.S_CAN_VOTE -->{blogrow.L_MAX_VOTES}<!-- ENDIF --></div>
+
+						<fieldset class="polls">
+						<!-- BEGIN poll_option -->
+							<dl class="<!-- IF blogrow.poll_option.POLL_OPTION_VOTED -->voted<!-- ENDIF -->"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> title="{L_POLL_VOTED_OPTION}"<!-- ENDIF -->>
+								<dt><!-- IF blogrow.S_CAN_VOTE --><label for="vote_{blogrow.poll_option.POLL_OPTION_ID}">{blogrow.poll_option.POLL_OPTION_CAPTION}</label><!-- ELSE -->{blogrow.poll_option.POLL_OPTION_CAPTION}<!-- ENDIF --></dt>
+								<!-- IF blogrow.S_CAN_VOTE --><dd style="width: auto;"><!-- IF blogrow.S_IS_MULTI_CHOICE --><input type="checkbox" name="vote_id[]" id="vote_{blogrow.poll_option.POLL_OPTION_ID}" value="{blogrow.poll_option.POLL_OPTION_ID}"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /><!-- ELSE --><input type="radio" name="vote_id[]" id="vote_{blogrow.poll_option.POLL_OPTION_ID}" value="{blogrow.poll_option.POLL_OPTION_ID}"<!-- IF blogrow.poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /><!-- ENDIF --></dd><!-- ENDIF -->
+								<!-- IF blogrow.S_DISPLAY_RESULTS --><dd class="resultbar"><div class="<!-- IF blogrow.poll_option.POLL_OPTION_PCT < 20 -->pollbar1<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 40 -->pollbar2<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 60 -->pollbar3<!-- ELSEIF blogrow.poll_option.POLL_OPTION_PCT < 80 -->pollbar4<!-- ELSE -->pollbar5<!-- ENDIF -->" style="width:{blogrow.poll_option.POLL_OPTION_PERCENT};">{blogrow.poll_option.POLL_OPTION_RESULT}</div></dd>
+								<dd><!-- IF blogrow.poll_option.POLL_OPTION_RESULT == 0 -->{L_NO_VOTES}<!-- ELSE -->{blogrow.poll_option.POLL_OPTION_PERCENT}<!-- ENDIF --></dd><!-- ENDIF -->
+							</dl>
+						<!-- END poll_option -->
+
+						<!-- IF blogrow.S_DISPLAY_RESULTS -->
+							<dl>
+								<dt>&nbsp;</dt>
+								<dd class="resultbar">{L_TOTAL_VOTES} : {blogrow.TOTAL_VOTES}</dd>
+							</dl>
+						<!-- ENDIF -->
+
+						<!-- IF blogrow.S_CAN_VOTE -->
+							<dl style="border-top: none;">
+								<dt>&nbsp;</dt>
+								<dd class="resultbar"><input type="submit" name="update" value="{L_SUBMIT_VOTE}" class="button1" /></dd>
+							</dl>
+						<!-- ENDIF -->
+
+						<!-- IF not blogrow.S_DISPLAY_RESULTS -->
+							<dl style="border-top: none;">
+								<dt>&nbsp;</dt>
+								<dd class="resultbar"><a href="{U_VIEW_RESULTS}">{L_VIEW_RESULTS}</a></dd>
+							</dl>
+						<!-- ENDIF -->
+						</fieldset>
+						{S_FORM_TOKEN}
+						{S_HIDDEN_FIELDS}
+					</form>
+				<!-- ENDIF -->
+
+				<div id="b{blogrow.ID}" class="blog<!-- IF blogrow.S_REPORTED or blogrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF blogrow.S_DELETED --> deleted<!-- ENDIF -->">
+					<!-- IF not blogrow.S_SHORTENED and blogrow.RATING_STRING --><div class="blog_rating">{blogrow.RATING_STRING}</div><!-- ENDIF -->
+					<h3 class="blog_title"><!-- IF blogrow.S_HAS_POLL --><img src="{T_BLOG_IMAGESET_PATH}icon_poll.gif" alt="" /> <!-- ENDIF --><a href="{blogrow.U_VIEW}">{blogrow.TITLE}</a></h3>
+					<h4 class="blog_date"><a href="{blogrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{blogrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {blogrow.DATE}</h4>
+
+					<!-- IF blogrow.S_UNAPPROVED or blogrow.S_REPORTED -->
+						<!-- IF blogrow.S_UNAPPROVED --><a href="{blogrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+						<!-- IF blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
+					<!-- ENDIF -->
+
+					<div class="blog_text">{blogrow.MESSAGE}</div>
+
+					<!-- IF blogrow.S_HAS_ATTACHMENTS -->
+						<dl class="attachbox">
+							<dt>{L_ATTACHMENTS}</dt>
+							<!-- BEGIN attachment -->
+								<dd>{blogrow.attachment.DISPLAY_ATTACHMENT}</dd>
+							<!-- END attachment -->
+						</dl>
+					<!-- ENDIF -->
+
+					<!-- IF blogrow.S_DISPLAY_NOTICE --><div class="reported">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
+
+					{blogrow.EXTRA}
+
+					<!-- IF blogrow.EDITED_MESSAGE or blogrow.EDIT_REASON -->
+						<div class="edited_message">
+							{blogrow.EDITED_MESSAGE}
+							<!-- IF blogrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{blogrow.EDIT_REASON}</em><!-- ENDIF -->
+						</div>
+					<!-- ENDIF -->
+					<!-- IF blogrow.DELETED_MESSAGE -->
+						<div class="deleted_message">
+							{blogrow.DELETED_MESSAGE}
+						</div>
+					<!-- ENDIF -->
+
+					<!-- IF blogrow.SIGNATURE --><div class="signature">{blogrow.SIGNATURE}</div><!-- ENDIF -->
+
+					<div class="blog_bottom_left">
+						{blogrow.REPLIES}
+					</div>
+
+					<div class="blog_bottom_right">
+						<!-- IF not blogrow.S_SHORTENED and (blogrow.U_EDIT or blogrow.U_DELETE or blogrow.U_REPORT or blogrow.U_WARN or blogrow.U_QUOTE) -->
+								<!-- IF blogrow.U_EDIT --><a href="{blogrow.U_EDIT}">{L_EDIT_BLOG}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_DELETE --><a href="{blogrow.U_DELETE}">{L_DELETE_BLOG}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_REPORT and not blogrow.S_REPORTED --><a href="{blogrow.U_REPORT}">{L_REPORT_BLOG}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_WARN --><a href="{blogrow.U_WARN}">{L_WARN_USER}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_QUOTE --><a href="{blogrow.U_QUOTE}">{L_QUOTE}</a> | <!-- ENDIF -->
+								<!-- IF blogrow.U_REPLY --><a href="{blogrow.U_REPLY}">{L_REPLY}</a><!-- ENDIF -->
+						<!-- ENDIF -->
+					</div>
+				</div>
+
+				<hr />
+			<!-- BEGINELSE -->
+				<div class="blog_text"><!-- IF MODE == 'deleted' -->{L_NO_DELETED_BLOGS}<!-- ELSE -->{L_NO_BLOGS_USER}<!-- ENDIF --></div>
+			<!-- END blogrow -->
+
+			<!-- IF S_REPLIES -->
+				<div id="replies">
+					<h1>{L_COMMENTS}</h1>
+
+					<!-- BEGIN replyrow -->
+						<div id="r{replyrow.ID}" class="reply<!-- IF replyrow.S_REPORTED or replyrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF replyrow.S_DELETED --> deleted<!-- ENDIF -->">
+							<!-- IF not replyrow.S_SHORTENED and replyrow.RATING_STRING --><div class="reply_rating">{replyrow.RATING_STRING}</div><!-- ENDIF -->
+							<h4 class="reply_title"><a href="{replyrow.U_VIEW}">{replyrow.TITLE}</a></h3>
+							<h4 class="reply_date"><a href="{replyrow.U_VIEW_PERMANENT}"><img src="{T_IMAGESET_PATH}/icon_post_target.gif" alt="{L_PERMANENT_LINK}" /></a> {L_POST_BY_AUTHOR} <strong>{replyrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {replyrow.DATE}</h4>
+
+							<!-- IF replyrow.S_UNAPPROVED or replyrow.S_REPORTED -->
+								<div class="reported">
+									<!-- IF replyrow.S_UNAPPROVED --><a href="{replyrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+									<!-- IF replyrow.S_REPORTED --><a href="{replyrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
+								</div>
+							<!-- ENDIF -->
+
+							<div class="reply_text">{replyrow.MESSAGE}</div>
+
+							<!-- IF replyrow.S_HAS_ATTACHMENTS -->
+								<dl class="attachbox">
+									<dt>{L_ATTACHMENTS}</dt>
+									<!-- BEGIN attachment -->
+										<dd>{replyrow.attachment.DISPLAY_ATTACHMENT}</dd>
+									<!-- END attachment -->
+								</dl>
+							<!-- ENDIF -->
+
+							<!-- IF replyrow.S_DISPLAY_NOTICE --><div class="reported">{L_DOWNLOAD_NOTICE}</div><!-- ENDIF -->
+
+							{replyrow.EXTRA}
+
+							<!-- IF replyrow.EDITED_MESSAGE or replyrow.EDIT_REASON -->
+								<div class="edited_message">
+									{replyrow.EDITED_MESSAGE}
+									<!-- IF replyrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{replyrow.EDIT_REASON}</em><!-- ENDIF -->
+								</div>
+							<!-- ENDIF -->
+							<!-- IF replyrow.DELETED_MESSAGE -->
+								<div class="deleted_message">
+									{replyrow.DELETED_MESSAGE}
+								</div>
+							<!-- ENDIF -->
+
+							<!-- IF replyrow.SIGNATURE --><div class="signature">{replyrow.SIGNATURE}</div><!-- ENDIF -->
+
+							<div class="reply_bottom_left">
+							</div>
+
+							<div class="reply_bottom_right">
+								<!-- IF not replyrow.S_SHORTENED and (replyrow.U_EDIT or replyrow.U_DELETE or replyrow.U_REPORT or replyrow.U_WARN or replyrow.U_QUOTE) -->
+										<!-- IF replyrow.U_EDIT --><a href="{replyrow.U_EDIT}">{L_EDIT_REPLY}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_DELETE --><a href="{replyrow.U_DELETE}">{L_DELETE_REPLY}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_REPORT and not replyrow.S_REPORTED --><a href="{replyrow.U_REPORT}">{L_REPORT_REPLY}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_WARN --><a href="{replyrow.U_WARN}">{L_WARN_USER}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_QUOTE --><a href="{replyrow.U_QUOTE}">{L_QUOTE}</a> | <!-- ENDIF -->
+										<!-- IF replyrow.U_REPLY --><a href="{replyrow.U_REPLY}">{L_REPLY}</a><!-- ENDIF -->
+								<!-- ENDIF -->
+							</div>
+						</div>
+					<!-- END replyrow -->
+				</div>
+
+				<hr />
+			<!-- ENDIF -->
+
+			<!-- IF PAGINATION or TOTAL_POSTS -->
+				<div class="pagination">
+					{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF -->
+				</div>
+			<!-- ENDIF -->
+
+			<div class="bottom_links">
+				<!-- IF S_WATCH_FORUM_LINK --><a href="{S_WATCH_FORUM_LINK}">{S_WATCH_FORUM_TITLE}</a><!-- ENDIF -->
+			</div>
+
+			<div class="copyright">
+				<br />Blogger Clone by <a href="http://www.lithiumstudios.org">EXreaction</a>
+				<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->
+				<br />Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+				<!-- IF DEBUG_OUTPUT --><br />{DEBUG_OUTPUT}<!-- ENDIF -->
+				<!-- IF U_ACP --><br /><br /><strong><a href="{U_ACP}">{L_ACP}</a></strong><!-- ENDIF -->
+			</div>
+			<div>
+				<a id="bottom" name="bottom" accesskey="z"></a>
+				<!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

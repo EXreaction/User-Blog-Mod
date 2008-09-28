@@ -1,0 +1,208 @@
+/blog/blog/add.php
+	blog_add_start
+	blog_add_after_setup
+	blog_add_preview
+	blog_add_after_preview
+	blog_add_sql
+	blog_add_after_sql
+
+/blog/blog/approve.php
+	blog_approve
+	blog_approve_confirm
+
+/blog/blog/delete.php
+	blog_delete
+	blog_delete_confirm
+
+/blog/blog/edit.php
+	blog_edit_start
+	blog_edit_after_setup
+	blog_edit_preview
+	blog_edit_after_preview
+	blog_edit_sql
+	blog_edit_after_sql
+
+/blog/blog/report.php
+	blog_report_start
+	blog_report_confirm
+
+/blog/blog/undelete.php
+	blog_undelete_start
+	blog_undelete_confirm
+
+/blog/download.php
+	download_start
+	download_before_send
+	download_end
+
+/blog/includes/blog_data.php
+	blog_data_start
+	blog_data_sql
+	blog_data_while
+	blog_handle_data_start
+	blog_handle_data_end
+	reply_data_start
+	reply_data_sql
+	reply_data_while
+	reply_handle_data_start
+	reply_handle_data_end
+	user_data_start
+	user_data_sql
+	user_data_sql
+	user_data_while
+	user_handle_data
+
+/blog/includes/functions.php
+	function_blog_url
+	function_generate_blog_urls
+	function_get_user_settings
+	function_get_user_settings_insert
+	function_get_user_settings_update
+	function_get_user_settings
+	function_handle_blog_cache
+	function_handle_blog_cache_mode
+	function_get_subscription_types
+
+/blog/includes/functions_admin.php
+	function_blog_acp_profile
+	function_resync_blog
+
+/blog/includes/functions_attachments.php
+	function_posting_gen_attachment_entry
+	function_get_attachment_data
+	function_parse_attachments
+	get_submitted_attachment_data
+	function_upload_attachment
+	function_obtain_blog_attach_extensions
+	function_parse_attachments_for_view
+
+/blog/includes/functions_categories.php
+	function_handle_categories
+	function_get_blog_categories
+
+/blog/includes/functions_confirm.php
+	function_build_blog_cfg_template
+
+/blog/includes/functions_permissions.php
+	handle_user_blog_permissions
+	function_permission_settings_builder
+	function_build_permission_sql
+	function_check_blog_permissions
+	permissions_end
+
+/blog/includes/functions_posting.php
+	function_handle_basic_posting_data
+	function_handle_captcha
+	function_inform_approve_report
+	function_handle_subscription
+	function_handle_subscription_end
+	post_options
+	post_options_set_status
+	post_options_set_in_template
+
+/blog/includes/functions_rate.php
+	function_get_star_rating
+
+/blog/includes/functions_view.php
+	function_get_attachment_data
+	function_get_subscription_info
+	function_get_zebra_info
+	function_generate_menu
+	available_feeds
+	function_feed_output
+	function_parse_attachments_for_view
+	function_obtain_blog_attach_extensions
+
+/blog/includes/initial_data.php
+	initial_output
+
+/blog/rate.php
+	rate
+
+/blog/reply/add.php
+	reply_add_start
+	reply_add_after_setup
+	reply_add_preview
+	reply_add_after_preview
+	reply_add_sql
+	reply_add_after_sql
+
+/blog/reply/approve.php
+	reply_approve
+	reply_approve_confirm
+
+/blog/reply/delete.php
+	reply_delete
+	blog_delete
+	reply_delete_confirm
+
+/blog/reply/edit.php
+	reply_edit_start
+	reply_edit_after_setup
+	reply_edit_preview
+	reply_edit_after_preview
+	reply_edit_sql
+	reply_edit_after_sql
+
+/blog/reply/report.php
+	reply_report
+	reply_report_confirm
+
+/blog/reply/undelete.php
+	reply_undelete
+	reply_undelete_confirm
+
+/blog/search.php
+	search
+	search_end
+
+/blog/subscribe.php
+	subscribe
+	subscribe_confirm
+	subscription_add
+	subscribe_user_confirm_end
+
+/blog/unsubscribe.php
+	unsubscribe_start
+	unsubscribe_confirm
+	unsubscribe_user_confirm
+	unsubscribe_user
+
+/blog/view/main.php
+	view_main_start
+	view_main_end
+
+/blog/view/single.php
+	view_blog_start
+	view_blog_after_blogrow
+	view_blog_end
+
+/blog/view/user.php
+	view_user_start
+	view_user_end
+	view_user_feed_end
+
+/includes/acp/acp_blogs.php
+	acp_default
+	acp_end
+	acp_main_start
+	acp_main_settings
+	acp_category_delete
+	acp_category_add_edit
+	acp_category_add_edit_initial
+
+/includes/mcp/mcp_blog.php
+	mcp_start
+	mcp_default
+	mcp_end
+
+/includes/ucp/ucp_blog.php
+	ucp_start
+	ucp_default
+	ucp_end
+
+/blog.php
+	blog_start
+	blog_page_switch
+	blog_end
+

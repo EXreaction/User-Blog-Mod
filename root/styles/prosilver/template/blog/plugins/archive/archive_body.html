@@ -1,0 +1,53 @@
+<script type="text/javascript">
+// <![CDATA[
+	function toggle_month(month)
+	{
+		thisMonth = document.getElementById('month_' + month);
+		thisImg = document.getElementById('month_image_' + month);
+
+		if (thisMonth && thisImg)
+		{
+			if (thisMonth.style.display == "none")
+			{
+				thisMonth.style.display = "block";
+				thisImg.src = "{IMG_MINUS}";
+				thisImg.alt = '-';
+			}
+			else
+			{
+				thisMonth.style.display = "none";
+				thisImg.src = "{IMG_PLUS}";
+				thisImg.alt = '+';
+			}
+		}
+	}
+// ]]>
+</script>
+
+<!-- IF S_ARCHIVES -->
+	<div class="post bg1">
+		<div class="inner">
+			<span class="corners-top"><span></span></span>
+			<dl>
+				<dt class="left_menu_title">{L_ARCHIVES}</dt>
+				<dd>
+					<div style="padding: 5px 0; overflow: hidden;">
+						<!-- BEGIN archiverow -->
+							<span onclick="toggle_month({archiverow.S_ROW_COUNT});" style="cursor: pointer;"><strong><img id="month_image_{archiverow.S_ROW_COUNT}" src="<!-- IF archiverow.S_ROW_COUNT > 0 -->{IMG_PLUS}"  alt="+"<!-- ELSE -->{IMG_MINUS}"  alt="-"<!-- ENDIF --> /> {archiverow.MONTH} {archiverow.YEAR}</strong></span>
+							<div id="month_{archiverow.S_ROW_COUNT}" <!-- IF archiverow.S_ROW_COUNT > 0 -->style="display: none;"<!-- ENDIF -->>
+								<!-- BEGIN monthrow -->
+									<dl class="panel">
+										<dt><a href="{archiverow.monthrow.U_VIEW}">{archiverow.monthrow.TITLE}</a></dt>
+										<dd>&nbsp; &nbsp;{archiverow.monthrow.DATE}</dd>
+									</dl>
+								<!-- END monthrow -->
+							</div>
+							<br />
+						<!-- END archiverow -->
+					</div>
+				</dd>
+			</dl>
+			<span class="corners-bottom"><span></span></span>
+		</div>
+	</div>
+<!-- ENDIF -->

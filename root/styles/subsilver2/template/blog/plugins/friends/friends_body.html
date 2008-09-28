@@ -1,0 +1,210 @@
+<script type="text/javascript">
+// <![CDATA[
+
+/**
+* Set up some global variables
+*/
+var current_online_id = {ZEBRA_LIST_LIMIT};
+var current_offline_id = {ZEBRA_LIST_LIMIT};
+var current_user_friends_id = {ZEBRA_LIST_LIMIT};
+var next = '';
+var online_end = 0;
+var offline_end = 0;
+var user_friends_end = 0;
+
+/**
+* Next/Previous Online/Offline List
+* Copyright 2007 EXreaction
+*/
+function next_list(field)
+{
+	if (field == 'online')
+	{
+		current_id = current_online_id - {ZEBRA_LIST_LIMIT};
+		limit = {ZEBRA_LIST_LIMIT};
+		end = online_end;
+	}
+	else if (field == 'offline')
+	{
+		current_id = current_offline_id - {ZEBRA_LIST_LIMIT};
+		limit = {ZEBRA_LIST_LIMIT};
+		end = offline_end;
+	}
+	else
+	{
+		current_id = current_user_friends_id - {ZEBRA_LIST_LIMIT};
+		limit = {ZEBRA_LIST_LIMIT};
+		end = user_friends_end;
+	}
+
+	for (var i = 0; i < (limit * 2); i++)
+	{
+		next = document.getElementById(field + '_friends_' + current_id);
+		if (next)
+		{
+			if (i < limit)
+			{
+				next.style.display = "none";
+			}
+			else
+			{
+				next.style.display = "block";
+			}
+			current_id++;
+		}
+		else
+		{
+			end++;
+		}
+
+		next = false;
+	}
+
+	next = document.getElementById('previous_' + field);
+	next.style.display = "block";
+
+	next = document.getElementById(field + '_friends_' + (current_id));
+	if (end > 0 || !next)
+	{
+		next = document.getElementById('next_' + field);
+		next.style.display = "none";
+	}
+
+	if (field == 'online')
+	{
+		current_online_id = current_id;
+		online_end = end;
+	}
+	else if (field == 'offline')
+	{
+		current_offline_id = current_id;
+		offline_end = end;
+	}
+	else
+	{
+		current_user_friends_id = current_id;
+		user_friends_end = end;
+	}
+}
+
+function previous_list(field)
+{
+	start = false;
+
+	if (field == 'online')
+	{
+		current_id = current_online_id - 1;
+		limit = {ZEBRA_LIST_LIMIT};
+		end = online_end;
+	}
+	else if (field == 'offline')
+	{
+		current_id = current_offline_id - 1;
+		limit = {ZEBRA_LIST_LIMIT};
+		end = offline_end;
+	}
+	else
+	{
+		current_id = current_user_friends_id - 1;
+		limit = {ZEBRA_LIST_LIMIT};
+		end = user_friends_end;
+	}
+
+	for (var i = 0; i < ((limit * 2) - end); i++)
+	{
+		next = document.getElementById(field + '_friends_' + current_id);
+		if (next)
+		{
+			if (i < (limit - end))
+			{
+				next.style.display = "none";
+			}
+			else
+			{
+				next.style.display = "block";
+			}
+			current_id--;
+		}
+
+		next = false;
+	}
+	current_id = (current_id + limit + 1);
+
+	next = document.getElementById('next_' + field);
+	next.style.display = "block";
+	end = 0;
+
+	if (current_id == limit)
+	{
+		next = document.getElementById('previous_' + field);
+		next.style.display = "none";
+	}
+
+	if (field == 'online')
+	{
+		current_online_id = current_id;
+		online_end = end;
+	}
+	else if (field == 'offline')
+	{
+		current_offline_id = current_id;
+		offline_end = end;
+	}
+	else
+	{
+		current_user_friends_id = current_id;
+		user_friends_end = end;
+	}
+}
+// ]]>
+</script>
+
+<!-- IF S_MENU_ZEBRA_ENABLED -->
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_FRIENDS}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<strong style="color:green">{L_FRIENDS_ONLINE}</strong><br />
+				<!-- BEGIN menu_friends_online -->
+					<div id="online_friends_{menu_friends_online.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_online.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
+						<span style="float: right;"><a href="{menu_friends_online.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+						<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="{L_ONLINE}" /> {menu_friends_online.USERNAME_FULL}
+					</div>
+				<!-- BEGINELSE -->
+					{L_NO_FRIENDS_ONLINE}<br />
+				<!-- END menu_friends_online -->
+				<!-- IF S_SHOW_NEXT_ONLINE -->
+					<div style="margin-bottom: 10px;">
+						<div id="previous_online" style="display: none;">
+							<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
+						</div>
+						<div id="next_online">
+							<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('online')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
+						</div>
+					</div>
+				<!-- ENDIF -->
+				<br />
+				<strong style="color:red">{L_FRIENDS_OFFLINE}</strong><br />
+				<!-- BEGIN menu_friends_offline -->
+					<div id="offline_friends_{menu_friends_offline.S_ROW_COUNT}" style="padding-bottom: 4px;<!-- IF menu_friends_offline.S_ROW_COUNT >= ZEBRA_LIST_LIMIT --> display: none;<!-- ENDIF -->">
+						<span style="float: right;"><a href="{menu_friends_offline.U_VIEW_BLOG}" class="right">{L_VIEW_BLOG}</a></span>
+						<img src="{IMG_PORTAL_MEMBER}" style="margin-bottom: -4px;" alt="{L_OFFLINE}" /> {menu_friends_offline.USERNAME_FULL}
+					</div>
+				<!-- BEGINELSE -->
+					{L_NO_FRIENDS_OFFLINE}
+				<!-- END menu_friends_offline -->
+				<!-- IF S_SHOW_NEXT_OFFLINE -->
+					<div style="margin-bottom: 10px;">
+						<div id="previous_offline" style="display: none;">
+							<a class="left-box {S_CONTENT_FLOW_BEGIN}" onclick="previous_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_PREVIOUS}</a>
+						</div>
+						<div id="next_offline">
+							<a class="right-box {S_CONTENT_FLOW_END}" onclick="next_list('offline')" style="color: #3D6FC0; cursor: pointer;">{L_NEXT}</a>
+						</div>
+					</div>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+	<br />
+<!-- ENDIF -->

@@ -19,7 +19,7 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 		</author>
 	</author-group>
 
-	<mod-version>2.0.0_dev</mod-version>
+	<mod-version>1.0.7_dev</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -29,15 +29,123 @@ Support will only be given at my website - http://www.lithiumstudios.org.</autho
 
 	<history>
 		<entry>
-			<date>2008-00-00</date>
-			<rev-version>0.0.0</rev-version>
+			<date>2008-04-29</date>
+			<rev-version>1.0.0</rev-version>
 			<changelog lang="en">
-				<change></change>
+				<change>Changing the way the BLOG_USE_ROOT is handled in the blog/includes/functions.php file.  Now the variable must be named BLOG_ROOT, and it takes a string holding the path from your server's root path.</change>
+				<change>Fixing the (previously broken) output ordering of plugins.</change>
+				<change>Moving the hardcodded &lt; PHP 5.1.0 error string to the setup.php language file.</change>
+				<change>Changing the way the SQL query is handled in blog_data.php.  Now the $sql_where is put in $sql_ary['WHERE'] to match the rest of the SQL code.</change>
+				<change>Changing the credits text.  Now it is "Blogs powered by User Blog Mod © EXreaction" instead of "Blog System powered by User Blog Mod © EXreaction"</change>
+				<change>Changing all &lt;br/&gt; to &lt;br /&gt;</change>
+				<change>To update from RC2, upload all of the new files, then run the upgrade script at blog.php?page=update.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-05-11</date>
+			<rev-version>1.0.1</rev-version>
+			<changelog lang="en">
+				<change>Adding an uninstaller.  You can now uninstall the stuff added in the database by going to blog/uninstall.php and following it's instructions.</change>
+				<change>Outputting the blog link and text to PROFILE_BLOG, and the link to U_VIEW_BLOG in the parent block as well with add_blog_links.</change>
+				<change>Adding a new option in the ACP to disable showing the blog link in the Custom Profile Fields in view topic/view profile.</change>
+				<change>Fixing a potential bug that could affect some browsers when trying to submit the UCP form.</change>
+				<change>Fixing the bug with the smilies popup in the UCP for subsilver2 (http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=683)</change>
+				<change>Fixing a hole where users could rate items higher or lesser than the max/min allowed rating.</change>
+				<change>Fixing the alt text on rating images.</change>
+				<change>Fixing a minor overlook which resulted in a big problem with EAMI.  When updating, you should also run this (there is a note about this in the update instructions as well): http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</change>
+				<change>Fixing a bug in pagination where the last page link was not going to the actual last page.</change>
+				<change>Adding an output for the total blog entries in the header.</change>
+				<change>Adding function to delete all blogs by a user.</change>
+				<change>Adding instructions to more fully integrate the User Blog Mod with phpBB3.  Those instructions can be found in contrib/install_extended.xml.</change>
+				<change>Fixing the blog_posting_layout to get rid of a javascript error when submitting.</change>
+				<change>Fixing the T_BLOG_TEMPLATE_PATH, etc (exact change noted below in NOTE FOR BLOG STYLERS).  Adding a / at the end of them, like they should have had in the first place.</change>
+				<change>A few other minor changes/fixes.</change>
+				<change>NOTE FOR BLOG STYLERS: The paths for T_BLOG_TEMPLATE_PATH, T_BLOG_IMAGESET_PATH, and T_BLOG_IMAGESET_LANG_PATH have been altered.  They now have a / at the end of them.</change>
+				<change>NOTE FOR TRANSLATORS: 2 new language fields have been added in the mods/blog/acp.php file, 1 new language field was added to mods/blog/common.php, and a new language file, mods/blog/viewonline.php, was added.</change>
+				<change>To update from 1.0.0 follow the instructions in contrib/update/100_to_101.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-05-30</date>
+			<rev-version>1.0.2</rev-version>
+			<changelog lang="en">
+				<change>Adding an output of the last blogs since last visit.  There is currently no link to it, but it is available at blog/view/last_visit_blogs.html</change>
+				<change>Fixing a bug in the blog_delete_user function (forgot to include the constants file).</change>
+				<change>Correcting a lot of entries in the permissions language file.</change>
+				<change>Adding a new function to the plugins class to make it easier to add to the to-do list in the plugins class.</change>
+				<change>Allowing the option for each style to have access to the plugins system.  If a file named style_plugin.php exists in the style directory it will be loaded when somebody accesses a blog with that style.  This allows style authors to make changes to the output data for their specific style and make styling much more flexible and powerful.</change>
+				<change>Fixing 2 bugs when adding/editing a poll.</change>
+				<change>Fixing another bug in attachements while editing a comment.</change>
+				<change>Adding a new style named Coda.  This was copied and modified from the wordpress style on http://coda.co.za/blog/</change>
+				<change>NOTE FOR TRANSLATORS: 1 new language field has been added in the mods/blog/view.php file and the acp/permissions_blog.php file has been re-done.</change>
+				<change>To update from 1.0.1 follow the instructions in contrib/update/101_to_102.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-06-12</date>
+			<rev-version>1.0.3</rev-version>
+			<changelog lang="en">
+				<change>Updating to ModX 1.2.0.</change>
+				<change>Adding $current_version variable in the plugin update function just before the update script for the plugin is called.</change>
+				<change>Fixing the "Go to extension management screen" url in the Manage extension groups ACP panel.</change>
+				<change>When installing/updating/uninstalling a plugin check to see if the install/update/uninstall file exists before trying to include it.</change>
+				<change>Putting in some code for the Blog Title, Blog Description to prevent having a messed up page when neither is entered in by the user.</change>
+				<change>Saving 2 SQL queries when there are no polls in the requested blogs.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>To update from 1.0.2 follow the instructions in contrib/update/102_to_103.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-07-10</date>
+			<rev-version>1.0.4</rev-version>
+			<changelog lang="en">
+				<change>Fixing the bug where a user's blog style could cause a no style error when deleting a style from the ACP.</change>
+				<change>Fixing the bug which occured when deleting a user's blogs with the blog_delete_user function.</change>
+				<change>Fixing the conflict with one of the Feed Mods by renaming U_FEED to U_BLOG_FEED.</change>
+				<change>Fixing the conflict with the Select Viewable Custom Profiles Mod.</change>
+				<change>Fixing a lot of things for re-submission to the ModDB.</change>
+				<change>NOTE FOR BLOG STYLERS: U_FEED has been changed to U_BLOG_FEED.</change>
+				<change>NOTE FOR TRANSLATORS: Added 1 new language entry in mods/blog/common.php and 2 new entries in mods/blog/acp.php.</change>
+				<change>To update from 1.0.3 follow the instructions in contrib/update/103_to_104.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-07-18</date>
+			<rev-version>1.0.5</rev-version>
+			<changelog lang="en">
+				<change>Fixing a bug in the new code added last time for preventing errors when deleting styles.</change>
+				<change>NOTE FOR TRANSLATORS: No language entries have been changed.</change>
+				<change>To update from 1.0.4 follow the instructions in contrib/update/104_to_105.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-08-20</date>
+			<rev-version>1.0.6</rev-version>
+			<changelog lang="en">
+				<change>Adding the option to change a user's style when editing a profile in the ACP.</change>
+				<change>Making the version number a constant in blog/inclueds/constants.php.</change>
+				<change>Using the Imageset for the New Entry Icon (only for prosilver based styles).</change>
+				<change>Other misc changes suggested by the Mod Team.</change>
+				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-00-00</date>
+			<rev-version>1.0.7_dev</rev-version>
+			<changelog lang="en">
+				<change>Updating to ModX 1.2.1.</change>
+				<change>Fixing a bug which displayed an error when editing an imageset.</change>
+				<change>Changing Poll Options to Add Poll for the title on the tab during posting.</change>
+				<change>To update from 1.0.6 follow the instructions in contrib/update/106_to_107.xml.</change>
 			</changelog>
 		</entry>
 	</history>
 
 	<link-group>
+		<link type="template" href="subsilver2.xml" lang="en">subsilver2</link>
+		<link type="template" href="acidtech_tiger.xml" lang="en">Acid Tech Tiger</link>
+		<link type="template" href="black_pearl.xml" lang="en">Black Pearl</link>
+		<link type="contrib" href="contrib/install_extended.xml" lang="en">Extended Install</link>
 	</link-group>
 </header>
 

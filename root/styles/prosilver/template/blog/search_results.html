@@ -1,0 +1,130 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- INCLUDE blog/blog.js -->
+
+<h2><!-- IF SEARCH_TITLE -->{SEARCH_TITLE}<!-- ELSE -->{SEARCH_MATCHES}<!-- ENDIF --><!-- IF SEARCH_WORDS -->: <a href="{U_SEARCH_WORDS}">{SEARCH_WORDS}</a><!-- ENDIF --></h2>
+
+<!-- IF PAGINATION or PAGE_NUMBER -->
+	<div class="topic-actions">
+		<div class="rightside pagination">
+			{SEARCH_MATCHES}<!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF -->
+		</div>
+	</div>
+<!-- ENDIF -->
+
+<!-- BEGIN searchrow -->
+	<!-- IF searchrow.S_DELETED or searchrow.USER_FOE-->
+		<div id="d{searchrow.ID}" class="post<!-- IF searchrow.USER_FOE --> foe<!-- ENDIF --><!-- IF searchrow.S_DELETED --> deleted<!-- ENDIF -->" style="width: 96%; margin: 0 auto;">
+			<div class="inner"><span class="corners-top"><span></span></span>
+				<div class="postbody" style="width: 100%;">
+					<div style="text-align: center;">
+						<!-- IF searchrow.S_DELETED -->
+							<a href="#none" onClick="toggleDiv('r{searchrow.ID}'); toggleDiv('d{searchrow.ID}');">{L_DELETED_REPLY_SHOW}</a>
+						<!-- ELSE -->
+							{searchrow.L_USER_FOE} <a href="#none" onClick="toggleDiv('r{searchrow.ID}'); toggleDiv('d{searchrow.ID}');">{L_CLICK_HERE_SHOW_POST}</a>
+						<!-- ENDIF -->
+						<noscript><br />{L_REPLY_SHOW_NO_JS}</noscript>
+					</div>
+				</div>
+			<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+	<!-- ENDIF -->
+	<div id="r{searchrow.ID}" class="post <!-- IF searchrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF searchrow.S_REPORTED or searchrow.S_UNAPPROVED --> reported<!-- ENDIF --><!-- IF searchrow.USER_FOE --> foe<!-- ENDIF --><!-- IF searchrow.S_DELETED --> deleted<!-- ENDIF --><!-- IF searchrow.S_ONLINE --> online<!-- ENDIF -->" style="width: 96%; margin: 0 auto;<!-- IF searchrow.S_DELETED or searchrow.USER_FOE --> display: none;<!-- ENDIF -->">
+		<div class="inner"><span class="corners-top"><span></span></span>
+			<div class="postbody" style="width: 70%;">
+				<h3><a href="{searchrow.U_VIEW}">{searchrow.TITLE}</a></h3>
+				<p class="author"><a href="{searchrow.U_VIEW_PERMANENT}">{MINI_POST_IMG}</a>{L_POST_BY_AUTHOR} <strong>{searchrow.USER_FULL}</strong> {L_POSTED_ON_DATE} {searchrow.DATE} </p>
+
+				<!-- IF searchrow.S_UNAPPROVED or searchrow.S_REPORTED -->
+					<p class="rules">
+						<!-- IF searchrow.S_UNAPPROVED -->{UNAPPROVED_IMG} <a href="{searchrow.U_APPROVE}"><strong>{L_UNAPPROVED}</strong></a><!-- ENDIF -->
+						<!-- IF searchrow.S_REPORTED -->{REPORTED_IMG} <a href="{searchrow.U_REPORT}"><strong>{L_REPORTED}</strong></a><!-- ENDIF -->
+					</p>
+				<!-- ENDIF -->
+
+				<div class="content">{searchrow.MESSAGE}</div>
+
+				{searchrow.EXTRA}
+
+
+				<!-- IF searchrow.EDITED_MESSAGE or searchrow.EDIT_REASON -->
+					<div class="notice">{searchrow.EDITED_MESSAGE}
+						<!-- IF searchrow.EDIT_REASON --><br /><strong>{L_REASON}:</strong> <em>{searchrow.EDIT_REASON}</em><!-- ENDIF -->
+					</div>
+				<!-- ENDIF -->
+				<!-- IF searchrow.DELETED_MESSAGE -->
+					<div class="notice">{searchrow.DELETED_MESSAGE}</div>
+				<!-- ENDIF -->
+			</div>
+
+			<dl class="postprofile" style="width: 28%;">
+				<dt>
+					<strong>{searchrow.USER_FULL}</strong>
+				</dt>
+
+				<!-- IF searchrow.RANK_TITLE or searchrow.RANK_IMG --><dd>{searchrow.RANK_TITLE}<!-- IF searchrow.RANK_TITLE and searchrow.RANK_IMG --><br /><!-- ENDIF -->{searchrow.RANK_IMG}</dd><!-- ENDIF -->
+
+				<dd>&nbsp;</dd>
+
+				<!-- IF searchrow.POSTER_POSTS != '' --><dd><strong>{L_POSTS}:</strong> {searchrow.POSTER_POSTS}</dd><!-- ENDIF -->
+				<!-- IF searchrow.POSTER_JOINED --><dd><strong>{L_JOINED}:</strong> {searchrow.POSTER_JOINED}</dd><!-- ENDIF -->
+
+				<!-- IF searchrow.U_PM or searchrow.U_EMAIL or searchrow.U_WWW or searchrow.U_MSN or searchrow.U_ICQ or searchrow.U_YIM or searchrow.U_AIM -->
+					<dd>
+						<ul class="profile-icons">
+							<!-- IF searchrow.U_PM --><li class="pm-icon"><a href="{searchrow.U_PM}" title="{L_PRIVATE_MESSAGE}"><span>{L_PRIVATE_MESSAGE}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_EMAIL --><li class="email-icon"><a href="{searchrow.U_EMAIL}" title="{L_EMAIL}"><span>{L_EMAIL}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_WWW --><li class="web-icon"><a href="{searchrow.U_WWW}" title="{L_VISIT_WEBSITE}: {searchrow.U_WWW}"><span>{L_WEBSITE}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_MSN --><li class="msnm-icon"><a href="{searchrow.U_MSN}" title="{L_MSNM}"><span>{L_MSNM}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_ICQ --><li class="icq-icon"><a href="{searchrow.U_ICQ}" title="{L_ICQ}"><span>{L_ICQ}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_YIM --><li class="yahoo-icon"><a href="{searchrow.U_YIM}" title="{L_YIM}"><span>{L_YIM}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_AIM --><li class="aim-icon"><a href="{searchrow.U_AIM}" title="{L_AIM}"><span>{L_AIM}</span></a></li><!-- ENDIF -->
+							<!-- IF searchrow.U_JABBER --><li class="jabber-icon"><a href="{searchrow.U_JABBER}" title="{L_JABBER}"><span>{L_JABBER}</span></a></li><!-- ENDIF -->
+						</ul>
+					</dd>
+				<!-- ENDIF -->
+			</dl>
+
+		<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
+
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+
+	<hr class="divider" />
+
+	<br />
+<!-- BEGINELSE -->
+	<div class="panel">
+		<div class="inner"><span class="corners-top"><span></span></span>
+		<strong>{L_NO_SEARCH_RESULTS}</strong>
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+<!-- END searchrow -->
+
+<!-- IF PAGINATION or .searchresults or S_SELECT_SORT_KEY or S_SELECT_SORT_DAYS -->
+	<form method="post" action="{S_SEARCH_ACTION}">
+
+	<fieldset class="display-options">
+		<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}" class="left-box {S_CONTENT_FLOW_BEGIN}">{L_PREVIOUS}</a><!-- ENDIF -->
+		<!-- IF NEXT_PAGE --><a href="{NEXT_PAGE}" class="right-box {S_CONTENT_FLOW_END}">{L_NEXT}</a><!-- ENDIF -->
+		<!-- IF S_SELECT_SORT_DAYS or S_SELECT_SORT_KEY -->
+			<label><!-- IF S_SHOW_TOPICS -->{L_DISPLAY_POSTS}<!-- ELSE -->{L_SORT_BY}</label><label><!-- ENDIF --> {S_SELECT_SORT_DAYS}<!-- IF S_SELECT_SORT_KEY --></label> <label>{S_SELECT_SORT_KEY}</label>
+			<label>{S_SELECT_SORT_DIR} <!-- ELSE --></label><!-- ENDIF --><input type="submit" name="sort" value="{L_GO}" class="button2" /></label>
+		<!-- ENDIF -->
+	</fieldset>
+
+	</form>
+
+	<hr />
+<!-- ENDIF -->
+
+<!-- IF PAGINATION or .searchresults or PAGE_NUMBER -->
+	<ul class="linklist">
+		<li class="rightside pagination">
+			{SEARCH_MATCHES}<!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF -->
+		</li>
+	</ul>
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->

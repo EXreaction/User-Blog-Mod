@@ -1,0 +1,104 @@
+<!-- IF S_USER_BLOG_MENU -->
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_AUTHOR}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				{USER_FULL}
+				<table cellspacing="4" align="center">
+					<!-- IF ONLINE_IMG -->
+						<tr>
+							<td>{ONLINE_IMG}</td>
+						</tr>
+					<!-- ENDIF -->
+					<!-- IF RANK_TITLE -->
+						<tr>
+							<td class="postdetails">{RANK_TITLE}</td>
+						</tr>
+					<!-- ENDIF -->
+					<!-- IF RANK_IMG -->
+						<tr>
+							<td>{RANK_IMG}</td>
+						</tr>
+					<!-- ENDIF -->
+					<!-- IF AVATAR -->
+						<tr>
+							<td>{AVATAR}</td>
+						</tr>
+					<!-- ENDIF -->
+				</table>
+
+				<span class="postdetails">
+					<!-- IF POSTER_JOINED --><br /><b>{L_JOINED}:</b> {POSTER_JOINED}<!-- ENDIF -->
+					<!-- IF POSTER_POSTS != '' --><br /><b>{L_POSTS}:</b> {POSTER_POSTS}<!-- ENDIF -->
+					<!-- IF POSTER_FROM --><br /><b>{L_LOCATION}:</b> {POSTER_FROM}<!-- ENDIF -->
+
+					<!-- IF S_PROFILE_FIELD1 -->
+						<!-- Use a construct like this to include admin defined profile fields. Replace FIELD1 with the name of your field. -->
+						<br /><b>{PROFILE_FIELD1_NAME}:</b> {PROFILE_FIELD1_VALUE}
+					<!-- ENDIF -->
+
+					<!-- BEGIN custom_fields -->
+						<br /><b>{custom_fields.PROFILE_FIELD_NAME}:</b> {custom_fields.PROFILE_FIELD_VALUE}
+					<!-- END custom_fields -->
+				</span>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+
+	{USER_MENU_EXTRA}
+<!-- ENDIF -->
+
+<!-- IF S_BLOG_LINKS -->
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_BLOG_LINKS}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+			<ul style="list-style: none; margin: 0;">
+				<!-- BEGIN left_blog_links -->
+					<li class="{left_blog_links.CLASS}" style="font-weight: normal; padding-bottom: <!-- IF left_blog_links.S_LAST_ROW -->0<!-- ELSE -->4<!-- ENDIF -->px;">
+						<!-- IF left_blog_links.URL == 'spacer' && left_blog_links.NAME == 'spacer' -->&nbsp;<!-- ELSE --><img src="{T_THEME_PATH}/images/{left_blog_links.IMG}" alt="{left_blog_links.NAME}" /> <a href="{left_blog_links.URL}">{left_blog_links.NAME}</a><!-- ENDIF -->
+					</li>
+				<!-- END left_blog_links -->
+			</ul>
+			</td>
+		</tr>
+	</table>
+	<br />
+<!-- ENDIF -->
+
+<!-- IF S_BLOG_STATS -->
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_BLOG_STATS}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<!-- BEGIN stats -->
+					<div style="padding-bottom: <!-- IF stats.S_LAST_ROW -->6<!-- ELSE -->3<!-- ENDIF -->px;">
+						<!-- IF stats.URL == 'spacer' && stats.NAME == 'spacer' -->&nbsp;<!-- ELSE --><span style="float: {S_CONTENT_FLOW_END};">{stats.VALUE}</span><span>{stats.NAME}</span><!-- ENDIF -->
+					</div>
+				<!-- END stats -->
+			</td>
+		</tr>
+	</table>
+	<br />
+<!-- ENDIF -->
+
+<!-- IF S_DISPLAY_BLOG_SEARCH -->
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr class="cat" align="center"><td><strong>{L_SEARCH_BLOGS}</strong></td></tr>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<form id="blog_searchform" method="post" action="{U_BLOG_SEARCH}">
+						<input name="keywords" id="blog_keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" style="width: 140px;" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
+						<input class="button2" value="{L_SEARCH}" type="submit" /><br />
+						{S_HIDDEN_FIELDS}
+				</form>
+			<div style="padding-top: 2px;"><a href="{U_BLOG_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a></div>
+			</td>
+		</tr>
+	</table>
+	<br />
+<!-- ENDIF -->
+
+{MENU_EXTRA}

@@ -1,0 +1,129 @@
+<!-- INCLUDE ucp_header.html -->
+
+<form id="postform" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	
+	<!-- IF L_TITLE_EXPLAIN --><p>{L_TITLE_EXPLAIN}</p><!-- ENDIF -->
+
+	<fieldset>
+		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+		<!-- IF MODE == 'ucp_blog_settings' -->
+			<dl>
+				<dt><label for="instant_redirect1">{L_BLOG_INSTANT_REDIRECT}:</label><br /><span>{L_BLOG_INSTANT_REDIRECT_EXPLAIN}</span></dt>
+				<dd>
+					<label for="instant_redirect1"><input type="radio" name="instant_redirect" id="instant_redirect1" value="1"<!-- IF S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> {L_YES}</label> 
+					<label for="instant_redirect0"><input type="radio" name="instant_redirect" id="instant_redirect0" value="0"<!-- IF not S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+				</dd>
+			</dl>
+			<!-- IF S_SUBSCRIPTIONS -->
+				<dl>
+					<dt><label>{L_SUBSCRIPTION_DEFAULT}</label><br /><span>{L_SUBSCRIPTION_DEFAULT_EXPLAIN}</span></dt>
+					
+						<!-- BEGIN subscriptions -->
+							<dd><label for="{subscriptions.SUB_TYPE}"><input type="checkbox" name="{subscriptions.TYPE}" id="{subscriptions.TYPE}" <!-- IF subscriptions.S_CHECKED -->checked="checked"<!-- ENDIF --> /> {subscriptions.NAME}</label></dd>
+						<!-- END subscriptions -->
+				</dl>
+			<!-- ENDIF -->
+
+			<!-- IF S_BLOG_STYLE -->
+				<dl>
+					<dt><label for="blog_style">{L_BLOG_STYLE}:</label><br /><span>{L_BLOG_STYLE_EXPLAIN}</span></dt>
+					<dd>
+						<label for="blog_style">
+							<select name="blog_style" onchange="document.getElementById('style_demo').src = this.options[selectedIndex].id;">
+								<!-- BEGIN blog_styles -->
+									<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF --> id="{blog_styles.DEMO}">
+										{blog_styles.NAME}<!-- IF blog_styles.BLOG_CSS --> *<!-- ENDIF -->
+									</option>
+								<!-- END blog_styles -->
+							</select>
+						</label>
+					</dd>
+					<dd>
+						<img id="style_demo" src="{DEFAULT_DEMO}" />
+					</dd>
+				</dl>
+			<!-- ENDIF -->
+			<!-- IF S_BLOG_CSS -->
+				<div><label for="blog_css" style="font-weight: bold;">{L_BLOG_CSS}:</label><br /><span>{L_BLOG_CSS_EXPLAIN}</span></div>
+				<div id="message-box">
+					<textarea name="blog_css" id="blog_css" rows="15" cols="76" tabindex="3" class="inputbox">{BLOG_CSS}</textarea>
+				</div>
+			<!-- ENDIF -->
+		<!-- ENDIF -->
+		<!-- IF MODE == 'ucp_blog_permissions' -->
+			<!-- BEGIN permissions -->
+				<dl>
+					<dt><label for="{permissions.NAME}0">{permissions.TITLE}:</label></dt>
+					<dd>
+						<label for="{permissions.NAME}0"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}0" value="0"<!-- IF permissions.DEFAULT == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</label><br />
+						<label for="{permissions.NAME}1"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}1" value="1"<!-- IF permissions.DEFAULT == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</label><br />
+						<label for="{permissions.NAME}2"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}2" value="2"<!-- IF permissions.DEFAULT == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</label><br />
+					</dd>
+				</dl>
+			<!-- END permissions -->
+			<!-- IF not PERMISSIONS_DISABLED -->
+				<dl>
+					<dt><label for="resync">{L_RESYNC_PERMISSIONS}:</label><br /><span>{L_RESYNC_PERMISSIONS_EXPLAIN}</span></dt>
+					<dd>
+						<label for="resync"><input type="checkbox" name="resync" id="resync" value="0" /></label>
+					</dd>
+				</dl>
+			<!-- ENDIF -->
+		<!-- ENDIF -->
+		<!-- IF MODE == 'ucp_blog_title_description' -->
+
+			<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
+
+			<dl style="clear: left;">
+				<dt><label for="title">{L_BLOG_TITLE}:</label></dt>
+				<dd><input type="text" name="title" id="title" size="45" maxlength="255" tabindex="2" value="{TITLE}" class="inputbox autowidth" /></dd>
+			</dl>
+
+			<!-- INCLUDE posting_buttons.html -->
+
+			<div id="smiley-box">
+				<!-- IF S_SMILIES_ALLOWED and .smiley -->
+					<strong>{L_SMILIES}</strong><br />
+					<!-- BEGIN smiley -->
+						<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+					<!-- END smiley -->
+				<!-- ENDIF -->
+				<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+					<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 300, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a>
+				<!-- ENDIF -->
+
+				<!-- IF BBCODE_STATUS -->
+				<!-- IF .smiley --><hr /><!-- ENDIF -->
+				{BBCODE_STATUS}<br />
+				<!-- IF S_BBCODE_ALLOWED -->
+					{IMG_STATUS}<br />
+					{FLASH_STATUS}<br />
+					{URL_STATUS}<br />
+					{SMILIES_STATUS}
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+			</div>
+
+			<div id="message-box">
+				<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+			</div>
+		<!-- ENDIF -->
+	</fieldset>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+
+<fieldset class="submit-buttons">
+	{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<!-- IF S_PREVIEW_BUTTON --><input type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" class="button1" onclick="document.getElementById('postform').action += '#preview';" />&nbsp;<!-- ENDIF -->
+	<input type="submit" tabindex="6" name="submit" value="{L_SUBMIT}" class="button1" />
+</fieldset>
+{S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE ucp_footer.html -->

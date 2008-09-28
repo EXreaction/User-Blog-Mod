@@ -1,0 +1,90 @@
+<!-- INCLUDE overall_header.html -->
+<style type="text/css">
+.admin {
+	margin: 15px 0;
+	padding: 10px;
+	border-top: 1px solid #D7D7D7;
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #D7D7D7;
+	background-color: #FFFFFF;
+	position: relative;
+}
+
+legend {
+	padding: 1px 0;
+	font-family: Tahoma,arial,Verdana,Sans-serif;
+	font-weight: bold;
+	color: #115098;
+	margin-top: -.4em;
+	position: relative;
+	text-transform: none;
+	line-height: 1.2em;
+	top: 0;
+	vertical-align: middle;
+}
+
+fieldset dt {
+	margin-right: 10px;
+	width: 45%;
+	text-align: left;
+	border: none;
+	border-right: 1px solid #CCCCCC;
+	padding-top: 3px;
+}
+</style>
+
+<!-- IF S_ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR_MSG}</p>
+	</div>
+<!-- ENDIF -->
+
+<form id="confirm" method="post" action="{U_ACTION}">
+	<table width="100%" cellspacing="1" class="tablebg">
+		<th>{L_TITLE}</th>
+		<tr class="row1">
+			<td style="padding: 10px;">
+				<div style="text-align: center; margin: 10px 0 20px 0;"><strong>{L_TITLE_EXPLAIN}</strong></div>
+
+				<table width="100%">
+					<!-- BEGIN options -->
+						<!-- IF options.S_LEGEND -->
+							<!-- IF not options.S_FIRST_ROW -->
+								</table>
+							<!-- ENDIF -->
+							<table width="90%" cellspacing="1" class="tablebg" style="margin: 5px auto;">
+								<tr class="cat">
+									<td colspan="2" align="center"><strong>{options.LEGEND}</strong></td>
+								</tr>
+						<!-- ELSE -->
+							<tr class="row1">
+								<td style="padding: 7px 5px;"><strong>{options.TITLE}:</strong><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></td>
+								<td align="center">{options.CONTENT}</td>
+							</tr>
+						<!-- ENDIF -->
+					<!-- BEGINELSE -->
+						<table>
+					<!-- END options -->
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat" colspan="2" align="center">
+				<!-- IF S_YES_NO -->
+					<input class="btnmain" type="submit" name="submit" value="{L_YES}" />
+					&nbsp; <input class="btnmain" type="submit" name="cancel" value="{L_NO}" />
+				<!-- ELSE -->
+					<input class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" />
+					&nbsp; <input class="btnlite" type="submit"  name="reset" value="{L_RESET}" />
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+	{S_FORM_TOKEN}
+</form>
+
+<br clear="all" />
+
+<!-- INCLUDE overall_footer.html -->

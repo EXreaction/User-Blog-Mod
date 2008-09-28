@@ -1,0 +1,152 @@
+<!-- INCLUDE ucp_header.html -->
+</form>
+
+<form name="postform" id="postform" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+
+<!-- IF S_DISPLAY_PREVIEW --><!-- INCLUDE posting_preview.html --><!-- ENDIF -->
+
+<table class="tablebg" width="100%" cellspacing="1">
+<tr>
+	<th colspan="2" valign="middle">{L_TITLE}</th>
+</tr>
+<!-- IF L_TITLE_EXPLAIN -->
+	<tr class="row1">
+		<td colspan="2" style="padding: 5px;"><span class="gen">{L_TITLE_EXPLAIN}</span></td>
+	</tr>
+<!-- ENDIF -->
+<!-- IF ERROR -->
+	<tr class="row3">
+		<td colspan="2" align="center"><span class="gensmall error">{ERROR}</span></td>
+	</tr>
+<!-- ENDIF -->
+
+<!-- IF MODE == 'ucp_blog_settings' -->
+	<tr>
+		<td class="row1" width="50%"><b class="genmed">{L_BLOG_INSTANT_REDIRECT}:</b><br /><span class="gensmall">{L_BLOG_INSTANT_REDIRECT_EXPLAIN}</span></td>
+		<td class="row2">
+			<input type="radio" name="instant_redirect" id="instant_redirect1" value="1"<!-- IF S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> <span class="gen">{L_YES}</span>&nbsp; &nbsp;
+			<input type="radio" name="instant_redirect" id="instant_redirect0" value="0"<!-- IF not S_BLOG_INSTANT_REDIRECT --> checked="checked"<!-- ENDIF --> /> <span class="gen">{L_NO}</span>
+		</td>
+	</tr>
+	<!-- IF S_SUBSCRIPTIONS -->
+		<tr>
+			<td class="row1"><b class="genmed">{L_SUBSCRIPTION_DEFAULT}</b><br /><span class="gensmall">{L_SUBSCRIPTION_DEFAULT_EXPLAIN}</span></td>
+			<td class="row2">
+				<!-- BEGIN subscriptions -->
+					<input type="checkbox" name="{subscriptions.TYPE}" id="{subscriptions.TYPE}" <!-- IF subscriptions.S_CHECKED -->checked="checked"<!-- ENDIF --> /> <span class="gen">{subscriptions.NAME}</span><br />
+				<!-- END subscriptions -->
+			</td>
+		</tr>
+	<!-- ENDIF -->
+	<!-- IF S_BLOG_STYLE -->
+		<tr>
+			<td class="row1"><b class="genmed">{L_BLOG_STYLE}:</b><br /><span class="gensmall">{L_BLOG_STYLE_EXPLAIN}</span></td>
+			<td class="row2">
+				<select name="blog_style" onchange="document.getElementById('style_demo').src = this.options[selectedIndex].id;">
+					<!-- BEGIN blog_styles -->
+						<option value="{blog_styles.VALUE}"<!-- IF blog_styles.SELECTED --> selected="selected"<!-- ENDIF --> id="{blog_styles.DEMO}">
+							{blog_styles.NAME}<!-- IF blog_styles.BLOG_CSS --> *<!-- ENDIF -->
+						</option>
+					<!-- END blog_styles -->
+				</select>
+				<br /><br />
+				<img id="style_demo" src="{DEFAULT_DEMO}" />
+			</td>
+		</tr>
+		<!-- ENDIF -->
+		<!-- IF S_BLOG_CSS -->
+			<tr>
+				<td class="row1" colspan="2">
+					<b class="genmed">{L_BLOG_CSS}:</b><br /><span class="gensmall">{L_BLOG_CSS_EXPLAIN}</span><br /><br />
+					<div style="text-align: center;">
+						<textarea name="blog_css" id="blog_css" rows="15" cols="76" tabindex="3" style="width: 98%;">{BLOG_CSS}</textarea>
+					</div>
+				</td>
+			</tr>
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+	<!-- IF MODE == 'ucp_blog_permissions' -->
+		<!-- BEGIN permissions -->
+			<tr>
+				<td class="row1"><b class="genmed">{permissions.TITLE}:</b><br /></td>
+				<td class="row2">
+					<span class="genmed"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}0" value="0"<!-- IF permissions.DEFAULT == 0 --> checked="checked"<!-- ENDIF --> /> {L_NO_PERMISSIONS}</span><br />
+					<span class="genmed"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}1" value="1"<!-- IF permissions.DEFAULT == 1 --> checked="checked"<!-- ENDIF --> /> {L_VIEW_PERMISSIONS}</span><br />
+					<span class="genmed"><input type="radio" name="{permissions.NAME}" id="{permissions.NAME}2" value="2"<!-- IF permissions.DEFAULT == 2 --> checked="checked"<!-- ENDIF --> /> {L_REPLY_PERMISSIONS}</span><br />
+				</td>
+			</tr>
+		<!-- END permissions -->
+		<!-- IF not PERMISSIONS_DISABLED -->
+			<tr>
+				<td class="row1" width="50%"><b class="genmed">{L_RESYNC_PERMISSIONS}:</b><br /><span class="gensmall">{L_RESYNC_PERMISSIONS_EXPLAIN}</span></td>
+				<td class="row2"><input type="checkbox" name="resync" id="resync" value="0" /></td>
+			</tr>
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+	<!-- IF MODE == 'ucp_blog_title_description' -->
+		<tr>
+			<td class="row1" colspan="2"><b class="genmed">{L_BLOG_TITLE}:</b> <input class="post" type="text" name="title" size="45" maxlength="255" tabindex="2" value="{TITLE}" /></td>
+		</tr>
+		<tr>
+			<td class="row1" valign="top">
+				<script type="text/javascript">
+				// <![CDATA[
+					var form_name = 'postform';
+					var text_name = 'message';
+				// ]]>
+				</script>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+				<!-- INCLUDE posting_buttons.html -->
+				<tr>
+					<td valign="top" style="width: 100%;"><textarea name="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" style="width: 98%;">{MESSAGE}</textarea></td>
+					<!-- IF S_BBCODE_ALLOWED -->
+					<td width="80" align="center" valign="top">
+						<script type="text/javascript">
+						// <![CDATA[
+							colorPalette('v', 7, 6)
+						// ]]>
+						</script>
+					</td>
+					<!-- ENDIF -->
+	 			</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="row1" colspan="2">
+				<!-- IF S_SMILIES_ALLOWED -->
+					<table width="100%" cellspacing="5" cellpadding="0" border="0" align="center">
+					<tr>
+						<td class="gensmall" align="center"><b>{L_SMILIES}</b></td>
+					</tr>
+					<tr>
+						<td align="center">
+							<!-- BEGIN smiley -->
+								<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;" style="line-height: 20px;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" hspace="2" vspace="2" /></a>
+							<!-- END smiley -->
+						</td>
+					</tr>
+
+					<!-- IF S_SHOW_SMILEY_LINK -->
+						<tr>
+							<td align="center"><a class="nav" href="{U_MORE_SMILIES}" onclick="popup(this.href, 300, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a></td>
+						</tr>
+					<!-- ENDIF -->
+
+					</table>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	<!-- ENDIF -->
+	<tr>
+		<td class="cat" colspan="2" align="center">
+			<!-- IF S_PREVIEW_BUTTON --><input class="btnlite" type="submit" value="{L_PREVIEW}" name="preview" />&nbsp;&nbsp;<!-- ENDIF -->
+			<input class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;&nbsp;
+			<input class="btnlite" type="reset" value="{L_RESET}" name="reset" />
+		</td>
+	</tr>
+</table>
+
+{S_HIDDEN_FIELDS}
+
+<!-- INCLUDE ucp_footer.html -->
