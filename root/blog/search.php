@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: search.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -42,7 +42,7 @@ $search_url = blog_url(false, false, false, array('page' => 'search', 'author' =
 
 blog_plugins::plugin_do('search');
 
-if ($keywords || $author)
+if (($keywords && $keywords != $user->lang['SEARCH_MINI']) || $author)
 {
 	$blog_search = setup_blog_search();
 
