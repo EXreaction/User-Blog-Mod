@@ -10,7 +10,7 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_USERLIST_TIT
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_USERLIST_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '1.0.0';
+self::$available_plugins[$name]['plugin_version'] = '1.0.1';
 
 self::add_to_do(array(
 	'blog_page_switch'			=> array('userlist_blog_page_switch'),
