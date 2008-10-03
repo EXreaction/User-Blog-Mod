@@ -4,7 +4,7 @@
 ##
 ## MOD Description: Displays a list of users who have a blog.
 ##
-## MOD Version: 1.0.0
+## MOD Version: 1.0.1
 ##
 ## Installation Level:	Easy
 ## Installation Time:	~1 Minutes
@@ -19,6 +19,8 @@
 ##(yyyy-mm-dd)
 ## 2008-07-31
 ##		1.0.0 Released
+## 2008-10-02
+##		1.0.1 Released
 ##############################################################
 ## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
 ##############################################################

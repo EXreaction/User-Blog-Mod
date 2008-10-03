@@ -5,15 +5,20 @@ if (!defined('IN_PHPBB'))
 }
 
 $limit = request_var('limit', 10);
+$sort_key = request_var('sk', 't');
 $sort_dir = request_var('sd', 'a');
 $order_dir = ($sort_dir == 'a') ? 'ASC' : 'DESC';
+if ($sort_key == 'pt')
+{
+	$order_dir = ($order_dir == 'ASC') ? 'DESC' : 'ASC';
+}
 
 $user->add_lang(array('mods/blog/view', 'viewtopic'));
 
 $limit_days = array(0 => $user->lang['ALL_POSTS'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
 $s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
 $sort_by_text = array('t' => $user->lang['USERNAME'], 'pt' => $user->lang['LAST_BLOG_TIME']);
-$sort_by_sql = array('t' => 'username', 'pt' => 'blog_time');
+$sort_by_sql = array('t' => 'u.username', 'pt' => 'MAX(b.blog_id)');
 
 $users = array();
 $blog_ids = array();
@@ -29,7 +34,7 @@ $sql = 'SELECT COUNT(b.blog_id) AS blog_count, MAX(b.blog_id) AS blog_id, u.user
 $result = $db->sql_query($sql);
 while ($row = $db->sql_fetchrow($result))
 {
-	$users[$row['user_id']] = $row;
+	$users[] = $row;
 	$blog_ids[] = $row['blog_id'];
 }
 $db->sql_freeresult($result);
@@ -74,7 +79,7 @@ $template->assign_vars(array(
 unset($pagination);
 
 $i = -1;
-foreach ($users as $user_id => $row)
+foreach ($users as $row)
 {
 	$i++;
 	if ($i < $start)
@@ -86,6 +91,7 @@ foreach ($users as $user_id => $row)
 		break;
 	}
 
+	$user_id = $row['user_id'];
 	$last_blog = $last_blogs[$row['blog_id']];
 	$blog_text = trim_text($last_blog['blog_text'], $last_blog['bbcode_uid'], $config['user_blog_text_limit'], $last_blog['bbcode_bitfield'], $last_blog['enable_bbcode']);
 	$bbcode_options = (($last_blog['enable_bbcode']) ? OPTION_FLAG_BBCODE : 0) + (($last_blog['enable_smilies']) ? OPTION_FLAG_SMILIES : 0) + (($last_blog['enable_magic_url']) ? OPTION_FLAG_LINKS : 0);
