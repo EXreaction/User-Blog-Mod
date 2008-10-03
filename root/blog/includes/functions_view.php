@@ -650,37 +650,37 @@ function generate_menu($user_id = false)
 */
 function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = true)
 {
-   // If there is any custom BBCode that can have space in its argument, turn this on,
-   // but else I suggest turning this off as it adds one additional (cache) SQL query
-   $check_custom_bbcodes = true;
+	// If there is any custom BBCode that can have space in its argument, turn this on,
+	// but else I suggest turning this off as it adds one additional (cache) SQL query
+	$check_custom_bbcodes = true;
 
-   if ($enable_bbcode && $check_custom_bbcodes)
-   {
-	  global $db;
-	  static $custom_bbcodes = array();
+	if ($enable_bbcode && $check_custom_bbcodes)
+	{
+		global $db;
+		static $custom_bbcodes = array();
 
-	  // Get all custom bbcodes
-	  if (empty($custom_bbcodes))
-	  {
-		 $sql = 'SELECT bbcode_id, bbcode_tag
+		// Get all custom bbcodes
+		if (empty($custom_bbcodes))
+		{
+			$sql = 'SELECT bbcode_id, bbcode_tag
 			FROM ' . BBCODES_TABLE;
-		 $result = $db->sql_query($sql, 108000);
+			$result = $db->sql_query($sql, 108000);
 
-		 while ($row = $db->sql_fetchrow($result))
-		 {
-			// There can be problems only with tags having an argument
-			if (substr($row['bbcode_tag'], -1, 1) == '=')
+			while ($row = $db->sql_fetchrow($result))
 			{
-			   $custom_bbcodes[$row['bbcode_id']] = array('[' . $row['bbcode_tag'], ':' . $uid . ']');
+				// There can be problems only with tags having an argument
+				if (substr($row['bbcode_tag'], -1, 1) == '=')
+				{
+					$custom_bbcodes[$row['bbcode_id']] = array('[' . $row['bbcode_tag'], ':' . $uid . ']');
+				}
 			}
-		 }
-		 $db->sql_freeresult($result);
-	  }
-   }
+			$db->sql_freeresult($result);
+		}
+	}
 
-   // First truncate the text
-   if (utf8_strlen($text) > $max_length)
-   {
+	// First truncate the text
+	if (utf8_strlen($text) > $max_length)
+	{
 		$next_space = strpos(substr($text, $max_length), ' ');
 		$next_el = strpos(substr($text, $max_length), "\n");
 		if ($next_space !== false)
@@ -703,101 +703,101 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 			$max_length = utf8_strlen($text);
 		}
 
-	  $text = utf8_substr($text, 0, $max_length);
+		$text = utf8_substr($text, 0, $max_length);
 
-	  // Append three dots indicating that this is not the real end of the text
-	  $text .= '...';
+		// Append three dots indicating that this is not the real end of the text
+		$text .= '...';
 
-	  if (!$enable_bbcode)
-	  {
-		 return $text;
-	  }
-   }
-   else
-   {
-	  return $text;
-   }
+		if (!$enable_bbcode)
+		{
+			return $text;
+		}
+	}
+	else
+	{
+		return $text;
+	}
 
-   // Some tags may contain spaces inside the tags themselves.
-   // If there is any tag that had been started but not ended
-   // cut the string off before it begins and add three dots
-   // to the end of the text again as this has been just cut off too.
-   $unsafe_tags = array(
-	  array('<', '>'),
-	  array('[quote=&quot;', "&quot;:$uid]"),
-   );
+	// Some tags may contain spaces inside the tags themselves.
+	// If there is any tag that had been started but not ended
+	// cut the string off before it begins and add three dots
+	// to the end of the text again as this has been just cut off too.
+	$unsafe_tags = array(
+		array('<', '>'),
+		array('[quote=&quot;', "&quot;:$uid]"),
+	);
 
-   // If bitfield is given only check for tags that are surely existing in the text
-   if (!empty($bitfield))
-   {
-	  // Get all used tags
-	  $bitfield = new bitfield($bitfield);
-	  $bbcodes_set = $bitfield->get_all_set();
+	// If bitfield is given only check for tags that are surely existing in the text
+	if (!empty($bitfield))
+	{
+		// Get all used tags
+		$bitfield = new bitfield($bitfield);
+		$bbcodes_set = $bitfield->get_all_set();
 
-	  // Add custom BBCodes having a parameter and being used
-	  // to the array of potential tags that can be cut apart.
-	  foreach ($custom_bbcodes as $bbcode_id => $bbcode_name)
-	  {
-		 if (in_array($bbcode_id, $bbcodes_set))
-		 {
-			$unsafe_tags[] = $bbcode_name;
-		 }
-	  }
-   }
-   // Do the check for all possible tags
-   else
-   {
-	  $unsafe_tags += $custom_bbcodes;
-   }
+		// Add custom BBCodes having a parameter and being used
+		// to the array of potential tags that can be cut apart.
+		foreach ($custom_bbcodes as $bbcode_id => $bbcode_name)
+		{
+			if (in_array($bbcode_id, $bbcodes_set))
+			{
+				$unsafe_tags[] = $bbcode_name;
+			}
+		}
+	}
+	// Do the check for all possible tags
+	else
+	{
+		$unsafe_tags += $custom_bbcodes;
+	}
 
-   foreach($unsafe_tags as $tag)
-   {
-	  if (($start_pos = strrpos($text, $tag[0])) > strrpos($text, $tag[1]))
-	  {
-		 $text = substr($text, 0, $start_pos) . ' ...';
-	  }
-   }
+	foreach($unsafe_tags as $tag)
+	{
+		if (($start_pos = strrpos($text, $tag[0])) > strrpos($text, $tag[1]))
+		{
+			$text = substr($text, 0, $start_pos) . ' ...';
+		}
+	}
 
-   // Get all of the BBCodes the text contains.
-   // If it does not contain any than just skip this step.
-   // Preg expression is borrowed from strip_bbcode()
-   if (preg_match_all("#\[(\/?)([a-z0-9\*\+\-]+)(?:=(&quot;.*&quot;|[^\]]*))?(?::[a-z])?(?:\:$uid)\]#", $text, $matches, PREG_PATTERN_ORDER) != 0)
-   {
-	  $open_tags = array();
+	// Get all of the BBCodes the text contains.
+	// If it does not contain any than just skip this step.
+	// Preg expression is borrowed from strip_bbcode()
+	if (preg_match_all("#\[(\/?)([a-z0-9\*\+\-]+)(?:=(&quot;.*&quot;|[^\]]*))?(?::[a-z])?(?:\:$uid)\]#", $text, $matches, PREG_PATTERN_ORDER) != 0)
+	{
+		$open_tags = array();
 
-	  for ($i = 0, $size = sizeof($matches[0]); $i < $size; ++$i)
-	  {
-		 $bbcode_name = &$matches[2][$i];
-		 $opening = ($matches[1][$i] == '/') ? false : true;
+		for ($i = 0, $size = sizeof($matches[0]); $i < $size; ++$i)
+		{
+			$bbcode_name = &$matches[2][$i];
+			$opening = ($matches[1][$i] == '/') ? false : true;
 
-		 // If a new BBCode is opened add it to the array of open BBCodes
-		 if ($opening)
-		 {
-			$open_tags[] = array(
-			   'name' => $bbcode_name,
-			   'plus' => ($opening && $bbcode_name == 'list' && !empty($matches[3][$i])) ? ':o' : '',
-			);
-		 }
-		 // If a BBCode is closed remove it from the array of open BBCodes.
-		 // As always only the last opened open tag can be closed
-		 // we only need to remove the last element of the array.
-		 else
-		 {
-			array_pop($open_tags);
-		 }
-	  }
+			// If a new BBCode is opened add it to the array of open BBCodes
+			if ($opening)
+			{
+				$open_tags[] = array(
+					'name' => $bbcode_name,
+					'plus' => ($opening && $bbcode_name == 'list' && !empty($matches[3][$i])) ? ':o' : '',
+				);
+			}
+			// If a BBCode is closed remove it from the array of open BBCodes.
+			// As always only the last opened open tag can be closed
+			// we only need to remove the last element of the array.
+			else
+			{
+				array_pop($open_tags);
+			}
+		}
 
-	  // Sort open BBCode tags so the most recently opened will be the first (because it has to be closed first)
-	  krsort ($open_tags);
+		// Sort open BBCode tags so the most recently opened will be the first (because it has to be closed first)
+		krsort ($open_tags);
 
-	  // Close remaining open BBCode tags
-	  foreach ($open_tags as $tag)
-	  {
-		 $text .= '[/' . $tag['name'] . $tag['plus'] . ':' . $uid . ']';
-	  }
-   }
+		// Close remaining open BBCode tags
+		foreach ($open_tags as $tag)
+		{
+			$text .= '[/' . $tag['name'] . $tag['plus'] . ':' . $uid . ']';
+		}
+	}
 
-   return $text;
+	return $text;
 }
 
 /**

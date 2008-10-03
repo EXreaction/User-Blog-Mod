@@ -377,8 +377,8 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 		}
 		else
 		{
-			// Remove HTML comments, HTML ASCII/HEX, and any other characters I do not think is needed.
-			$matches = array('#<!--.+-->#', '$&#?([a-zA-Z0-9]+);?$', '$([^a-zA-Z0-9",\*+%!_\.#{}()/:;-\s])$');
+			// Remove CSS/HTML comments, HTML ASCII/HEX, and any other characters I do not think are needed.
+			$matches = array('#/\*.+\*/#', '#<!--.+-->#', '$&#?([a-zA-Z0-9]+);?$', '$([^a-zA-Z0-9",\*+%!_\.#{}()/:;-\s])$');
 			$data['blog_css'] = preg_replace($matches, ' ', $data['blog_css']);
 		}
 	}
@@ -466,10 +466,11 @@ function setup_blog_search()
 {
 	global $config, $phpbb_root_path, $phpEx;
 
-	if (file_exists($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx))
+	$search_type = basename($config['user_blog_search_type']);
+	if (file_exists($phpbb_root_path . 'blog/search/' . $search_type . '.' . $phpEx))
 	{
-		include($phpbb_root_path . 'blog/search/' . $config['user_blog_search_type'] . '.' . $phpEx);
-		$class = 'blog_' . $config['user_blog_search_type'];
+		include($phpbb_root_path . 'blog/search/' . $search_type . '.' . $phpEx);
+		$class = 'blog_' . $search_type;
 		return new $class();
 	}
 	else
