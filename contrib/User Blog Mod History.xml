@@ -671,6 +671,18 @@
 				<change>To update from 1.0.5 follow the instructions in contrib/update/105_to_106.xml.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-10-02</date>
+			<rev-version>1.0.7</rev-version>
+			<changelog lang="en">
+				<change>Updating to ModX 1.2.1.</change>
+				<change>Fixing a bug which displayed an error when editing an imageset.</change>
+				<change>Changing Poll Options to Add Poll for the title on the tab during posting.</change>
+				<change>Adding fix for IE security vulnerability with Blog CSS.</change>
+				<change>Other fixes for issues reported by the Mod Team.</change>
+				<change>To update from 1.0.6 follow the instructions in contrib/update/106_to_107.xml.</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 </mod>

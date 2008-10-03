@@ -641,6 +641,7 @@ if (confirm_box(true))
 			set_config('user_blog_message_from', 2);
 		case '1.0.4' :
 		case '1.0.5' :
+		case '1.0.6' :
 	}
 
 	// update the version
