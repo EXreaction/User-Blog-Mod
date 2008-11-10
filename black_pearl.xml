@@ -7,10 +7,11 @@
     <title lang="en">User Blog Mod</title>
     <description lang="en">Adds Blogs to a phpBB3 board.</description>
 
-    <author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.  
-Please report any bugs/problems at my website: http://www.lithiumstudios.org.  
-The SVN repository for this project is: http://userblogmod.googlecode.com/svn/trunk/  
-You may check for updated code in the repository, but the latest files in the repository may be broken and have major errors.</author-notes>
+    <author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
+
+Support by the author is only provided at http://www.lithiumstudios.org
+A small fee is required for support by the author unless otherwise specified by the author in the release topic.
+Bug reports are accepted and, if confirmed as a bug, you will receive support for fixing the bug for free by the mod author.</author-notes>
 
 	<author-group>
 		<author>

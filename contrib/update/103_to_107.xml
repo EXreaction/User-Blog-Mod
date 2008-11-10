@@ -8,7 +8,10 @@
 	<description lang="en">Adds Blogs to a phpBB3 board.</description>
 
 	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
-Support will only be given at my website - http://www.lithiumstudios.org.</author-notes>
+
+Support by the author is only provided at http://www.lithiumstudios.org
+A small fee is required for support by the author unless otherwise specified by the author in the release topic.
+Bug reports are accepted and, if confirmed as a bug, you will receive support for fixing the bug for free by the mod author.</author-notes>
 
 	<author-group>
 		<author>
