@@ -22,12 +22,12 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.7</mod-version>
+	<mod-version>1.0.8</mod-version>
 
 	<installation>
 		<level>intermediate</level>
 		<time>600</time>
-		<target-version>3.0.2</target-version>
+		<target-version>3.0.3</target-version>
 	</installation>
 
 	<history>
@@ -138,10 +138,17 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<changelog lang="en">
 				<change>Updating to ModX 1.2.1.</change>
 				<change>Fixing a bug which displayed an error when editing an imageset.</change>
-				<change>Changing Poll Options to Add Poll for the title on the tab during posting.</change>
+				<change>Changing Poll Options to Poll Creation for the title on the tab during posting.</change>
 				<change>Adding fix for IE security vulnerability with Blog CSS.</change>
 				<change>Other fixes for issues reported by the Mod Team.</change>
 				<change>To update from 1.0.6 follow the instructions in contrib/update/106_to_107.xml.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-11-19</date>
+			<rev-version>1.0.8</rev-version>
+			<changelog lang="en">
+				<change>MSSQL Fixes (Thanks DavidIQ)</change>
 			</changelog>
 		</entry>
 	</history>

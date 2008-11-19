@@ -642,6 +642,7 @@ if (confirm_box(true))
 		case '1.0.4' :
 		case '1.0.5' :
 		case '1.0.6' :
+		case '1.0.7' :
 	}
 
 	// update the version

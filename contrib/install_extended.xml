@@ -18,12 +18,12 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.7</mod-version>
+	<mod-version>1.0.8</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>300</time>
-		<target-version>3.0.2</target-version>
+		<target-version>3.0.3</target-version>
 	</installation>
 
 	<history>
@@ -76,6 +76,13 @@
 			<rev-version>1.0.7</rev-version>
 			<changelog lang="en">
 				<change>No changes were made to the extended install version since 1.0.6.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-11-19</date>
+			<rev-version>1.0.8</rev-version>
+			<changelog lang="en">
+				<change>No changes were made to the extended install version since 1.0.7.</change>
 			</changelog>
 		</entry>
 	</history>
