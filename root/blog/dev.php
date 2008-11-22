@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: dev.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -598,7 +598,7 @@ function get_schema_struct()
 {
 	$schema_data = array();
 
-/* Blog Tags Plugin 
+/* Blog Tags Plugin
 	$schema_data['phpbb_blogs_tags'] = array(
 		'COLUMNS'		=> array(
 			'tag_id'		=> array('UINT', NULL, 'auto_increment'),
@@ -832,7 +832,7 @@ function get_schema_struct()
 			'blog_id'				=> array('UINT', 0),
 			'user_id'				=> array('UINT', 0),
 		),
-		'PRIMARY_KEY'	=> 'sub_user_id, sub_type, blog_id, user_id',
+		'PRIMARY_KEY'	=> array('sub_user_id', 'sub_type', 'blog_id', 'user_id'),
 	);
 
 	$schema_data['phpbb_blogs_users'] = array(
