@@ -327,12 +327,13 @@ CREATE TABLE [phpbb_blogs_subscription] (
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [phpbb_blogs_subscription] WITH NOCHECK ADD 
-	CONSTRAINT [PK_phpbb_blogs_subscription] PRIMARY KEY  CLUSTERED 
-	(
-		[sub_user_id, sub_type, blog_id, user_id]
-	)  ON [PRIMARY] 
-GO
+ALTER TABLE [phpbb_blogs_subscription] ADD PRIMARY KEY CLUSTERED
+(
+	[sub_user_id] ASC,
+	[sub_type] ASC,
+	[blog_id] ASC,
+	[user_id] ASC
+) ON [PRIMARY]
 
 
 /*

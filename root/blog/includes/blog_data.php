@@ -725,6 +725,7 @@ class blog_data
 			case 'count' : // this just does a count of the number of replies
 				$sql_array['SELECT'] = 'count(r.reply_id) AS total';
 				$sql_array['WHERE'] = implode(' AND ', $sql_array['WHERE']);
+				unset($sql_array['ORDER_BY']);
 				$sql = $db->sql_build_query('SELECT', $sql_array);
 
 				$result = $db->sql_query($sql);
