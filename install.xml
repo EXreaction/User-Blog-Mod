@@ -149,6 +149,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<rev-version>1.0.8</rev-version>
 			<changelog lang="en">
 				<change>MSSQL Fixes (Thanks DavidIQ)</change>
+				<change>3.0.3 support</change>
 			</changelog>
 		</entry>
 	</history>
@@ -267,7 +268,7 @@ Rewriterule ^blog/$						./blog/blog.php]]></action>
 	</open>
 	<open src="viewtopic.php">
 		<edit>
-			<find><![CDATA['search'		=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", 'search_author=' . urlencode($row['username']) .'&amp;sr=posts') : '',]]></find>
+			<find><![CDATA['search'		=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx",]]></find>
 			<action type="after-add">				'blog_count'	=> ((isset($row['blog_count'])) ? $row['blog_count'] : 0),</action>
 		</edit>
 		<edit>

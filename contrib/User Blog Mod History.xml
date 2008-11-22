@@ -688,6 +688,7 @@
 			<rev-version>1.0.8</rev-version>
 			<changelog lang="en">
 				<change>MSSQL Fixes (Thanks DavidIQ)</change>
+				<change>3.0.3 support</change>
 			</changelog>
 		</entry>
 	</history>
