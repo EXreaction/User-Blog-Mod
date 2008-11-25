@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: data.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -88,6 +88,7 @@ $sql_data = array(
 	'bbcode_bitfield'			=> $message_parser->bbcode_bitfield,
 	'bbcode_uid'				=> $message_parser->bbcode_uid,
 	'blog_edit_reason'			=> '',
+	'poll_title'				=> '',
 );
 $sql = 'INSERT INTO ' . BLOGS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_data);
 $db->sql_query($sql);
