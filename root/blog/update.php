@@ -643,18 +643,14 @@ if (confirm_box(true))
 		case '1.0.5' :
 		case '1.0.6' :
 		case '1.0.7' :
-	}
-
-	// update the version
-	if (!strpos(USER_BLOG_MOD_VERSION, 'dev'))
-	{
-		set_config('user_blog_version', USER_BLOG_MOD_VERSION);
+			set_config('user_blog_version', '1.0.7');
 	}
 
 	// clear the cache
 	$cache->purge();
 
-	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED'], USER_BLOG_MOD_VERSION, '<a href="' . append_sid("{$phpbb_root_path}blog.$phpEx") . '">', '</a>');
+	$user->add_lang('mods/blog/umil');
+	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED_UMIL_RETURN'], '<a href="' . append_sid("{$phpbb_root_path}blog/install.$phpEx") . '">', '</a>');
 	trigger_error($message);
 }
 else
