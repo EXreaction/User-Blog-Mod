@@ -227,7 +227,7 @@ class acp_blogs
 
 		if (version_compare(USER_BLOG_MOD_VERSION, $value, '>'))
 		{
-			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . blog_url(false, false, false, array('page' => 'update', 'mode' => 'update')) . '">', '</a>') . '<br />';
+			$version .= '<br /><br />' . sprintf($user->lang['CLICK_UPDATE'], '<a href="' . append_sid("{$phpbb_root_path}blog/database.$phpEx") . '">', '</a>') . '<br />';
 		}
 
 		return $version;
