@@ -650,7 +650,7 @@ if (confirm_box(true))
 	$cache->purge();
 
 	$user->add_lang('mods/blog/umil');
-	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED_UMIL_RETURN'], '<a href="' . append_sid("{$phpbb_root_path}blog/install.$phpEx") . '">', '</a>');
+	$message = sprintf($user->lang['SUCCESSFULLY_UPDATED_UMIL_RETURN'], '<a href="' . append_sid("{$phpbb_root_path}blog/database.$phpEx") . '">', '</a>');
 	trigger_error($message);
 }
 else

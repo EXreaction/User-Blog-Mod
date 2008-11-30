@@ -27,7 +27,7 @@ $mod_name = 'USER_BLOG_MOD';
 $version_config_name = 'user_blog_version';
 
 /*
-* Since this was implimented long after the mod was started it is not really possible to write the install/uninstall instructions for all versions the way it was setup.
+* Since this was implimented long after the mod was started, it is not really possible to write the install/uninstall instructions for all versions the way it was setup.
 * So instead of making a mess trying to do that, 0.9.0 will be are starting point and any versions prior to that will need to use the old update script.
 */
 if (isset($config[$version_config_name]) && version_compare($config[$version_config_name], '0.9.0', '<'))
@@ -97,7 +97,6 @@ $versions = array(
 					'blog_id'				=> array('UINT', 0),
 					'reply_id'				=> array('UINT', 0),
 					'poster_id'				=> array('UINT', 0),
-					'is_orphan'				=> array('BOOL', 1),
 					'is_orphan'				=> array('BOOL', 1),
 					'physical_filename'		=> array('VCHAR', ''),
 					'real_filename'			=> array('VCHAR', ''),
@@ -382,15 +381,17 @@ $versions = array(
 	),
 	'1.0.3'		=> array(),
 	'1.0.4'		=> array(
-		'custom'	=> 'ubm_custom_install',
 		'config_add'	=> array(
 			array('user_blog_message_from', 2),
 		),
+
+		'custom'	=> 'ubm_custom_install',
 	),
 	'1.0.5'		=> array(),
 	'1.0.6'		=> array(),
 	'1.0.7'		=> array(),
 	'1.0.8'		=> array(),
+	'1.0.9'		=> array(),
 );
 
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);

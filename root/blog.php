@@ -60,7 +60,7 @@ set_error_handler('blog_error_handler');
 if (!isset($config['user_blog_enable']) && $user->data['user_type'] == USER_FOUNDER)
 {
 	// Now we will just redirect to the install.php file.  Otherwise we have problems with some stuff trying to get data from non-existing tables.
-	redirect(append_sid("{$phpbb_root_path}blog/install.$phpEx"));
+	redirect(append_sid("{$phpbb_root_path}blog/database.$phpEx"));
 }
 else if ((!isset($config['user_blog_enable']) || !$config['user_blog_enable']) && $user->data['user_type'] != USER_FOUNDER)
 {
