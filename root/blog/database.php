@@ -366,7 +366,12 @@ $versions = array(
 
 		'custom'	=> 'ubm_custom_install',
 
-		'cache_purge'	=> array(),
+		'cache_purge'	=> array(
+			array(),
+			array('imageset'),
+			array('template'),
+			array('theme'),
+		),
 	),
 
 	'0.9.1'		=> array(),
