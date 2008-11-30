@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: tables.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB') || !defined('IN_BLOG_INSTALL'))
 */
 if ($dbms == 'mysql' || $dbms == 'mysqli')
 {
-	if ($dbms == 'mysqli' || version_compare($db->mysql_version, '4.1.3', '>='))
+    if ($dbms == 'mysqli' || (isset($db->mysql_version) && version_compare($db->mysql_version, '4.1.3', '>=')) || (isset($db->sql_server_version) && version_compare($db->sql_server_version, '4.1.3', '>=')))
 	{
 		$dbms_schema = 'mysql_41_schema.sql';
 	}
