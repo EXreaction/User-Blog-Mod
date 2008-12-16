@@ -514,6 +514,11 @@ class blog_data
 			self::$blog[$row['blog_id']]['poll_options'][$row['poll_option_id']] = $row;
 		}
 
+		foreach ($blog_ids as $id)
+		{
+			self::$blog[$id]['poll_options'] = array_reverse(self::$blog[$id]['poll_options']);
+		}
+
 		// Get the votes and store it in $blog[$blog_id]['poll_votes'][$poll_option_id]
 		// votes are in ['votes'], voter info is in ['voters']
 		$sql = 'SELECT * FROM ' . BLOGS_POLL_VOTES_TABLE . ' WHERE ' . $db->sql_in_set('blog_id', $blog_ids);

@@ -383,8 +383,7 @@ function submit_blog_poll($poll, $blog_id, $mode = 'add')
 		{
 			$sql = 'SELECT *
 				FROM ' . BLOGS_POLL_OPTIONS_TABLE . '
-				WHERE blog_id = ' . $blog_id . '
-				ORDER BY poll_option_id';
+				WHERE blog_id = ' . $blog_id;
 			$result = $db->sql_query($sql);
 
 			$cur_poll_options = array();
@@ -398,12 +397,15 @@ function submit_blog_poll($poll, $blog_id, $mode = 'add')
 		// If edited, we would need to reset votes (since options can be re-ordered above, you can't be sure if the change is for changing the text or adding an option
 		if ($mode == 'edit' && sizeof($poll['poll_options']) != sizeof($cur_poll_options))
 		{
-
 			$sql = 'DELETE FROM ' . BLOGS_POLL_OPTIONS_TABLE . '
 				WHERE blog_id = ' . $blog_id;
 			$db->sql_query($sql);
 			$db->sql_query('DELETE FROM ' . BLOGS_POLL_VOTES_TABLE . ' WHERE blog_id = ' . $blog_id);
 			$db->sql_query('UPDATE ' . BLOGS_POLL_OPTIONS_TABLE . ' SET poll_option_total = 0 WHERE blog_id = ' . $blog_id);
+		}
+		else if ($mode == 'edit')
+		{
+			return;
 		}
 
 		$sql_insert_ary = array();
