@@ -27,7 +27,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 	<installation>
 		<level>intermediate</level>
 		<time>600</time>
-		<target-version>3.0.3</target-version>
+		<target-version>3.0.4</target-version>
 	</installation>
 
 	<history>
@@ -156,7 +156,8 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<date>2008-00-00</date>
 			<rev-version>1.0.9</rev-version>
 			<changelog lang="en">
-				<change>No using UMIL for installation/updating/uninstallation</change>
+				<change>Now using UMIL for installation/updating/uninstallation</change>
+				<change>Fixing the two bugs noted here: http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=1048</change>
 			</changelog>
 		</entry>
 	</history>

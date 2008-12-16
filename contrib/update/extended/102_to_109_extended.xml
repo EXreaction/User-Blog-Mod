@@ -18,12 +18,12 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.8</mod-version>
+	<mod-version>1.0.9</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>1</time>
-		<target-version>3.0.3</target-version>
+		<target-version>3.0.4</target-version>
 	</installation>
 </header>
 

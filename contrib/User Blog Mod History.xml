@@ -691,6 +691,14 @@
 				<change>3.0.3 support</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2008-00-00</date>
+			<rev-version>1.0.9</rev-version>
+			<changelog lang="en">
+				<change>Now using UMIL for installation/updating/uninstallation</change>
+				<change>Fixing the two bugs noted here: http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=1048</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 </mod>
