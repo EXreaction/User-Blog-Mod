@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: functions_permissions.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -68,7 +68,7 @@ function handle_user_blog_permissions($blog_id, $user_id = false, $mode = 'read'
 
 	if ($config['user_blog_enable_zebra'])
 	{
-		if (!array_key_exists($user_id, $zebra_list))
+		if (!is_array($zebra_list) || !array_key_exists($user_id, $zebra_list))
 		{
 			get_zebra_info($user_id);
 		}
