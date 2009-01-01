@@ -692,11 +692,12 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2008-00-00</date>
+			<date>2009-01-01</date>
 			<rev-version>1.0.9</rev-version>
 			<changelog lang="en">
 				<change>Now using UMIL for installation/updating/uninstallation</change>
 				<change>Fixing the two bugs noted here: http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=1048</change>
+				<change>Fixing the bug noted here: http://www.lithiumstudios.org/forum/viewtopic.php?p=8285#p8285</change>
 			</changelog>
 		</entry>
 	</history>
