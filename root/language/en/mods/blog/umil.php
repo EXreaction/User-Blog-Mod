@@ -30,16 +30,10 @@ $lang = array_merge($lang, array(
 	'FIXING_MISSING_STYLES'				=> 'Resetting any styles which no longer exist.',
 
 	'INSTALLING_ARCHIVE_PLUGIN'			=> 'Installing Archive Plugin',
-	'INSTALL_USER_BLOG_MOD'				=> 'Install User Blog Mod',
-	'INSTALL_USER_BLOG_MOD_CONFIRM'		=> 'Are you ready to install the User Blog Mod?',
 
 	'SETTING_DEFAULT_PERMISSIONS'		=> 'Setting Default Permissions',
 	'SUCCESSFULLY_UPDATED_UMIL_RETURN'	=> 'You have successfully updated to 1.0.7.  Because of the new install system for 1.0.8 and beyond, you must finish the update process by going <a href="%s">here</a>.',
 
-	'UNINSTALL_USER_BLOG_MOD'			=> 'Uninstall User Blog Mod',
-	'UNINSTALL_USER_BLOG_MOD_CONFIRM'	=> 'Are you ready to uninstall the User Blog Mod?  All settings and data saved by this mod will be removed!',
-	'UPDATE_USER_BLOG_MOD'				=> 'Update User Blog Mod',
-	'UPDATE_USER_BLOG_MOD_CONFIRM'		=> 'Are you ready to update the User Blog Mod?',
 	'USER_BLOG_MOD'						=> 'User Blog Mod',
 	'USE_OLD_UPDATE_SCRIPT'				=> 'Versions prior to 0.9.0 can not be updated using this method, you must use the old update script first, then come back to this to do any further updates.<br />The old update script is located <a href="%s">here</a>.',
 ));

@@ -698,6 +698,7 @@
 				<change>Now using UMIL for installation/updating/uninstallation</change>
 				<change>Fixing the two bugs noted here: http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=1048</change>
 				<change>Fixing the bug noted here: http://www.lithiumstudios.org/forum/viewtopic.php?p=8285#p8285</change>
+				<change>NOTE FOR TRANSLATORS: A new language file has been added.  It is language/en/mods/blog/umil.php.</change>
 			</changelog>
 		</entry>
 	</history>
