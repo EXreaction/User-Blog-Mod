@@ -355,15 +355,17 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 	if (isset($data['blog_css']))
 	{
 		// Check for valid images if the user put in any urls.
+		/* This just does not seem to work correctly all the time, so I am removing it.
+		It really isn't that important anyways, since someone could link to an image, then after they submit the page replace the image with whatever they want.
 		$urls = array();
-		preg_match_all('#([a-zA-Z]+)://([^\.]+)\.([a-zA-Z0-9]+)([^\.]+)\.([a-zA-Z0-9]+)#', $data['blog_css'], $urls);
+		preg_match_all('#([a-zA-Z]+):((//)|(\\\\))+[\w\d:\#%/;$~_?\\-=\\\.&]*#', $data['blog_css'], $urls);
 		foreach ($urls[0] as $img)
 		{
 			if (@getimagesize($img) === false)
 			{
 				$data['blog_css'] = str_replace($img, ' ', $data['blog_css']);
 			}
-		}
+		}*/
 
 		// Replace quotes so they can be used.
 		$data['blog_css'] = str_replace('&quot;', '"', $data['blog_css']);
