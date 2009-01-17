@@ -11,10 +11,6 @@
 define('UMIL_AUTO', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : '../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
-{
-	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
-}
 
 define('IN_PHPBB', true);
 include($phpbb_root_path . 'common.' . $phpEx);
@@ -22,6 +18,11 @@ include($phpbb_root_path . 'blog/functions.' . $phpEx);
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup(array('mods/blog/umil', 'mods/blog/common', 'mods/blog/setup'));
+
+if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
+{
+	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
+}
 
 $mod_name = 'USER_BLOG_MOD';
 $version_config_name = 'user_blog_version';
