@@ -760,6 +760,7 @@ class post_options
 			'S_BBCODE_IMG'				=> $this->img_status,
 			'S_BBCODE_URL'				=> $this->url_status,
 			'S_BBCODE_FLASH'			=> $this->flash_status,
+			'S_BBCODE_QUOTE'			=> true,
 		));
 
 		blog_plugins::plugin_do('post_options_set_in_template');
