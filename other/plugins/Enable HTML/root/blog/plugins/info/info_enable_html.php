@@ -29,6 +29,8 @@ $to_do = array(
 	'reply_add_preview'		=> array('blog_enable_html_add_preview'),
 	'reply_edit_preview'	=> array('blog_enable_html_edit_preview'),
 	'reply_handle_data_end'	=> array('reply_enable_html'),
+
+	'user_handle_data'		=> array('user_enable_html'),
 );
 
 foreach($to_do as $do => $what)

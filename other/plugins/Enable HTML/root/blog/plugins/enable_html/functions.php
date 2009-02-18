@@ -99,4 +99,14 @@ function reply_enable_html(&$arg)
 		$arg['MESSAGE'] = enable_html($arg['MESSAGE'], '');
 	}
 }
+
+function user_enable_html(&$arg)
+{
+	$html_auth = enable_html_permission($arg['USER_ID'], blog_data::$user[$arg['USER_ID']]);
+
+	if ($html_auth)
+	{
+		$arg['SIGNATURE'] = enable_html($arg['SIGNATURE'], '');
+	}
+}
 ?>
