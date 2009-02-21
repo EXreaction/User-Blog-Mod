@@ -38,7 +38,7 @@ $lang = array_merge($lang, array(
 	'RESYNC_PERMISSIONS'					=> 'Resync Permissions',
 	'RESYNC_PERMISSIONS_EXPLAIN'			=> 'Check this if you want to resync all blog entries to have the permissions set above.',
 
-	'SUBSCRIPTION_DEFAULT'					=> 'Default Subscription',
+	'SUBSCRIPTION_DEFAULT'					=> 'Default Subscription:',
 	'SUBSCRIPTION_DEFAULT_EXPLAIN'			=> 'Select which subscription types you would like to recieve by default when someone comments on a blog entry you posted or commented on.  You can set this on each post you make as well.',
 
 	'UCP_BLOG_PERMISSIONS_EXPLAIN'			=> 'Here you can change the permission settings for your Blog.<br />Note that the global board permissions override all permissions set here.',
