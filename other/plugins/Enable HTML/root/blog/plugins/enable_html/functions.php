@@ -102,6 +102,12 @@ function reply_enable_html(&$arg)
 
 function user_enable_html(&$arg)
 {
+	if (!function_exists('enable_html_permission'))
+	{
+		global $phpbb_root_path, $phpEx;
+		include($phpbb_root_path . 'includes/mods/enable_html.' . $phpEx);
+	}
+
 	$html_auth = enable_html_permission($arg['USER_ID'], blog_data::$user[$arg['USER_ID']]);
 
 	if ($html_auth)
