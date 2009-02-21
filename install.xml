@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.9</mod-version>
+	<mod-version>1.0.10_dev</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -160,6 +160,17 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>Fixing the two bugs noted here: http://www.lithiumstudios.org/forum/viewtopic.php?f=41&amp;t=1048</change>
 				<change>Fixing the bug noted here: http://www.lithiumstudios.org/forum/viewtopic.php?p=8285#p8285</change>
 				<change>NOTE FOR TRANSLATORS: A new language file has been added.  It is language/en/mods/blog/umil.php.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2009-01-01</date>
+			<rev-version>1.0.10_dev</rev-version>
+			<changelog lang="en">
+				<change>ModX 1.2.2</change>
+				<change>Removing the image check in the blog css filter (it was useless and broke some other things)</change>
+				<change>Adding quote button to BBCode buttons listed</change>
+				<change>Bug #15 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=15</change>
+				<change>Bug #17 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=17</change>
 			</changelog>
 		</entry>
 	</history>
