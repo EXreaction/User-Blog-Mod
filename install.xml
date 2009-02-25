@@ -279,12 +279,14 @@ img_button_blog_new = button_blog_new.gif*25*96]]></action>
 Order Allow,Deny
 Deny from All
 </Files>]]></find>
-			<action type="after-add"><![CDATA[RewriteEngine on
+			<action type="after-add"><![CDATA[<IfModule mod_rewrite.c>
+RewriteEngine on
 
 Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
 Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
 Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php]]></action>
+Rewriterule ^blog/$						./blog/blog.php
+</IfModule>]]></action>
 		</edit>
 	</open>
 	<open src="viewtopic.php">
