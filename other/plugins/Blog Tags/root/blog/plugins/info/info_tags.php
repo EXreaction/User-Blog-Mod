@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog Tags
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -18,7 +18,7 @@ self::$available_plugins[$name]['plugin_title'] = $user->lang['BLOG_TAGS_TITLE']
 self::$available_plugins[$name]['plugin_description'] = $user->lang['BLOG_TAGS_DESCRIPTION'];
 
 self::$available_plugins[$name]['plugin_copyright'] = 'EXreaction';
-self::$available_plugins[$name]['plugin_version'] = '0.7.2';
+self::$available_plugins[$name]['plugin_version'] = '0.7.3';
 
 $to_do = array(
 	'function_handle_basic_posting_data'		=> array('tags_function_handle_basic_posting_data'),

@@ -3,13 +3,13 @@
 *
 * @package phpBB3 User Blog Tags
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
 if ($dbms == 'mysql' || $dbms == 'mysqli')
 {
-	if ($dbms == 'mysqli' || version_compare($db->mysql_version, '4.1.3', '>='))
+	if ($dbms == 'mysqli' || (isset($db->mysql_version) && version_compare($db->mysql_version, '4.1.3', '>=')) || (isset($db->sql_server_version) && version_compare($db->sql_server_version, '4.1.3', '>=')))
 	{
 		$dbms_schema = 'mysql_41_schema.sql';
 	}
