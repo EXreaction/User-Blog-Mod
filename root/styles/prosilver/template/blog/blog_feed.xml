@@ -1,5 +1,5 @@
 <!-- IF FEED == 'RSS_0.91' -->
-	<?xml version="1.0"?>
+	<?xml version="1.0" encoding="utf-8"?>
 	<rss version="0.91">
 		<channel>
 			<title><![CDATA[{TITLE}]]></title>
@@ -16,7 +16,7 @@
 		</channel>
 	</rss>
 <!-- ELSEIF FEED == 'RSS_1.0' -->
-	<?xml version="1.0"?>
+	<?xml version="1.0" encoding="utf-8"?>
 	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 		<channel rdf:about="{SELF_URL}">
 			<title><![CDATA[{TITLE}]]></title>
@@ -39,12 +39,12 @@
 		<!-- END item -->
 	</rdf:RDF>
 <!-- ELSEIF FEED == 'RSS_2.0' -->
-	<?xml version="1.0"?>
+	<?xml version="1.0" encoding="utf-8"?>
 	<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 		<channel>
 			<title><![CDATA[{TITLE}]]></title>
 			<link>{SITE_URL}</link>
-			<atom:link href="{SITE_URL}" rel="self" type="application/rss+xml" />
+			<atom:link href="{SELF_FULL_URL}" rel="self" type="application/rss+xml" />
 			<description><![CDATA[{SITE_DESC}]]></description>
 			<language>{SITE_LANG}</language>
 			<lastBuildDate>{CURRENT_TIME}</lastBuildDate>

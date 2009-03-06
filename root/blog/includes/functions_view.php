@@ -1156,12 +1156,22 @@ function feed_output($ids, $feed_type)
 		blog_plugins::plugin_do_arg('function_feed_output', compact('ids', 'feed_type', 'mode'));
 	}
 
-	// Ok, now use the main template for this and immediately call page_footer.
+	// Output time
+	header('Content-type: application/xml; charset=UTF-8');
+
+	header('Cache-Control: private, no-cache="set-cookie"');
+	header('Expires: 0');
+	header('Pragma: no-cache');
+
 	$template->set_template();
 	$template->set_filenames(array(
 		'body' => 'blog/blog_feed.xml'
 	));
-	page_footer();
+
+	$template->display('body');
+
+	garbage_collection();
+	exit_handler();
 }
 
 /**

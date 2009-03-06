@@ -124,7 +124,5 @@ if (!$feed)
 else // if $feed
 {
 	feed_output($blog_ids, $feed);
-
-	blog_plugins::plugin_do('view_user_feed_end');
 }
 ?>
