@@ -170,9 +170,10 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>Removing the image check in the blog css filter (it was useless and broke some other things)</change>
 				<change>Adding quote button to BBCode buttons listed</change>
 				<change>Fixing XHTML validation errors</change>
-				<change>Bug #15 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=15</change>
-				<change>Bug #17 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=17</change>
-				<change>Bug #25 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=25</change>
+				<change>[Change] Using L_INDEX instead of L_FORUM in Coda Bug #15 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=15</change>
+				<change>[Fix] Missing some colons. Bug #17 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=17</change>
+				<change>[Fix] Bad encoding for XML feeds.  Bug #25 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=25</change>
+				<change>[Fix] Rank images were pointing to the wrong location after phpBB3 fixed a bug in their rank images function.  Bug #34 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=34</change>
 			</changelog>
 		</entry>
 	</history>

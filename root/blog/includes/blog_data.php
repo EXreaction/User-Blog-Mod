@@ -1154,7 +1154,7 @@ class blog_data
 			'POSTER_FROM'		=> self::$user[$user_id]['user_from'],
 			'POSTER_JOINED'		=> $user->format_date(self::$user[$user_id]['user_regdate']),
 			'POSTER_POSTS'		=> self::$user[$user_id]['user_posts'],
-			'RANK_IMG'			=> str_replace('img src="', 'img src="' . $phpbb_root_path, self::$user[$user_id]['rank_img']),
+			'RANK_IMG'			=> $phpbb_root_path, self::$user[$user_id]['rank_img'],
 			'RANK_IMG_SRC'		=> self::$user[$user_id]['rank_img_src'],
 			'RANK_TITLE'		=> self::$user[$user_id]['rank_title'],
 			'SIGNATURE'			=> ($config['allow_sig'] && $user->optionget('viewsigs') && self::$user[$user_id]['user_sig']) ? generate_text_for_display(self::$user[$user_id]['user_sig'], self::$user[$user_id]['user_sig_bbcode_uid'], self::$user[$user_id]['user_sig_bbcode_bitfield'], 7) : '',
