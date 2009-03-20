@@ -1157,7 +1157,14 @@ function feed_output($ids, $feed_type)
 	}
 
 	// Output time
-	header('Content-type: application/xml; charset=UTF-8');
+	if ($feed_type == 'JAVASCRIPT')
+	{
+		header('Content-type: text/html; charset=UTF-8');
+	}
+	else
+	{
+		header('Content-type: application/xml; charset=UTF-8');
+	}
 
 	header('Cache-Control: private, no-cache="set-cookie"');
 	header('Expires: 0');
