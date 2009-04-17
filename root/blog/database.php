@@ -463,7 +463,11 @@ function ubm_custom_install($action, $version)
 					$umil->umil_end();
 
 					$umil->umil_start('ADDING_FIRST_BLOG');
-					include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+
+					if (!class_exists('bbcode_firstpass'))
+					{
+						include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+					}
 
 					$message_parser = new parse_message();
 					$blog_search = setup_blog_search();

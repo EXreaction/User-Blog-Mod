@@ -761,7 +761,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 	// Get all of the BBCodes the text contains.
 	// If it does not contain any than just skip this step.
 	// Preg expression is borrowed from strip_bbcode()
-	if (preg_match_all("#\[(\/?)([a-z0-9\*\+\-]+)(?:=(&quot;.*&quot;|[^\]]*))?(?::[a-z])?(?:\:$uid)\]#", $text, $matches, PREG_PATTERN_ORDER) != 0)
+	if (preg_match_all("#\[(\/?)([a-z0-9_\*\+\-]+)(?:=(&quot;.*&quot;|[^\]]*))?(?::[a-z])?(?:\:$uid)\]#", $text, $matches, PREG_PATTERN_ORDER) != 0)
 	{
 		$open_tags = array();
 

@@ -50,6 +50,7 @@ $lang = array_merge($lang, array(
 	'REMOVE_RATING'					=> 'Reset Rating',
 	'REPLY_SHOW_NO_JS'				=> 'You must enable Javascript to view this post.',
 	'REPORTED'						=> 'This message has been reported.  Click here to close the report.',
+	'REPORTED_SHORT'				=> 'Reported',
 
 	'SUBCATEGORIES'					=> 'Subcategories',
 	'SUBCATEGORY'					=> 'Subcategory',
