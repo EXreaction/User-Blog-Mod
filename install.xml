@@ -174,6 +174,11 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Missing some colons. Bug #17 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=17</change>
 				<change>[Fix] Bad encoding for XML feeds.  Bug #25 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=25</change>
 				<change>[Fix] Rank images were pointing to the wrong location after phpBB3 fixed a bug in their rank images function.  Bug #34 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=34</change>
+				<change>[Fix] REPORTED_SHORT was not defined in the language files.  Bug #39 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=39</change>
+				<change>[Fix] WARN_USER should be L_WARN_USER.  Bug #40 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=40</change>
+				<change>[Fix] Trim text function broken with _ in the bbcodes.  Bug #42 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=42</change>
+				<change>[Fix] Make sure we are not including the blog functions again in the blog/header file if they are already included.  Bug #44 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=44</change>
+				<change>[Fix] Do not include the message parser during install unless required.  Bug #47 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=47</change>
 			</changelog>
 		</entry>
 	</history>

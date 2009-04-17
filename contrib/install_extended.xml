@@ -18,7 +18,7 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.9</mod-version>
+	<mod-version>1.0.10_dev</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -90,6 +90,13 @@
 			<rev-version>1.0.9</rev-version>
 			<changelog lang="en">
 				<change>No changes were made to the extended install version since 1.0.8.</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2009-01-01</date>
+			<rev-version>1.0.10_dev</rev-version>
+			<changelog lang="en">
+				<change>Fix in the viewonline code to work with SEO urls.  Bug #43</change>
 			</changelog>
 		</entry>
 	</history>
@@ -172,6 +179,7 @@ $db->sql_freeresult($result);
 			<find>case 'index':</find>
 			<action type="before-add"><![CDATA[		// Start Add User Blog Mod ------------------
 		case 'blog' :
+		case 'blog/view/blog' :
 			$user->add_lang('mods/blog/viewonline');
 			$vars = array();
 			foreach (explode('&', substr($row['session_page'], strpos($row['session_page'], '?') + 1)) as $var)
@@ -202,6 +210,11 @@ $db->sql_freeresult($result);
 			{
 				$location = sprintf($user->lang['VIEWING_USERS_BLOG'], $users[$vars['u']]['username']);
 				$location_url = append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $vars['u']);
+			}
+			else if ($on_page[1] == 'blog/view/blog' && isset($vars['page']) && !isset($vars['mode']))
+			{
+				$location = sprintf($user->lang['VIEWING_USERS_BLOG'], $vars['page']);
+				$location_url = append_sid("{$phpbb_root_path}blog.$phpEx", 'page=' . $vars['page']);
 			}
 			else
 			{
