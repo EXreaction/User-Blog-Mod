@@ -398,6 +398,7 @@ $versions = array(
 	'1.0.7'		=> array(),
 	'1.0.8'		=> array(),
 	'1.0.9'		=> array(),
+	'1.0.10'	=> array(),
 );
 
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);

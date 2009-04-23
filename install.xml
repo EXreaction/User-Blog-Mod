@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.10_dev</mod-version>
+	<mod-version>1.0.10</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -163,8 +163,8 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			</changelog>
 		</entry>
 		<entry>
-			<date>2009-01-01</date>
-			<rev-version>1.0.10_dev</rev-version>
+			<date>2009-04-23</date>
+			<rev-version>1.0.10</rev-version>
 			<changelog lang="en">
 				<change>ModX 1.2.2</change>
 				<change>Removing the image check in the blog css filter (it was useless and broke some other things)</change>

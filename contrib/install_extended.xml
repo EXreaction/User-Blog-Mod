@@ -18,7 +18,7 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.10_dev</mod-version>
+	<mod-version>1.0.10</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -93,8 +93,8 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2009-01-01</date>
-			<rev-version>1.0.10_dev</rev-version>
+			<date>2009-04-23</date>
+			<rev-version>1.0.10</rev-version>
 			<changelog lang="en">
 				<change>Fix in the viewonline code to work with SEO urls.  Bug #43</change>
 			</changelog>
