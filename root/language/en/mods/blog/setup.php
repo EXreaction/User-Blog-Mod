@@ -87,8 +87,13 @@ $lang = array_merge($lang, array(
 Release Topic:
 http://lithiumstudios.org/forum/viewtopic.php?f=41&t=433
 
-Support will only be given at lithiumstudios.org.  If you have any comments or need support ask in this forum:
-http://lithiumstudios.org/forum/viewforum.php?f=41',
+Support by the author will only be given at lithiumstudios.org.
+
+If you have any comments or need support post in this forum:
+http://www.lithiumstudios.org/forum/viewforum.php?f=57
+
+Please check the User Blog Mod forum for information before asking for support.
+http://www.lithiumstudios.org/forum/viewforum.php?f=41',
 	'WELCOME_SUBJECT'				=> 'Welcome to the User Blog Mod!',
 ));
 
