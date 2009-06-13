@@ -20,10 +20,10 @@ if (!defined('IN_PHPBB'))
 */
 function url_replace($url)
 {
-	$match = array('-', '?', '/', '\\', '\'', '&amp;', '&lt;', '&gt;', '&quot;', ':');
+	$match = array('#', '-', '?', '/', '\\', '\'', '&amp;', '&lt;', '&gt;', '&quot;', ':');
 
 	// First replace all the above items with nothing, then replace spaces with _, then replace 3 _ in a row with a 1 _
-	return str_replace(array(' ', '___'), '_', str_replace($match, '', $url));
+	return urlencode(str_replace(array(' ', '___'), '_', str_replace($match, '', $url)));
 }
 
 /**
@@ -94,20 +94,19 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 		if (!isset($url_data['page']) && $user_id !== false)
 		{
-			// Do not do the url_replace for the username, it would break it!
-			$replace_page = false;
+			$username_check = '#&+/\:?"<>%|';
 
-			if ($user_id == $user->data['user_id'])
+			if ($user_id == $user->data['user_id'] && !strpbrk($user->data['username'], $username_check))
 			{
-				$url_data['page'] = $user->data['username'];
+				$url_data['page'] = urlencode($user->data['username']);
 			}
-			else if (isset($extra_data['username']))
+			else if (isset($extra_data['username']) && !strpbrk($extra_data['username'], $username_check))
 			{
-				$url_data['page'] = $extra_data['username'];
+				$url_data['page'] = urlencode($extra_data['username']);
 			}
-			else if (class_exists('blog_data') && isset(blog_data::$user[$user_id]))
+			else if (class_exists('blog_data') && isset(blog_data::$user[$user_id]) && !strpbrk(blog_data::$user[$user_id]['username'], $username_check))
 			{
-				$url_data['page'] = blog_data::$user[$user_id]['username'];
+				$url_data['page'] = urlencode(blog_data::$user[$user_id]['username']);
 			}
 			else
 			{
@@ -126,11 +125,11 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				if (class_exists('blog_data') && array_key_exists($reply_id, blog_data::$reply))
 				{
-					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$reply[$reply_id]['reply_subject']));
+					$url_data['mode'] = utf8_clean_string(blog_data::$reply[$reply_id]['reply_subject']);
 				}
 				else if (array_key_exists('reply_subject', $extra_data))
 				{
-					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['reply_subject']));
+					$url_data['mode'] = utf8_clean_string($extra_data['reply_subject']);
 				}
 			}
 		}
@@ -141,11 +140,11 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 			{
 				if (class_exists('blog_data') && array_key_exists($blog_id, blog_data::$blog))
 				{
-					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', blog_data::$blog[$blog_id]['blog_subject']));
+					$url_data['mode'] = utf8_clean_string(blog_data::$blog[$blog_id]['blog_subject']);
 				}
 				else if (array_key_exists('blog_subject', $extra_data))
 				{
-					$url_data['mode'] = utf8_clean_string(preg_replace($title_match, '', $extra_data['blog_subject']));
+					$url_data['mode'] = utf8_clean_string($extra_data['blog_subject']);
 				}
 			}
 		}
@@ -177,26 +176,22 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 
 		if (isset($url_data['page']) && $url_data['page'])
 		{
-			// URL replace the page if necessary
-			/*  I don't think this is necessary, and it actually can break some urls like pagination.
-			if ($replace_page)
-			{
-				$url_data['page'] = url_replace($url_data['page']);
-			}*/
-
 			if (isset($url_data['mode']) && $url_data['mode'])
 			{
 				$url_data['mode'] = url_replace($url_data['mode']);
+				//return $start_url . "blog/{$url_data['page']}/{$url_data['mode']}{$extras}{$anchor}";
 				return $start_url . "blog/{$url_data['page']}/{$url_data['mode']}{$extras}.html{$anchor}";
 			}
 			else
 			{
 				if ($extras || $anchor)
 				{
+					//return $start_url . "blog/{$url_data['page']}/index{$extras}{$anchor}";
 					return $start_url . "blog/{$url_data['page']}/index{$extras}.html{$anchor}";
 				}
 				else
 				{
+					//return $start_url . "blog/{$url_data['page']}";
 					return $start_url . "blog/{$url_data['page']}/";
 				}
 			}
@@ -204,12 +199,14 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 		else if (isset($url_data['mode']) && $url_data['mode'])
 		{
 			$url_data['mode'] = url_replace($url_data['mode']);
+			//return $start_url . "blog/view/{$url_data['mode']}{$extras}{$anchor}";
 			return $start_url . "blog/view/{$url_data['mode']}{$extras}.html{$anchor}";
 		}
 		else
 		{
 			if ($extras || $anchor)
 			{
+				//return $start_url . "blog/index{$extras}{$anchor}";
 				return $start_url . "blog/index{$extras}.html{$anchor}";
 			}
 			else

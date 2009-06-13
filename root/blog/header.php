@@ -30,7 +30,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		if (isset($config['user_blog_seo']) && $config['user_blog_seo'])
 		{
 			$blog_url = $my_blog_url = ((defined('BLOG_ROOT')) ? generate_board_url(true) . BLOG_ROOT : generate_board_url()) . '/blog/';
-			$my_blog_url .= $user->data['username'] . '/';
+			$my_blog_url .= urlencode($user->data['username']) . '/';
 
 			$extras = 'index';
 			// Add the style if required
@@ -50,6 +50,12 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			{
 				$blog_url .= $extras . '.html';
 				$my_blog_url .= $extras . '.html';
+			}
+
+			$username_check = '#&+/\:?"<>%|';
+			if (strpbrk($user->data['username'], $username_check))
+			{
+				$my_blog_url = append_sid("{$phpbb_root_path}blog.$phpEx", 'u=' . $user->data['user_id']);
 			}
 		}
 		else
