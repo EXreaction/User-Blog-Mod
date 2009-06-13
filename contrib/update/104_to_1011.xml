@@ -22,12 +22,12 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.9</mod-version>
+	<mod-version>1.0.11</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>180</time>
-		<target-version>3.0.4</target-version>
+		<target-version>3.0.5</target-version>
 	</installation>
 </header>
 
@@ -52,6 +52,10 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<inline-action type="after-add"><![CDATA[, 'button_blog_new']]></inline-action>
 			</inline-edit>
 		</edit>
+		<edit>
+			<find>// Start User Blog Mod ----------------------</find>
+			<action type="after-add">				global $phpEx;</action>
+		</edit>
 	</open>
 	<open src="styles/prosilver/imageset/en/imageset.cfg">
 		<edit>
@@ -60,6 +64,24 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<action type="after-add"><![CDATA[
 # User Blog Mod
 img_button_blog_new = button_blog_new.gif*25*96]]></action>
+		</edit>
+	</open>
+	<open src=".htaccess">
+		<edit>
+			<find><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
+Rewriterule ^blog/$						./blog/blog.php]]></find>
+			<action type="after-add"><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
+Rewriterule ^blog/$						./blog/blog.php [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]]]></action>
 		</edit>
 	</open>
 	<diy-instructions lang="en">Go to ACP->Styles->Style Components->Theme, then hit the Refresh button next to prosilver.

@@ -181,6 +181,14 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Do not include the message parser during install unless required.  Bug #47 http://www.lithiumstudios.org/forum/tracker.php?p=1&amp;t=47</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2009-00-00</date>
+			<rev-version>1.0.11-dev</rev-version>
+			<changelog lang="en">
+				<change>Fixing some issues with URL generation reguarding usernames and other things</change>
+				<change>Better URL rewriting rules (now we can handle usernames without the trailing slash!)</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
@@ -282,7 +290,6 @@ img_button_blog_new = button_blog_new.gif*25*96]]></action>
 	</open>
 	<open src=".htaccess">
 		<edit>
-			<comment lang="en">Only add this if your server has mod_rewrite enabled (there may be other requirements for this to work as well, but mod_rewrite is all I know of).  If you get an internal server error because of adding this mod, remove the changes made to the .htaccess file because the likely reason is that your server does not support this.</comment>
 			<find><![CDATA[<Files "common.php">
 Order Allow,Deny
 Deny from All
@@ -290,10 +297,16 @@ Deny from All
 			<action type="after-add"><![CDATA[<IfModule mod_rewrite.c>
 RewriteEngine on
 
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
+Rewriterule ^blog/$						./blog/blog.php [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]
 </IfModule>]]></action>
 		</edit>
 	</open>
