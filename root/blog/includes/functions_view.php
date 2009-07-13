@@ -747,7 +747,7 @@ function trim_text($text, $uid, $max_length, $bitfield = '', $enable_bbcode = tr
 	// Do the check for all possible tags
 	else
 	{
-		$unsafe_tags += $custom_bbcodes;
+		$unsafe_tags = array_merge($unsafe_tags, $custom_bbcodes);
 	}
 
 	foreach($unsafe_tags as $tag)
