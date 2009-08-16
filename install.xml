@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.10</mod-version>
+	<mod-version>1.0.11-dev</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -187,6 +187,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<changelog lang="en">
 				<change>Fixing some issues with URL generation reguarding usernames and other things</change>
 				<change>Better URL rewriting rules (now we can handle usernames without the trailing slash!)</change>
+				<change>Updating Captcha to work with 3.0.6+</change>
 			</changelog>
 		</entry>
 	</history>
