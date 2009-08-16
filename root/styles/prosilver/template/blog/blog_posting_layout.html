@@ -8,7 +8,7 @@
 
 	<div class="panel" id="postingbox">
 		<div class="inner"><span class="corners-top"><span></span></span>
-		
+
 		<h3>{L_POST_A}</h3>
 
 		<fieldset class="fields1">
@@ -17,16 +17,12 @@
 			{EXTRA_ABOVE_SUBJECT}
 
 			<!-- IF S_POST_ACTION -->
-			<dl style="clear: left;">
-				<dt><label for="subject">{L_SUBJECT}:</label></dt>
-				<dd><input type="text" name="subject" id="subject" size="45" maxlength="<!-- IF S_NEW_MESSAGE -->60<!-- ELSE -->64<!-- ENDIF -->" tabindex="2" value="{SUBJECT}{DRAFT_SUBJECT}" class="inputbox autowidth" /></dd>
-			</dl>
-				<!-- IF S_CONFIRM_CODE -->
-				<dl>
-					<dt><label for="confirm_code">{L_CONFIRM_CODE}:</label><br /><span>{L_CONFIRM_CODE_EXPLAIN}</span></dt>
-						<dd><input type="hidden" name="confirm_id" value="{CONFIRM_ID}" />{CONFIRM_IMAGE}</dd>
-						<dd><input type="text" name="confirm_code" id="confirm_code" size="8" maxlength="8" tabindex="3" class="inputbox narrow" title="{L_CONFIRM_CODE}" /></dd>
+				<dl style="clear: left;">
+					<dt><label for="subject">{L_SUBJECT}:</label></dt>
+					<dd><input type="text" name="subject" id="subject" size="45" maxlength="<!-- IF S_NEW_MESSAGE -->60<!-- ELSE -->64<!-- ENDIF -->" tabindex="2" value="{SUBJECT}{DRAFT_SUBJECT}" class="inputbox autowidth" /></dd>
 				</dl>
+				<!-- IF CAPTCHA -->
+					{CAPTCHA}
 				<!-- ENDIF -->
 			<!-- ENDIF -->
 
@@ -199,7 +195,7 @@
 
 				<dl>
 					<dt>{L_SUBSCRIPTION_EXPLAIN}<!-- IF S_REPLY --><br />{L_SUBSCRIPTION_EXPLAIN_REPLY}<!-- ENDIF --></dt>
-					
+
 						<!-- BEGIN subscriptions -->
 							<dd><label for="{subscriptions.SUB_TYPE}"><input type="checkbox" name="{subscriptions.TYPE}" id="{subscriptions.TYPE}" <!-- IF subscriptions.S_CHECKED -->checked="checked"<!-- ENDIF --> /> {subscriptions.NAME}</label></dd>
 						<!-- END subscriptions -->

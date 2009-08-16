@@ -214,6 +214,50 @@ function handle_captcha($mode)
 
 	blog_plugins::plugin_do_arg('function_handle_captcha', $mode);
 
+	if (file_exists($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx))
+	{
+		if (!class_exists('phpbb_captcha_factory'))
+		{
+			include($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
+		}
+
+		$captcha =& phpbb_captcha_factory::get_instance($config['captcha_plugin']);
+		$captcha->init(CONFIRM_POST);
+
+		if ($mode == 'check')
+		{
+			$captcha->validate();
+
+			// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code
+			if (strpos($s_hidden_fields, 'confirm_id') === false)
+			{
+				$s_hidden_fields .= build_hidden_fields($captcha->get_hidden_fields());
+			}
+
+			return $captcha->is_solved();
+		}
+		else if ($mode == 'build' && !$captcha->solved)
+		{
+			// add confirm_id and confirm_code to hidden fields if not already there so the user doesn't need to retype in the confirm code
+			if (strpos($s_hidden_fields, 'confirm_id') === false)
+			{
+				$s_hidden_fields .= build_hidden_fields($captcha->get_hidden_fields());
+			}
+
+			$template->assign_vars(array(
+				'CAPTCHA_TEMPLATE'		=> $captcha->get_template(),
+			));
+
+			$template->set_filenames(array(
+				'new_captcha'		=> 'blog/new_captcha.html'
+			));
+
+			$template->assign_display('new_captcha', 'CAPTCHA', false);
+
+			return;
+		}
+	}
+
 	if ($mode == 'check')
 	{
 		$confirm_id = request_var('confirm_id', '');
@@ -277,6 +321,12 @@ function handle_captcha($mode)
 			'CONFIRM_IMAGE'				=> '<img src="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=confirm&amp;id=' . $confirm_id . '&amp;type=' . CONFIRM_POST) . '" alt="" title="" />',
 			'L_POST_CONFIRM_EXPLAIN'	=> sprintf($user->lang['POST_CONFIRM_EXPLAIN'], '<a href="mailto:' . htmlspecialchars($config['board_contact']) . '">', '</a>'),
 		));
+
+		$template->set_filenames(array(
+			'old_captcha'		=> 'blog/old_captcha.html'
+		));
+
+		$template->assign_var('CAPTCHA', $template->display('old_captcha'));
 	}
 }
 
