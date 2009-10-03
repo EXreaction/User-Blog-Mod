@@ -558,7 +558,12 @@ function get_blog_subscription_types()
 	}
 
 	// First is the subscription ID (which will use the bitwise operator), the second is the language variable.
-	$subscription_types = array(1 => 'PRIVATE_MESSAGE');
+	$subscription_types = array();
+
+	if ($config['allow_privmsg'])
+	{
+		$subscription_types[1] = 'PRIVATE_MESSAGE';
+	}
 
 	if ($config['email_enable'])
 	{

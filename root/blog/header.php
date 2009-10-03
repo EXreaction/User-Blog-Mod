@@ -93,8 +93,25 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	}
 
 	// If we are viewing a users' profile add a link to view the users' blog in the custom profile section
-	if (request_var('mode', '') == 'viewprofile' && request_var('u', 0))
+	$user_id = request_var('u', 0);
+	$username = request_var('un', '', true);
+	if (request_var('mode', '') == 'viewprofile' && ($user_id || $username))
 	{
+		if (!$user_id)
+		{
+			$sql = 'SELECT user_id
+				FROM ' . USERS_TABLE . '
+				WHERE  username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . "'";
+			$db->sql_query($sql);
+			$user_id = $db->sql_fetchfield('user_id');
+			$db->sql_freeresult();
+
+			if (!$user_id)
+			{
+				return;
+			}
+		}
+
 		if (!defined('BLOG_FUNCTIONS_INCLUDED'))
 		{
 			include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
@@ -103,7 +120,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			new blog_plugins();
 		}
 
-		add_blog_links(request_var('u', 0), 'custom_fields', false, true);
+		add_blog_links($user_id, 'custom_fields', false, true);
 	}
 }
 ?>

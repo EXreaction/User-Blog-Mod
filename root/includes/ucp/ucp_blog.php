@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: ucp_blog.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -188,9 +188,12 @@ class ucp_blog
 			break;
 			case 'ucp_blog_title_description' :
 				include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-				include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 				include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 				include($phpbb_root_path . 'blog/includes/functions_posting.' . $phpEx);
+				if (!function_exists('display_custom_bbcodes'))
+				{
+					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+				}
 
 				$user->add_lang('posting');
 
@@ -222,7 +225,7 @@ class ucp_blog
 						$blog_title = $blog_description = '';
 					}
 				}
-				
+
 				if (!$submit || sizeof($error))
 				{
 					if ($preview && !sizeof($error))
