@@ -188,6 +188,9 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>Fixing some issues with URL generation reguarding usernames and other things</change>
 				<change>Better URL rewriting rules (now we can handle usernames without the trailing slash!)</change>
 				<change>Updating Captcha to work with 3.0.6</change>
+				<change>Wrong date/time used in coda style. #57</change>
+				<change>Do not allow PM subscriptions if PMs are disabled. #64</change>
+				<change>Only load functions_display if required in the ucp (issue is probably related to some other mod). #67</change>
 			</changelog>
 		</entry>
 	</history>
