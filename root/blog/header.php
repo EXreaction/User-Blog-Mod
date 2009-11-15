@@ -112,10 +112,16 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 			}
 		}
 
-		if (!defined('BLOG_FUNCTIONS_INCLUDED'))
+		if (!function_exists('url_replace'))
 		{
 			include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
+		}
+		if (!function_exists('get_attachment_data'))
+		{
 			include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
+		}
+		if (!class_exists('blog_plugins'))
+		{
 			include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
 			new blog_plugins();
 		}
