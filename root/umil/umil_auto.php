@@ -69,6 +69,7 @@ if (isset($logo_img))
 	$template->assign_var('LOGO_IMG', $phpbb_root_path . $logo_img);
 }
 
+// Display a login box if they are not logged in
 if (!$user->data['is_registered'])
 {
 	login_box();
