@@ -13,12 +13,16 @@ blog_plugins::add_to_do(array(
 
 function style_blog_handle_data_end(&$args)
 {
+	global $user;
+
 	$args['DATE_TOP'] = $user->format_date(blog_data::$blog[$args['ID']]['blog_time'], "d F Y");
 	$args['DATE_BOTTOM'] = $user->format_date(blog_data::$blog[$args['ID']]['blog_time'], "h:i a");
 }
 
 function style_reply_handle_data_end(&$args)
 {
+	global $user;
+
 	$args['DATE_TOP'] = $user->format_date(blog_data::$reply[$args['ID']]['reply_time'], "d F Y");
 	$args['DATE_BOTTOM'] = $user->format_date(blog_data::$reply[$args['ID']]['reply_time'], "h:i a");
 }
