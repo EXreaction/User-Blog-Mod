@@ -27,7 +27,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.5</target-version>
+		<target-version>3.0.6</target-version>
 	</installation>
 </header>
 
@@ -41,7 +41,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
 Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
 Rewriterule ^blog/$						./blog/blog.php]]></find>
-			<action type="after-add"><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+			<action type="replace-with"><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
 Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
 Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
 Rewriterule ^blog/$						./blog/blog.php [NC]

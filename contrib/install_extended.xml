@@ -18,12 +18,12 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.10</mod-version>
+	<mod-version>1.0.11</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>300</time>
-		<target-version>3.0.4</target-version>
+		<target-version>3.0.6</target-version>
 	</installation>
 
 	<history>
@@ -97,6 +97,13 @@
 			<rev-version>1.0.10</rev-version>
 			<changelog lang="en">
 				<change>Fix in the viewonline code to work with SEO urls.  Bug #43</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2009-11-20</date>
+			<rev-version>1.0.11</rev-version>
+			<changelog lang="en">
+				<change>No changes were made to the extended install version since 1.0.10.</change>
 			</changelog>
 		</entry>
 	</history>
