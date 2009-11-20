@@ -40,26 +40,50 @@
 
 2. If there is a .htaccess file in the directory you are copying this to, follow the 2a instructions, else follow the 2b instructions.
 2a. Open the .htaccess file and search for "RewriteEngine on".  If it is not in the file add the following code to the bottom of the file:
+<IfModule mod_rewrite.c>
 RewriteEngine on
 
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
+Rewriterule ^blog/$						./blog/blog.php [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]
+</IfModule>
 
 Else, if "RewriteEngine on" is in the .htaccess file already, add the following code to the bottom of the file:
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php
+<IfModule mod_rewrite.c>
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
+Rewriterule ^blog/$						./blog/blog.php [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]
+</IfModule>
 
 2b. Create a file named .htaccess in the directory and add the following code to it:
+<IfModule mod_rewrite.c>
 RewriteEngine on
 
-Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php
+Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
+Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
+Rewriterule ^blog/$						./blog/blog.php [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]
+</IfModule>
 
 3. In the directory you copied the files to, open blog.php, blog/blog.php, and blog/view/blog.php.  Then change the defined PHPBB_ROOT_PATH to the relative path to youre phpBB3 forum.
 
