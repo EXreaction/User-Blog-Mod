@@ -22,11 +22,11 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.11</mod-version>
+	<mod-version>1.0.11-pl1</mod-version>
 
 	<installation>
 		<level>easy</level>
-		<time>60</time>
+		<time>1</time>
 		<target-version>3.0.6</target-version>
 	</installation>
 </header>
@@ -35,24 +35,6 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 	<copy>
 		<file from="root/*.*" to="*.*" />
 	</copy>
-	<open src=".htaccess">
-		<edit>
-			<find><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1
-Rewriterule ^blog/$						./blog/blog.php]]></find>
-			<action type="replace-with"><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2 [NC]
-Rewriterule ^blog/(.+).html$			./blog/blog.php?page=$1 [NC]
-Rewriterule ^blog/(.+)/$				./blog/view/blog.php?page=$1 [NC]
-Rewriterule ^blog/$						./blog/blog.php [NC]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-Rewriterule ^blog/(.+)/(.+)$		./blog/view/blog.php?page=$1&mode=$2 [NC]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]]]></action>
-		</edit>
-	</open>
 	<diy-instructions lang="en">Go to yoursite/blog/database.php in your web browser to update the database.</diy-instructions>
 </action-group>
 </mod>

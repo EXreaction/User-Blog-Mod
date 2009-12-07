@@ -22,11 +22,11 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.11</mod-version>
+	<mod-version>1.0.11-pl1</mod-version>
 
 	<installation>
 		<level>easy</level>
-		<time>180</time>
+		<time>60</time>
 		<target-version>3.0.6</target-version>
 	</installation>
 </header>
@@ -35,37 +35,6 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 	<copy>
 		<file from="root/*.*" to="*.*" />
 	</copy>
-	<open src="includes/acp/acp_language.php">
-		<edit>
-			<find><![CDATA[, 'button_topic_reply']]></find>
-			<inline-edit>
-				<inline-find><![CDATA[, 'button_topic_reply']]></inline-find>
-				<inline-action type="after-add"><![CDATA[, 'button_blog_new']]></inline-action>
-			</inline-edit>
-		</edit>
-	</open>
-	<open src="includes/acp/acp_styles.php">
-		<edit>
-			<find><![CDATA[, 'button_topic_reply']]></find>
-			<inline-edit>
-				<inline-find><![CDATA[, 'button_topic_reply']]></inline-find>
-				<inline-action type="after-add"><![CDATA[, 'button_blog_new']]></inline-action>
-			</inline-edit>
-		</edit>
-		<edit>
-			<find>// Start User Blog Mod ----------------------</find>
-			<action type="after-add">				global $phpEx;</action>
-		</edit>
-	</open>
-	<open src="styles/prosilver/imageset/en/imageset.cfg">
-		<edit>
-			<comment lang="en">Do this for all prosilver based styles and all languages.</comment>
-			<find><![CDATA[img_button_topic_reply = button_topic_reply.gif*25*96]]></find>
-			<action type="after-add"><![CDATA[
-# User Blog Mod
-img_button_blog_new = button_blog_new.gif*25*96]]></action>
-		</edit>
-	</open>
 	<open src=".htaccess">
 		<edit>
 			<find><![CDATA[Rewriterule ^blog/(.+)/(.+).html$		./blog/view/blog.php?page=$1&mode=$2
@@ -84,9 +53,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]]]></action>
 		</edit>
 	</open>
-	<diy-instructions lang="en">Go to ACP->Styles->Style Components->Theme, then hit the Refresh button next to prosilver.
-Go to ACP->Styles->Style Components->Imageset, then hit the Refresh button next to prosilver.
-
-Go to yoursite/blog/database.php in your web browser to update the database.</diy-instructions>
+	<diy-instructions lang="en">Go to yoursite/blog/database.php in your web browser to update the database.</diy-instructions>
 </action-group>
 </mod>

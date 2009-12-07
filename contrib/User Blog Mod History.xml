@@ -732,6 +732,13 @@
 				<change>Only load functions_display if required in the ucp (issue is probably related to some other mod). #67</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2009-12-06</date>
+			<rev-version>1.0.11-pl1</rev-version>
+			<changelog lang="en">
+				<change>URL generator broke some internal things with the last version #80</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 </mod>

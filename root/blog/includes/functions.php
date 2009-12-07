@@ -23,7 +23,10 @@ function url_replace($url)
 	$match = array('#', '-', '?', '/', '\\', '\'', '&amp;', '&lt;', '&gt;', '&quot;', ':');
 
 	// First replace all the above items with nothing, then replace spaces with _, then replace 3 _ in a row with a 1 _
-	return urlencode(str_replace(array(' ', '___'), '_', str_replace($match, '', (string) $url)));
+	$url = str_replace(array(' ', '___'), '_', str_replace($match, '', (string) $url));
+	$url = urlencode($url);
+	$url = str_replace('%2A', '*', $url);
+	return $url;
 }
 
 /**
