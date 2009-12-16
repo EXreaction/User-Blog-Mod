@@ -16,8 +16,8 @@
 ## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
 ##############################################################
 ## Author Notes:
-##	You MUST have the Custom Titles Mod already installed to use this!  If not you will get errors.
-##		Link to the Custom Titles Mod: http://www.phpbb.com/community/viewtopic.php?f=70&t=574342
+##	You MUST have the Enable HTML Mod already installed to use this!  If not you will get errors.
+##		Link to the Enable HTML Mod: http://www.lithiumstudios.org/forum/viewtopic.php?f=31&t=535
 ##############################################################
 ## MOD History:
 ##(yyyy-mm-dd)
