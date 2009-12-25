@@ -21,7 +21,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	}
 
 	$template->assign_vars(array(
-		'TOTAL_BLOG_ENTRIES'		=> $user->lang['TOTAL_BLOG_ENTRIES'] . ' <strong>' . $config['num_blogs'] . '</strong>',
+		'TOTAL_BLOG_ENTRIES'		=> sprintf($user->lang['TOTAL_BLOG_ENTRIES'], $config['num_blogs']),
 	));
 
 	// Add the User Blog's Link if they can view blog's
