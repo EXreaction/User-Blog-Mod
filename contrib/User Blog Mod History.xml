@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
 <header>
 	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 	<title lang="en">User Blog Mod History/Changelog</title>
@@ -738,6 +738,13 @@
 			<changelog lang="en">
 				<change>URL generator broke some internal things with the last version #80</change>
 			</changelog>
+		</entry>
+		<entry>
+			<date>2010-03-24</date>
+			<rev-version>1.0.12</rev-version>
+			<changelog lang="en">
+				<change>Multiple bugs, #93, 94, 96, 99</change>
+				<change>Update ModX</change>
 		</entry>
 	</history>
 </header>
