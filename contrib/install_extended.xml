@@ -7,7 +7,9 @@
     <title lang="en">User Blog Mod Extended</title>
     <description lang="en">Extends the User Blog Mod to be more integrated with phpBB3.</description>
 
-    <author-notes lang="en">You must have the User Blog Mod installed before this (if it was not obvious).</author-notes>
+    <author-notes lang="en">You must have the User Blog Mod installed before this (if it was not obvious).
+
+phpBB 3.0.7+ only supported</author-notes>
 
     <author-group>
       <author>
@@ -18,12 +20,12 @@
       </author>
     </author-group>
 
-	<mod-version>1.0.11</mod-version>
+	<mod-version>1.0.12</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>300</time>
-		<target-version>3.0.6</target-version>
+		<target-version>3.0.7-pl1</target-version>
 	</installation>
 
 	<history>
@@ -106,17 +108,47 @@
 				<change>No changes were made to the extended install version since 1.0.10.</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2012-03-24</date>
+			<rev-version>1.0.12</rev-version>
+			<changelog lang="en">
+				<change>Extended install updated to support phpBB 3.0.7-pl1</change>
+			</changelog>
+		</entry>
 	</history>
   </header>
 
   <action-group>
 	<open src="adm/style/acp_users_overview.html">
 		<edit>
-			<find>id="delete_user"</find>
+			<find><![CDATA[<select id="delete_type" name="delete_type">]]></find>
 	        <inline-edit>
 	          <inline-find><![CDATA[<option value="remove">{L_DELETE_POSTS}</option>]]></inline-find>
 	          <inline-action type="after-add"><![CDATA[<option value="remove_blogs">{L_DELETE_BLOGS}</option><option value="remove_blogs_and_posts">{L_DELETE_POSTS_AND_BLOGS}</option>]]></inline-action>
 	        </inline-edit>
+		</edit>
+    </open>
+	<open src="includes/acp/acp_users.php">
+		<edit>
+			<find><![CDATA[case 'banuser':]]></find>
+			<action type="before-add"><![CDATA[						// Start Add User Blog Mod ------------------
+						case 'remove_blogs' :
+							if (!function_exists('blog_delete_user'))
+							{
+								include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+							}
+							blog_delete_user($user_id);
+						break;
+						// End Add User Blog Mod --------------------]]></action>
+		</edit>
+		<edit>
+			<find><![CDATA[				foreach ($quick_tool_ary as $value => $lang)
+				{
+					$s_action_options .= '<option value="' . $value . '">' . $user->lang['USER_ADMIN_' . $lang] . '</option>';
+				}]]></find>
+			<action type="after-add"><![CDATA[				// Start Add User Blog Mod ------------------
+				$s_action_options .= '<option value="remove_blogs">' . $user->lang['DELETE_BLOGS'] . '</option>';
+				// End Add User Blog Mod --------------------]]></action>
 		</edit>
     </open>
 	<open src="includes/functions_user.php">
