@@ -41,6 +41,10 @@ function blog_delete_user($user_id)
 	{
 		include("{$phpbb_root_path}blog/includes/functions.$phpEx");
 	}
+	if (!function_exists('put_blogs_in_cats'))
+	{
+		include("{$phpbb_root_path}blog/includes/functions_categories.$phpEx");
+	}
 	$blog_search = setup_blog_search();
 
 	$num_blogs = $num_blog_replies = 0;

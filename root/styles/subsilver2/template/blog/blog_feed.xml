@@ -67,6 +67,7 @@
 		<id>{SELF_FULL_URL}</id>
 		<updated>{CURRENT_TIME}</updated>
 		<link rel="self" type="application/atom+xml" href="{SELF_FULL_URL}" />
+		<link href="{SITE_URL}" />
 		<!-- BEGIN item -->
 			<entry>
 				<title><![CDATA[{item.TITLE}]]></title>
