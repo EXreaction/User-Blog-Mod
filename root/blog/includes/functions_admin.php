@@ -111,6 +111,10 @@ function blog_delete_user($user_id)
 	}
 	$db->sql_freeresult($result);
 
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = 0
+		WHERE user_id = ' . $user_id;
+	$db->sql_query($sql);
+
 	set_config('num_blogs', ($config['num_blogs'] - $num_blogs), true);
 	set_config('num_blog_replies', ($config['num_blog_replies'] - $num_blog_replies), true);
 }
