@@ -1,10 +1,10 @@
 <?php
-/** 
+/**
 *
 * @package phpBB3 User Blog
 * @version $Id: single.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -75,6 +75,9 @@ blog_plugins::plugin_do('view_blog_start');
 
 // Output some data
 $template->assign_vars(array(
+	// Canonical URL
+	'META'				=> '<link rel="canonical" href="' . blog_url($user_id, $blog_id, false, (($start > 0) ? array('start' => $start) : array())) . '" />',
+
 	'BLOG_CSS'			=> (isset($user_settings[$user_id]['blog_css'])) ? $user_settings[$user_id]['blog_css'] : '',
 
 	'U_PRINT_TOPIC'		=> (!$user->data['is_bot']) ? $blog_urls['self_print'] : '',

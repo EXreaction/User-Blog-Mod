@@ -64,6 +64,9 @@ if (!$feed)
 
 	// Output some data
 	$template->assign_vars(array(
+		// Canonical URL
+		'META'					=> '<link rel="canonical" href="' . blog_url($user_id, false, false, (($start > 0) ? array('start' => $start) : array())) . '" />',
+
 		'PAGINATION'			=> $pagination,
 		'PAGE_NUMBER' 			=> on_page($total_blogs, $limit, $start),
 		'TOTAL_POSTS'			=> ($total_blogs == 1) ? $user->lang['ONE_BLOG'] : sprintf($user->lang['CNT_BLOGS'], $total_blogs),
