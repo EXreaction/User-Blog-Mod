@@ -1005,30 +1005,46 @@ class blog_data
 			// format the color correctly
 			$row['user_colour'] = get_username_string('colour', $user_id, $row['username'], $row['user_colour']);
 
-			// Online/Offline Status
-			$row['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
-
 			// Avatar
 			$row['avatar'] = get_user_avatar($row['user_avatar'], $row['user_avatar_type'], $row['user_avatar_width'], $row['user_avatar_height']);
 
 			// Rank
 			get_user_rank($row['user_rank'], $row['user_posts'], $row['rank_title'], $row['rank_img'], $row['rank_img_src']);
 
-			// IM Links
-			$row['aim_url'] = ($row['user_aim']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=aim&amp;u=$user_id") : '';
-			$row['icq_url'] = ($row['user_icq']) ? 'http://www.icq.com/people/webmsg.php?to=' . $row['user_icq'] : '';
-			$row['jabber_url'] = ($row['user_jabber']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=jabber&amp;u=$user_id") : '';
-			$row['msn_url'] = ($row['user_msnm']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=msnm&amp;u=$user_id") : '';
-			$row['yim_url'] = ($row['user_yim']) ? 'http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg' : '';
-
-			// PM and email links
-			$row['email_url'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id")  : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
-			$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_pm'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
-
-			// get the custom profile fields if the admin wants them
-			if ($config['user_blog_custom_profile_enable'])
+			if ($row['user_type'] != USER_IGNORE && $row['user_id'] != ANONYMOUS)
 			{
-				$row['cp_row'] = (isset($profile_fields_cache[$user_id])) ? $cp->generate_profile_fields_template('show', false, $profile_fields_cache[$user_id]) : array();
+				// Online/Offline Status
+				$row['status'] = (isset($status_data[$user_id]) && time() - $update_time < $status_data[$user_id]['online_time'] && (($status_data[$user_id]['viewonline'] && $row['user_allow_viewonline']) || $auth->acl_get('u_viewonline'))) ? true : false;
+
+				// IM Links
+				$row['aim_url'] = ($row['user_aim']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=aim&amp;u=$user_id") : '';
+				$row['icq_url'] = ($row['user_icq']) ? 'http://www.icq.com/people/webmsg.php?to=' . $row['user_icq'] : '';
+				$row['jabber_url'] = ($row['user_jabber']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=jabber&amp;u=$user_id") : '';
+				$row['msn_url'] = ($row['user_msnm']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=contact&amp;action=msnm&amp;u=$user_id") : '';
+				$row['yim_url'] = ($row['user_yim']) ? 'http://edit.yahoo.com/config/send_webmesg?.target=' . $row['user_yim'] . '&amp;.src=pg' : '';
+
+				// PM and email links
+				$row['email_url'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$user_id")  : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
+				$row['pm_url'] = ($row['user_id'] != ANONYMOUS && $config['allow_privmsg'] && $auth->acl_get('u_sendpm') && ($row['user_allow_pm'] || $auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;mode=compose&amp;u=$user_id") : '';
+
+				// get the custom profile fields if the admin wants them
+				if ($config['user_blog_custom_profile_enable'])
+				{
+					$row['cp_row'] = (isset($profile_fields_cache[$user_id])) ? $cp->generate_profile_fields_template('show', false, $profile_fields_cache[$user_id]) : array();
+				}
+			}
+			else
+			{
+				$row = array_merge($row, array(
+					'status'		=> false,
+					'aim_url'		=> '',
+					'icq_url'		=> '',
+					'jabber_url'	=> '',
+					'msn_url'		=> '',
+					'yim_url'		=> '',
+					'email_url'		=> '',
+					'pm_url'		=> '',
+				));
 			}
 
 			// now lets put everything in the user array
@@ -1045,7 +1061,7 @@ class blog_data
 
 		if ($username)
 		{
-			if (isset($user_id))
+			if (isset($user_id) && $user_id != ANONYMOUS)
 			{
 				// Grab all profile fields from users in id cache for later use - similar to the poster cache
 				if ($config['user_blog_custom_profile_enable'])
