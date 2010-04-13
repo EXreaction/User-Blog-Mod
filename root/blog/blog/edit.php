@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: edit.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -74,12 +74,6 @@ if ($submit || $preview || $refresh)
 		$error[] = $user->lang['EMPTY_SUBJECT'];
 	}
 
-	// If any errors were reported by the message parser add those as well
-	if (sizeof($message_parser->warn_msg) && !$refresh)
-	{
-		$error[] = implode('<br />', $message_parser->warn_msg);
-	}
-
 	// Polls
 	$poll_title			= utf8_normalize_nfc(request_var('poll_title', '', true));
 	$poll_length		= request_var('poll_length', 0);
@@ -116,6 +110,12 @@ if ($submit || $preview || $refresh)
 	{
 		$poll_title = $poll_option_text = '';
 		$poll_start = $poll_length = $poll_max_options = $poll_vote_change = false;
+	}
+
+	// If any errors were reported by the message parser add those as well
+	if (sizeof($message_parser->warn_msg) && !$refresh)
+	{
+		$error[] = implode('<br />', $message_parser->warn_msg);
 	}
 
 	// Attachments
@@ -189,7 +189,7 @@ if (!$submit || sizeof($error))
 				'S_IS_MULTI_CHOICE'		=> ($poll_max_options > 1) ? true : false,
 
 				'POLL_QUESTION'		=> $parse_poll->message,
-				
+
 				'L_POLL_LENGTH'		=> ($poll_length) ? sprintf($user->lang['POLL_RUN_TILL'], $user->format_date($poll_end)) : '',
 				'L_MAX_VOTES'		=> ($poll_max_options == 1) ? $user->lang['MAX_OPTION_SELECT'] : sprintf($user->lang['MAX_OPTIONS_SELECT'], $poll_max_options))
 			);
@@ -361,7 +361,7 @@ else // user submitted and there are no errors
 
 	handle_blog_cache('edit_blog', $user_id);
 
-	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />'; 
+	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br /><br />';
 	if ($user->data['user_id'] == $user_id)
 	{
