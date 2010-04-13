@@ -208,6 +208,15 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>Update ModX</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2010-00-00</date>
+			<rev-version>1.0.13</rev-version>
+			<changelog lang="en">
+				<change>Adding simple canonical URLs</change>
+				<change>Display poll creation errors #106</change>
+				<change>Hide profile buttons that should not appear on guests #105</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
