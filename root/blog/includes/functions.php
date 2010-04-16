@@ -222,6 +222,9 @@ function blog_url($user_id, $blog_id = false, $reply_id = false, $url_data = arr
 	// No SEO Url's :(
 	global $phpEx;
 
+	// Do not add the sid multiple times
+	unset($url_data['sid']);
+
 	// add this stuff first
 	$extras .= (($user_id) ? '&amp;u=' . $user_id : ((isset($url_data['u'])) ? '&amp;u=' . $url_data['u'] : ''));
 	$extras .= (($blog_id) ? '&amp;b=' . $blog_id : ((isset($url_data['b'])) ? '&amp;b=' . $url_data['b'] : ''));
