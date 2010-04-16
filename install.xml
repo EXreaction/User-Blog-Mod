@@ -212,9 +212,12 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<date>2010-00-00</date>
 			<rev-version>1.0.13</rev-version>
 			<changelog lang="en">
-				<change>Adding simple canonical URLs</change>
-				<change>Display poll creation errors #106</change>
-				<change>Hide profile buttons that should not appear on guests #105</change>
+				<change>[Feature] Adding simple canonical URLs</change>
+				<change>[Fix] Display poll creation errors #106</change>
+				<change>[Fix] Hide profile buttons that should not appear on guests #105</change>
+				<change>[Fix] Don't apply sid's multiple times on the non-seo urls #104</change>
+				<change>[Fix] Do not redirect to the item posted if it needs approval first #103</change>
+				<change>[Fix] Fix incorrect counting of replies when updating num_blog_replies on deleting a blog entry #92</change>
 			</changelog>
 		</entry>
 	</history>
