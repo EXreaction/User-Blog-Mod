@@ -238,7 +238,14 @@ else // user submitted and there are no errors
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
-	blog_meta_refresh(3, $blog_urls['view_reply']);
+	if (!$auth->acl_get('u_blogreplynoapprove'))
+	{
+		blog_meta_refresh(3, $blog_urls['view_blog']);
+	}
+	else
+	{
+		blog_meta_refresh(3, $blog_urls['view_reply']);
+	}
 
 	trigger_error($message);
 }
