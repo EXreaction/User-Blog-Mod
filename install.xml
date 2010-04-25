@@ -218,6 +218,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Don't apply sid's multiple times on the non-seo urls #104</change>
 				<change>[Fix] Do not redirect to the item posted if it needs approval first #103</change>
 				<change>[Fix] Fix incorrect counting of replies when updating num_blog_replies on deleting a blog entry #92</change>
+				<change>[Fix] Correct the update link for versions &lt; 0.9.0</change>
 			</changelog>
 		</entry>
 	</history>
