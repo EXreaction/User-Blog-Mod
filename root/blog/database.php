@@ -33,7 +33,7 @@ $version_config_name = 'user_blog_version';
 */
 if (isset($config[$version_config_name]) && version_compare($config[$version_config_name], '0.9.0', '<'))
 {
-	trigger_error(sprintf($user->lang['USE_OLD_UPDATE_SCRIPT'], append_sid("{$phpbb_root_path}blog/update.$phpEx")));
+	trigger_error(sprintf($user->lang['USE_OLD_UPDATE_SCRIPT'], append_sid("{$phpbb_root_path}blog.{$phpEx}?page=update")));
 }
 
 $versions = array(
