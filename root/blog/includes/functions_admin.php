@@ -111,9 +111,35 @@ function blog_delete_user($user_id)
 	}
 	$db->sql_freeresult($result);
 
+	$result = $db->sql_query('SELECT * FROM ' . BLOGS_REPLY_TABLE . ' WHERE user_id = ' . $user_id);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$num_blog_replies++;
+
+		$blog_search->index_remove(false, $row['reply_id']);
+
+		// Delete the Attachments
+		$sql = 'SELECT physical_filename FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE reply_id = ' . $row['reply_id'];
+		$result1 = $db->sql_query($sql);
+		while ($row1 = $db->sql_fetchrow($result1))
+		{
+			@unlink($phpbb_root_path . $config['upload_path'] . '/blog_mod/' . $row1['physical_filename']);
+		}
+		$db->sql_freeresult($result1);
+		$db->sql_query('DELETE FROM ' . BLOGS_ATTACHMENT_TABLE . ' WHERE reply_id = ' . $row['reply_id']);
+
+		// delete the reply
+		$db->sql_query('DELETE FROM ' . BLOGS_REPLY_TABLE . ' WHERE reply_id = ' . $row['reply_id']);
+	}
+	$db->sql_freeresult($result);
+
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = 0
 		WHERE user_id = ' . $user_id;
 	$db->sql_query($sql);
+
+	// Resync reply counts
+	resync_blog('reply_count');
+	resync_blog('real_reply_count');
 
 	set_config('num_blogs', ($config['num_blogs'] - $num_blogs), true);
 	set_config('num_blog_replies', ($config['num_blog_replies'] - $num_blog_replies), true);
@@ -399,7 +425,10 @@ function resync_blog($mode)
 	// clear the cache
 	$cache->purge();
 
-	blog_plugins::plugin_do_arg('function_resync_blog', $mode);
+	if (class_exists('blog_plugins'))
+	{
+		blog_plugins::plugin_do_arg('function_resync_blog', $mode);
+	}
 }
 
 ?>
