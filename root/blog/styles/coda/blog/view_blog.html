@@ -220,9 +220,9 @@
 						<!-- END replyrow -->
 					</div>
 
-					<!-- IF PAGINATION or TOTAL_POSTS -->
+					<!-- IF PAGINATION or TOTAL_POSTS or S_WATCH_FORUM_LINK -->
 					<div class="blocked paging">
-						<p>{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF --></p>
+						<p>{TOTAL_POSTS} <!-- IF PAGE_NUMBER --><!-- IF PAGINATION --> &bull; {PAGE_NUMBER} &bull; <span>{PAGINATION}</span><!-- ELSE --> &bull; {PAGE_NUMBER}<!-- ENDIF --><!-- ENDIF --><!-- IF S_WATCH_FORUM_LINK --> &bull; <a href="{S_WATCH_FORUM_LINK}" title="{S_WATCH_FORUM_TITLE}">{S_WATCH_FORUM_TITLE}</a><!-- ENDIF --></p>
 						<div class="c">&nbsp;</div>
 					</div>
 					<!-- ENDIF -->
