@@ -200,15 +200,13 @@ else // user submitted and there are no errors
 
 	blog_plugins::plugin_do_arg('reply_add_after_sql', $reply_id);
 
-	unset($message_parser, $sql_data);
-
 	// Handle the subscriptions
 	add_blog_subscriptions($blog_id, 'subscription_');
 
 	handle_blog_cache('add_reply', $user_id);
 
 	// update the reply count for the blog
-	if ($auth->acl_get('u_blogreplynoapprove'))
+	if ($sql_data['reply_approved'])
 	{
 		$sql = 'UPDATE ' . BLOGS_TABLE . ' SET blog_reply_count = blog_reply_count + 1, blog_real_reply_count = blog_real_reply_count + 1 WHERE blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
@@ -225,7 +223,7 @@ else // user submitted and there are no errors
 		inform_approve_report('reply_approve', $reply_id);
 	}
 
-	$message = ((!$auth->acl_get('u_blogreplynoapprove')) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_SUBMIT_SUCCESS']) . '<br /><br />';
+	$message = ((!$sql_data['reply_approved']) ? $user->lang['REPLY_NEED_APPROVE'] : $user->lang['REPLY_SUBMIT_SUCCESS']) . '<br /><br />';
 	$message .= '<a href="' . $blog_urls['view_reply'] . '">' . $user->lang['VIEW_REPLY'] . '</a><br />';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br />';
 	if ($user_id == $user->data['user_id'])
@@ -238,7 +236,7 @@ else // user submitted and there are no errors
 		$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 	}
 
-	if (!$auth->acl_get('u_blogreplynoapprove'))
+	if (!$sql_data['reply_approved'])
 	{
 		blog_meta_refresh(3, $blog_urls['view_blog']);
 	}

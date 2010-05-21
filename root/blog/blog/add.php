@@ -285,11 +285,9 @@ else // user submitted and there are no errors
 
 	blog_plugins::plugin_do_arg('blog_add_after_sql', $blog_id);
 
-	unset($message_parser, $sql_data);
-
 	handle_blog_cache('new_blog', $user->data['user_id']);
 
-	if ($auth->acl_get('u_blognoapprove'))
+	if ($sql_data['blog_approved'])
 	{
 		// Update the blog_count for the user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET blog_count = blog_count + 1 WHERE user_id = ' . $user->data['user_id'];
@@ -304,12 +302,12 @@ else // user submitted and there are no errors
 		inform_approve_report('blog_approve', $blog_id);
 	}
 
-	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] : $user->lang['BLOG_SUBMIT_SUCCESS']);
+	$message = ((!$sql_data['blog_approved']) ? $user->lang['BLOG_NEED_APPROVE'] : $user->lang['BLOG_SUBMIT_SUCCESS']);
 	$message .= '<br /><br /><a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br />';
 
 	$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user_self'] . '">', '</a>');
 
-	if (!$auth->acl_get('u_blognoapprove'))
+	if (!$sql_data['blog_approved'])
 	{
 		blog_meta_refresh(3, $blog_urls['view_user_self']);
 	}

@@ -323,8 +323,6 @@ else // user submitted and there are no errors
 
 	blog_plugins::plugin_do_arg('blog_edit_after_sql', $blog_id);
 
-	unset($message_parser, $sql_data);
-
 	// Submit the poll
 	if ($auth->acl_get('u_blog_create_poll'))
 	{
@@ -361,7 +359,7 @@ else // user submitted and there are no errors
 
 	handle_blog_cache('edit_blog', $user_id);
 
-	$message = ((!$auth->acl_get('u_blognoapprove')) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />';
+	$message = ((!$sql_data['blog_approved']) ? $user->lang['BLOG_NEED_APPROVE'] . '<br /><br />' : $user->lang['BLOG_EDIT_SUCCESS']) . '<br /><br />';
 	$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br /><br />';
 	if ($user->data['user_id'] == $user_id)
 	{
