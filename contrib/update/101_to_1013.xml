@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.12</mod-version>
+	<mod-version>1.0.13</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -53,8 +53,15 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			</inline-edit>
 		</edit>
 		<edit>
-			<find>// Start User Blog Mod ----------------------</find>
-			<action type="after-add">				global $phpEx;</action>
+			<find>				$sql = 'UPDATE ' . FORUMS_TABLE . "
+					SET forum_style = $new_id
+					WHERE forum_style = $style_id";
+				$db->sql_query($sql);</find>
+			<action type="after-add">				// Start User Blog Mod ----------------------
+				global $phpEx;
+				include("{$phpbb_root_path}blog/includes/functions_admin.$phpEx");
+				blog_remove_style($style_id, $new_id);
+				// End User Blog Mod ------------------------</action>
 		</edit>
 	</open>
 	<open src="styles/prosilver/imageset/en/imageset.cfg">
@@ -64,6 +71,13 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<action type="after-add"><![CDATA[
 # User Blog Mod
 img_button_blog_new = button_blog_new.gif*25*96]]></action>
+		</edit>
+	</open>
+	<open src="styles/prosilver/template/overall_footer.html">
+		<edit>
+			<comment lang="en">Do this for all prosilver based styles.</comment>
+			<find><![CDATA[<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->]]></find>
+			<action type="after-add"><![CDATA[		<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
 		</edit>
 	</open>
 	<open src=".htaccess">

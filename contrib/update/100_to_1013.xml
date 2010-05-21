@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.12</mod-version>
+	<mod-version>1.0.13</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -101,6 +101,10 @@ RewriteRule ^blog/(.+)$ ./blog/blog.php?page=$1 [NC]]]></action>
 	<diy-instructions lang="en">Go to ACP->Styles->Style Components->Theme, then hit the Refresh button next to prosilver.
 Go to ACP->Styles->Style Components->Imageset, then hit the Refresh button next to prosilver.
 
-Go to yoursite/blog/database.php in your web browser to update the database.</diy-instructions>
+Go to yoursite/blog/database.php in your web browser to update the database.
+
+Because of the bug in previous versions of EAMI that were used to install the modules, the left and right id's for your modules are likely messed up.
+To fix this, go to this page and follow the instructions on how to run the script (and run it for your board):
+http://www.lithiumstudios.org/forum/viewtopic.php?f=9&amp;t=691</diy-instructions>
 </action-group>
 </mod>

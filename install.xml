@@ -22,7 +22,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.12</mod-version>
+	<mod-version>1.0.13</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -209,16 +209,21 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			</changelog>
 		</entry>
 		<entry>
-			<date>2010-00-00</date>
+			<date>2010-05-21</date>
 			<rev-version>1.0.13</rev-version>
 			<changelog lang="en">
 				<change>[Feature] Adding simple canonical URLs</change>
+				<change>[Feature] Anti-Spam ACP plugin</change>
 				<change>[Fix] Display poll creation errors #106</change>
 				<change>[Fix] Hide profile buttons that should not appear on guests #105</change>
 				<change>[Fix] Don't apply sid's multiple times on the non-seo urls #104</change>
 				<change>[Fix] Do not redirect to the item posted if it needs approval first #103</change>
 				<change>[Fix] Fix incorrect counting of replies when updating num_blog_replies on deleting a blog entry #92</change>
+				<change>[Fix] Invalid subsilver2 HTML #107</change>
+				<change>[Fix] Subscribe link for Coda #110</change>
+				<change>[Fix] Delete a user's blog replies when deleting the user</change>
 				<change>[Fix] Correct the update link for versions &lt; 0.9.0</change>
+				<change>Update UMIL</change>
 			</changelog>
 		</entry>
 	</history>
