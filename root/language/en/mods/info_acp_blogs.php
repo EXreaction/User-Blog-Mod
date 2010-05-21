@@ -32,6 +32,10 @@ $lang = array_merge($lang, array(
 
 	'IMG_BUTTON_BLOG_NEW'			=> 'New Blog Entry',
 
+	'LOG_ADDED_BLOG'				=> '<strong>Added new Blog Entry</strong><br />» %s',
+	'LOG_EDITED_BLOG'				=> '<strong>Edited Blog Entry</strong><br />» %s',
+	'LOG_ADDED_BLOG_REPLY'			=> '<strong>Added new Blog Reply</strong><br />» %s',
+	'LOG_EDITED_BLOG_REPLY'			=> '<strong>Edited Blog Reply</strong><br />» %s',
 	'LOG_BLOG_CATEGORY_ADD'			=> '<strong>Added New Blog Category</strong><br />» %s',
 	'LOG_BLOG_CATEGORY_DELETE'		=> '<strong>Deleted Blog Category</strong><br />» %s',
 	'LOG_BLOG_CATEGORY_EDIT'		=> '<strong>Edited Blog Category</strong><br />» %s',

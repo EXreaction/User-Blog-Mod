@@ -1,13 +1,29 @@
 <?php
 /**
+ * This file is part of French (Formal Honorifics) UMIL translation.
+ * Copyright (C) 2010 phpBB.fr
  *
- * @author Nathan Guse (EXreaction) http://lithiumstudios.org
- * @author David Lewis (Highway of Life) highwayoflife@gmail.com
- * @package umil [French]
- * @version $Id$
- * @copyright (c) 2008 phpBB Group
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * @package   umil
+ * @author    Maël Soucaze <maelsoucaze@phpbb.fr> (Maël Soucaze) http://www.phpbb.fr/
+ * @author    EXreaction <N/A> (Nathan Guse) http://lithiumstudios.org
+ * @author    Highway of Life <highwayoflife@gmail.com> (David Lewis) N/A
+ * @copyright 2010 phpBB.fr
+ * @copyright 2008 phpBB Group
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License
+ * @version   $Id$
  */
 
 /**
@@ -23,12 +39,6 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
-// TRANSLATION DETAILS
-//
-// Author: Maël Soucaze
-// E-mail: maelsoucaze@gmail.com
-// Website: http://twitter.com/maelsoucaze
-//
 // DEVELOPERS PLEASE NOTE
 //
 // All language files should use UTF-8 as their encoding and the files must not contain a BOM.
@@ -90,12 +100,16 @@ $lang = array_merge($lang, array(
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERREUR : l’option de permission %s existe déjà.',
 	'PERMISSION_NOT_EXIST'			=> 'ERREUR : l’option de permission %s n’existe pas.',
 	'PERMISSION_REMOVE'				=> 'Suppression d’une option de permission : %s',
+	'PERMISSION_ROLE_ADD'			=> 'Ajout d’un nouveau rôle de permission : %s',
+	'PERMISSION_ROLE_UPDATE'		=> 'Mise à jour d’un rôle de permission : %s',
+	'PERMISSION_ROLE_REMOVE'		=> 'Suppression d’un rôle de permission : %s',
 	'PERMISSION_SET_GROUP'			=> 'Régler les permissions du groupe %s.',
 	'PERMISSION_SET_ROLE'			=> 'Régler les permissions du rôle %s.',
 	'PERMISSION_UNSET_GROUP'		=> 'Dérégler les permissions du groupe %s.',
 	'PERMISSION_UNSET_ROLE'			=> 'Dérégler les permissions du rôle %s.',
 
-	'ROLE_NOT_EXIST'				=> 'Le rôle n’existe pas',
+	'ROLE_ALREADY_EXISTS'			=> 'Le rôle de permission existe déjà.',
+  'ROLE_NOT_EXIST'				=> 'Le rôle n’existe pas',
 
 	'SUCCESS'						=> 'Succès',
 

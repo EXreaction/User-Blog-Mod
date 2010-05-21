@@ -86,11 +86,15 @@ $lang = array_merge($lang, array(
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERRORE: Opzione permessi %s esiste già.',
 	'PERMISSION_NOT_EXIST'			=> 'ERRORE: Opzione permessi %s non esiste.',
 	'PERMISSION_REMOVE'				=> 'Rimuovi opzione permessi: %s',
+	'PERMISSION_ROLE_ADD'			=> 'Aggiunti nuovi ruoli permessi: %s',
+	'PERMISSION_ROLE_UPDATE'		=> 'Aggiornati nuovi ruoli permessi: %s',
+	'PERMISSION_ROLE_REMOVE'		=> 'Eliminati nuovi ruoli permessi: %s',
 	'PERMISSION_SET_GROUP'			=> 'Imposta permessi per il gruppo %s.',
 	'PERMISSION_SET_ROLE'			=> 'Imposta permessi per il ruolo %s.',
 	'PERMISSION_UNSET_GROUP'		=> 'Annulla permessi per il gruppo %s.',
 	'PERMISSION_UNSET_ROLE'			=> 'Annulla permessi per il ruolo %s.',
 
+	'ROLE_ALREADY_EXISTS'			=> 'Ruolo permessi già esistenti.',
 	'ROLE_NOT_EXIST'				=> 'Ruolo non esiste',
 
 	'SUCCESS'						=> 'Successo',
