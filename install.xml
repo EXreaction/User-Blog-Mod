@@ -226,6 +226,13 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>Update UMIL</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2010-00-00</date>
+			<rev-version>1.0.14</rev-version>
+			<changelog lang="en">
+				<change>[Fix] Fix problems with language packs if the user selects a language other than the board default #134</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
