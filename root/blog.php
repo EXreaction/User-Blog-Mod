@@ -17,7 +17,7 @@ include($phpbb_root_path . 'common.' . $phpEx);
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
-// Do not do $user->setup here!
+$user->setup('mods/blog/common');
 
 // Get some variables
 $page = utf8_normalize_nfc(request_var('page', '', true)); // Normalize for usernames
@@ -243,8 +243,6 @@ $blog_template = ((isset($_GET['style'])) ? request_var('style', 0) : ((isset($_
 */
 if ($user_style && $blog_template && !is_numeric($blog_template) && is_dir($phpbb_root_path . 'blog/styles/' . $blog_template))
 {
-	$user->setup('mods/blog/common');
-
 	// Do note style developers that dots and slashes in your style names are not allowed.
 	if (strpos($blog_template, '.') !== false || strpos($blog_template, '/') !== false)
 	{
@@ -279,10 +277,6 @@ else
 	if ($blog_template && is_numeric($blog_template))
 	{
 		$user->setup('mods/blog/common', $blog_template);
-	}
-	else
-	{
-		$user->setup('mods/blog/common');
 	}
 
 	$blog_style = false;
