@@ -119,7 +119,7 @@ if ($submit || $preview || $refresh)
 	}
 
 	// Attachments
-	$blog_attachment->get_submitted_attachment_data();
+	$blog_attachment->get_submitted_attachment_data(blog_data::$blog[$blog_id]['user_id']);
 	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $blog_text);
 	if (sizeof($blog_attachment->warn_msg))
 	{
@@ -319,7 +319,7 @@ else // user submitted and there are no errors
 	$blog_search->index('edit', $blog_id, 0, $message_parser->message, $blog_subject, $user_id);
 
 	// Update the attachments
-	$blog_attachment->update_attachment_data($blog_id);
+	$blog_attachment->update_attachment_data($blog_id, 0, blog_data::$blog[$blog_id]['user_id']);
 
 	blog_plugins::plugin_do_arg('blog_edit_after_sql', $blog_id);
 

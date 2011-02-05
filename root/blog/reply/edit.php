@@ -85,7 +85,7 @@ else
 	}
 
 	// Attachments
-	$blog_attachment->get_submitted_attachment_data();
+	$blog_attachment->get_submitted_attachment_data($reply_user_id);
 	$blog_attachment->parse_attachments('fileupload', $submit, $preview, $refresh, $reply_text);
 	if (sizeof($blog_attachment->warn_msg))
 	{
@@ -197,7 +197,7 @@ else // user submitted and there are no errors
 
 	$db->sql_query($sql);
 
-	$blog_attachment->update_attachment_data(false, $reply_id);
+	$blog_attachment->update_attachment_data(false, $reply_id, $reply_user_id);
 
 	blog_plugins::plugin_do_arg('reply_edit_after_sql', $reply_id);
 

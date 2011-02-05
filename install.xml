@@ -231,6 +231,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<rev-version>1.0.14</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Fix problems with language packs if the user selects a language other than the board default #134</change>
+				<change>[Fix] Fix error when editing blog entries/replies with attachments as a different user</change>
 			</changelog>
 		</entry>
 	</history>

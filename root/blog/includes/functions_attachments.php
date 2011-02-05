@@ -27,9 +27,9 @@ class blog_attachment
 	/**
 	* Updates some attachment data
 	*/
-	public function update_attachment_data($blog_id, $reply_id = 0)
+	public function update_attachment_data($blog_id, $reply_id = 0, $poster_id = 0)
 	{
-		global $auth, $config, $db;
+		global $auth, $config, $db, $user;
 
 		if (!$config['user_blog_enable_attachments'] || !$auth->acl_get('u_blogattach'))
 		{
@@ -38,6 +38,8 @@ class blog_attachment
 
 		$blog_id = (int) $blog_id;
 		$reply_id = (int) $reply_id;
+		
+		$poster_id = ($poster_id == 0) ? $user->data['user_id'] : (int) $poster_id;
 
 		$attach_ids = array();
 
@@ -45,12 +47,17 @@ class blog_attachment
 		{
 			foreach($this->attachment_data as $attach_row)
 			{
-				$sql = 'UPDATE ' . BLOGS_ATTACHMENT_TABLE . "
-					SET attach_comment = '" . $db->sql_escape($attach_row['attach_comment']) . "',
-						is_orphan = 0,
-							blog_id = {$blog_id},
-								reply_id = {$reply_id}
-									WHERE attach_id = " . (int) $attach_row['attach_id'];
+				$sql_data = array(
+					'attach_comment'	=> $attach_row['attach_comment'],
+					'is_orphan'			=> 0,
+					'blog_id'			=> $blog_id,
+					'reply_id'			=> $reply_id,
+					'poster_id'			=> $poster_id,
+				);
+
+				$sql = 'UPDATE ' . BLOGS_ATTACHMENT_TABLE . '
+					SET ' . $db->sql_build_array('UPDATE', $sql_data) . '
+					WHERE attach_id = ' . (int) $attach_row['attach_id'];
 				$db->sql_query($sql);
 			}
 		}
