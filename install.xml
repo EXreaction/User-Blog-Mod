@@ -22,12 +22,12 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.13</mod-version>
+	<mod-version>1.0.14</mod-version>
 
 	<installation>
 		<level>intermediate</level>
 		<time>600</time>
-		<target-version>3.0.7-pl1</target-version>
+		<target-version>3.0.8</target-version>
 	</installation>
 
 	<history>
@@ -227,7 +227,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			</changelog>
 		</entry>
 		<entry>
-			<date>2010-00-00</date>
+			<date>2011-02-04</date>
 			<rev-version>1.0.14</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Fix problems with language packs if the user selects a language other than the board default #134</change>
@@ -387,8 +387,7 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// End Add User Blog Mod --------------------]]></action>
 		</edit>
 	</open>
-    <diy-instructions lang="en">Go to yoursite/blog/database.php in your web browser to install the database section.
-
-Set the user/group permissions and configuration settings.</diy-instructions>
+	<php-installer>blog/database.php</php-installer>
+    <diy-instructions lang="en">Set the user/group permissions and configuration settings.</diy-instructions>
 </action-group>
 </mod>

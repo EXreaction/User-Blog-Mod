@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
 <mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
 <header>
-    <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-    <title lang="en">User Blog Mod - Subilver2</title>
-    <description lang="en">Adds Blogs to a phpBB3 board.</description>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">User Blog Mod</title>
+	<description lang="en">Adds Blogs to a phpBB3 board.</description>
 
-    <author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
+	<author-notes lang="en">PHP versions less than 5.1.0 are NOT supported.
 
 Support by the author is only provided at http://www.lithiumstudios.org
 A small fee is required for support by the author unless otherwise specified by the author in the release topic.
@@ -26,29 +26,15 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 
 	<installation>
 		<level>easy</level>
-		<time>60</time>
+		<time>1</time>
 		<target-version>3.0.8</target-version>
 	</installation>
 </header>
 
 <action-group>
 	<copy>
-	  <file from="root/styles/subsilver2/*.*" to="styles/subsilver2/*.*" />
+		<file from="root/*.*" to="*.*" />
 	</copy>
-	<open src="styles/subsilver2/template/overall_footer.html">
-		<edit>
-			<comment lang="en">Do this for all subsilver2 based styles.</comment>
-			<find><![CDATA[<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->]]></find>
-			<action type="after-add"><![CDATA[<!-- IF BLOG_CREDITS --><br />{BLOG_CREDITS}<!-- ENDIF -->]]></action>
-		</edit>
-	</open>
-	<open src="styles/subsilver2/template/overall_header.html">
-		<edit>
-			<find>{U_FAQ}</find>
-			<action type="before-add"><![CDATA[				<!-- BEGIN blog_links -->
-					<a href="{blog_links.URL}">{blog_links.IMG} {blog_links.TEXT}</a>&nbsp; &nbsp;
-				<!-- END blog_links -->]]></action>
-		</edit>
-	</open>
+	<php-installer>blog/database.php</php-installer>
 </action-group>
 </mod>
