@@ -207,7 +207,7 @@ if ($blog_id)
 
 if ($user_id)
 {
-	blog_data::$user_queue[] = $user_id;
+	blog_data::$user_queue[] = (int) $user_id;
 	$blog_data->get_user_data(false, true); // do it this way so we get user data on editors/deleters
 
 	if (!array_key_exists($user_id, blog_data::$user))

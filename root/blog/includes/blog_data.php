@@ -924,71 +924,70 @@ class blog_data
 		// this holds the user_id's we will query
 		$users_to_query = array();
 
-		if (!$username)
+    // if the $user_id isn't an array, make it one for consistency
+    if (!is_array($id))
+    {
+      $id = array(intval($id));
+    }
+
+    if ($username)
+    {
+      $sql = 'SELECT user_id FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
+      $result = $db->sql_query($sql);
+      $id[] = $db->sql_fetchfield('user_id', $result);
+      $db->sql_freeresult($result);
+    }
+
+		if (!sizeof($id))
 		{
-			// if the $user_id isn't an array, make it one for consistency
-			if (!is_array($id))
-			{
-				$id = array(intval($id));
-			}
-
-			if (!sizeof($id))
-			{
-				return;
-			}
-
-			$id[] = 1;
-
-			foreach ($id as $i)
-			{
-				if ($i && !isset(self::$user[$i]) && !in_array($i, $users_to_query))
-				{
-					$users_to_query[] = $i;
-				}
-			}
-
-			if (!sizeof($users_to_query))
-			{
-				return;
-			}
-
-			// Grab all profile fields from users in id cache for later use - similar to the poster cache
-			if ($config['user_blog_custom_profile_enable'])
-			{
-				if (!class_exists('custom_profile'))
-				{
-					include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-					$cp = new custom_profile();
-				}
-
-				$profile_fields_cache = $cp->generate_profile_fields_template('grab', $users_to_query);
-			}
-
-			// Grab user status information
-			$status_data = array();
-			$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
-				FROM ' . SESSIONS_TABLE . '
-					WHERE ' . $db->sql_in_set('session_user_id', $users_to_query) . '
-						GROUP BY session_user_id';
-			$result = $db->sql_query($sql);
-			while($row = $db->sql_fetchrow($result))
-			{
-				$status_data[$row['session_user_id']] = $row;
-			}
-			$db->sql_freeresult($result);
-			$update_time = $config['load_online_time'] * 60;
-
-			// Get the rest of the data on the users and parse everything we need
-			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
-			blog_plugins::plugin_do_ref('user_data_sql', $sql);
-			$result = $db->sql_query($sql);
+			return;
 		}
-		else
+
+		$id[] = 1;
+
+		foreach ($id as $i)
 		{
-			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . '\'';
-			blog_plugins::plugin_do_ref('user_data_sql', $sql);
-			$result = $db->sql_query($sql);
+			if ($i && !isset(self::$user[$i]) && !in_array($i, $users_to_query))
+			{
+				$users_to_query[] = $i;
+			}
 		}
+
+		if (!sizeof($users_to_query))
+		{
+			return;
+		}
+
+		// Grab all profile fields from users in id cache for later use - similar to the poster cache
+		if ($config['user_blog_custom_profile_enable'])
+		{
+			if (!class_exists('custom_profile'))
+			{
+				include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+				$cp = new custom_profile();
+			}
+
+			$profile_fields_cache = $cp->generate_profile_fields_template('grab', $users_to_query);
+		}
+
+		// Grab user status information
+		$status_data = array();
+		$sql = 'SELECT session_user_id, MAX(session_time) AS online_time, MIN(session_viewonline) AS viewonline
+			FROM ' . SESSIONS_TABLE . '
+				WHERE ' . $db->sql_in_set('session_user_id', $users_to_query) . '
+					GROUP BY session_user_id';
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			$status_data[$row['session_user_id']] = $row;
+		}
+		$db->sql_freeresult($result);
+		$update_time = $config['load_online_time'] * 60;
+
+		// Get the rest of the data on the users and parse everything we need
+		$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $users_to_query);
+		blog_plugins::plugin_do_ref('user_data_sql', $sql);
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{

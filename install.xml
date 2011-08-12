@@ -234,6 +234,13 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Fix error when editing blog entries/replies with attachments as a different user</change>
 			</changelog>
 		</entry>
+		<entry>
+			<date>2011-00-00</date>
+			<rev-version>1.0.15-dev</rev-version>
+			<changelog lang="en">
+				<change>[Fix] Custom Profile Fields Disappear When SEO URLs are enabled</change>
+			</changelog>
+		</entry>
 	</history>
 
 	<link-group>
