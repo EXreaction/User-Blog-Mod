@@ -95,15 +95,49 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 	// If we are viewing a users' profile add a link to view the users' blog in the custom profile section
 	$user_id = request_var('u', 0);
 	$username = request_var('un', '', true);
-	if (request_var('mode', '') == 'viewprofile' && ($user_id || $username))
+  if (request_var('mode', '') == 'viewprofile' && ($user_id || $username))
+  {
+    if (!$user_id)
+    {
+      $sql = 'SELECT user_id
+        FROM ' . USERS_TABLE . '
+        WHERE  username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . "'";
+      $db->sql_query($sql);
+      $user_id = $db->sql_fetchfield('user_id');
+      $db->sql_freeresult();
+
+      if (!$user_id)
+      {
+        return;
+      }
+    }
+
+    if (!function_exists('url_replace'))
+    {
+      include($phpbb_root_path . 'blog/includes/functions.' . $phpEx);
+    }
+    if (!function_exists('get_attachment_data'))
+    {
+      include($phpbb_root_path . 'blog/includes/functions_view.' . $phpEx);
+    }
+    if (!class_exists('blog_plugins'))
+    {
+      include($phpbb_root_path . 'blog/plugins/plugins.' . $phpEx);
+      new blog_plugins();
+    }
+
+    add_blog_links($user_id, 'custom_fields', false, true);
+  }
+	/* For viewing a PM (must add the custom profile field output on view pm to display them and enable this code)
+  else if (request_var('i', '') == 'pm' && request_var('mode', '') == 'view' && request_var('p', 0))
 	{
 		if (!$user_id)
 		{
-			$sql = 'SELECT user_id
-				FROM ' . USERS_TABLE . '
-				WHERE  username_clean = \'' . $db->sql_escape(utf8_clean_string($username)) . "'";
+			$sql = 'SELECT author_id
+				FROM ' . PRIVMSGS_TABLE . '
+				WHERE  msg_id = ' . request_var('p', 0);
 			$db->sql_query($sql);
-			$user_id = $db->sql_fetchfield('user_id');
+			$user_id = $db->sql_fetchfield('author_id');
 			$db->sql_freeresult();
 
 			if (!$user_id)
@@ -127,6 +161,6 @@ if (isset($config['user_blog_enable']) && $config['user_blog_enable'])
 		}
 
 		add_blog_links($user_id, 'custom_fields', false, true);
-	}
+	}*/
 }
 ?>
