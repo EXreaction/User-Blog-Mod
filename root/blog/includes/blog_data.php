@@ -1165,6 +1165,7 @@ class blog_data
 		$output_data = array(
 			'USER_ID'			=> $user_id,
 
+			'AGE'				=> '',
 			'AVATAR'			=> ($user->optionget('viewavatars')) ? self::$user[$user_id]['avatar'] : '',
 			'POSTER_FROM'		=> self::$user[$user_id]['user_from'],
 			'POSTER_JOINED'		=> $user->format_date(self::$user[$user_id]['user_regdate']),
@@ -1199,6 +1200,26 @@ class blog_data
 
 			'custom_fields'		=> $custom_fields,
 		);
+
+	    if ($config['allow_birthdays'] && !empty(self::$user[$user_id]['user_birthday']))
+	    {
+			list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $row['user_birthday']));
+
+			if ($bday_year)
+			{
+				$diff = $now['mon'] - $bday_month;
+				if ($diff == 0)
+				{
+					$diff = ($now['mday'] - $bday_day < 0) ? 1 : 0;
+				}
+				else
+				{
+					$diff = ($diff < 0) ? 1 : 0;
+				}
+
+				$output_data['AGE'] = (int) ($now['year'] - $bday_year - $diff);
+			}
+	    }
 
 		blog_plugins::plugin_do_ref('user_handle_data', $output_data);
 
