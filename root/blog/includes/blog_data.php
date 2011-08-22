@@ -1203,7 +1203,7 @@ class blog_data
 
 	    if ($config['allow_birthdays'] && !empty(self::$user[$user_id]['user_birthday']))
 	    {
-			list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $row['user_birthday']));
+			list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', self::$user[$user_id]['user_birthday']));
 
 			if ($bday_year)
 			{
