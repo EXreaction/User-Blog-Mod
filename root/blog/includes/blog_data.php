@@ -1207,6 +1207,8 @@ class blog_data
 
 			if ($bday_year)
 			{
+				$now = getdate(time() + $user->timezone + $user->dst - date('Z'));
+
 				$diff = $now['mon'] - $bday_month;
 				if ($diff == 0)
 				{
