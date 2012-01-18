@@ -1142,7 +1142,7 @@ function feed_output($ids, $feed_type)
 				$reply_row = $blog_data->handle_reply_data($id, true);
 
 				$row = array(
-					'URL'				=> blog_url(blog_data::$reply[$id]['user_id'], $id),
+					'URL'				=> blog_url(blog_data::$reply[$id]['user_id'], blog_data::$reply[$id]['blog_id'], $id),
 					'USERNAME'			=> blog_data::$user[blog_data::$reply[$id]['user_id']]['username'],
 					'MESSAGE'			=> str_replace("'", '&#039;', $reply_row['MESSAGE']),
 					'PUB_DATE'			=> date('r', blog_data::$reply[$id]['reply_time']),

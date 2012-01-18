@@ -240,6 +240,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<changelog lang="en">
 				<change>[Fix] Custom Profile Fields Disappear When SEO URLs are enabled</change>
 				<change>[Fix] Output the age with the user data</change>
+				<change>[Fix] Incorrect links in the Recent Comments feed</change>
 				<change>[Fix] Miscellaneous Bugs</change>
 				<change>[Change] Remove some of the excessive caching</change>
 				<change>[Change] Code to display the blog links on view PM (code in blog/header.php, disabled by default because it requires adding code to view pm template)</change>
