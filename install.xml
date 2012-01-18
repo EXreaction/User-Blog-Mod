@@ -242,7 +242,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Output the age with the user data</change>
 				<change>[Fix] Miscellaneous Bugs</change>
 				<change>[Change] Remove some of the excessive caching</change>
-				<change>[Change] Code to display the blog links on view PM (disabled because it requires adding code to view pm template)</change>
+				<change>[Change] Code to display the blog links on view PM (code in blog/header.php, disabled by default because it requires adding code to view pm template)</change>
 			</changelog>
 		</entry>
 	</history>
