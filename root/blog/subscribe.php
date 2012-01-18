@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: subscribe.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -56,7 +56,7 @@ if (is_array($settings))
 {
 	blog_plugins::plugin_do('subscribe_confirm');
 
-	$cache->destroy("_blog_subscription_{$user->data['user_id']}");
+	//$cache->destroy("_blog_subscription_{$user->data['user_id']}");
 
 	foreach ($settings as $mode => $yn)
 	{

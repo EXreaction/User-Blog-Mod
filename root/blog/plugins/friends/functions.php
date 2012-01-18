@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog Friends
 * @version $Id: functions.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -37,8 +37,8 @@ function friends_function_generate_menu(&$arg)
 	$update_time = (time() - (intval($config['load_online_time']) * 60));
 
 	// lets use the cache...as this query is quite intensive
-	$cache_data = $cache->get("_zebra{$user_id}");
-	
+	$cache_data = false;//$cache->get("_zebra{$user_id}");
+
 	if ($cache_data === false)
 	{
 		$sql = $db->sql_build_query('SELECT_DISTINCT', array(
@@ -68,7 +68,7 @@ function friends_function_generate_menu(&$arg)
 		$rowset = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
-		$cache->put("_zebra{$user_id}", $rowset, 60); // cache for 1 minute
+		//$cache->put("_zebra{$user_id}", $rowset, 60); // cache for 1 minute
 		$cache_data = $rowset;
 	}
 

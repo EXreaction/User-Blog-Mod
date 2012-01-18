@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: functions_rate.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -35,7 +35,7 @@ function get_user_blog_rating_data($user_id)
 		return $ratings[$user_id];
 	}
 
-	$rating_data = $cache->get('_blog_rating_' . $user_id);
+	$rating_data = false;//$cache->get('_blog_rating_' . $user_id);
 
 	if ($rating_data === false)
 	{
@@ -48,7 +48,7 @@ function get_user_blog_rating_data($user_id)
 		}
 		$db->sql_freeresult($result);
 
-		$cache->put('_blog_rating_' . $user_id, $rating_data);
+		//$cache->put('_blog_rating_' . $user_id, $rating_data);
 	}
 
 	$ratings[$user_id] = $rating_data;

@@ -307,7 +307,7 @@ function get_user_settings($user_ids)
 	}
 
 	// Only run the query if we have to.
-	$to_query = array();
+	/*$to_query = array();
 	foreach ($user_ids as $id)
 	{
 		if ($id && !array_key_exists($id, $user_settings))
@@ -325,18 +325,18 @@ function get_user_settings($user_ids)
 	}
 
 	if (sizeof($to_query))
-	{
+	{*/
 		global $db;
 		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$cache->put('_blog_settings_' . $row['user_id'], $row);
+			//$cache->put('_blog_settings_' . $row['user_id'], $row);
 
 			$user_settings[$row['user_id']] = $row;
 		}
 		$db->sql_freeresult($result);
-	}
+	//}
 
 	blog_plugins::plugin_do('function_get_user_settings');
 }
@@ -438,7 +438,7 @@ function update_user_blog_settings($user_id, $data, $resync = false)
 
 	blog_plugins::plugin_do('function_get_user_settings', compact('data', 'user_id', 'resync'));
 
-	$cache->destroy('_blog_settings_' . $user_id);
+	//$cache->destroy('_blog_settings_' . $user_id);
 }
 
 /**
@@ -500,9 +500,9 @@ function handle_blog_cache($mode, $user_id = 0)
 
 	if (!$mode && $user_id)
 	{
-		$cache->destroy("_blog_settings_{$user_id}");
-		$cache->destroy("_blog_subscription_{$user_id}");
-		$cache->destroy("_blog_rating_{$user_id}");
+		//$cache->destroy("_blog_settings_{$user_id}");
+		//$cache->destroy("_blog_subscription_{$user_id}");
+		//$cache->destroy("_blog_rating_{$user_id}");
 	}
 
 	switch ($mode)

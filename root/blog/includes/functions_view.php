@@ -85,7 +85,7 @@ function get_subscription_info($blog_id, $user_id = false)
 	}
 
 	// attempt to get the data from the cache
-	$subscription_data = $cache->get('_blog_subscription_' . $user->data['user_id']);
+	$subscription_data = false;//$cache->get('_blog_subscription_' . $user->data['user_id']);
 
 	// grab data from the db if it isn't cached
 	if ($subscription_data === false)
@@ -95,7 +95,7 @@ function get_subscription_info($blog_id, $user_id = false)
 		$result = $db->sql_query($sql);
 		$subscription_data = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
-		$cache->put('_blog_subscription_' . $user->data['user_id'], $subscription_data);
+		//$cache->put('_blog_subscription_' . $user->data['user_id'], $subscription_data);
 	}
 
 	if (sizeof($subscription_data))

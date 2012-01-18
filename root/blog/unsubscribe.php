@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: unsubscribe.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -44,7 +44,7 @@ if ($blog_id != 0)
 				AND blog_id = ' . intval($blog_id);
 		$db->sql_query($sql);
 
-		$cache->destroy("_blog_subscription_{$user_id}");
+		//$cache->destroy("_blog_subscription_{$user_id}");
 
 		$template->assign_vars(array(
 			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_BLOG'],
@@ -52,7 +52,7 @@ if ($blog_id != 0)
 			'S_WATCHING_FORUM'		=> false,
 		));
 
-		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />'; 
+		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />';
 		$message .= '<a href="' . $blog_urls['view_blog'] . '">' . $user->lang['VIEW_BLOG'] . '</a><br />';
 		if ($user_id == $user->data['user_id'])
 		{
@@ -89,7 +89,7 @@ else if ($user_id != 0)
 				AND user_id = ' . intval($user_id);
 		$db->sql_query($sql);
 
-		$cache->destroy("_blog_subscription_{$user_id}");
+		//$cache->destroy("_blog_subscription_{$user_id}");
 
 		$template->assign_vars(array(
 			'S_WATCH_FORUM_TITLE'	=> $user->lang['SUBSCRIBE_USER'],
@@ -97,7 +97,7 @@ else if ($user_id != 0)
 			'S_WATCHING_FORUM'		=> false,
 		));
 
-		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />'; 
+		$message = $user->lang['SUBSCRIPTION_REMOVED'] . '<br /><br />';
 		if ($user_id == $user->data['user_id'])
 		{
 			$message .= sprintf($user->lang['RETURN_BLOG_OWN'], '<a href="' . $blog_urls['view_user'] . '">', '</a>');

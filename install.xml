@@ -239,6 +239,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			<rev-version>1.0.15-dev</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Custom Profile Fields Disappear When SEO URLs are enabled</change>
+				<change>[Change] Remove some of the excessive caching</change>
 			</changelog>
 		</entry>
 	</history>

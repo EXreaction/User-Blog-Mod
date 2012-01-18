@@ -282,7 +282,7 @@ class ucp_blog
 
 		if ($submit && !sizeof($error))
 		{
-			$cache->destroy('_blog_settings_' . $user->data['user_id']);
+			//$cache->destroy('_blog_settings_' . $user->data['user_id']);
 
 			meta_refresh(3, $this->u_action);
 			$message = $user->lang['PREFERENCES_UPDATED'] . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . $this->u_action . '">', '</a>');

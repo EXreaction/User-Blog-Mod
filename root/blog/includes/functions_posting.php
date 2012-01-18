@@ -527,7 +527,7 @@ function add_blog_subscriptions($blog_id, $prefix = '')
 		}
 	}
 
-	$cache->destroy('_blog_subscription_' . $user->data['user_id']);
+	//$cache->destroy('_blog_subscription_' . $user->data['user_id']);
 }
 
 /**

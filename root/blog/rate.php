@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: rate.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -68,7 +68,7 @@ if ($did_something)
 	$sql = 'UPDATE ' . BLOGS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', array('rating' => $average_rating, 'num_ratings' => $total_count)) . ' WHERE blog_id = ' . intval($blog_id);
 	$db->sql_query($sql);
 
-	$cache->destroy('_blog_rating_' . $user->data['user_id']);
+	//$cache->destroy('_blog_rating_' . $user->data['user_id']);
 }
 
 blog_meta_refresh(0, $blog_urls['view_blog']);
