@@ -413,7 +413,7 @@ class blog_data
 		}
 		$s_can_vote = (((!sizeof($my_vote) && check_blog_permissions('blog', 'vote', true, $id)) ||
 			($auth->acl_get('u_blog_vote_change') && $blog['poll_vote_change'])) &&
-			(($blog['poll_length'] != 0 && $blog['poll_start'] + $blog['poll_length'] > time()) || $blog['poll_length'] == 0)) ? true : false;
+			(($blog['poll_length'] != 0 && $blog['poll_length'] > time()) || $blog['poll_length'] == 0)) ? true : false;
 
 		// Attachments
 		$update_count = $attachments = array();

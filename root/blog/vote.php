@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: vote.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -22,7 +22,7 @@ if ($blog_id == 0)
 $voted_id = request_var('vote_id', array('' => 0));
 $blog_data->get_polls($blog_id);
 
-if (sizeof($voted_id) > blog_data::$blog[$blog_id]['poll_max_options'])
+if (sizeof($voted_id) > blog_data::$blog[$blog_id]['poll_max_options'] || blog_data::$blog[$blog_id]['poll_length'] < time())
 {
 	trigger_error('TOO_MANY_VOTE_OPTIONS');
 }
