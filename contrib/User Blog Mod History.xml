@@ -786,6 +786,7 @@
 				<change>[Fix] Miscellaneous Bugs</change>
 				<change>[Change] Remove some of the excessive caching</change>
 				<change>[Change] Code to display the blog links on view PM (code in blog/header.php, disabled by default because it requires adding code to view pm template)</change>
+				<change>Update UMIL</change>
 			</changelog>
 		</entry>
 	</history>
