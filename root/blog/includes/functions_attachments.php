@@ -156,7 +156,7 @@ class blog_attachment
 		extract($temp);
 
 		$blog_ids = array_unique(array_map('intval', $blog_ids));
-		$reply_ids = array_unique(array_map('intval', $reply_ids));
+		$reply_ids = ($reply_ids === false) ? false : array_unique(array_map('intval', $reply_ids));
 
 		$reply_sql = ($reply_ids !== false) ? ' OR ' . $db->sql_in_set('reply_id', $reply_ids) : '';
 
