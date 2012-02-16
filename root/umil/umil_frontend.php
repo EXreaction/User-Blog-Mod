@@ -6,7 +6,7 @@
  * @package umil
  * @version $Id$
  * @copyright (c) 2008 phpBB Group
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
 
 /**
@@ -141,7 +141,7 @@ class umil_frontend extends umil
 	*		If title_CONFIRM cannot be found in user->lang the text given is used.
 	* @param string $hidden Hidden variables
 	*/
-	function confirm_box($check, $title = '', $hidden = '')
+	function confirm_box($check, $title = '', $hidden = '', $html_body = 'index_body.html')
 	{
 		if (!$check)
 		{
@@ -154,7 +154,7 @@ class umil_frontend extends umil
 			$hidden = build_hidden_fields($hidden);
 		}
 
-		return confirm_box($check, $title, $hidden, $html_body = 'index_body.html');
+		return confirm_box($check, $title, $hidden, $html_body);
 	}
 
 	/**
