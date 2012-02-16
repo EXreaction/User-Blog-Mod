@@ -322,10 +322,11 @@ function get_user_settings($user_ids)
 				$user_settings[$id] = $cache_data;
 			}
 		}
-	}
+	}*/
+	$to_query = $user_ids;
 
 	if (sizeof($to_query))
-	{*/
+	{
 		global $db;
 		$sql = 'SELECT * FROM ' . BLOGS_USERS_TABLE . ' WHERE ' . $db->sql_in_set('user_id', $to_query);
 		$result = $db->sql_query($sql);
@@ -336,7 +337,7 @@ function get_user_settings($user_ids)
 			$user_settings[$row['user_id']] = $row;
 		}
 		$db->sql_freeresult($result);
-	//}
+	}
 
 	blog_plugins::plugin_do('function_get_user_settings');
 }
