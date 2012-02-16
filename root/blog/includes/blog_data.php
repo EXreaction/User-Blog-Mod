@@ -383,9 +383,10 @@ class blog_data
 		// Polls
 		$poll_options = $my_vote = array();
 		$total_votes = 0;
+
 		foreach ($blog['poll_votes'] as $option_id => $poll_row)
 		{
-			if ($option_id != 'my_vote')
+			if ($option_id !== 'my_vote')
 			{
 				$total_votes += $poll_row['votes'];
 			}
@@ -394,6 +395,7 @@ class blog_data
 				$my_vote = $poll_row;
 			}
 		}
+
 		foreach ($blog['poll_options'] as $option_id => $poll_row)
 		{
 			$option_pct = ($total_votes > 0 && isset($blog['poll_votes'][$option_id]['votes'])) ? $blog['poll_votes'][$option_id]['votes'] / $total_votes : 0;

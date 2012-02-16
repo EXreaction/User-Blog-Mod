@@ -242,6 +242,7 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 				<change>[Fix] Output the age with the user data</change>
 				<change>[Fix] Incorrect links in the Recent Comments feed</change>
 				<change>[Fix] Stricter checking on inputs for SQL queries (prevent duplicates in WHERE and enforce int on integers)</change>
+				<change>[Fix] Poll vote count problems with first poll item #174</change>
 				<change>[Fix] Miscellaneous Bugs</change>
 				<change>[Change] Remove some of the excessive caching</change>
 				<change>[Change] Code to display the blog links on view PM (code in blog/header.php, disabled by default because it requires adding code to view pm template)</change>
