@@ -86,7 +86,7 @@ if (is_array($settings))
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$rids[] = $row['reply_id'];
+			$rids[] = (int) $row['reply_id'];
 		}
 		$db->sql_freeresult($result);
 		if (sizeof($rids))

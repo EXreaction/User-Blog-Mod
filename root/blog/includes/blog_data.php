@@ -81,7 +81,7 @@ class blog_data
 		{
 			if ($user->data['is_registered'])
 			{
-				$sql_array['WHERE'][] = '(b.blog_approved = 1 OR b.user_id = ' . $user->data['user_id'] . ')';
+				$sql_array['WHERE'][] = '(b.blog_approved = 1 OR b.user_id = ' . (int) $user->data['user_id'] . ')';
 			}
 			else
 			{
@@ -94,7 +94,7 @@ class blog_data
 		}
 		else if (!$auth->acl_gets('m_blogdelete', 'a_blogdelete'))
 		{
-			$sql_array['WHERE'][] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . $user->data['user_id'] . ')';
+			$sql_array['WHERE'][] = '(b.blog_deleted = 0 OR b.blog_deleted = ' . (int) $user->data['user_id'] . ')';
 		}
 		if ($sort_days)
 		{
@@ -113,8 +113,9 @@ class blog_data
 		// make sure $id is an array for consistency
 		if (!is_array($id))
 		{
-			$id = array(intval($id));
+			$id = array($id);
 		}
+		$id = array_unique(array_map('intval', $id));
 
 		// Switch for the modes
 		switch ($mode)
@@ -949,7 +950,7 @@ class blog_data
 		{
 			if ($i && !isset(self::$user[$i]) && !in_array($i, $users_to_query))
 			{
-				$users_to_query[] = $i;
+				$users_to_query[] = (int) $i;
 			}
 		}
 

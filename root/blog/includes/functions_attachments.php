@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog
 * @version $Id: functions_attachments.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
@@ -38,7 +38,7 @@ class blog_attachment
 
 		$blog_id = (int) $blog_id;
 		$reply_id = (int) $reply_id;
-		
+
 		$poster_id = ($poster_id == 0) ? $user->data['user_id'] : (int) $poster_id;
 
 		$attach_ids = array();
@@ -154,6 +154,9 @@ class blog_attachment
 		$temp = compact('blog_ids', 'reply_ids');
 		blog_plugins::plugin_do_ref('function_get_attachment_data', $temp);
 		extract($temp);
+
+		$blog_ids = array_unique(array_map('intval', $blog_ids));
+		$reply_ids = array_unique(array_map('intval', $reply_ids));
 
 		$reply_sql = ($reply_ids !== false) ? ' OR ' . $db->sql_in_set('reply_id', $reply_ids) : '';
 
@@ -290,7 +293,7 @@ class blog_attachment
 							FROM ' . BLOGS_ATTACHMENT_TABLE . '
 							WHERE attach_id = ' . (int) $this->attachment_data[$index]['attach_id'] . '
 								AND is_orphan = 1
-								AND poster_id = ' . $user->data['user_id'];
+								AND poster_id = ' . (int) $user->data['user_id'];
 						$result = $db->sql_query($sql);
 						$row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
@@ -433,7 +436,7 @@ class blog_attachment
 			// Get the attachment data, based on the poster id...
 			$sql = 'SELECT attach_id, is_orphan, real_filename, attach_comment
 				FROM ' . BLOGS_ATTACHMENT_TABLE . '
-				WHERE ' . $db->sql_in_set('attach_id', array_keys($not_orphan)) . '
+				WHERE ' . $db->sql_in_set('attach_id', array_unique(array_map('intval', array_keys($not_orphan)))) . '
 					AND poster_id = ' . $check_user_id;
 			$result = $db->sql_query($sql);
 
@@ -458,7 +461,7 @@ class blog_attachment
 		{
 			$sql = 'SELECT attach_id, is_orphan, real_filename, attach_comment
 				FROM ' . BLOGS_ATTACHMENT_TABLE . '
-				WHERE ' . $db->sql_in_set('attach_id', array_keys($orphan)) . '
+				WHERE ' . $db->sql_in_set('attach_id', array_unique(array_map('intval', array_keys($orphan)))) . '
 					AND poster_id = ' . $user->data['user_id'] . '
 					AND is_orphan = 1';
 			$result = $db->sql_query($sql);
@@ -758,7 +761,7 @@ class blog_attachment
 
 			$sql = 'SELECT *
 				FROM ' . BLOGS_ATTACHMENT_TABLE . '
-				WHERE ' . $db->sql_in_set('attach_id', array_keys($attach_ids));
+				WHERE ' . $db->sql_in_set('attach_id', array_unique(array_map('intval', array_keys($attach_ids))));
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -796,7 +799,7 @@ class blog_attachment
 			$template->destroy_block_vars('_file');
 
 			$block_array = array();
-			
+
 			// Some basics...
 			$attachment['extension'] = strtolower(trim($attachment['extension']));
 			$filename = $phpbb_root_path . $config['upload_path'] . '/blog_mod/' . basename($attachment['physical_filename']);

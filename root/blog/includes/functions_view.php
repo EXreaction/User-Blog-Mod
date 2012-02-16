@@ -44,6 +44,9 @@ function get_attachment_data($blog_ids, $reply_ids = false)
 	blog_plugins::plugin_do_ref('function_get_attachment_data', $temp);
 	extract($temp);
 
+	$blog_ids = array_unique(array_map('intval', $blog_ids));
+	$reply_ids = ($reply_ids === false) ? false : array_unique(array_map('intval', $reply_ids));
+
 	$reply_sql = ($reply_ids !== false) ? ' OR ' . $db->sql_in_set('reply_id', $reply_ids) : '';
 
 	$sql = 'SELECT * FROM ' . BLOGS_ATTACHMENT_TABLE . '
@@ -157,9 +160,9 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 	{
 		foreach ($user_ids as $user_id)
 		{
-			if (!is_array($zebra_list) || ($user_id && !array_key_exists($user_id, $zebra_list)))
+			if ((!is_array($zebra_list) || ($user_id && !array_key_exists($user_id, $zebra_list))) && !in_array($user_id, $to_query))
 			{
-				$to_query[] = $user_id;
+				$to_query[] = (int) $user_id;
 			}
 		}
 
@@ -172,9 +175,9 @@ function get_zebra_info($user_ids, $reverse_lookup = false)
 	{
 		foreach ($user_ids as $user_id)
 		{
-			if (!is_array($reverse_zebra_list) || !array_key_exists($user_id, $reverse_zebra_list))
+			if ((!is_array($reverse_zebra_list) || !array_key_exists($user_id, $reverse_zebra_list)) && !in_array($user_id, $to_query))
 			{
-				$to_query[] = $user_id;
+				$to_query[] = (int) $user_id;
 			}
 		}
 
@@ -1233,7 +1236,7 @@ function parse_attachments_for_view(&$message, &$attachments, &$update_count, $p
 
 		$sql = 'SELECT *
 			FROM ' . BLOGS_ATTACHMENT_TABLE . '
-			WHERE ' . $db->sql_in_set('attach_id', array_keys($attach_ids));
+			WHERE ' . $db->sql_in_set('attach_id', array_unique(array_map('intval', array_keys($attach_ids))));
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
