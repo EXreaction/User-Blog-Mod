@@ -403,6 +403,8 @@ $versions = array(
 	'1.0.11-pl1'	=> array(),
 	'1.0.12'	=> array(),
 	'1.0.13'	=> array(),
+	'1.0.14'	=> array(),
+	'1.0.15'	=> array(),
 );
 
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);

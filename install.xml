@@ -22,12 +22,12 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 		</author>
 	</author-group>
 
-	<mod-version>1.0.14</mod-version>
+	<mod-version>1.0.15</mod-version>
 
 	<installation>
 		<level>intermediate</level>
 		<time>600</time>
-		<target-version>3.0.8</target-version>
+		<target-version>3.0.10</target-version>
 	</installation>
 
 	<history>
@@ -235,8 +235,8 @@ Bug reports are accepted and, if confirmed as a bug, you will receive support fo
 			</changelog>
 		</entry>
 		<entry>
-			<date>2011-00-00</date>
-			<rev-version>1.0.15-dev</rev-version>
+			<date>2012-02-16</date>
+			<rev-version>1.0.15</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Custom Profile Fields Disappear When SEO URLs are enabled</change>
 				<change>[Fix] Output the age with the user data</change>
