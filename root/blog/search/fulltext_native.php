@@ -4,7 +4,7 @@
 * @package phpBB3 User Blog Search
 * @version $Id: fulltext_native.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
 * @copyright (c) 2008 EXreaction, Lithium Studios; phpBB Group
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * Custom Search class for Blogs
 *
@@ -16,7 +16,10 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-include_once($phpbb_root_path . 'blog/search/search.' . $phpEx);
+if (!class_exists('blog_search'))
+{
+	include($phpbb_root_path . 'blog/search/search.' . $phpEx);
+}
 
 /**
 * fulltext_native
@@ -33,7 +36,7 @@ class blog_fulltext_native extends blog_search
 	var $must_contain_ids = array();
 	var $must_not_contain_ids = array();
 	var $must_exclude_one_ids = array();
-	
+
 	/**
 	* Initialises the fulltext_native search backend with min/max word length and makes sure the UTF-8 normalizer is loaded.
 	*
@@ -815,7 +818,7 @@ class blog_fulltext_native extends blog_search
 
 		// Get unique words from the above arrays
 		$unique_add_words = array_unique(array_merge($words['add']['post'], $words['add']['title']));
-		
+
 		// We now have unique arrays of all words to be added and removed and
 		// individual arrays of added and removed words for text and title. What
 		// we need to do now is add the new words (if they don't already exist)
