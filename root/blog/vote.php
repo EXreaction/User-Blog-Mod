@@ -22,7 +22,7 @@ if ($blog_id == 0)
 $voted_id = request_var('vote_id', array('' => 0));
 $blog_data->get_polls($blog_id);
 
-if (sizeof($voted_id) > blog_data::$blog[$blog_id]['poll_max_options'] || blog_data::$blog[$blog_id]['poll_length'] < time())
+if (sizeof($voted_id) > blog_data::$blog[$blog_id]['poll_max_options'] || (blog_data::$blog[$blog_id]['poll_length'] != 0 && blog_data::$blog[$blog_id]['poll_length'] < time()))
 {
 	trigger_error('TOO_MANY_VOTE_OPTIONS');
 }
