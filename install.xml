@@ -18,7 +18,7 @@
 		</author>
 	</author-group>
 
-	<mod-version>1.0.15</mod-version>
+	<mod-version>1.0.16</mod-version>
 
 	<installation>
 		<level>intermediate</level>
@@ -78,10 +78,11 @@
 			</changelog>
 		</entry>
 		<entry>
-			<date>2013-00-00</date>
-			<rev-version>1.0.16-dev</rev-version>
+			<date>2013-07-19</date>
+			<rev-version>1.0.16</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Fix voting on polls when Run poll for days = 0</change>
+				<change>Remove references to Lithium Studios</change>
 			</changelog>
 		</entry>
 	</history>
