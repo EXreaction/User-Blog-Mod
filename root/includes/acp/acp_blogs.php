@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: acp_blogs.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -208,22 +208,6 @@ class acp_blogs
 
 		$version = $user->lang['DATABASE_VERSION'] . ': ' . $value . '<br />';
 		$version .= $user->lang['FILE_VERSION'] . ': ' . USER_BLOG_MOD_VERSION . '<br /><br />';
-		$version .= $user->lang['LATEST_VERSION'] . ': ';
-
-		$latest_version = get_latest_user_blog_version();
-		if ($latest_version === false)
-		{
-			$version .= $user->lang['NOT_AVAILABLE'];
-			$version .= '<br />' . sprintf($user->lang['CLICK_CHECK_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&amp;t=433">', '</a>');
-		}
-		else
-		{
-			$version .= $latest_version;
-			if (version_compare(USER_BLOG_MOD_VERSION, $latest_version, '<'))
-			{
-				$version .= '<br />' . sprintf($user->lang['CLICK_GET_NEW_VERSION'], '<a href="http://www.lithiumstudios.org/phpBB3/viewtopic.php?f=41&amp;t=433">', '</a>');
-			}
-		}
 
 		if (version_compare(USER_BLOG_MOD_VERSION, $value, '>'))
 		{

@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog Anti-Spam
 * @version $Id$
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */

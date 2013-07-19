@@ -146,7 +146,6 @@ else
 * EAMI (Easy Automatic Module Insertion)
 *
 * Created By: EXreaction
-* http://www.lithiumstudios.org
 */
 
 class eami

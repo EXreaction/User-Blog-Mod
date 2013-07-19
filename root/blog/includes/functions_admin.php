@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: functions_admin.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -143,33 +143,6 @@ function blog_delete_user($user_id)
 
 	set_config('num_blogs', ($config['num_blogs'] - $num_blogs), true);
 	set_config('num_blog_replies', ($config['num_blog_replies'] - $num_blog_replies), true);
-}
-
-/**
-* Get the User Blog Version
-*
-* Gets the latest version from lithiumstudios.org (once every hour) and returns it
-*/
-function get_latest_user_blog_version()
-{
-	global $cache;
-
-	$version = $cache->get('user_blog_version');
-	if ($version === false)
-	{
-		if (!function_exists('get_remote_file'))
-		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-		}
-
-		$errstr = $errno = '';
-		$version = get_remote_file('lithiumstudios.org', '/updatecheck', 'user_blog_mod.txt', $errstr, $errno);
-
-		$cache->put('user_blog_version', $version, 3600);
-	}
-
-	return $version;
 }
 
 /**

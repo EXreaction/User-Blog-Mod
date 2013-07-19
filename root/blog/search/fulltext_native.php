@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog Search
 * @version $Id: fulltext_native.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios; phpBB Group
+* @copyright (c) 2008 EXreaction; phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * Custom Search class for Blogs

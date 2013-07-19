@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: constants.php 487 2008-08-19 20:18:51Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */

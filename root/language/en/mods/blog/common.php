@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: common.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -29,7 +29,7 @@ $lang = array_merge($lang, array(
 	'BLOG'							=> 'Blog',
 	'BLOGS'							=> 'Blogs',
 	'BLOG_CONTROL_PANEL'			=> 'Blog Control Panel',
-	'BLOG_CREDITS'					=> 'Blogs powered by <a href="http://www.lithiumstudios.org/">User Blog Mod</a> &copy; EXreaction',
+	'BLOG_CREDITS'					=> '',
 	'BLOG_DELETED_BY_MSG'			=> 'This blog entry was deleted by %1$s on %2$s.  Click <b>%3$shere%4$s</b> to un-delete this blog.',
 	'BLOG_DESCRIPTION'				=> 'Blog Description',
 	'BLOG_LINKS'					=> 'Blog Links',

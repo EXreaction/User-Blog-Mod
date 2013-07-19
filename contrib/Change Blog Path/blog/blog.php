@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: blog.php 295 2008-03-01 00:03:25Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
 */

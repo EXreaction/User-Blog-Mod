@@ -3,7 +3,7 @@
  *
  * @package phpBB3 User Blog Custom Title
  * @version $Id: custom_title.php 245 2008-02-09 04:02:27Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
  *
  */

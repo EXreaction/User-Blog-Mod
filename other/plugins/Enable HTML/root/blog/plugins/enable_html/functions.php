@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog Enable HTML
 * @version $Id$
-* @copyright (c) 2009 EXreaction, Lithium Studios
+* @copyright (c) 2009 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */

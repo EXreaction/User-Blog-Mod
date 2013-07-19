@@ -3,7 +3,7 @@
 *
 * @package phpBB3 User Blog
 * @version $Id: setup.php 485 2008-08-15 23:33:57Z exreaction@gmail.com $
-* @copyright (c) 2008 EXreaction, Lithium Studios
+* @copyright (c) 2008 EXreaction
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -82,18 +82,7 @@ $lang = array_merge($lang, array(
 	'UPGRADE_PHP'					=> 'You are running an unsupported PHP version. You must be running PHP 5.1.0 or higher to use this modification.',
 	'UPGRADE_REPLIES'				=> 'Upgrade Replies',
 
-	'WELCOME_MESSAGE'				=> 'Welcome to the User Blog Mod!
-
-Release Topic:
-http://lithiumstudios.org/forum/viewtopic.php?f=41&t=433
-
-Support by the author will only be given at lithiumstudios.org.
-
-If you have any comments or need support post in this forum:
-http://www.lithiumstudios.org/forum/viewforum.php?f=57
-
-Please check the User Blog Mod forum for information before asking for support.
-http://www.lithiumstudios.org/forum/viewforum.php?f=41',
+	'WELCOME_MESSAGE'				=> 'Welcome to the User Blog Mod!',
 	'WELCOME_SUBJECT'				=> 'Welcome to the User Blog Mod!',
 ));
 
