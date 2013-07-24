@@ -23,7 +23,7 @@ if (!defined('BLOGS_TABLE'))
 		unset($dbpasswd);
 	}
 
-	define('USER_BLOG_MOD_VERSION', '1.0.15');
+	define('USER_BLOG_MOD_VERSION', '1.0.16');
 
 	define('BLOGS_TABLE',					$table_prefix . 'blogs');
 	define('BLOGS_ATTACHMENT_TABLE',		$table_prefix . 'blogs_attachment');
